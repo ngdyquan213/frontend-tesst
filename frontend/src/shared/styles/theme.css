@@ -1,0 +1,8 @@
+:root {
+  color: var(--color-on-surface);
+  background: var(--color-background);
+}
+
+.dark {
+  color-scheme: dark;
+}

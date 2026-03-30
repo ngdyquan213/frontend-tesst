@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Support | TravelBook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#2c0800",
+              "on-primary-container": "#758dd5",
+              "primary-fixed": "#dbe1ff",
+              "on-tertiary-container": "#e56c3e",
+              "surface-dim": "#d9dadb",
+              "surface-container-highest": "#e1e3e4",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#f0f1f2",
+              "inverse-primary": "#b3c5ff",
+              "primary-container": "#002366",
+              "primary-fixed-dim": "#b3c5ff",
+              "on-tertiary": "#ffffff",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-secondary-fixed-variant": "#004f4f",
+              "tertiary-fixed": "#ffdbcf",
+              "on-surface-variant": "#444650",
+              "surface": "#f8f9fa",
+              "secondary": "#006a6a",
+              "on-tertiary-fixed": "#380c00",
+              "on-secondary-container": "#006e6e",
+              "surface-variant": "#e1e3e4",
+              "surface-container-high": "#e7e8e9",
+              "inverse-surface": "#2e3132",
+              "error": "#ba1a1a",
+              "secondary-container": "#90efef",
+              "on-primary-fixed": "#00174a",
+              "on-error": "#ffffff",
+              "surface-container": "#edeeef",
+              "on-tertiary-fixed-variant": "#822800",
+              "surface-bright": "#f8f9fa",
+              "tertiary-container": "#4e1500",
+              "on-primary-fixed-variant": "#2a4386",
+              "primary": "#00113a",
+              "surface-tint": "#435b9f",
+              "outline": "#757682",
+              "outline-variant": "#c5c6d2",
+              "on-background": "#191c1d",
+              "on-surface": "#191c1d",
+              "surface-container-low": "#f3f4f5",
+              "background": "#f8f9fa",
+              "on-primary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed": "#93f2f2",
+              "on-secondary-fixed": "#002020",
+              "error-container": "#ffdad6"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-slate-50 border-r border-slate-200 flex flex-col gap-2 py-6">
+<div class="px-6 mb-8">
+<h1 class="text-2xl font-black text-blue-900">TravelBook</h1>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-2">
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-manrope text-base font-semibold">Dashboard</span>
+</a>
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-manrope text-base font-semibold">Profile</span>
+</a>
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-manrope text-base font-semibold">Travelers</span>
+</a>
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-manrope text-base font-semibold">Bookings</span>
+</a>
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">card_giftcard</span>
+<span class="font-manrope text-base font-semibold">Vouchers</span>
+</a>
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-manrope text-base font-semibold">Documents</span>
+</a>
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-manrope text-base font-semibold">Refunds</span>
+</a>
+<a class="text-slate-600 px-4 py-3 mx-2 hover:bg-slate-200 rounded-xl flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-manrope text-base font-semibold">Notifications</span>
+</a>
+<!-- Active State for Support -->
+<a class="bg-blue-100 text-blue-900 rounded-xl px-4 py-3 mx-2 flex items-center gap-3 scale-[0.98]" href="#">
+<span class="material-symbols-outlined">help_center</span>
+<span class="font-manrope text-base font-semibold">Support</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">contact_support</span>
+            Contact Support
+        </button>
+</div>
+</aside>
+<!-- Top AppBar -->
+<header class="w-full sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm shadow-blue-900/5 flex items-center justify-between px-6 h-16 ml-64 max-w-[calc(100%-16rem)]">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search for help articles..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="h-8 w-8 rounded-full bg-primary-container overflow-hidden">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="professional portrait of a man in his late 30s with a friendly expression in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCshamEp4tHIoIfkZtL3cvmmoXwKSyjwfDmUe03tK_31Ex7F2LKb740GAEjHnmrVB9zfAJyIBcslwZqMJuWxgqQ25fDBgkSV-nbIzV4bfVQXmG1qg0l8DjeccY4Q8_Uk_phwuDpATD7ki2GV3fJ8FdaFDd5e7iHURvHf6jvenym6BNuImhrE4BujmqlbAbecu79xxTWNyLAwb29Tf0Iz-50QPNrzd85WCw4WrPWauxam8Cshgv8Y6c1JLe8Z856USHBv9FWFz2jc2qD"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 p-8 min-h-screen">
+<div class="max-w-6xl mx-auto space-y-12">
+<!-- Page Header -->
+<section class="space-y-4">
+<h2 class="text-4xl font-extrabold text-primary tracking-tight">How can we help?</h2>
+<p class="text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                Find answers to common questions or access support for your TravelBook account and vouchers.
+            </p>
+</section>
+<!-- Help Categories -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Bookings Featured Category -->
+<div class="md:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-slate-50 flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 bg-blue-50 text-primary rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">confirmation_number</span>
+</div>
+<h3 class="text-2xl font-bold text-primary mb-3">Bookings &amp; Vouchers</h3>
+<p class="text-on-surface-variant mb-6">Access your active itineraries and digital vouchers. Manage your travel schedule and redemption status.</p>
+<ul class="space-y-3 text-sm font-medium text-slate-600">
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Voucher redemption process</li>
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Modifying travel dates</li>
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Booking confirmation details</li>
+</ul>
+</div>
+<a class="mt-8 text-secondary font-bold inline-flex items-center gap-2 group-hover:underline" href="#">
+                    Review Booking Help <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<!-- Refunds Category -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-50 flex flex-col group hover:shadow-md transition-shadow">
+<div class="w-12 h-12 bg-teal-50 text-secondary rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">payments</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-3">Refunds</h3>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">Track the progress of your refund requests and view your transaction history.</p>
+<a class="mt-auto text-secondary font-bold inline-flex items-center gap-2 group-hover:underline" href="#">
+                    View Refund Help <span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+<!-- Documents Category -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-50 flex flex-col group hover:shadow-md transition-shadow">
+<div class="w-12 h-12 bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-3">Documents</h3>
+<p class="text-sm text-on-surface-variant mb-4 leading-relaxed">Manage your stored travel documents, IDs, and account certificates.</p>
+<a class="mt-auto text-primary/60 text-sm font-semibold hover:text-primary" href="#">Browse Documents</a>
+</div>
+<!-- Profile Category -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-50 flex flex-col group hover:shadow-md transition-shadow">
+<div class="w-12 h-12 bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">person</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-3">Profile &amp; Travelers</h3>
+<p class="text-sm text-on-surface-variant mb-4 leading-relaxed">Update your personal information and manage saved traveler profiles.</p>
+<a class="mt-auto text-primary/60 text-sm font-semibold hover:text-primary" href="#">Manage Profile</a>
+</div>
+<!-- Notifications Category -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-50 flex flex-col group hover:shadow-md transition-shadow">
+<div class="w-12 h-12 bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">notifications_active</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-3">Notifications</h3>
+<p class="text-sm text-on-surface-variant mb-4 leading-relaxed">Configure how you receive updates about your bookings and account activity.</p>
+<a class="mt-auto text-primary/60 text-sm font-semibold hover:text-primary" href="#">View Notifications</a>
+</div>
+</section>
+<!-- Escalation Section -->
+<section class="bg-primary rounded-[2rem] overflow-hidden relative shadow-xl shadow-primary/10">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl -mr-20 -mt-20"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary rounded-full blur-3xl -ml-10 -mb-10"></div>
+</div>
+<div class="relative p-12 flex flex-col md:flex-row items-center gap-12">
+<div class="flex-1 text-center md:text-left">
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Need further assistance?</h2>
+<p class="text-primary-fixed text-lg mb-8 leading-relaxed">If you haven't found the information you need in our help articles, our support team is available to help with your account and bookings.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+<button class="bg-secondary text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:opacity-95 transition-opacity">
+<span class="material-symbols-outlined">contact_support</span>
+                            Contact Support
+                        </button>
+<button class="bg-white/10 text-white border border-white/20 backdrop-blur-sm px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-white/20 transition-all">
+<span class="material-symbols-outlined">help</span>
+                            Help Center
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="max-w-4xl mx-auto py-8">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold text-primary mb-4">Frequently Asked Questions</h2>
+<p class="text-on-surface-variant">Practical answers to common account and booking inquiries.</p>
+</div>
+<div class="space-y-4">
+<!-- FAQ Item 1 -->
+<div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+<button class="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors">
+<span class="font-bold text-primary">How do I request a refund for a booking?</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+<div class="px-6 pb-6 text-on-surface-variant text-sm leading-relaxed border-t border-slate-50 pt-4">
+                        You can initiate a refund request through the <a class="text-secondary font-semibold hover:underline" href="#">Refunds</a> section. Our team will verify the request according to the booking terms. Processed refunds typically appear in your original payment method within 5-10 business days.
+                    </div>
+</div>
+<!-- FAQ Item 2 -->
+<div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+<button class="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors">
+<span class="font-bold text-primary">Where can I find my active vouchers?</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+<div class="hidden px-6 pb-6 text-on-surface-variant text-sm leading-relaxed border-t border-slate-50 pt-4">
+                        All active vouchers are stored in your <a class="text-secondary font-semibold hover:underline" href="#">Vouchers</a> tab. You can view redemption codes and expiration dates directly from the dashboard.
+                    </div>
+</div>
+<!-- FAQ Item 3 -->
+<div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+<button class="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors">
+<span class="font-bold text-primary">How do I update my traveler profile information?</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+<div class="hidden px-6 pb-6 text-on-surface-variant text-sm leading-relaxed border-t border-slate-50 pt-4">
+                        Manage your details and saved travel companions in the <a class="text-secondary font-semibold hover:underline" href="#">Travelers</a> section. Keeping this information updated ensures faster booking processes.
+                    </div>
+</div>
+</div>
+</section>
+<!-- Self-Service Footer Links -->
+<section class="pt-8 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div class="flex items-start gap-4 p-6 rounded-2xl bg-surface-container-low">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">sync</span>
+</div>
+<div>
+<h4 class="font-bold text-primary mb-1">Quick Return to Bookings</h4>
+<p class="text-xs text-on-surface-variant mb-3">View all your active itineraries and vouchers.</p>
+<a class="text-sm font-bold text-secondary flex items-center gap-1" href="#">My Bookings <span class="material-symbols-outlined text-sm">arrow_right_alt</span></a>
+</div>
+</div>
+<div class="flex items-start gap-4 p-6 rounded-2xl bg-surface-container-low">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<div>
+<h4 class="font-bold text-primary mb-1">Check Refund Status</h4>
+<p class="text-xs text-on-surface-variant mb-3">Track progress of your financial requests.</p>
+<a class="text-sm font-bold text-secondary flex items-center gap-1" href="#">Refund Dashboard <span class="material-symbols-outlined text-sm">arrow_right_alt</span></a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual Assistance Footer -->
+<footer class="ml-64 bg-white border-t border-slate-100 py-12 px-8">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-4">
+<span class="text-primary font-extrabold text-xl">TravelBook</span>
+</div>
+<div class="flex gap-8 text-sm font-semibold text-slate-400">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Accessibility</a>
+<a class="hover:text-primary transition-colors" href="#">Help</a>
+</div>
+</div>
+</footer>
+</body></html>

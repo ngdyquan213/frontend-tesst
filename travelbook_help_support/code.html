@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container": "#edeeef",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#002366",
+                        "on-tertiary-container": "#e56c3e",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-primary": "#b3c5ff",
+                        "on-surface": "#191c1d",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "surface-tint": "#435b9f",
+                        "background": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-primary-container": "#758dd5",
+                        "outline": "#757682",
+                        "on-background": "#191c1d",
+                        "on-secondary-fixed": "#002020",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "secondary-fixed": "#93f2f2",
+                        "tertiary-container": "#4e1500",
+                        "primary-fixed": "#dbe1ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#00113a",
+                        "on-primary-fixed": "#00174a",
+                        "surface": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-container": "#90efef",
+                        "tertiary": "#2c0800",
+                        "on-tertiary-fixed": "#380c00",
+                        "inverse-surface": "#2e3132",
+                        "secondary": "#006a6a",
+                        "outline-variant": "#c5c6d2",
+                        "on-secondary-container": "#006e6e",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#444650",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error": "#ba1a1a"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .navy-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 glass-nav shadow-sm dark:shadow-none">
+<div class="max-w-[1200px] mx-auto flex justify-between items-center h-20 px-8">
+<span class="text-2xl font-bold tracking-tight text-blue-900 dark:text-blue-50 font-headline">TravelBook</span>
+<div class="hidden md:flex items-center gap-8 font-headline font-medium text-sm tracking-wide">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-200 transition-colors" href="#">Home</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-200 transition-colors" href="#">Tours</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-200 transition-colors" href="#">Destinations</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-200 transition-colors" href="#">Promotions</a>
+<a class="text-blue-900 dark:text-blue-400 font-bold border-b-2 border-blue-900 dark:border-blue-400 pb-1" href="#">Help</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 rounded-lg transition-all active:opacity-80 active:scale-95 duration-150">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-100">account_circle</span>
+</button>
+</div>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 h-[1px] w-full"></div>
+</nav>
+<main class="pt-20">
+<!-- Help Header -->
+<section class="relative overflow-hidden py-24 px-8 bg-surface-container-low">
+<div class="max-w-[1200px] mx-auto text-center relative z-10">
+<h1 class="text-5xl md:text-6xl font-extrabold font-headline text-primary mb-8 tracking-tight">How can we help?</h1>
+<div class="max-w-2xl mx-auto relative">
+<div class="flex items-center bg-surface-container-lowest rounded-full p-2 shadow-[0_40px_60px_-15px_rgba(0,17,58,0.06)] ring-1 ring-outline/10 focus-within:ring-primary/30 transition-all">
+<span class="material-symbols-outlined ml-4 text-outline">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 px-4 py-3 text-lg placeholder:text-outline/60" placeholder="Search for booking, refunds, or trip changes..." type="text"/>
+<button class="navy-gradient text-white px-8 py-3 rounded-full font-semibold transition-transform hover:scale-[1.02] active:scale-95">Search</button>
+</div>
+</div>
+</div>
+<!-- Decorative soft shape -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+</section>
+<!-- FAQ Groups -->
+<section class="max-w-[1200px] mx-auto px-8 py-20">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Booking Process -->
+<div class="space-y-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<h2 class="text-2xl font-bold font-headline text-primary">Booking Process</h2>
+</div>
+<div class="space-y-4">
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                How to book a tour?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Simply browse our destinations, select your preferred date, and follow the guided steps to secure your spot. We require basic traveler information and payment details to finalize your request.</p>
+</details>
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                When will I receive my confirmation?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Most bookings are confirmed instantly. You will receive an email confirmation and a digital receipt within 15 minutes of a successful transaction.</p>
+</details>
+</div>
+</div>
+<!-- Schedules & Changes -->
+<div class="space-y-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<h2 class="text-2xl font-bold font-headline text-primary">Schedules &amp; Changes</h2>
+</div>
+<div class="space-y-4">
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                Can I manage my trip dates?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Yes, you can modify trip dates through your account dashboard. Availability varies by tour operator, and some changes may incur a small adjustment fee.</p>
+</details>
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                How do notification settings work?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">We send critical updates via email and SMS. You can customize these preferences in your profile settings to receive only the information you need.</p>
+</details>
+</div>
+</div>
+<!-- Payments -->
+<div class="space-y-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<h2 class="text-2xl font-bold font-headline text-primary">Payments</h2>
+</div>
+<div class="space-y-4">
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                Which payment methods are secure?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">We accept all major credit cards and verified digital wallets. All transactions are encrypted and processed through industry-standard secure gateways.</p>
+</details>
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                How do I access my receipts?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Receipts are stored indefinitely in your TravelBook account. Navigate to 'My Bookings' and select the specific trip to download your PDF invoice.</p>
+</details>
+</div>
+</div>
+<!-- Refunds -->
+<div class="space-y-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+<h2 class="text-2xl font-bold font-headline text-primary">Refunds</h2>
+</div>
+<div class="space-y-4">
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                Am I eligible for a refund?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Eligibility depends on the cancellation policy of the specific tour, which is displayed at the time of booking. Generally, cancellations made 48 hours in advance are eligible for full refunds.</p>
+</details>
+<details class="group bg-surface-container-lowest rounded-xl p-6 ring-1 ring-outline/5 hover:ring-outline/20 transition-all cursor-pointer">
+<summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                What is the refund timeline?
+                                <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Once approved, refunds typically appear in your bank account within 5 to 10 business days, depending on your financial institution's processing times.</p>
+</details>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact/Escalation -->
+<section class="max-w-[1200px] mx-auto px-8 mb-20">
+<div class="bg-surface-container-lowest rounded-xl p-8 md:p-12 shadow-[0_4px_30px_rgba(0,0,0,0.05)] border border-outline/5 flex flex-col md:flex-row items-center gap-12">
+<div class="flex-1 space-y-4 text-center md:text-left">
+<h2 class="text-3xl font-bold font-headline text-primary">Need direct assistance?</h2>
+<p class="text-on-surface-variant text-lg">Our support team is available to help you with specific queries that aren't covered in our FAQs.</p>
+<div class="flex flex-wrap gap-6 justify-center md:justify-start pt-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">mail</span>
+<span class="font-semibold">support@travelbook.com</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">call</span>
+<span class="font-semibold">+1 (800) TRAVEL-BK</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-auto">
+<button class="w-full md:w-auto navy-gradient text-white px-10 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all active:scale-95">Contact Support</button>
+</div>
+</div>
+</section>
+<!-- Trust Strip -->
+<section class="bg-surface-container-high py-12">
+<div class="max-w-[1200px] mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">verified_user</span>
+</div>
+<div>
+<h4 class="font-bold font-headline text-primary">Secure Payments</h4>
+<p class="text-sm text-on-surface-variant">Encrypted transactions</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">task_alt</span>
+</div>
+<div>
+<h4 class="font-bold font-headline text-primary">Verified Tours</h4>
+<p class="text-sm text-on-surface-variant">Vetted local operators</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">support_agent</span>
+</div>
+<div>
+<h4 class="font-bold font-headline text-primary">Human Support</h4>
+<p class="text-sm text-on-surface-variant">Reliable traveler care</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="max-w-[1200px] mx-auto px-8 py-24 text-center">
+<h2 class="text-4xl font-extrabold font-headline text-primary mb-6">Ready for your next trip?</h2>
+<div class="flex flex-col sm:flex-row justify-center gap-4">
+<button class="navy-gradient text-white px-12 py-4 rounded-xl font-bold hover:scale-[1.02] transition-transform active:scale-95">Browse Tours</button>
+<button class="border-2 border-primary text-primary px-12 py-4 rounded-xl font-bold hover:bg-primary/5 transition-colors active:scale-95">Sign In</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-900 w-full rounded-t-[24px] mt-20">
+<div class="max-w-[1200px] mx-auto px-8 py-12 flex flex-col md:flex-row justify-between items-center">
+<div class="mb-8 md:mb-0">
+<span class="text-lg font-bold text-blue-900 dark:text-blue-50 font-headline">TravelBook</span>
+<p class="mt-2 font-['Manrope'] text-sm text-slate-500 dark:text-slate-400">© 2024 TravelBook. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8 font-['Manrope'] text-sm">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-all" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-all" href="#">Terms of Service</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-all" href="#">Cookie Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-all" href="#">Sitemap</a>
+</div>
+</div>
+</footer>
+</body></html>

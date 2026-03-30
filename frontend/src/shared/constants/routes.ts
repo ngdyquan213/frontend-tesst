@@ -1,0 +1,22 @@
+export const ROUTES = {
+  home: '/',
+  tours: '/tours',
+  tourDetail: '/tours/:slug',
+  tourSchedules: '/tours/:slug/schedules',
+  destinations: '/destinations',
+  promotions: '/promotions',
+  help: '/help',
+  login: '/auth/login',
+  register: '/auth/register',
+  forgotPassword: '/auth/forgot-password',
+  resetPassword: '/auth/reset-password',
+  checkout: '/checkout',
+  payment: '/checkout/payment',
+  paymentSuccess: '/checkout/payment/success',
+  paymentFailed: '/checkout/payment/failed',
+  accountDashboard: '/account',
+  adminDashboard: '/admin',
+  forbidden: '/403',
+  serverError: '/500',
+} as const
+

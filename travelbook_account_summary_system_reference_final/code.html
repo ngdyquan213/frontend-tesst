@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Account Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#435b9f",
+                        "outline": "#757682",
+                        "inverse-surface": "#2e3132",
+                        "on-background": "#191c1d",
+                        "on-error": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "primary-container": "#002366",
+                        "inverse-primary": "#b3c5ff",
+                        "secondary-container": "#90efef",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#002020",
+                        "surface": "#f8f9fa",
+                        "on-secondary-container": "#006e6e",
+                        "on-primary-fixed": "#00174a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#444650",
+                        "error": "#ba1a1a",
+                        "secondary": "#006a6a",
+                        "surface-bright": "#f8f9fa",
+                        "outline-variant": "#c5c6d2",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-container-high": "#e7e8e9",
+                        "primary": "#00113a",
+                        "tertiary-container": "#4e1500",
+                        "primary-fixed": "#dbe1ff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "secondary-fixed": "#93f2f2",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-highest": "#e1e3e4",
+                        "background": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#2c0800",
+                        "on-tertiary-container": "#e56c3e",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-primary-container": "#758dd5",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-primary": "#ffffff"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-40 bg-white/80 backdrop-blur-md shadow-[0_4px_20px_-10px_rgba(25,28,29,0.06)]">
+<div class="flex justify-between items-center h-16 px-8 max-w-[1456px] ml-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-extrabold tracking-tighter text-[#00113a] font-headline">TravelBook</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-500 hover:text-[#006a6a] transition-all"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-slate-500 hover:text-[#006a6a] transition-all"><span class="material-symbols-outlined">settings</span></button>
+<div class="h-8 w-8 rounded-full overflow-hidden bg-surface-container">
+<img alt="User Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4T7PMxO-fc1IsLgg16OL-v_I1zfakxvJKAdjSVokdVPhUGIsBkcXlq0CwfkiznJN2CdYFTVAiIn1_l_G5N61t3iLYbbs3oxpqQ8qgMWiPI7OVaSqbIWS9g5AC-87DY-S5udusnfRfVtNFZgGzdghp01Pd3_gri-xaPOXSSGNBILMYGq__hUMR5V5Fts5XjXm_PuYW-HPZxke9DpPURV-Gy4ddkwJHUyPYdwhZJz2dDiyxM7VvUxIvHjW_MUMjoL0gKWGIhKq21o9E"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Aligned to Approved IA) -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-[#f8f9fa] border-r border-surface-container flex flex-col gap-1 p-6 z-50 overflow-y-auto">
+<div class="mb-10">
+<h1 class="text-xl font-black text-[#00113a] font-headline tracking-tighter">TravelBook</h1>
+<p class="font-headline text-[10px] font-semibold tracking-[0.15em] uppercase text-slate-400 mt-1">Traveler Account</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white text-[#006a6a] rounded-xl shadow-sm font-headline text-sm font-bold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">person</span> Profile
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">group</span> Travelers
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">event_available</span> Bookings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">confirmation_number</span> Vouchers
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">description</span> Documents
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">currency_exchange</span> Refunds
+            </a>
+<div class="my-4 border-t border-surface-container"></div>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">notifications</span> Notifications
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:translate-x-1 transition-transform font-headline text-sm font-semibold tracking-wide uppercase" href="#">
+<span class="material-symbols-outlined">contact_support</span> Support
+            </a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-8 max-w-[1264px] mx-auto">
+<!-- Dashboard Header -->
+<section class="mb-12 flex items-end justify-between">
+<div>
+<h2 class="text-4xl font-headline font-extrabold text-primary tracking-tight mb-2">Account Summary</h2>
+<p class="text-on-surface-variant font-medium">Welcome back, Alexander. Your upcoming journey to Kyoto is on track.</p>
+</div>
+<button class="bg-surface-container-high text-primary px-8 py-4 rounded-xl font-headline font-bold hover:bg-surface-container-highest transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span> Download Report
+            </button>
+</section>
+<!-- Profile & Stats Grid -->
+<div class="grid grid-cols-12 gap-8 mb-12">
+<!-- Profile Overview -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+<div class="flex items-center gap-4 mb-6">
+<div class="h-20 w-20 rounded-2xl overflow-hidden bg-surface-container">
+<img alt="Alexander Vance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPl3xQnC_6Ni3DhQuqORhjC8VINlz7ZwB2uCyfsfkTHxGkUKAYjTKfG7PqhNBfMmrcz9CqhGVxiLgzLKquW1t_JVpSm7ZzyuvASMcQbcES52wwccpwxm-YydXT_9NLRy7Ajzi0CmvWBNRZLLaoxZsCYXyXNJhsfji9NSRYulEzjkdfLIsKoeOwHwiGkoJAuNCdZ5VeOnxKQrOBmiNAVs8-tkTGdtw6G04PqABnRWvlbzA_d6aWYmeJEYDjSyMDwrdITQcJnhxEu9qv"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-primary">Alexander Vance</h3>
+<p class="text-sm text-on-surface-variant font-medium">Verified Traveler since 2021</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3 text-sm">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+<span class="text-on-surface font-medium">Identity Verified</span>
+</div>
+<div class="flex items-center gap-3 text-sm">
+<span class="material-symbols-outlined text-slate-400">mail</span>
+<span class="text-on-surface-variant">alexander.v@travelbook.com</span>
+</div>
+<div class="flex items-center gap-3 text-sm">
+<span class="material-symbols-outlined text-slate-400">call</span>
+<span class="text-on-surface-variant">+44 7700 900 123</span>
+</div>
+</div>
+<button class="w-full mt-8 py-3 text-secondary font-bold border border-secondary/20 rounded-xl hover:bg-secondary/5 transition-colors">
+                    Edit Profile
+                </button>
+</div>
+<!-- Stats Grid -->
+<div class="col-span-12 lg:col-span-8 grid grid-cols-3 gap-6">
+<div class="bg-surface-container-low rounded-2xl p-6 border-l-4 border-secondary">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-secondary">calendar_month</span>
+<span class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Status</span>
+</div>
+<div class="text-4xl font-headline font-extrabold text-primary mb-1">04</div>
+<div class="text-sm font-semibold text-on-surface-variant uppercase tracking-wider">Active Bookings</div>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-6 border-l-4 border-primary">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary">confirmation_number</span>
+<span class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Total</span>
+</div>
+<div class="text-4xl font-headline font-extrabold text-primary mb-1">12</div>
+<div class="text-sm font-semibold text-on-surface-variant uppercase tracking-wider">Total Vouchers</div>
+</div>
+<div class="bg-error-container/30 rounded-2xl p-6 border-l-4 border-error">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-error">description</span>
+<span class="text-[10px] font-bold tracking-widest uppercase text-error/60">Action Required</span>
+</div>
+<div class="text-4xl font-headline font-extrabold text-error mb-1">02</div>
+<div class="text-sm font-semibold text-error uppercase tracking-wider">Urgent Documents</div>
+</div>
+<!-- Compliance Status Overview -->
+<div class="col-span-3 bg-white rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mt-2">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-lg font-headline font-bold text-primary">Compliance Status</h4>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">85% Complete</span>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 bg-secondary/10 text-secondary flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">Passport Copy</p>
+<p class="text-xs text-on-surface-variant">Valid until Oct 2028</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 bg-error/10 text-error flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">Visa Application</p>
+<p class="text-xs text-error font-medium">Signature Required</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Two Column Layout: Bookings vs Notifications -->
+<div class="grid grid-cols-12 gap-8 mb-12">
+<!-- Booking History -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+<div class="p-8 pb-4 flex justify-between items-center">
+<h4 class="text-xl font-headline font-bold text-primary">Recent Bookings</h4>
+<button class="text-secondary text-sm font-bold hover:underline transition-all">View All History</button>
+</div>
+<table class="w-full text-left border-separate border-spacing-0">
+<thead class="bg-surface-container-low text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">
+<tr>
+<th class="px-8 py-4">Booking Code</th>
+<th class="px-4 py-4">Tour Destination</th>
+<th class="px-4 py-4">Date</th>
+<th class="px-4 py-4">Status</th>
+<th class="px-8 py-4 text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="text-sm font-medium">
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="px-8 py-5 border-b border-surface-container">
+<span class="font-mono text-primary">TB-99284</span>
+</td>
+<td class="px-4 py-5 border-b border-surface-container font-headline font-bold">Kyoto Heritage Tour</td>
+<td class="px-4 py-5 border-b border-surface-container text-on-surface-variant">14 Nov 2024</td>
+<td class="px-4 py-5 border-b border-surface-container">
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[11px] font-bold uppercase">Confirmed</span>
+</td>
+<td class="px-8 py-5 border-b border-surface-container text-right font-bold text-primary">£4,250.00</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="px-8 py-5 border-b border-surface-container">
+<span class="font-mono text-primary">TB-99105</span>
+</td>
+<td class="px-4 py-5 border-b border-surface-container font-headline font-bold">Swiss Alps Expedition</td>
+<td class="px-4 py-5 border-b border-surface-container text-on-surface-variant">22 Dec 2024</td>
+<td class="px-4 py-5 border-b border-surface-container">
+<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[11px] font-bold uppercase">Pending</span>
+</td>
+<td class="px-8 py-5 border-b border-surface-container text-right font-bold text-primary">£8,900.00</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="px-8 py-5 border-b border-surface-container">
+<span class="font-mono text-primary">TB-98442</span>
+</td>
+<td class="px-4 py-5 border-b border-surface-container font-headline font-bold">Maldives Explorer Tour</td>
+<td class="px-4 py-5 border-b border-surface-container text-on-surface-variant">05 Jan 2025</td>
+<td class="px-4 py-5 border-b border-surface-container">
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[11px] font-bold uppercase">Confirmed</span>
+</td>
+<td class="px-8 py-5 border-b border-surface-container text-right font-bold text-primary">£12,400.00</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="px-8 py-5">
+<span class="font-mono text-primary">TB-98211</span>
+</td>
+<td class="px-4 py-5 font-headline font-bold">Cape Town Safari Tour</td>
+<td class="px-4 py-5 text-on-surface-variant">18 Feb 2025</td>
+<td class="px-4 py-5">
+<span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[11px] font-bold uppercase">Processing</span>
+</td>
+<td class="px-8 py-5 text-right font-bold text-primary">£5,150.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Notification Center -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="bg-primary text-white rounded-2xl p-8 shadow-xl relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="text-xl font-headline font-extrabold mb-4">Travel Alert</h4>
+<div class="flex gap-4 mb-6 items-start">
+<div class="h-10 w-10 flex-shrink-0 bg-white/20 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-white">campaign</span>
+</div>
+<p class="text-sm text-white/80 leading-relaxed font-medium">Flight TB-202 has changed gates from A12 to C04. Please arrive 15 minutes earlier for priority boarding.</p>
+</div>
+<button class="w-full py-3 bg-secondary text-white font-bold rounded-xl shadow-lg">Confirm Receipt</button>
+</div>
+<div class="absolute -right-10 -bottom-10 h-40 w-40 bg-white/5 rounded-full blur-3xl"></div>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-6">
+<h5 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Recent Updates</h5>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="h-2 w-2 rounded-full bg-secondary mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-sm font-bold text-primary">Voucher #9902 Ready</p>
+<p class="text-xs text-on-surface-variant mt-1">Available for download in Documents.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="h-2 w-2 rounded-full bg-error mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-sm font-bold text-primary">Travel Document Update</p>
+<p class="text-xs text-on-surface-variant mt-1">Please provide updated identification details.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions Bento -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-surface-container hover:shadow-md transition-shadow cursor-pointer group">
+<div class="h-12 w-12 rounded-xl bg-surface-container flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined">person</span>
+</div>
+<h5 class="text-lg font-headline font-bold text-primary mb-2">Profile</h5>
+<p class="text-xs text-on-surface-variant leading-relaxed">Update your personal details and contact information.</p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-surface-container hover:shadow-md transition-shadow cursor-pointer group">
+<div class="h-12 w-12 rounded-xl bg-surface-container flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined">group</span>
+</div>
+<h5 class="text-lg font-headline font-bold text-primary mb-2">Travelers</h5>
+<p class="text-xs text-on-surface-variant leading-relaxed">Manage companion profiles for group tour bookings.</p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-surface-container hover:shadow-md transition-shadow cursor-pointer group">
+<div class="h-12 w-12 rounded-xl bg-surface-container flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined">description</span>
+</div>
+<h5 class="text-lg font-headline font-bold text-primary mb-2">Documents</h5>
+<p class="text-xs text-on-surface-variant leading-relaxed">Access your identity documents and certifications.</p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-surface-container hover:shadow-md transition-shadow cursor-pointer group">
+<div class="h-12 w-12 rounded-xl bg-surface-container flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+<span class="material-symbols-outlined">confirmation_number</span>
+</div>
+<h5 class="text-lg font-headline font-bold text-primary mb-2">Vouchers</h5>
+<p class="text-xs text-on-surface-variant leading-relaxed">View and download your travel reservation vouchers.</p>
+</div>
+</section>
+<!-- Technical Footnotes & Rules -->
+<footer class="pt-20 pb-12 border-t border-surface-container">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+<div class="lg:col-span-2">
+<h6 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">1. Account Summary Modules</h6>
+<p class="text-xs text-slate-500 leading-relaxed mb-4">Summary screens lead with identity verification and operational status. The profile overview utilizing a 24px (xl) radius and 5% ambient shadow for visual hierarchy.</p>
+</div>
+<div>
+<h6 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">2. Interface Guidelines</h6>
+<ul class="text-[11px] text-slate-500 space-y-3 font-medium">
+<li>• Minimal horizontal dividers in grid views.</li>
+<li>• Lists use 20px padding for clean density.</li>
+<li>• Interactive states utilize subtle 5% darkening.</li>
+</ul>
+</div>
+<div>
+<h6 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">3. Structural Rules</h6>
+<ul class="text-[11px] text-slate-500 space-y-3 font-medium">
+<li>• 1264px max-width restricted content canvas.</li>
+<li>• Asymmetrical header layouts for focus.</li>
+<li>• Consistent 48px spacing between modules.</li>
+</ul>
+</div>
+<div>
+<h6 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">4. Visual Hierarchy</h6>
+<ul class="text-[11px] text-slate-500 space-y-3 font-medium">
+<li>• Confirmed: Secondary tonal backgrounds.</li>
+<li>• Urgent: Error-state visual cues.</li>
+<li>• Primary actions pinned to main headers.</li>
+</ul>
+</div>
+</div>
+<div class="mt-20 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-slate-400">
+<span>System Update: Portal Core v3.0</span>
+<span>TravelBook Traveler Portal © 2024</span>
+</div>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook Admin - Operations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#90efef",
+                        "on-surface-variant": "#444650",
+                        "outline-variant": "#c5c6d2",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-background": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#435b9f",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-secondary-fixed": "#002020",
+                        "surface-dim": "#d9dadb",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-primary-fixed": "#00174a",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-primary": "#ffffff",
+                        "outline": "#757682",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e1e3e4",
+                        "primary-fixed": "#dbe1ff",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#2c0800",
+                        "secondary-fixed": "#93f2f2",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "surface": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#b3c5ff",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "on-secondary-container": "#006e6e",
+                        "surface-container": "#edeeef",
+                        "primary": "#00113a",
+                        "primary-container": "#002366",
+                        "tertiary-container": "#4e1500",
+                        "surface-container-low": "#f3f4f5",
+                        "secondary": "#006a6a",
+                        "on-surface": "#191c1d",
+                        "on-primary-container": "#758dd5"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px", "2xl": "1.5rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 flex flex-col bg-slate-50 dark:bg-slate-900 shadow-[40px_0_40px_-20px_rgba(25,28,29,0.06)] font-manrope text-sm antialiased">
+<div class="text-2xl font-bold tracking-tight text-blue-900 dark:text-white px-6 py-8">
+            TravelBook
+            <p class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-widest">Admin Console</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors hover:bg-blue-50/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors hover:bg-blue-50/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined">map</span>
+<span>Tours</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors hover:bg-blue-50/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span>Schedules</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors hover:bg-blue-50/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Pricing</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors hover:bg-blue-50/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors hover:bg-blue-50/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined">keyboard_return</span>
+<span>Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors hover:bg-blue-50/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Documents</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-6 py-4 text-blue-900 dark:text-blue-400 font-bold bg-white dark:bg-slate-800 rounded-l-full ml-4 shadow-sm scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined">settings_applications</span>
+<span>Operations</span>
+</a>
+</nav>
+<div class="p-6 mt-auto border-t border-slate-100 dark:border-slate-800 flex items-center gap-3">
+<img alt="Admin User Profile" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a professional office worker with a neutral expression in a bright modern workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFXwJdlxj1Ddi4MXl2W6lok1o3RuFyMVTaQKJ_GGH-_ik8V57BUO7Sf4Mcq-uXSV35Q0f4Z5TKanJNNU_oNq-DlZRTc09woZGCZtDpmsjyoeYzC6JNGpOgAFWMYviiik3-NH-rRjPTIaVKqtYi1G1hHz8LffThucyAEtDHqi2lt-_QBFC8Cw7ncm_ns1PZWGyeo4O9r6t_Lo2yPlgxiNduDnAF2aG_nWa0LXDPvmEhlMeiz2-jeKM2kOMrXarIDlETofEDsVCAiXPK"/>
+<div>
+<p class="font-semibold text-blue-900 dark:text-white">Admin User</p>
+<p class="text-xs text-slate-500">ID: 48291-TX</p>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="sticky top-0 w-full z-40 flex items-center justify-between h-16 pl-72 pr-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 font-manrope text-sm font-medium">
+<div class="flex items-center gap-4">
+<h2 class="text-blue-900 dark:text-blue-400 font-semibold">Admin Operations</h2>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search Bar -->
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400">search</span>
+<input class="pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-blue-500/20 text-xs" placeholder="Global search..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 hover:text-blue-700 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+</button>
+<button class="text-slate-500 hover:text-blue-700 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-8 min-h-screen">
+<div class="max-w-[1200px] mx-auto">
+<!-- Page Header -->
+<section class="mb-10">
+<h1 class="text-4xl font-extrabold text-primary mb-2 tracking-tight">Operations</h1>
+<p class="text-on-surface-variant max-w-2xl leading-relaxed">Coordinate cross-module tasks, resolve high-priority conflicts, and manage schedule exceptions. Use this workspace to maintain operational continuity across tours, bookings, and documentation.</p>
+</section>
+<!-- Action Required Queue -->
+<section class="mb-12">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-error">priority_high</span>
+                        Action Required Queue
+                    </h3>
+</div>
+<div class="space-y-3">
+<!-- Task Item -->
+<div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm flex items-center justify-between border-l-4 border-error">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Schedule Conflict: Amalfi Coast Sailing</p>
+<p class="text-sm text-on-surface-variant">Overlapping vessel assignment for Group ID #AF-204 (Aug 15-18)</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="px-3 py-1 bg-error-container text-on-error-container text-xs font-bold rounded-full uppercase tracking-wider">Blocked</span>
+<button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold">Resolve</button>
+</div>
+</div>
+<!-- Task Item -->
+<div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm flex items-center justify-between border-l-4 border-amber-500">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined">fingerprint</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">ID Discrepancy: Passenger Verification</p>
+<p class="text-sm text-on-surface-variant">Unmatched passport data for Booking Ref: TB-99210 (Swiss Alps Trek)</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full uppercase tracking-wider">Awaiting Info</span>
+<button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold">Review</button>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+<!-- Cross-Module Workstreams -->
+<div class="lg:col-span-2 space-y-6">
+<h3 class="text-xl font-bold flex items-center gap-2 px-2">
+<span class="material-symbols-outlined text-primary">account_tree</span>
+                        Cross-Module Workstreams
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Module Card -->
+<div class="bg-surface-container rounded-2xl p-6 border border-white/40">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-secondary">confirmation_number</span>
+<span class="text-xs font-bold text-on-secondary-container bg-secondary-container px-2 py-1 rounded">Bookings</span>
+</div>
+<h4 class="font-bold mb-2">Waitlist Clearance</h4>
+<p class="text-sm text-on-surface-variant mb-4">Manual approval required for 12 pending slots on 'Kyoto Zen Retreat'.</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-medium uppercase text-on-surface-variant">Stable</span>
+</div>
+</div>
+<!-- Module Card -->
+<div class="bg-surface-container rounded-2xl p-6 border border-white/40">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-on-tertiary-container">keyboard_return</span>
+<span class="text-xs font-bold text-on-tertiary-container bg-tertiary-fixed px-2 py-1 rounded">Refunds</span>
+</div>
+<h4 class="font-bold mb-2">High Value Processing</h4>
+<p class="text-sm text-on-surface-variant mb-4">3 refunds exceeding $5,000 pending senior operational sign-off.</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<span class="text-xs font-medium uppercase text-on-surface-variant">Awaiting Info</span>
+</div>
+</div>
+<!-- Module Card -->
+<div class="bg-surface-container rounded-2xl p-6 border border-white/40">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary">description</span>
+<span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-1 rounded">Documents</span>
+</div>
+<h4 class="font-bold mb-2">Visa Compliance Audit</h4>
+<p class="text-sm text-on-surface-variant mb-4">Periodic verification of entry permits for upcoming Bhutan expedition.</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-medium uppercase text-on-surface-variant">Stable</span>
+</div>
+</div>
+<!-- Module Card -->
+<div class="bg-surface-container rounded-2xl p-6 border border-white/40">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary">payments</span>
+<span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-1 rounded">Pricing</span>
+</div>
+<h4 class="font-bold mb-2">Dynamic Fare Correction</h4>
+<p class="text-sm text-on-surface-variant mb-4">Adjustment of off-peak multipliers for 2024 Safari packages.</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-medium uppercase text-on-surface-variant">Stable</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Schedule Disruptions -->
+<div class="space-y-6">
+<h3 class="text-xl font-bold flex items-center gap-2 px-2">
+<span class="material-symbols-outlined text-error">event_busy</span>
+                        Schedule Disruptions
+                    </h3>
+<div class="bg-surface-container-low rounded-2xl p-6 h-full border border-slate-200 shadow-sm">
+<div class="space-y-5">
+<div class="pb-4 border-b border-slate-200 last:border-0 last:pb-0">
+<div class="flex justify-between items-start mb-2">
+<p class="font-bold text-sm">Weather Alert: Patagonia</p>
+<span class="text-[10px] bg-error text-white px-2 py-0.5 rounded font-bold">CRITICAL</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">High winds expected near Base Camp. Relocation of groups PT-88 to PT-91 required within 24h.</p>
+<p class="text-[10px] mt-2 font-medium text-primary">Est. Impact: 42 Travelers</p>
+</div>
+<div class="pb-4 border-b border-slate-200 last:border-0 last:pb-0">
+<div class="flex justify-between items-start mb-2">
+<p class="font-bold text-sm">Logistics: Nile River Cruise</p>
+<span class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded font-bold">PENDING</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Docking maintenance at Aswan delayed. Revised itinerary required for 'Pharaohs Trail'.</p>
+<p class="text-[10px] mt-2 font-medium text-primary">Est. Impact: 1 vessel</p>
+</div>
+<div class="pb-4 border-b border-slate-200 last:border-0 last:pb-0">
+<div class="flex justify-between items-start mb-2">
+<p class="font-bold text-sm">Charter Update: Maldives</p>
+<span class="text-[10px] bg-secondary text-white px-2 py-0.5 rounded font-bold">RE-ROUTED</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Flight MV-402 successfully diverted to Velana International.</p>
+<p class="text-[10px] mt-2 font-medium text-primary">Status: Resolved</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Routes Bento -->
+<section class="mb-12">
+<h3 class="text-xl font-bold mb-6">Quick Routes</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+<a class="bg-surface-container-lowest p-6 rounded-2xl text-center shadow-sm hover:bg-primary-container group transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-white mb-2 block text-3xl">dashboard</span>
+<span class="text-xs font-bold text-primary group-hover:text-white uppercase tracking-tight">Dashboard</span>
+</a>
+<a class="bg-surface-container-lowest p-6 rounded-2xl text-center shadow-sm hover:bg-primary-container group transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-white mb-2 block text-3xl">map</span>
+<span class="text-xs font-bold text-primary group-hover:text-white uppercase tracking-tight">Tours</span>
+</a>
+<a class="bg-surface-container-lowest p-6 rounded-2xl text-center shadow-sm hover:bg-primary-container group transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-white mb-2 block text-3xl">calendar_month</span>
+<span class="text-xs font-bold text-primary group-hover:text-white uppercase tracking-tight">Schedules</span>
+</a>
+<a class="bg-surface-container-lowest p-6 rounded-2xl text-center shadow-sm hover:bg-primary-container group transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-white mb-2 block text-3xl">payments</span>
+<span class="text-xs font-bold text-primary group-hover:text-white uppercase tracking-tight">Pricing</span>
+</a>
+<a class="bg-surface-container-lowest p-6 rounded-2xl text-center shadow-sm hover:bg-primary-container group transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-white mb-2 block text-3xl">confirmation_number</span>
+<span class="text-xs font-bold text-primary group-hover:text-white uppercase tracking-tight">Bookings</span>
+</a>
+<a class="bg-surface-container-lowest p-6 rounded-2xl text-center shadow-sm hover:bg-primary-container group transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-white mb-2 block text-3xl">keyboard_return</span>
+<span class="text-xs font-bold text-primary group-hover:text-white uppercase tracking-tight">Refunds</span>
+</a>
+<a class="bg-surface-container-lowest p-6 rounded-2xl text-center shadow-sm hover:bg-primary-container group transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-white mb-2 block text-3xl">description</span>
+<span class="text-xs font-bold text-primary group-hover:text-white uppercase tracking-tight">Docs</span>
+</a>
+</div>
+</section>
+<!-- Recent Activity -->
+<section>
+<div class="bg-surface-container-low rounded-2xl p-8 border border-slate-100">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                        Recent Operational Activity
+                    </h3>
+<div class="space-y-6">
+<div class="flex gap-4 items-start">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary mt-2 flex-shrink-0"></div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-bold">Booking Resolved: TB-88219</p>
+<span class="text-[10px] text-slate-400 font-medium">14 mins ago</span>
+</div>
+<p class="text-sm text-on-surface-variant">Confirmed accommodation swap for 'Provence Lavender Trail' due to overbooking at Hotel des Arts.</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-2 flex-shrink-0"></div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-bold">Document Verified: AF-1102</p>
+<span class="text-[10px] text-slate-400 font-medium">42 mins ago</span>
+</div>
+<p class="text-sm text-on-surface-variant">Passenger 'A. Mueller' passport validity confirmed for Amalfi cruise segment.</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 flex-shrink-0"></div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-bold">Pricing Updated: Q4 Volatility Adjust</p>
+<span class="text-[10px] text-slate-400 font-medium">2 hours ago</span>
+</div>
+<p class="text-sm text-on-surface-variant">Surcharge adjustments applied to all Nordic winter packages for Dec 20-30 period.</p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-slate-200">
+<button class="text-xs font-bold text-primary flex items-center gap-2 hover:opacity-70">
+                            VIEW FULL AUDIT LOG
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

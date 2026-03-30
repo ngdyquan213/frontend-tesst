@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#edeeef",
+              "on-background": "#191c1d",
+              "on-primary-fixed-variant": "#2a4386",
+              "error-container": "#ffdad6",
+              "tertiary": "#2c0800",
+              "on-secondary-container": "#006e6e",
+              "on-error": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "on-primary-fixed": "#00174a",
+              "inverse-surface": "#2e3132",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#90efef",
+              "primary": "#00113a",
+              "background": "#f8f9fa",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed-dim": "#ffb59c",
+              "outline": "#757682",
+              "on-tertiary-container": "#e56c3e",
+              "on-tertiary-fixed-variant": "#822800",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed": "#380c00",
+              "tertiary-fixed": "#ffdbcf",
+              "secondary": "#006a6a",
+              "primary-fixed": "#dbe1ff",
+              "primary-fixed-dim": "#b3c5ff",
+              "on-secondary-fixed-variant": "#004f4f",
+              "surface": "#f8f9fa",
+              "on-surface-variant": "#444650",
+              "surface-variant": "#e1e3e4",
+              "on-secondary-fixed": "#002020",
+              "surface-container-low": "#f3f4f5",
+              "on-error-container": "#93000a",
+              "inverse-primary": "#b3c5ff",
+              "primary-container": "#002366",
+              "surface-container-high": "#e7e8e9",
+              "on-primary-container": "#758dd5",
+              "surface-tint": "#435b9f",
+              "on-primary": "#ffffff",
+              "outline-variant": "#c5c6d2",
+              "secondary-fixed": "#93f2f2",
+              "surface-bright": "#f8f9fa",
+              "tertiary-container": "#4e1500",
+              "on-surface": "#191c1d",
+              "surface-container-highest": "#e1e3e4"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .font-manrope { font-family: 'Manrope', sans-serif; }
+      .font-inter { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background selection:bg-secondary-container">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 border-b border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+<div class="flex justify-between items-center px-6 md:px-12 h-16 w-full max-w-7xl mx-auto">
+<span class="text-xl font-bold bg-gradient-to-br from-[#00113a] to-[#002366] bg-clip-text text-transparent font-manrope">TravelBook</span>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="lock">lock</span>
+<span class="font-manrope text-sm font-semibold tracking-tight text-primary">Secure Checkout</span>
+</div>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="pt-24 pb-20 px-6 max-w-[1200px] mx-auto min-h-screen">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Left Side: Transaction Flow & Payment Form -->
+<div class="lg:col-span-2 space-y-12">
+<!-- Horizontal Stepper -->
+<nav class="flex items-center justify-between w-full max-w-lg mx-auto lg:mx-0">
+<!-- Review (Complete) -->
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary shadow-md">
+<span class="material-symbols-outlined text-sm" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-xs font-manrope font-bold text-secondary uppercase tracking-widest">Review</span>
+</div>
+<div class="h-[2px] flex-1 mx-4 bg-secondary-container"></div>
+<!-- Payment (Active) -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full border-2 border-primary bg-primary flex items-center justify-center text-on-primary shadow-lg ring-4 ring-primary/10">
+<span class="material-symbols-outlined text-sm" data-icon="payments">payments</span>
+</div>
+<span class="text-xs font-manrope font-bold text-primary uppercase tracking-widest">Payment</span>
+</div>
+<div class="h-[2px] flex-1 mx-4 bg-surface-container-high"></div>
+<!-- Confirmation (Upcoming) -->
+<div class="flex flex-col items-center gap-2 opacity-40">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+</div>
+<span class="text-xs font-manrope font-bold text-outline uppercase tracking-widest">Confirmation</span>
+</div>
+</nav>
+<!-- Payment Method Selector -->
+<section class="space-y-6">
+<h2 class="text-2xl font-manrope font-extrabold text-primary tracking-tight">Select Payment Method</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<button class="flex items-center gap-3 p-4 rounded-xl border-2 border-primary bg-primary-fixed/30 transition-all duration-300">
+<span class="material-symbols-outlined text-primary" data-icon="credit_card">credit_card</span>
+<span class="font-semibold text-primary">Credit Card</span>
+</button>
+<button class="flex items-center gap-3 p-4 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-low transition-all duration-300">
+<span class="material-symbols-outlined text-outline" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-medium text-on-surface-variant">PayPal</span>
+</button>
+<button class="flex items-center gap-3 p-4 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-low transition-all duration-300">
+<span class="material-symbols-outlined text-outline" data-icon="account_balance">account_balance</span>
+<span class="font-medium text-on-surface-variant">Bank Transfer</span>
+</button>
+</div>
+</section>
+<!-- Payment Detail Form -->
+<section class="p-8 rounded-2xl bg-surface-container-low/50 backdrop-blur-sm space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="md:col-span-2 flex flex-col gap-2">
+<label class="text-sm font-manrope font-bold text-primary px-1">Cardholder Name</label>
+<input class="w-full h-14 px-5 rounded-xl border-none bg-surface-container-highest text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="Johnathan Doe" type="text"/>
+</div>
+<div class="md:col-span-2 flex flex-col gap-2">
+<label class="text-sm font-manrope font-bold text-primary px-1">Card Number</label>
+<div class="relative">
+<input class="w-full h-14 px-5 rounded-xl border-none bg-surface-container-highest text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="0000 0000 0000 0000" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="credit_card">credit_card</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-manrope font-bold text-primary px-1">Expiry Date</label>
+<input class="w-full h-14 px-5 rounded-xl border-none bg-surface-container-highest text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="MM / YY" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-manrope font-bold text-primary px-1">CVV</label>
+<input class="w-full h-14 px-5 rounded-xl border-none bg-surface-container-highest text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="***" type="password"/>
+</div>
+</div>
+<div class="flex items-center gap-3 p-4 rounded-xl bg-surface-bright border border-outline-variant/30">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+<p class="text-sm text-on-surface-variant font-inter">Your payment information is handled securely and will not be stored on our servers.</p>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-manrope font-bold hover:underline transition-all opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+                        Back to Review
+                    </a>
+</section>
+</div>
+<!-- Right Side: Transaction Summary -->
+<aside class="relative">
+<div class="sticky top-24 space-y-6">
+<!-- Transactional Summary Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-8 shadow-[0_20px_40px_-15px_rgba(0,17,58,0.06)] border border-surface-variant/50">
+<div class="space-y-6">
+<div class="relative w-full h-32 rounded-xl overflow-hidden mb-6">
+<img alt="Amalfi Coast" class="w-full h-full object-cover" data-alt="Stunning aerial view of the Amalfi Coast cliffs with turquoise water and small white boats sailing under the Mediterranean sun" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-xBwBAZy4YNdbhkYwk048QIPRHTmJtO2hMdKmLdvmbhiPpDuQt6OXAy6Kv7i1RcrxHUtmNPCi7cANJY6VWjxt-g6dhq-nPgVaehrrJoAzeEtJxG50ZAbWfZKhL02bfnyFO6R25uSAodsFjVpq82GIei6gHCSkVx9V7cTFkHLhULCTPrnT4mo5TlkISr5-6g4nPSh7Z9AKutsQmwGzx5ez8XvzdDJ3q9H2Fh2x9INrJ6HMop6qmNDJbepTXS9ozErrW_0zBw_2csEu"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+<div class="absolute bottom-3 left-4">
+<h3 class="text-white font-manrope font-extrabold text-lg">Amalfi Coast Sailing</h3>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary/60" data-icon="calendar_today">calendar_today</span>
+<div>
+<p class="text-xs font-bold text-primary/40 uppercase tracking-widest">Date</p>
+<p class="text-on-surface font-semibold">June 12 - 19, 2024</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary/60" data-icon="group">group</span>
+<div>
+<p class="text-xs font-bold text-primary/40 uppercase tracking-widest">Guests</p>
+<p class="text-on-surface font-semibold">2 Travelers</p>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-surface-variant/50 space-y-3">
+<div class="flex justify-between text-sm text-on-surface-variant">
+<span>Subtotal</span>
+<span class="font-inter font-medium">$4,250.00</span>
+</div>
+<div class="flex justify-between text-sm text-on-surface-variant">
+<span>Taxes &amp; Fees</span>
+<span class="font-inter font-medium">$342.50</span>
+</div>
+<div class="flex justify-between items-center pt-4">
+<span class="text-lg font-manrope font-bold text-primary">Total Amount</span>
+<span class="text-2xl font-manrope font-extrabold text-primary">$4,592.50</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-manrope font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+                                Complete Payment
+                            </button>
+</div>
+</div>
+<!-- Security Reassurance -->
+<div class="flex flex-col items-center gap-3 text-center">
+<div class="flex items-center gap-2 text-secondary font-manrope font-bold">
+<span class="material-symbols-outlined text-xl" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="tracking-tight">Encrypted Checkout</span>
+</div>
+<p class="text-[10px] text-outline px-8 leading-relaxed">Your transaction is secured with 256-bit SSL encryption. We prioritize your data privacy through industry-leading protocols.</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer Shell -->
+<footer class="w-full py-12 bg-surface-container-low border-t border-surface-variant/30">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 max-w-7xl mx-auto gap-8">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-bold text-primary font-manrope">TravelBook</span>
+<p class="font-manrope text-sm tracking-wide text-outline">© 2024 TravelBook Global Concierge. All payments secured.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-slate-500 hover:text-primary transition-colors text-sm font-medium" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-primary transition-colors text-sm font-medium" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-primary transition-colors text-sm font-medium" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+</body></html>

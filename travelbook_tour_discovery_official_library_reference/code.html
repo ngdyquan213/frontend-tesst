@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Tour Discovery Component Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-secondary-container": "#006e6e",
+                "tertiary-fixed": "#ffdbcf",
+                "surface-bright": "#f8f9fa",
+                "on-primary": "#ffffff",
+                "inverse-surface": "#2e3132",
+                "surface-container": "#edeeef",
+                "surface-container-lowest": "#ffffff",
+                "inverse-on-surface": "#f0f1f2",
+                "background": "#f8f9fa",
+                "surface-container-high": "#e7e8e9",
+                "surface-tint": "#435b9f",
+                "on-tertiary-fixed": "#380c00",
+                "on-error": "#ffffff",
+                "error-container": "#ffdad6",
+                "error": "#ba1a1a",
+                "tertiary": "#2c0800",
+                "surface-dim": "#d9dadb",
+                "primary-container": "#002366",
+                "on-tertiary-container": "#e56c3e",
+                "on-surface-variant": "#444650",
+                "secondary": "#006a6a",
+                "secondary-fixed-dim": "#76d6d5",
+                "secondary-fixed": "#93f2f2",
+                "on-primary-fixed-variant": "#2a4386",
+                "on-primary-fixed": "#00174a",
+                "surface-container-low": "#f3f4f5",
+                "outline-variant": "#c5c6d2",
+                "tertiary-fixed-dim": "#ffb59c",
+                "outline": "#757682",
+                "inverse-primary": "#b3c5ff",
+                "on-secondary-fixed": "#002020",
+                "on-error-container": "#93000a",
+                "surface-container-highest": "#e1e3e4",
+                "on-secondary": "#ffffff",
+                "on-secondary-fixed-variant": "#004f4f",
+                "surface": "#f8f9fa",
+                "primary-fixed-dim": "#b3c5ff",
+                "on-tertiary": "#ffffff",
+                "primary-fixed": "#dbe1ff",
+                "secondary-container": "#90efef",
+                "on-primary-container": "#758dd5",
+                "on-background": "#191c1d",
+                "surface-variant": "#e1e3e4",
+                "on-tertiary-fixed-variant": "#822800",
+                "primary": "#00113a",
+                "on-surface": "#191c1d",
+                "tertiary-container": "#4e1500"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #edeeef 25%, #f8f9fa 50%, #edeeef 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body">
+<!-- TopNavBar -->
+<header class="sticky top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg shadow-[0_40px_40px_-15px_rgba(25,28,29,0.06)]">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
+<div class="text-2xl font-bold tracking-tight text-blue-900 dark:text-white font-headline">TravelBook</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-100 transition-colors font-manrope text-sm font-medium tracking-wide" href="#">Home</a>
+<a class="text-blue-900 dark:text-blue-100 font-bold border-b-2 border-teal-600 dark:border-teal-400 pb-1 font-manrope text-sm tracking-wide" href="#">Tours</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-100 transition-colors font-manrope text-sm font-medium tracking-wide" href="#">Destinations</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-100 transition-colors font-manrope text-sm font-medium tracking-wide" href="#">Promotions</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-100 transition-colors font-manrope text-sm font-medium tracking-wide" href="#">Help</a>
+</nav>
+<div class="flex items-center gap-4">
+<!-- Profile icon removed for public guest view -->
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-6 py-16 space-y-[128px]">
+<!-- Section 1: Tour Card Family -->
+<section>
+<div class="mb-12">
+<h2 class="text-3xl font-bold font-headline text-primary mb-2">Tour Card Family</h2>
+<p class="text-on-surface-variant">The core discovery elements for our tour curation experience.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+<!-- Standard Tour Card -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,17,58,0.08)] transition-all duration-300 group">
+<div class="relative aspect-[2/1] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Breathtaking aerial view of Yosemite Valley" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsrCOPQawhVOVbYQz7jr5A2xmCzJOL-gbp2YwiPJV7VoddwHVSSqxBj-qvCgTJAWEMcs8kLQjz6UTWqCeNnWxeGaRYYt2AVpJMhbi2AaW1YIvSTlD6TToKKBQJ7QwUoSmuB_CRYzmjJdRDI2c9Foe2-wzOOtIJMv7Cz0psoxNA1iWl8G0X2CR1O30l0DWFVs1R9w8fyGz_Cdh8WUkag06eOjg2IV_o7tWJZ6hIGsiNR2SHNuaV_AMWKhqzYW2Fdll-fw_sC3fHXIYc"/>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="text-xl font-bold font-headline text-primary leading-tight">Yosemite Wilderness Expedition</h3>
+<div class="flex items-center gap-4 text-sm text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+<span>5 Days</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="group">group</span>
+<span>Max 12</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div>
+<p class="text-[10px] uppercase tracking-wider text-outline">From</p>
+<p class="text-2xl font-bold text-primary">$1,250</p>
+</div>
+<button class="primary-gradient text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity">View Details</button>
+</div>
+</div>
+</div>
+<!-- Limited Availability State -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 border border-tertiary-fixed/30">
+<div class="relative aspect-[2/1] overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Luxury Maldives scenery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZNI8pzAWEpKMW_RpVzYw6AJx_s1WtiiH7_fAr-rV2LxARPPYu6A7WxWGMvwUj6XsTPU_N1mtcUBXtLob9A-e2iZdr3ErbDOS736jZ3D19m0vtP0VGtoHbOViBqM9Y1OkLft5WvKGS8DlBJJDdknBVULWvSb43J24NWF7w_1mtzL8ajl9ImVkDVCir7Tzv6hMjXtG8r_oVhf1HlB_9Hsxjbgqy3yoexRjc3mqR3bYtAw5ATtqA-wn6X3Qkv_ty853S19sNmczBlYjo"/>
+<div class="absolute top-4 left-4 bg-error-container text-on-error-container px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                            Only 3 left
+                        </div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="text-xl font-bold font-headline text-primary leading-tight">Maldives Islands Discovery</h3>
+<div class="flex items-center gap-4 text-sm text-on-surface-variant">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span><span>7 Days</span></div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]" data-icon="group">group</span><span>Max 10</span></div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div><p class="text-2xl font-bold text-primary">$4,800</p></div>
+<button class="primary-gradient text-white px-6 py-2.5 rounded-lg font-semibold text-sm">View Details</button>
+</div>
+</div>
+</div>
+<!-- Sold Out State -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative">
+<div class="relative aspect-[2/1] overflow-hidden grayscale opacity-60">
+<img class="w-full h-full object-cover" data-alt="Dolomites scenery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuySwY-SMp6evC8vWiTi3kDoKEpn3XkAney8TPUtNGD7F3OnHg8RgWouXCAk7QrD3ncRfL3Td0gYsBmgXfUQYkW2ug4UWZPEPl56pcUBYwNadh4CFSEDpLU7UpREcnJHNdOKdyoovkeuwJF72eWyQjsufpHZAur5Nj4tV53SXJMCHAr47sCpvagPEkyPoXHaK6yoWhmAVH8OUNSeU9a5wYAA_bttqKV-vhkzkqSGDkXFmj3lCd6sYlkAqxjXOe35gdsffZWt_HJp3r"/>
+<div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
+<span class="bg-white/90 text-primary px-4 py-1.5 rounded-full text-sm font-bold tracking-wide">Sold Out</span>
+</div>
+</div>
+<div class="p-6 space-y-4 opacity-50">
+<h3 class="text-xl font-bold font-headline text-primary leading-tight">Dolomite Winter Trek</h3>
+<div class="flex items-center gap-4 text-sm text-on-surface-variant">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span><span>4 Days</span></div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<p class="text-2xl font-bold text-primary">$950</p>
+<button class="bg-outline-variant text-white px-6 py-2.5 rounded-lg font-semibold text-sm cursor-not-allowed" disabled="">Closed</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Featured Variant (Horizontal) -->
+<div class="bg-surface-container-low rounded-xl overflow-hidden p-4 md:p-6 mb-16">
+<div class="flex flex-col md:flex-row gap-8 items-center">
+<div class="w-full md:w-2/5 aspect-[16/10] md:aspect-auto md:h-64 rounded-xl overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="London skyline" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDukhFXD9Hvsy7RAWcWwKCQmk8oAqioSwG9QlOk-qEuxUa7W51B6W8-HfxOczNXfJ8jV7tbYoFd57YzDqF8-19TpEok4XwDajsY1Zf-1Jsn7QqT74i2Ft4pZRVGa4yheiZ75gr6DwcDnBDe1f1dRxnp1vBTwc7iI6lpq1-5R9dx7YegndS29UDjsvKJ538_nG4k9K7w6gQkzktcIwrRIBC93rDliXQw-kDpFGgq236LxbQ_9Ybz0gP8gopwp_CVtx4JahKBtGmNIi7G"/>
+<div class="absolute top-4 left-4 bg-secondary text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">Seasonal Special</div>
+</div>
+<div class="w-full md:w-3/5 space-y-4">
+<div class="flex items-center gap-2 text-secondary font-bold text-sm tracking-widest uppercase">
+<span class="material-symbols-outlined text-[18px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            Top Rated Choice
+                        </div>
+<h3 class="text-3xl font-bold font-headline text-primary">Ultimate London Heritage Tour</h3>
+<p class="text-on-surface-variant line-clamp-2 max-w-xl">Explore the history of the British capital with private access to landmarks, expert-led walks, and immersive cultural experiences.</p>
+<div class="flex flex-wrap gap-6 pt-2 items-center">
+<div class="flex items-center gap-2 font-semibold">
+<span class="material-symbols-outlined text-secondary" data-icon="map">map</span>
+<span>Expert-Led Itinerary</span>
+</div>
+<div class="ml-auto flex items-center gap-6">
+<div class="text-right">
+<span class="text-outline line-through text-sm">$3,200</span>
+<p class="text-3xl font-extrabold text-primary">$2,499</p>
+</div>
+<button class="primary-gradient text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:translate-y-[-2px] transition-all">Book Tour</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Tour Detail Hero & Price Box -->
+<section>
+<div class="mb-12">
+<h2 class="text-3xl font-bold font-headline text-primary mb-2">Tour Detail Hero &amp; Price Box</h2>
+</div>
+<div class="relative rounded-xl overflow-hidden h-[600px] group shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="Eiffel Tower view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFgnAnsNRXCa6rby_6eEncSXnyPHvdBiDl_j2T-joWYl-TYjgjuSNM4aSQwEiFHYjBo08kFQ0dbYiaNy1mRnIM26Cq3F7gpdpVK_ovAUSmfAFMqhl5OAvthSp1n1i43f9D3dtr5F9JsiVQiuhyCVv6tlfAIBXj6FKrroJXQt9JVqsEdQtgZGtUWsC0dx2i64QkhXGf4cCkSHRdAOIaKDZMaHMsJG93Clxg6IMGpw9WLaZW4mXU_dgH3NNLmi7UzguWSrR11GTuD-PN"/>
+<!-- Backdrop-blur Navigation Simulation -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-xl px-8 py-3 rounded-full border border-white/20 flex gap-8 items-center text-white font-medium text-sm">
+<a class="hover:text-secondary-fixed transition-colors" href="#">Overview</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Itinerary</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Inclusions</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Reviews</a>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-12 left-12 max-w-2xl">
+<span class="bg-secondary px-4 py-1 rounded-full text-white text-xs font-bold uppercase tracking-widest mb-4 inline-block">Featured Tour</span>
+<h1 class="text-5xl font-extrabold text-white font-headline leading-tight">Paris Highlights: A Curated Journey</h1>
+</div>
+<!-- Persistent Price Box -->
+<div class="absolute bottom-12 right-12 w-80 bg-surface-container-lowest rounded-xl p-8 shadow-2xl border border-white/20">
+<div class="space-y-6">
+<div class="flex items-end justify-between">
+<div>
+<p class="text-sm font-medium text-on-surface-variant">Starting from</p>
+<p class="text-4xl font-black text-primary">$3,450</p>
+</div>
+<div class="text-right">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded text-[10px] font-bold">SAVE 15%</span>
+</div>
+</div>
+<div class="flex items-center gap-3 text-secondary bg-secondary/5 p-3 rounded-lg">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="text-xs font-bold uppercase tracking-wide">Best Price Guarantee</span>
+</div>
+<button class="w-full primary-gradient text-white py-4 rounded-lg font-bold text-lg shadow-lg active:scale-95 transition-all">Check Availability</button>
+<p class="text-[10px] text-center text-outline uppercase tracking-tighter">FREE CANCELLATION UP TO 48H BEFORE DEPARTURE</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Schedule Selection System -->
+<section>
+<div class="mb-12">
+<h2 class="text-3xl font-bold font-headline text-primary mb-2">Schedule Selection System</h2>
+<p class="text-on-surface-variant">Comparison-friendly and booking-oriented layouts for easy selection.</p>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-surface-container">
+<!-- List Header -->
+<div class="bg-surface-container-low px-8 py-4 border-b border-surface-container flex items-center justify-between">
+<h3 class="text-lg font-bold font-headline text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+                        Departure Dates
+                    </h3>
+<div class="hidden md:flex gap-4 text-xs font-bold text-outline">
+<span class="w-32">DATE</span>
+<span class="w-24">DURATION</span>
+<span class="w-32">STATUS</span>
+<span class="w-24 text-right">PRICE</span>
+<span class="w-28"></span>
+</div>
+</div>
+<!-- Rows -->
+<div class="divide-y divide-surface-container">
+<!-- Row 1: Available -->
+<div class="px-8 py-6 flex flex-col md:flex-row items-center justify-between hover:bg-surface-container-low/50 transition-colors gap-4">
+<div class="w-full md:w-32">
+<p class="font-bold text-primary">Oct 14, 2024</p>
+<p class="text-xs text-on-surface-variant">Monday departure</p>
+</div>
+<div class="w-full md:w-24">
+<span class="bg-surface-container px-2 py-1 rounded text-xs font-medium">8 Days</span>
+</div>
+<div class="w-full md:w-32">
+<span class="text-secondary flex items-center gap-1 font-bold text-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                Available
+                            </span>
+</div>
+<div class="w-full md:w-24 text-right">
+<p class="font-bold text-xl">$1,850</p>
+</div>
+<div class="w-full md:w-28 text-right">
+<button class="w-full md:w-auto primary-gradient text-white px-5 py-2 rounded-lg text-sm font-bold">Book</button>
+</div>
+</div>
+<!-- Row 2: Limited -->
+<div class="px-8 py-6 flex flex-col md:flex-row items-center justify-between hover:bg-surface-container-low/50 transition-colors gap-4">
+<div class="w-full md:w-32">
+<p class="font-bold text-primary">Nov 02, 2024</p>
+<p class="text-xs text-on-surface-variant">Saturday departure</p>
+</div>
+<div class="w-full md:w-24">
+<span class="bg-surface-container px-2 py-1 rounded text-xs font-medium">8 Days</span>
+</div>
+<div class="w-full md:w-32">
+<span class="text-on-tertiary-container flex items-center gap-1 font-bold text-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                                Limited
+                            </span>
+</div>
+<div class="w-full md:w-24 text-right">
+<p class="font-bold text-xl">$1,690</p>
+</div>
+<div class="w-full md:w-28 text-right">
+<button class="w-full md:w-auto primary-gradient text-white px-5 py-2 rounded-lg text-sm font-bold">Book</button>
+</div>
+</div>
+<!-- Row 3: Sold Out -->
+<div class="px-8 py-6 flex flex-col md:flex-row items-center justify-between opacity-60 gap-4">
+<div class="w-full md:w-32">
+<p class="font-bold text-primary">Dec 20, 2024</p>
+<p class="text-xs text-on-surface-variant">Festive departure</p>
+</div>
+<div class="w-full md:w-24">
+<span class="bg-surface-container px-2 py-1 rounded text-xs font-medium">10 Days</span>
+</div>
+<div class="w-full md:w-32">
+<span class="text-outline flex items-center gap-1 font-bold text-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="event_busy">event_busy</span>
+                                Sold Out
+                            </span>
+</div>
+<div class="w-full md:w-24 text-right">
+<p class="font-bold text-xl text-outline">$2,150</p>
+</div>
+<div class="w-full md:w-28 text-right">
+<button class="w-full md:w-auto bg-outline-variant text-white px-5 py-2 rounded-lg text-sm font-bold cursor-not-allowed" disabled="">Closed</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Destination Modules -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-16">
+<!-- Narrative Block -->
+<div class="space-y-6">
+<span class="text-secondary font-bold tracking-[0.2em] uppercase text-xs">Tour Discovery</span>
+<h2 class="text-4xl font-extrabold font-headline text-primary leading-tight">Why explore the Swiss Alps with us?</h2>
+<div class="space-y-4 text-on-surface-variant leading-relaxed text-lg">
+<p>Experience the beauty of the Swiss Alps with our expert-led tour itineraries. From silent valleys to traditional villages, our focus is on authentic exploration and engaging with the local culture.</p>
+<p>Every guide in our Swiss network is a local expert who brings the landscape and history to life, ensuring a memorable and informative journey.</p>
+</div>
+<div class="pt-4">
+<button class="text-secondary font-bold flex items-center gap-2 group">
+                        Learn more about our tours
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Related Destinations -->
+<div class="space-y-8">
+<h3 class="text-2xl font-bold font-headline text-primary">Related Destinations</h3>
+<div class="grid grid-cols-2 gap-4">
+<!-- Tile 1 -->
+<div class="group relative rounded-xl overflow-hidden aspect-square shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Tuscany landscape" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK6Hk4iIStfMon_H-5Mivp5Uz1a0bTJ6l_rTOQJ2drtScGevC2hvNIGsvSVk0YzhBe2oZi1fxS2W1Ac0-9IwgkS8KvB_mIJeDcMw9HPMYBe8WlRjjW1dXxZfeHkC2lcY3qxzS196olaQxzBX5ZI5g5L3c7hbMBY3sfmUUseaaX5OO33fUuj6GqSjaujLiVSX-FlCcMYu1RIzhfLu6s0q9X3yVKlDfaApMGPM8MMsqFbUNR1RBMvMXYQOXE6qITr-rYE4hnV5pWqurn"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+<div class="absolute bottom-4 left-4">
+<p class="text-white font-bold text-lg">Tuscany</p>
+<p class="text-white/80 text-xs">14 Tours</p>
+</div>
+</div>
+<!-- Tile 2 -->
+<div class="group relative rounded-xl overflow-hidden aspect-square shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Santorini landscape" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkeMIY-zORVYAphN3pS5fCuetBZHvBg0gkB5mf8ie2xKD0QUABFwK8Pq19zCBSxJlrLGiFOL9xDbi3gPv1lVp0Ki27HE7dubgj2cNXfhwcY6aPggdI9CgoSUE56owafQuP6_fVTQOyOH64-ToOKQ3mrH2jLLDlGkTwWY7JHfXE1imW_vYIZXGCQ_sLvzhpFmcL-7__0w7p1soe76XPCFzsKhjQir-tE4Nf1zxzaSq2eS04f7HPhxg7iD8honRrSS6bcy98kH9rG8qI"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+<div class="absolute bottom-4 left-4">
+<p class="text-white font-bold text-lg">Santorini</p>
+<p class="text-white/80 text-xs">8 Tours</p>
+</div>
+</div>
+<!-- Tile 3 -->
+<div class="group relative rounded-xl overflow-hidden aspect-square shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Lake Como landscape" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKmeUvMF5Mp2DcEz_DscMY_VbhLKIB-QrmezsY6Vd0gyCJPQe-6YsvOU9N9pmW8EQyaocMcxudcDafZsOXZFQRzEJ3a01UcpV5aGSS6uwUbIxVA75nqNdHiXNsVakFEOZenjQJu0_c33ugFv1ACceZjHZ-UK7w7_5hooqMVNFhr-2l_b4ua-UqOSYeNW1angR1pLUdlUh6MZ6trf2uJfrDXaEANyOz99iHQYgUbIPIGOOYfdgA5PsHWzRo0YnjAVAgHysxSQzZE_np"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+<div class="absolute bottom-4 left-4">
+<p class="text-white font-bold text-lg">Lake Como</p>
+<p class="text-white/80 text-xs">12 Tours</p>
+</div>
+</div>
+<!-- Tile 4 -->
+<div class="group relative rounded-xl overflow-hidden aspect-square shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Venice landscape" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwgiCh_zQ4TpjbQCsoc5SRz-bA8gnHL1MfTAub2kQr47pUU_dBKyeGdA_zPgdt5QcitU9chhYi5l7biCxP0GLbZFOggFz-Yo_OcE8Om4efUe3U8axRVTI72_uxg-GsazDCN0ssxJMi_2n8fr5KXlPMGrwB-z0LWaLiz0na3vkB0fI9i7-3eJGaNx_jF3LXBbPvhHHyceygGWkh7v8nu2X72cB8ejm6PIz9JF84KFWfKKe236vpv9bH3UJaQuochHGiUH7ENSJHb9Ix"/>
+<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+<div class="absolute bottom-4 left-4">
+<p class="text-white font-bold text-lg">Venice</p>
+<p class="text-white/80 text-xs">22 Tours</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 5: Pricing & Availability Treatment -->
+<section>
+<div class="mb-12">
+<h2 class="text-3xl font-bold font-headline text-primary mb-2">Pricing &amp; Availability Treatment</h2>
+<p class="text-on-surface-variant">Consistent visual language for status and booking hierarchy.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<!-- Pricing Hierarchy -->
+<div class="bg-surface-container rounded-xl p-8 space-y-6">
+<p class="text-xs font-bold text-outline uppercase tracking-widest">Pricing Hierarchy</p>
+<div class="space-y-4">
+<div>
+<p class="text-xs text-outline mb-1">STANDARD</p>
+<p class="text-3xl font-bold text-primary">$1,250</p>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<p class="text-xs text-outline mb-1">PROMOTION</p>
+<div class="flex items-center gap-3">
+<span class="text-lg text-outline line-through">$1,250</span>
+<span class="text-3xl font-black text-secondary">$999</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Status Chips -->
+<div class="bg-surface-container rounded-xl p-8 space-y-6">
+<p class="text-xs font-bold text-outline uppercase tracking-widest">Status Logic</p>
+<div class="space-y-3">
+<div class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full inline-flex items-center gap-2 font-bold text-sm w-full">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                            Available
+                        </div>
+<div class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-4 py-2 rounded-full inline-flex items-center gap-2 font-bold text-sm w-full">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+                            Limited
+                        </div>
+<div class="bg-surface-container-highest text-outline px-4 py-2 rounded-full inline-flex items-center gap-2 font-bold text-sm w-full">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                            Sold Out
+                        </div>
+</div>
+</div>
+<!-- Metadata Chips -->
+<div class="bg-surface-container rounded-xl p-8 space-y-6 md:col-span-2">
+<p class="text-xs font-bold text-outline uppercase tracking-widest">Metadata Treatment</p>
+<div class="flex flex-wrap gap-3">
+<div class="bg-white px-4 py-3 rounded-xl border border-surface-container flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="restaurant">restaurant</span>
+<div>
+<p class="text-[10px] text-outline leading-none uppercase font-bold">Catering</p>
+<p class="text-sm font-bold text-primary">Full Board</p>
+</div>
+</div>
+<div class="bg-white px-4 py-3 rounded-xl border border-surface-container flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="directions_bus">directions_bus</span>
+<div>
+<p class="text-[10px] text-outline leading-none uppercase font-bold">Transit</p>
+<p class="text-sm font-bold text-primary">Private Coach</p>
+</div>
+</div>
+<div class="bg-white px-4 py-3 rounded-xl border border-surface-container flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="group">group</span>
+<div>
+<p class="text-[10px] text-outline leading-none uppercase font-bold">Group Size</p>
+<p class="text-sm font-bold text-primary">Max 12 People</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-900 w-full py-12 px-6 mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto border-t border-slate-200/20 dark:border-slate-800/20 pt-12">
+<div class="space-y-4">
+<div class="text-lg font-bold text-blue-900 dark:text-white font-headline">TravelBook</div>
+<p class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400 max-w-xs">
+                    Curating professional tour experiences for the modern explorer.
+                </p>
+<p class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400">
+                    © 2024 TravelBook. All rights reserved.
+                </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<nav class="flex flex-col gap-3">
+<a class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 underline-offset-4 hover:underline transition-all" href="#">Home</a>
+<a class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 underline-offset-4 hover:underline transition-all" href="#">Tours</a>
+<a class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 underline-offset-4 hover:underline transition-all" href="#">Destinations</a>
+</nav>
+<nav class="flex flex-col gap-3">
+<a class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 underline-offset-4 hover:underline transition-all" href="#">Privacy Policy</a>
+<a class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 underline-offset-4 hover:underline transition-all" href="#">Terms of Service</a>
+<a class="font-manrope text-xs uppercase tracking-[0.05rem] text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 underline-offset-4 hover:underline transition-all" href="#">Help</a>
+</nav>
+</div>
+</div>
+</footer>
+</body></html>

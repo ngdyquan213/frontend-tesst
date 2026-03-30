@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00113a",
+              "secondary": "#006a6a",
+              "on-secondary-container": "#006e6e",
+              "surface": "#f8f9fa",
+              "outline": "#757682",
+              "surface-container": "#edeeef",
+              "surface-container-low": "#f3f4f5",
+              "surface-container-high": "#e7e8e9",
+              "surface-container-highest": "#e1e3e4",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#191c1d",
+              "on-surface-variant": "#444650",
+              "outline-variant": "#c5c6d2",
+              "error": "#ba1a1a",
+              "azure-horizon": {
+                "dark": "#00113A",
+                "teal": "#006A6A",
+                "light": "#f0f4f8"
+              }
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem", 
+              "lg": "0.5rem", 
+              "xl": "0.75rem", 
+              "2xl": "1.5rem", 
+              "3xl": "2.5rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, .font-headline { font-family: 'Manrope', sans-serif; }
+        .premium-shadow { box-shadow: 0 10px 40px -10px rgba(0, 17, 58, 0.08); }
+        .gradient-teal { background: linear-gradient(135deg, #006a6a 0%, #004d4d 100%); }
+        .gradient-dark { background: linear-gradient(135deg, #00113a 0%, #000a24 100%); }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body class="bg-[#FBFBFD] text-on-surface">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-10 px-6 bg-white w-64 border-r border-slate-100 z-50">
+<div class="mb-12 px-4">
+<h1 class="text-2xl font-extrabold tracking-tight text-azure-horizon-dark flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">explore</span>
+                TravelBook
+            </h1>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-secondary font-bold bg-secondary/5 rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined fill-[1]">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-slate-50 rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span>Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-slate-50 rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Travelers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-slate-50 rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">event_available</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-slate-50 rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">local_activity</span>
+<span>Vouchers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-slate-50 rounded-2xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Documents</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 border-t border-slate-100 pt-6">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary rounded-2xl transition-all duration-200 text-sm" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary rounded-2xl transition-all duration-200 text-sm" href="#">
+<span class="material-symbols-outlined text-error">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 left-64 h-20 flex items-center justify-between px-12 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100">
+<div class="text-sm font-semibold tracking-wider text-slate-400 uppercase">Personal Concierge</div>
+<div class="flex items-center gap-8">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="pl-12 pr-6 py-2.5 rounded-full bg-slate-50 border-none text-sm focus:ring-2 focus:ring-secondary/10 w-80 transition-all placeholder:text-slate-400" placeholder="Search experiences, vouchers..." type="text"/>
+</div>
+<div class="flex items-center gap-5">
+<button class="relative text-slate-400 hover:text-primary transition-all">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 h-2 w-2 bg-secondary rounded-full border-2 border-white"></span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-secondary/20 hover:border-secondary transition-all cursor-pointer">
+<img alt="professional portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ4KzIuKssi8QnVOeGNU3GMUw2AS-s8pNhQF0RWUc_u8tfB4S9c5V4tHUaELKjqBozzwImFECKp7YX9Es12qstCkGGAEyxQHLn-1baooFehB38C1YCataLUqBzd7xjZ_C7Dxm0I7zrvAIid5zuElazZ5xWlilH2uCn3EaQZ0FazFMxjiR-i_yBGmafIWzPIKqikUPasXRYkJxBB_I9prqLlwMYtapnEskzUMQK6sqs3lmZk3n3YykZLxX6XbXUhXgve6agqvCc4A9c"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-32 pb-20 px-12 min-h-screen">
+<div class="max-w-[1200px] mx-auto space-y-12">
+<!-- Welcome Section -->
+<section class="flex flex-col gap-8">
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-lg mb-3 tracking-widest uppercase">Member Since 2021</span>
+<h2 class="text-5xl font-extrabold text-azure-horizon-dark tracking-tight leading-tight">
+                            Bonjour, <span class="text-secondary">Alexander</span>.
+                        </h2>
+<p class="text-slate-500 mt-3 text-lg font-medium max-w-xl">Your journey through the <span class="text-primary italic">Amalfi Coast</span> begins in 24 days. Here is your travel snapshot.</p>
+</div>
+</div>
+<!-- Featured Alert -->
+<div class="gradient-dark p-8 rounded-3xl flex items-center justify-between premium-shadow relative overflow-hidden text-white">
+<div class="flex items-center gap-6 z-10">
+<div class="h-14 w-14 flex items-center justify-center bg-white/10 rounded-2xl backdrop-blur-md">
+<span class="material-symbols-outlined text-white text-3xl">verified_user</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-xl mb-1">Spirit of Kyoto: Visa Required</h4>
+<p class="text-slate-300 text-sm">Action needed to finalize your cultural immersion experience in Japan.</p>
+</div>
+</div>
+<button class="bg-white text-primary px-8 py-3 rounded-xl font-bold text-sm hover:scale-105 transition-all shadow-xl z-10">
+                        Complete Verification
+                    </button>
+<!-- Decorative Background -->
+<div class="absolute right-0 top-0 h-full w-1/2 opacity-20 pointer-events-none">
+<svg class="h-full w-full" fill="currentColor" preserveaspectratio="none" viewbox="0 0 100 100">
+<polygon points="100,0 100,100 0,100"></polygon>
+</svg>
+</div>
+</div>
+</section>
+<!-- Elegant Bento Grid -->
+<section class="grid grid-cols-12 gap-8">
+<!-- Concierge Profile Widget -->
+<div class="col-span-12 lg:col-span-4 bg-white p-8 rounded-3xl premium-shadow flex flex-col items-center text-center relative">
+<div class="absolute top-6 right-6">
+<button class="h-8 w-8 flex items-center justify-center rounded-full hover:bg-slate-50 text-slate-400 transition-colors">
+<span class="material-symbols-outlined text-lg">edit_note</span>
+</button>
+</div>
+<div class="relative mb-6">
+<div class="w-32 h-32 rounded-full border-[6px] border-slate-50 p-1 bg-gradient-to-tr from-secondary to-primary/20">
+<img alt="Alexander Sterling" class="w-full h-full object-cover rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8NctUnY51kyN15zd5djtZ1KbskbbSpYDwO9NVMY5f6UO5k9h2WR5pCw2xPaWtt4lJlgDjAXRl9tnAaq8Dk3wdPkv1lTy2GU7M2KGeyUVjAkcBvyP2VLLldI9O243UkqEzaZt3SgIvyA3R0-Fq6cReIlH-Z6wr5fjtw_6JG-YkTcVUl9tbHjJYGrEUF1rMMYK6IOlBpMPXtsHMtSYIbuR-JgHFpAbiRrFSb-lul7G4Coe2JazW_HdpnAymQZCHa-kGq8FNSO4SgO3f"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-secondary text-white p-1.5 rounded-full border-4 border-white">
+<span class="material-symbols-outlined text-xs fill-[1]">verified</span>
+</div>
+</div>
+<h3 class="text-2xl font-extrabold text-primary">Alexander Sterling</h3>
+<p class="text-slate-400 text-sm mb-8 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Zurich, Switzerland
+                    </p>
+<div class="w-full grid grid-cols-2 gap-3 mb-4">
+<div class="bg-slate-50 p-4 rounded-2xl">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Trips Taken</p>
+<p class="text-xl font-extrabold text-primary">24</p>
+</div>
+<div class="bg-slate-50 p-4 rounded-2xl">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Miles</p>
+<p class="text-xl font-extrabold text-primary">112k</p>
+</div>
+</div>
+</div>
+<!-- Elegant Stats Widgets -->
+<div class="col-span-12 lg:col-span-8 grid grid-cols-2 grid-rows-2 gap-8">
+<div class="bg-white p-8 rounded-3xl premium-shadow flex flex-col justify-between group cursor-pointer hover:bg-slate-50 transition-all">
+<div class="h-14 w-14 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-white transition-all">
+<span class="material-symbols-outlined text-3xl">map</span>
+</div>
+<div>
+<p class="text-4xl font-extrabold text-primary mb-1">04</p>
+<p class="text-slate-500 font-semibold text-sm">Upcoming Adventures</p>
+</div>
+</div>
+<div class="gradient-teal p-8 rounded-3xl premium-shadow flex flex-col justify-between text-white relative overflow-hidden group">
+<div class="h-14 w-14 rounded-2xl bg-white/20 flex items-center justify-center text-white backdrop-blur-sm">
+<span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
+</div>
+<div class="z-10">
+<p class="text-4xl font-extrabold mb-1">$42,800</p>
+<p class="text-white/80 font-semibold text-sm">Travel Portfolio</p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-all">
+<span class="material-symbols-outlined text-9xl">analytics</span>
+</div>
+</div>
+<div class="col-span-2 bg-white p-8 rounded-3xl premium-shadow border border-slate-100 flex items-center justify-between">
+<div class="flex items-center gap-8">
+<div class="h-20 w-20 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
+<span class="material-symbols-outlined text-primary text-4xl">airplane_ticket</span>
+</div>
+<div>
+<h4 class="text-xl font-bold text-primary mb-1">Digital Concierge Vouchers</h4>
+<p class="text-slate-400 text-sm max-w-sm">Access 3 premium lounge passes and 1 private transfer voucher ready for your next trip.</p>
+</div>
+</div>
+<button class="px-8 py-3 bg-azure-horizon-dark text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all shadow-lg">Open Vault</button>
+</div>
+</div>
+</section>
+<!-- Upcoming Experiences (Redesigned Bookings) -->
+<section class="space-y-8">
+<div class="flex items-end justify-between border-b border-slate-100 pb-6">
+<div>
+<h3 class="text-3xl font-extrabold text-primary tracking-tight">Upcoming Experiences</h3>
+<p class="text-slate-500 mt-2 font-medium">Curated journeys designed just for you.</p>
+</div>
+<a class="px-5 py-2 rounded-xl text-sm font-bold text-secondary bg-secondary/5 hover:bg-secondary hover:text-white transition-all" href="#">Explore All Bookings</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Experience Card 1 -->
+<div class="bg-white rounded-[2.5rem] overflow-hidden premium-shadow group cursor-pointer border border-slate-50 hover:-translate-y-2 transition-transform duration-500">
+<div class="relative h-72">
+<img alt="Amalfi Coast Sailing" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUIJ9298NqSj3igLTk1hJiCJOwcwV9VG3Kqa5wu7HlM8_oBE3hKZBk6MLnQn8lg_SQJec5gRlGXGJ7AvZcqucZkjMwQ_icpvF69efDYb7pD4VGIJo7DFt2tE2U1wFAzSuMU-omvyxGwFxdfhxrfBl0yRPTPreNqWUyqrQ_xuFEntaCVK36VWfo88DxScagmCmtU22RcMO-pElc5af_Psov3ZwsN1E5WrcECKICTK-yYlIl7GVt7UbhIIGrfJy2lhQx_oqdysBUGqrd"/>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold text-primary uppercase tracking-widest">Sailing Expedition</span>
+<span class="bg-secondary px-4 py-1.5 rounded-full text-[10px] font-bold text-white uppercase tracking-widest">Confirmed</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+<p class="text-white/70 text-xs font-bold uppercase tracking-[0.2em] mb-2">Aug 14 — Aug 22, 2024</p>
+<h4 class="text-3xl font-bold text-white leading-tight">Amalfi Coast Sailing</h4>
+</div>
+</div>
+<div class="p-8 flex items-center justify-between bg-white">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-xl">payments</span>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">$8,450.00</p>
+<p class="text-xs text-slate-400">Paid in Full</p>
+</div>
+</div>
+<button class="h-12 w-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Experience Card 2 -->
+<div class="bg-white rounded-[2.5rem] overflow-hidden premium-shadow group cursor-pointer border border-slate-50 hover:-translate-y-2 transition-transform duration-500">
+<div class="relative h-72">
+<img alt="Spirit of Kyoto" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTPziKwUt-sXh6z0vUD5pootoETy9Dz3Gypbtq_yk0ZPICLbFnasq0tMd-I6bHja9SStRFmEGOjvD1ft-hssFqsxhPnol9pnCfCS-C83ybHaj3SPbM1_d-qsP8zwSq4O1Xf9ETAHbGsdI78Kp6ooojznJ3oK8G3RuxjUc2_8_FDQMPGqNoB4f5BbGonDPoAa-J7EFUUSonQj1JmJf-b6pR2sEjrNqCQejznIIA0cB5QoKzwgLFvfPzqIFJW9DFS5ZKY0Fc91225xCu"/>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold text-primary uppercase tracking-widest">Cultural Heritage</span>
+<span class="bg-orange-500 px-4 py-1.5 rounded-full text-[10px] font-bold text-white uppercase tracking-widest">Incomplete</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+<p class="text-white/70 text-xs font-bold uppercase tracking-[0.2em] mb-2">Oct 12 — Oct 20, 2024</p>
+<h4 class="text-3xl font-bold text-white leading-tight">Spirit of Kyoto</h4>
+</div>
+</div>
+<div class="p-8 flex items-center justify-between bg-white">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-500 text-xl">assignment_late</span>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">$12,200.00</p>
+<p class="text-xs text-orange-500 font-medium italic">Document Required</p>
+</div>
+</div>
+<button class="h-12 w-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Final Section: Management & Tasks -->
+<section class="grid grid-cols-12 gap-8">
+<!-- Enhanced Verification Module -->
+<div class="col-span-12 lg:col-span-7 bg-white p-10 rounded-[2.5rem] premium-shadow border border-slate-50">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h4 class="text-2xl font-bold text-primary">Verification Readiness</h4>
+<p class="text-slate-400 text-sm mt-1">Status for Spirit of Kyoto experience</p>
+</div>
+<div class="h-12 w-12 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined">gpp_maybe</span>
+</div>
+</div>
+<div class="space-y-6">
+<div class="flex items-center gap-5 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+<div class="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined fill-[1]">check_circle</span>
+</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-primary">Biometric Passport Scan</h5>
+<p class="text-xs text-slate-400 mt-0.5">Verified on June 12, 2024</p>
+</div>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Completed</span>
+</div>
+<div class="flex items-center gap-5 p-5 rounded-2xl bg-white border-2 border-dashed border-orange-200">
+<div class="h-12 w-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-primary text-orange-900">Kyoto Heritage Visa</h5>
+<p class="text-xs text-orange-400 mt-0.5">Please upload high-res scan of page 4</p>
+</div>
+<button class="px-5 py-2 bg-azure-horizon-dark text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all">Upload</button>
+</div>
+<div class="flex items-center gap-5 p-5 rounded-2xl bg-slate-50 border border-slate-100 opacity-60">
+<div class="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">medical_services</span>
+</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold text-primary">Global Health Coverage</h5>
+<p class="text-xs text-slate-400 mt-0.5">Automatic verification pending</p>
+</div>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pending</span>
+</div>
+</div>
+</div>
+<!-- Quick Concierge Tasks -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-8">
+<div class="bg-azure-horizon-dark p-8 rounded-[2.5rem] text-white flex-1 relative overflow-hidden">
+<h4 class="text-xl font-bold mb-6">Concierge Tasks</h4>
+<div class="space-y-4">
+<a class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:scale-110 transition-transform">group</span>
+<span class="text-sm font-semibold">Manage Travel Party</span>
+<span class="material-symbols-outlined ml-auto text-slate-500 text-sm">chevron_right</span>
+</a>
+<a class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:scale-110 transition-transform">chat_bubble</span>
+<span class="text-sm font-semibold">Direct Concierge Chat</span>
+<span class="material-symbols-outlined ml-auto text-slate-500 text-sm">chevron_right</span>
+</a>
+<a class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group" href="#">
+<span class="material-symbols-outlined text-secondary group-hover:scale-110 transition-transform">hotel_class</span>
+<span class="text-sm font-semibold">Modify Preferences</span>
+<span class="material-symbols-outlined ml-auto text-slate-500 text-sm">chevron_right</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

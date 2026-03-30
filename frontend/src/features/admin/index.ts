@@ -1,0 +1,7 @@
+export * from '@/features/admin/dashboard'
+export * from '@/features/admin/tours'
+export * from '@/features/admin/bookings'
+export * from '@/features/admin/refunds'
+export * from '@/features/admin/documents'
+export * from '@/features/admin/pricing'
+export * from '@/features/admin/operations'

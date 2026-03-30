@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook - Secure Checkout</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface": "#191c1d",
+                        "outline": "#757682",
+                        "tertiary-container": "#4e1500",
+                        "on-primary-container": "#758dd5",
+                        "primary-container": "#002366",
+                        "secondary-container": "#90efef",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdbcf",
+                        "surface-container": "#edeeef",
+                        "on-background": "#191c1d",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "on-primary-fixed": "#00174a",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#006e6e",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "surface-tint": "#435b9f",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error-container": "#93000a",
+                        "surface": "#f8f9fa",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "outline-variant": "#c5c6d2",
+                        "primary-fixed": "#dbe1ff",
+                        "inverse-surface": "#2e3132",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-low": "#f3f4f5",
+                        "primary": "#00113a",
+                        "tertiary": "#2c0800",
+                        "inverse-primary": "#b3c5ff",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006a6a",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "background": "#f8f9fa",
+                        "on-surface-variant": "#444650",
+                        "on-secondary-fixed": "#002020",
+                        "secondary-fixed": "#93f2f2"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 glass-header shadow-sm">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-extrabold text-blue-900 font-headline">TravelBook</span>
+<button class="hidden md:flex items-center gap-2 text-slate-500 hover:opacity-80 transition-opacity text-sm font-semibold">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                    Back to Schedules
+                </button>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-primary-container/10 px-4 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="text-primary font-bold text-sm">Secure Checkout</span>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-20 px-6 max-w-7xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Main Content Area (Left 2/3) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Stepper Container -->
+<nav class="bg-surface-container-low p-2 rounded-full flex items-center justify-between">
+<div class="flex-1 flex items-center justify-center gap-3 py-2 px-6 rounded-full bg-white shadow-sm text-teal-700 font-bold text-sm font-headline">
+<span class="material-symbols-outlined text-lg">fact_check</span>
+                        01 Review
+                    </div>
+<div class="flex-1 flex items-center justify-center gap-3 py-2 px-6 text-slate-400 font-semibold text-sm font-headline">
+<span class="material-symbols-outlined text-lg">payments</span>
+                        02 Payment
+                    </div>
+<div class="flex-1 flex items-center justify-center gap-3 py-2 px-6 text-slate-400 font-semibold text-sm font-headline">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                        03 Confirmation
+                    </div>
+</nav>
+<section class="space-y-6">
+<h1 class="text-3xl font-extrabold font-headline tracking-tight text-primary">Review Your Trip</h1>
+<!-- Selection Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm overflow-hidden relative border border-transparent">
+<div class="flex flex-col md:flex-row gap-8">
+<div class="w-full md:w-48 h-48 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="White sailboat gliding through turquoise waters near a coastal town" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHWJSBM7-_areHnd-yH5vlG0wXGUalbKEPW5H2Opn80lTSdeOzrcbpvGTdaTbElDa7nSULQEaCPL64ktX7T-bDfTmXPbuEPVIAuIPFFpfV0khSS339eWSazQZVFaQ-zAGCBJmH7YJm_P3Er0xlAXrT0hd6vM1IJICvhIYAyaO2EHrBpo-ICKfMvnB90Bq0GzVd4nhUG7K1pwZJnJ5udn2SpV1R9R7dXSUMSHnTZRg3-dvihRWl6U7EQ0Ea7EWp16uUgYdW7yaGl4ox"/>
+</div>
+<div class="flex-1 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-full mb-2 tracking-wide uppercase">Tour Details</span>
+<h2 class="text-2xl font-bold font-headline text-primary">Amalfi Coast Sailing</h2>
+</div>
+<button class="text-secondary font-semibold text-sm hover:underline">Edit Selection</button>
+</div>
+<div class="grid grid-cols-2 gap-y-4 gap-x-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">location_on</span>
+</div>
+<div>
+<p class="text-xs text-outline font-medium uppercase tracking-wider">Destination</p>
+<p class="font-bold">Amalfi, Italy</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+</div>
+<div>
+<p class="text-xs text-outline font-medium uppercase tracking-wider">Dates</p>
+<p class="font-bold">June 12 - June 19, 2024</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">schedule</span>
+</div>
+<div>
+<p class="text-xs text-outline font-medium uppercase tracking-wider">Duration</p>
+<p class="font-bold">8 Days</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">group</span>
+</div>
+<div>
+<p class="text-xs text-outline font-medium uppercase tracking-wider">Guests</p>
+<p class="font-bold">2 Travelers</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Traveler Information Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold font-headline text-primary">Traveler Information</h3>
+<button class="text-secondary font-semibold text-sm hover:underline">Modify Details</button>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container text-white flex items-center justify-center font-bold text-lg">AS</div>
+<div>
+<p class="font-bold text-primary">Alex Sterling</p>
+<p class="text-sm text-outline">Lead Traveler</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-teal-600">check_circle</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-outline-variant text-primary flex items-center justify-center font-bold text-lg">CP</div>
+<div>
+<p class="font-bold text-primary">Companion</p>
+<p class="text-sm text-outline">Details added</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-teal-600">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Booking Reassurance Block -->
+<div class="bg-primary/5 rounded-xl p-8 flex gap-6 items-start">
+<div class="p-3 bg-white rounded-xl shadow-sm">
+<span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
+</div>
+<div class="space-y-2">
+<h4 class="font-bold font-headline text-primary">Booking Reassurance</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                                Your security is our priority. All transactions are protected with 256-bit SSL technology. If you have any questions or need assistance, our support team is available to help with your booking details.
+                            </p>
+<div class="flex gap-4 pt-2">
+<div class="flex items-center gap-1.5 text-xs font-semibold text-teal-700">
+<span class="material-symbols-outlined text-sm">support_agent</span>
+                                    Help Available
+                                </div>
+<div class="flex items-center gap-1.5 text-xs font-semibold text-teal-700">
+<span class="material-symbols-outlined text-sm">security</span>
+                                    Encrypted Checkout
+                                </div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Summary Panel (Right 1/3) -->
+<div class="lg:col-span-4">
+<div class="sticky top-24 space-y-6">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm border border-outline-variant/10">
+<h3 class="text-xl font-bold font-headline text-primary mb-6">Price Summary</h3>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span>Amalfi Sailing Base</span>
+<span class="font-medium">$4,250.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span>Port Fees &amp; Taxes</span>
+<span class="font-medium">$342.50</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span>Travel Protection</span>
+<span class="text-teal-600 font-semibold">Included</span>
+</div>
+<div class="pt-4 border-t border-outline-variant/20 flex justify-between items-end">
+<div>
+<p class="text-xs text-outline font-bold uppercase tracking-widest">Total Amount</p>
+<p class="text-3xl font-extrabold font-headline text-primary">$4,592.50</p>
+</div>
+<span class="text-xs text-outline pb-1 font-medium">USD</span>
+</div>
+</div>
+<button class="w-full primary-gradient text-white py-4 rounded-lg font-bold text-lg hover:shadow-lg transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-3">
+                            Continue to Payment
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<!-- Trust Icons -->
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<div class="flex justify-center items-center gap-6 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl">lock</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">SSL Secure</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl">credit_card</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">PCI Level 1</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Verified</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Help Card -->
+<div class="bg-surface-container rounded-xl p-6 text-center">
+<p class="text-sm text-on-surface-variant mb-3">Questions about your booking?</p>
+<a class="text-primary font-bold hover:underline" href="#">Contact Support</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="py-10 border-t border-outline-variant/10">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-outline">
+<p>© 2024 TravelBook. All rights reserved.</p>
+<div class="flex gap-8">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+</body></html>

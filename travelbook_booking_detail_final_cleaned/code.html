@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Detail - TravelBook</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-primary": "#ffffff",
+                "secondary-container": "#90efef",
+                "primary-container": "#002366",
+                "on-primary-container": "#758dd5",
+                "surface-container": "#edeeef",
+                "tertiary-container": "#4e1500",
+                "inverse-surface": "#2e3132",
+                "secondary": "#006a6a",
+                "surface": "#f8f9fa",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffffff",
+                "error": "#ba1a1a",
+                "surface-bright": "#f8f9fa",
+                "on-tertiary-fixed": "#380c00",
+                "surface-container-highest": "#e1e3e4",
+                "inverse-on-surface": "#f0f1f2",
+                "outline-variant": "#c5c6d2",
+                "on-tertiary-container": "#e56c3e",
+                "on-tertiary": "#ffffff",
+                "surface-tint": "#435b9f",
+                "surface-dim": "#d9dadb",
+                "on-secondary-container": "#006e6e",
+                "on-surface": "#191c1d",
+                "on-background": "#191c1d",
+                "secondary-fixed": "#93f2f2",
+                "on-surface-variant": "#444650",
+                "tertiary-fixed-dim": "#ffb59c",
+                "on-primary-fixed-variant": "#2a4386",
+                "outline": "#757682",
+                "tertiary-fixed": "#ffdbcf",
+                "on-secondary-fixed-variant": "#004f4f",
+                "surface-variant": "#e1e3e4",
+                "surface-container-low": "#f3f4f5",
+                "on-primary-fixed": "#00174a",
+                "secondary-fixed-dim": "#76d6d5",
+                "primary-fixed-dim": "#b3c5ff",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed": "#002020",
+                "inverse-primary": "#b3c5ff",
+                "surface-container-high": "#e7e8e9",
+                "primary-fixed": "#dbe1ff",
+                "on-tertiary-fixed-variant": "#822800",
+                "tertiary": "#2c0800",
+                "error-container": "#ffdad6",
+                "primary": "#00113a",
+                "background": "#f8f9fa",
+                "on-error": "#ffffff"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+        .soft-elevation {
+            box-shadow: 0 10px 40px -10px rgba(25, 28, 29, 0.05);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Top Utility Bar -->
+<header class="fixed top-0 right-0 left-64 z-40 bg-white/80 backdrop-blur-lg flex justify-end items-center h-16 px-8 border-b border-slate-100">
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-primary transition-colors">notifications</span>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-primary transition-colors">help_outline</span>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+<span class="text-sm font-semibold text-primary">Alex Mercer</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden cursor-pointer active:scale-95 duration-200">
+<img alt="Profile" data-alt="close-up portrait of a professional man with a friendly expression in a brightly lit modern office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEAoo1Pi9ME9AKJ4QoVtzTmyTf-1-bZJ31D4vEUrXmG9EYHWFglxtH8nLdiuLg74DyQdPiQmYUMYtoFIoQeoE9urJ13G8GRa3jYPPnvTl7wlrcPjdCWH9J0-P7g698oCHWrY-ICz1pkZdInhHjxP9yyffIawBGMFDilVHg_T6Ly2mJj7naXVQdZ1J14CwTRomKQUtTv1C3A5ufxoS-Vp5LeqnHs7O2pc9KrC9FKMoKxcCmYHwhiPFUdiCSBnwaPasorG1el5nHkw9U"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Sidebar Shell (256px / w-64) -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-slate-50 flex flex-col pt-6 px-4 z-50 border-r border-slate-100">
+<div class="px-4 mb-10">
+<div class="text-2xl font-extrabold tracking-tight text-primary font-headline">TravelBook</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Profile</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Travelers</span>
+</a>
+<a class="flex items-center gap-3 text-primary bg-white rounded-xl px-4 py-3 shadow-sm border border-slate-100 transition-all group" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Bookings</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">local_activity</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Vouchers</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Documents</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Refunds</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Notifications</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-blue-50/50 rounded-xl transition-all group" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-headline text-sm font-semibold tracking-wide">Support</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 pt-24 pb-12 px-8 min-h-screen">
+<div class="max-w-[1200px] mx-auto">
+<!-- Booking Detail Header -->
+<div class="mb-8">
+<a class="flex items-center gap-2 text-primary font-medium text-sm hover:gap-3 transition-all mb-4 group" href="#">
+<span class="material-symbols-outlined text-lg">arrow_back</span>
+                    Back to Bookings
+                </a>
+<h1 class="text-4xl font-extrabold font-headline tracking-tight text-primary">Booking Detail</h1>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<!-- Left Column: Primary Details -->
+<div class="lg:col-span-2 flex flex-col gap-8">
+<!-- Booking Snapshot Card -->
+<section class="bg-surface-container-lowest p-8 rounded-2xl soft-elevation flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+<div class="flex flex-col gap-2">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">Booking Reference</span>
+<div class="flex items-center gap-4">
+<h2 class="text-2xl font-bold font-headline text-primary">Amalfi Coast Sailing</h2>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-xs font-bold rounded-full uppercase tracking-wider">Confirmed</span>
+</div>
+<p class="text-on-surface-variant font-medium">#TB-48291</p>
+</div>
+<div class="w-24 h-24 rounded-2xl overflow-hidden shadow-inner flex-shrink-0">
+<img alt="Amalfi Coast" data-alt="vibrant view of colorful houses on the cliffs of Amalfi Coast overlooking turquoise Mediterranean sea under bright sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkxrk35XfPYiLf2EOl6z9BOt_YyFysYlJToxEZkZkbqHYhzhg5JCbE20H_H7jdRLse58XCCQSunyJCM5cTSmyFwDS-PHDaOaMBM88iNgMIDtM3BsK10rLQZcqg0Z1F07NAbD026Ez5HtXkaSZOvZQ3uv7t1vdRB6uMNVMW1GUhDrhC4k76wgPbVBP6V4boW8Nc552tC6cFrHmx4QsKH8Pry_8qUOwT__JZKTAxJNpgyieIQQa7XQtTMJAv-43lawqrzAOx36Syn7fU"/>
+</div>
+</section>
+<!-- Trip Overview Section -->
+<section class="bg-surface-container-low p-8 rounded-2xl flex flex-col gap-10">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">Departure</span>
+<p class="text-lg font-bold text-primary">14 May 2024</p>
+<p class="text-sm text-on-surface-variant">Naples International (NAP)</p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">Return</span>
+<p class="text-lg font-bold text-primary">21 May 2024</p>
+<p class="text-sm text-on-surface-variant">Naples International (NAP)</p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">Duration</span>
+<p class="text-lg font-bold text-primary">8 Days</p>
+<p class="text-sm text-on-surface-variant">7 Nights at Sea</p>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<h3 class="font-headline font-bold text-lg text-primary">Trip Itinerary</h3>
+<div class="space-y-6 relative border-l-2 border-outline-variant/30 ml-2 pl-8">
+<div class="relative">
+<div class="absolute -left-10 top-1 w-4 h-4 rounded-full bg-secondary border-4 border-surface-container-low"></div>
+<h4 class="font-bold text-primary">Arrival &amp; Welcome Dinner</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed mt-1">Check-in at Sorrento Marina Grande followed by a local sunset reception.</p>
+</div>
+<div class="relative">
+<div class="absolute -left-10 top-1 w-4 h-4 rounded-full bg-outline-variant border-4 border-surface-container-low"></div>
+<h4 class="font-bold text-primary">Sailing to Capri</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed mt-1">Full day exploration of the Blue Grotto and evening at leisure in Capri town.</p>
+</div>
+<div class="relative">
+<div class="absolute -left-10 top-1 w-4 h-4 rounded-full bg-outline-variant border-4 border-surface-container-low"></div>
+<h4 class="font-bold text-primary">Positano Coastline</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed mt-1">Navigating the scenic cliffs with swimming stops in hidden emerald coves.</p>
+</div>
+<div class="relative">
+<div class="absolute -left-10 top-1 w-4 h-4 rounded-full bg-outline-variant border-4 border-surface-container-low"></div>
+<h4 class="font-bold text-primary">Ravello &amp; Amalfi Discovery</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed mt-1">Cultural walk through historic villas and garden terraces overlooking the sea.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Traveler Section -->
+<section class="bg-surface-container-lowest p-8 rounded-2xl soft-elevation">
+<h3 class="font-headline font-bold text-lg text-primary mb-6">Travelers</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between p-4 bg-surface rounded-xl">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">AM</div>
+<div>
+<p class="font-bold text-primary">Alex Mercer</p>
+<p class="text-xs text-on-surface-variant">Primary Traveler • Passport ending in ...4922</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface rounded-xl">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">SM</div>
+<div>
+<p class="font-bold text-primary">Sarah Mercer</p>
+<p class="text-xs text-on-surface-variant">Companion • Passport ending in ...1182</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar Actions & Status -->
+<div class="flex flex-col gap-6 sticky top-24">
+<!-- Document Readiness -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl soft-elevation flex flex-col gap-5">
+<h3 class="font-headline font-bold text-primary">Documents &amp; Verification</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary bg-secondary-container/30 p-2 rounded-lg">confirmation_number</span>
+<div class="flex-1">
+<p class="text-sm font-bold text-primary leading-tight">Vouchers</p>
+<p class="text-xs text-secondary font-medium">Available for download</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary bg-secondary-container/30 p-2 rounded-lg">verified_user</span>
+<div class="flex-1">
+<p class="text-sm font-bold text-primary leading-tight">ID Verification</p>
+<p class="text-xs text-secondary font-medium">Verified</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Payment Summary -->
+<div class="bg-primary text-white p-6 rounded-2xl soft-elevation flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="font-headline font-bold text-on-primary-container">Payment Summary</h3>
+<span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 bg-secondary text-white rounded">Success</span>
+</div>
+<div class="flex flex-col gap-1 py-4 border-y border-white/10">
+<div class="flex justify-between text-sm">
+<span class="text-on-primary-container">Total Amount Paid</span>
+<span class="font-bold text-lg">$2,450.00</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[11px] text-on-primary-container font-medium">Confirmed via Secure Payment</span>
+</div>
+</div>
+<!-- Contextual Action Row -->
+<div class="flex flex-col gap-3">
+<button class="w-full bg-primary-gradient text-white py-4 rounded-xl font-headline font-bold flex items-center justify-center gap-2 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                            Download Vouchers
+                        </button>
+<button class="w-full bg-white text-primary border border-surface-container-highest py-4 rounded-xl font-headline font-bold flex items-center justify-center gap-2 hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-lg">support_agent</span>
+                            Contact Support
+                        </button>
+</div>
+<!-- Practical Reassurance Block -->
+<div class="p-6 border border-dashed border-outline-variant/50 rounded-2xl">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary-container">info</span>
+<div class="flex flex-col gap-1">
+<p class="text-xs font-bold text-primary">Booking Management</p>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Review your itinerary, access travel documents, and track payments in real-time. Contact help center for modification requests.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

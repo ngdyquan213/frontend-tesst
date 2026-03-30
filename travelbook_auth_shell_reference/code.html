@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "surface-dim": "#d9dadb",
+                "on-tertiary-fixed": "#380c00",
+                "secondary-fixed-dim": "#76d6d5",
+                "on-secondary-fixed": "#002020",
+                "inverse-on-surface": "#f0f1f2",
+                "error": "#ba1a1a",
+                "surface-container-low": "#f3f4f5",
+                "primary-container": "#002366",
+                "tertiary-fixed-dim": "#ffb59c",
+                "surface-variant": "#e1e3e4",
+                "background": "#f8f9fa",
+                "secondary-fixed": "#93f2f2",
+                "on-primary-fixed": "#00174a",
+                "surface-container": "#edeeef",
+                "on-secondary-container": "#006e6e",
+                "on-primary-fixed-variant": "#2a4386",
+                "tertiary-container": "#4e1500",
+                "outline": "#757682",
+                "outline-variant": "#c5c6d2",
+                "surface-tint": "#435b9f",
+                "secondary": "#006a6a",
+                "on-error-container": "#93000a",
+                "on-tertiary-container": "#e56c3e",
+                "on-secondary-fixed-variant": "#004f4f",
+                "on-tertiary": "#ffffff",
+                "on-secondary": "#ffffff",
+                "tertiary": "#2c0800",
+                "primary-fixed": "#dbe1ff",
+                "on-error": "#ffffff",
+                "surface-container-high": "#e7e8e9",
+                "on-background": "#191c1d",
+                "on-primary": "#ffffff",
+                "inverse-primary": "#b3c5ff",
+                "on-surface": "#191c1d",
+                "on-tertiary-fixed-variant": "#822800",
+                "tertiary-fixed": "#ffdbcf",
+                "secondary-container": "#90efef",
+                "primary-fixed-dim": "#b3c5ff",
+                "inverse-surface": "#2e3132",
+                "surface-container-highest": "#e1e3e4",
+                "primary": "#00113a",
+                "surface-container-lowest": "#ffffff",
+                "on-surface-variant": "#444650",
+                "on-primary-container": "#758dd5",
+                "surface": "#f8f9fa",
+                "surface-bright": "#f8f9fa",
+                "error-container": "#ffdad6"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .auth-gradient-bg {
+            background: radial-gradient(circle at 50% 50%, #f8f9fa 0%, #edeeef 100%);
+        }
+        .primary-cta-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+        .soft-elevation {
+            box-shadow: 0 20px 40px -10px rgba(25, 28, 29, 0.06);
+        }
+        .ghost-border {
+            border: 1.5px solid rgba(197, 198, 210, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased">
+<!-- Header / Reference Page Branding -->
+<header class="w-full py-8 px-6 max-w-7xl mx-auto flex flex-col items-center border-b border-surface-variant/30">
+<h1 class="font-headline text-4xl font-extrabold tracking-tighter text-primary mb-2">TravelBook</h1>
+<p class="font-label text-sm uppercase tracking-widest text-secondary font-semibold">Authentication Shell Reference Guide</p>
+</header>
+<main class="max-w-6xl mx-auto py-16 px-6 space-y-24">
+<!-- Rule 1: Auth Background Treatment -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-4">
+<span class="text-xs font-bold text-secondary uppercase tracking-widest">Reference Rule 01</span>
+<h2 class="font-headline text-3xl font-bold text-primary">Background Treatment</h2>
+<p class="text-on-surface-variant leading-relaxed">
+                    The background utilizes a subtle tonal shift instead of flat color or noise. This "Azure Horizon" effect creates a sense of depth and focus, guiding the eye toward the central interaction point. No 1px lines are permitted for page-level sectioning.
+                </p>
+<ul class="space-y-2 text-sm text-on-surface-variant">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-secondary">check_circle</span> Use <code class="bg-surface-container px-1 rounded">surface-bright</code> to <code class="bg-surface-container-low px-1 rounded">surface-container</code> radial gradient.</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-secondary">check_circle</span> Prohibit textures or photographic backgrounds behind the auth card.</li>
+</ul>
+</div>
+<div class="auth-gradient-bg h-64 rounded-2xl flex items-center justify-center border border-surface-variant/20 shadow-inner">
+<div class="text-on-surface-variant font-medium text-sm">Visual Surface Hierarchy: Subtle Tonal Shift</div>
+</div>
+</section>
+<!-- Rule 2 & 3: Card Rules and Identity -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="order-2 lg:order-1 flex justify-center">
+<!-- AUTH CARD DEMO -->
+<div class="w-full max-w-[480px] space-y-8">
+<!-- Identity Placement -->
+<div class="flex flex-col items-center space-y-2">
+<div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white text-3xl">explore</span>
+</div>
+<span class="font-headline font-extrabold text-2xl tracking-tighter text-primary">TravelBook</span>
+</div>
+<!-- Centered Auth Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-10 soft-elevation border border-white">
+<h3 class="font-headline text-xl font-bold mb-6 text-center">Reference Auth Card</h3>
+<div class="w-full h-32 bg-surface-container-low rounded-xl border-dashed border-2 border-outline-variant flex items-center justify-center text-outline italic text-sm">
+                            Card Content Zone
+                        </div>
+</div>
+</div>
+</div>
+<div class="space-y-4 order-1 lg:order-2">
+<span class="text-xs font-bold text-secondary uppercase tracking-widest">Reference Rule 02 &amp; 03</span>
+<h2 class="font-headline text-3xl font-bold text-primary">Card Architecture &amp; Identity</h2>
+<p class="text-on-surface-variant leading-relaxed">
+                    Identity must be anchored 32px above the card. The card itself follows strict geometric constraints to ensure brand consistency across all entry points.
+                </p>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-surface-container rounded-lg">
+<p class="font-bold text-primary">Max Width</p>
+<p class="text-sm text-on-surface-variant">Fixed at 480px</p>
+</div>
+<div class="p-4 bg-surface-container rounded-lg">
+<p class="font-bold text-primary">Radius</p>
+<p class="text-sm text-on-surface-variant">24px (1.5rem)</p>
+</div>
+<div class="p-4 bg-surface-container rounded-lg">
+<p class="font-bold text-primary">Elevation</p>
+<p class="text-sm text-on-surface-variant">6% Opacity Shadow</p>
+</div>
+<div class="p-4 bg-surface-container rounded-lg">
+<p class="font-bold text-primary">Identity</p>
+<p class="text-sm text-on-surface-variant">Centered Vertical Logo</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Rule 4: Form and Validation Zones -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-4">
+<span class="text-xs font-bold text-secondary uppercase tracking-widest">Reference Rule 04</span>
+<h2 class="font-headline text-3xl font-bold text-primary">Form &amp; Validation States</h2>
+<p class="text-on-surface-variant leading-relaxed">
+                    Inputs use <code>surface-container-highest</code> backgrounds to eliminate the heavy "boxed" look. Errors are presented with a 20% opacity red container and semantic iconography.
+                </p>
+<div class="space-y-6 mt-6">
+<!-- Normal State -->
+<div class="space-y-2">
+<label class="text-sm font-semibold font-label text-on-surface-variant ml-1">Default State</label>
+<div class="bg-surface-container-highest ghost-border rounded-xl px-4 py-3 text-on-surface flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">mail</span>
+<span class="text-outline">Enter email address</span>
+</div>
+</div>
+<!-- Error State -->
+<div class="space-y-2">
+<label class="text-sm font-semibold font-label text-error ml-1">Error State</label>
+<div class="bg-error-container/20 border-1.5 border-error/50 rounded-xl px-4 py-3 text-on-surface flex items-center gap-3">
+<span class="material-symbols-outlined text-error">error</span>
+<span class="text-on-error-container">Invalid credentials</span>
+</div>
+</div>
+<!-- Primary CTA -->
+<div class="space-y-2 pt-4">
+<button class="w-full primary-cta-gradient text-white font-headline font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+<span>Sign In</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-8 border border-surface-variant/20">
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">shield_locked</span>
+</div>
+<div>
+<h4 class="font-bold text-primary">Security Promise</h4>
+<p class="text-xs text-on-surface-variant">All authentication data is encrypted end-to-end.</p>
+</div>
+</div>
+<div class="h-[1px] bg-outline-variant/20 w-full"></div>
+<div class="space-y-2">
+<p class="text-xs font-bold text-outline uppercase tracking-widest">Aesthetic Guideline</p>
+<p class="text-sm text-on-surface-variant italic">"Never use sharp corners on inputs. The interaction must feel as soft as the journey ahead."</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Rule 5 & 6: Support & Mobile Behavior -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-secondary to-primary-container rounded-2xl blur opacity-10"></div>
+<div class="relative bg-white p-8 rounded-2xl border border-surface-variant/30">
+<div class="flex items-center justify-between mb-8">
+<span class="text-xs font-bold font-label text-secondary px-3 py-1 bg-secondary-container rounded-full">Mobile Preview</span>
+<span class="material-symbols-outlined text-outline">smartphone</span>
+</div>
+<div class="border-4 border-slate-900 rounded-[2.5rem] p-2 aspect-[9/19] w-full max-w-[280px] mx-auto bg-background overflow-hidden flex flex-col items-center pt-12">
+<span class="font-headline font-extrabold text-primary mb-8">TravelBook</span>
+<div class="w-[90%] bg-white rounded-2xl p-4 shadow-sm mb-4 h-32"></div>
+<div class="w-[90%] bg-white rounded-2xl p-4 shadow-sm h-12"></div>
+<div class="mt-auto pb-12 text-[10px] text-center text-outline px-6">
+                            By continuing, you agree to our Terms and Privacy Policy.
+                         </div>
+</div>
+</div>
+</div>
+<div class="space-y-8">
+<div>
+<span class="text-xs font-bold text-secondary uppercase tracking-widest">Reference Rule 05</span>
+<h2 class="font-headline text-3xl font-bold text-primary">Support Microcopy Zone</h2>
+<p class="text-on-surface-variant leading-relaxed mt-4">
+                        The footer of the auth card is reserved for secondary navigation and microcopy. Use <code>label-md</code> with 0.05rem letter-spacing to maintain the editorial journal feel.
+                    </p>
+<div class="mt-6 flex flex-wrap gap-4">
+<a class="text-sm font-semibold text-secondary hover:underline underline-offset-4 decoration-secondary/30" href="#">Forgot password?</a>
+<span class="text-outline-variant">|</span>
+<a class="text-sm font-semibold text-secondary hover:underline underline-offset-4 decoration-secondary/30" href="#">Need help?</a>
+<span class="text-outline-variant">|</span>
+<a class="text-sm font-semibold text-secondary hover:underline underline-offset-4 decoration-secondary/30" href="#">Create account</a>
+</div>
+</div>
+<div>
+<span class="text-xs font-bold text-secondary uppercase tracking-widest">Reference Rule 06</span>
+<h2 class="font-headline text-3xl font-bold text-primary">Mobile Response Behavior</h2>
+<p class="text-on-surface-variant leading-relaxed mt-4">
+                        On small screens (md:hidden), the card shadow and radius are suppressed to allow the card to take full-width viewport real estate. Branding remains persistent but scaled down.
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer of Reference Page -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 px-8 mt-24">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline font-extrabold text-blue-950 dark:text-white text-xl">TravelBook</span>
+<p class="font-['Manrope'] text-sm tracking-wide text-slate-500 dark:text-slate-400 mt-2">Design System Documentation v1.0</p>
+</div>
+<div class="flex gap-8">
+<a class="font-['Manrope'] text-sm tracking-wide text-slate-500 dark:text-slate-400 hover:underline decoration-blue-900/30 underline-offset-4" href="#">Privacy Policy</a>
+<a class="font-['Manrope'] text-sm tracking-wide text-slate-500 dark:text-slate-400 hover:underline decoration-blue-900/30 underline-offset-4" href="#">Terms of Service</a>
+<a class="font-['Manrope'] text-sm tracking-wide text-slate-500 dark:text-slate-400 hover:underline decoration-blue-900/30 underline-offset-4" href="#">Support</a>
+</div>
+<p class="font-['Manrope'] text-sm tracking-wide text-slate-500 dark:text-slate-400">© 2024 TravelBook Curator. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

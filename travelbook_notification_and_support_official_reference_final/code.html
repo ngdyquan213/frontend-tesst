@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Notification Center &amp; Support</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-primary-container": "#758dd5",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#90efef",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-container": "#edeeef",
+                        "primary": "#00113a",
+                        "on-secondary-fixed": "#002020",
+                        "on-secondary-container": "#006e6e",
+                        "secondary": "#006a6a",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-primary-fixed": "#00174a",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#435b9f",
+                        "surface-container-high": "#e7e8e9",
+                        "background": "#f8f9fa",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "secondary-fixed": "#93f2f2",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "on-surface": "#191c1d",
+                        "surface-dim": "#d9dadb",
+                        "inverse-primary": "#b3c5ff",
+                        "surface-bright": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "tertiary": "#2c0800",
+                        "outline-variant": "#c5c6d2",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2e3132",
+                        "primary-container": "#002366",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#757682",
+                        "on-background": "#191c1d",
+                        "tertiary-container": "#4e1500",
+                        "on-surface-variant": "#444650"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased">
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-slate-50 dark:bg-slate-900 hidden lg:flex flex-col p-6 gap-2 z-40">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-extrabold text-blue-900 dark:text-blue-50 font-headline">TravelBook</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mt-1">Traveler Account</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">person</span> Profile
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">group</span> Travelers
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">confirmation_number</span> Bookings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">local_activity</span> Vouchers
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">description</span> Documents
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">undo</span> Refunds
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-blue-900 dark:text-blue-300 bg-blue-50/50 dark:bg-blue-900/20 rounded-lg transition-all duration-200 ease-out hover:translate-x-1 font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span> Notifications
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200 ease-out hover:translate-x-1 rounded-lg font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">help_center</span> Support
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-200/50">
+<p class="text-[10px] text-slate-400 text-center uppercase tracking-tighter">Support v2.4.1</p>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="lg:ml-64 min-h-screen">
+<!-- Top Utility Nav -->
+<header class="h-20 px-8 flex items-center justify-between bg-white/80 backdrop-blur-lg sticky top-0 z-30 border-b border-slate-100">
+<h2 class="font-headline font-extrabold text-xl text-primary">Notification Center</h2>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-100">
+<div class="text-right">
+<p class="text-xs font-bold text-primary">Alex Sterling</p>
+<p class="text-[10px] text-slate-500 font-medium">Standard Account</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
+<img alt="Alex Sterling" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9aNNnB0ZAQaLan3HveRvBbpda0lOQpqVtJUsFPE-Dpo18mNjCTg7gwY71NYVuK7zGIy6Kvfyf0BnpSPieFXcDeD1fAANgxlZUCCMbZ5QnEKHVBsszzfWNZju9hJTSzpoAS-9z86HDBogTCmXQxB9longv76rfmqaPov9OAQuBggZsF81uaGrJOg4GzpxoAri7HkFHaIRimQ53dq9-CCv8o7dl4EugnzMbjWl2aymN_n_QcUK2j1uCMsNDauo4MqSgn_N9CHMzeSnR"/>
+</div>
+</div>
+</div>
+</header>
+<div class="max-w-[1200px] mx-auto px-8 py-10 space-y-12">
+<!-- Segmented Switch / Tabs -->
+<div class="flex justify-center">
+<div class="inline-flex p-1 bg-surface-container-low rounded-2xl shadow-sm">
+<button class="px-8 py-2.5 bg-white shadow-sm rounded-xl text-sm font-bold text-primary transition-all">Inbox &amp; Alerts</button>
+<button class="px-8 py-2.5 text-sm font-medium text-slate-500 hover:text-primary transition-all">Support Desk</button>
+<button class="px-8 py-2.5 text-sm font-medium text-slate-500 hover:text-primary transition-all">Preferences</button>
+</div>
+</div>
+<!-- Urgent Alert Section -->
+<section class="animate-in fade-in slide-in-from-top-4 duration-700">
+<div class="bg-[#FFF4F2] border border-red-100 p-6 rounded-[24px] flex items-start gap-5 shadow-sm">
+<div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-error flex-shrink-0">
+<span class="material-symbols-outlined text-3xl">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-headline font-bold text-error">Travel Notice: Flight SV241</h3>
+<span class="text-[10px] font-bold uppercase tracking-widest text-red-400">Update Required</span>
+</div>
+<p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            Departure for the "Alpine Retreat" has been moved forward by 2 hours. Please check your updated travel schedule.
+                        </p>
+<div class="flex gap-3">
+<button class="px-5 py-2 bg-error text-white text-xs font-bold rounded-lg shadow-sm hover:opacity-90 transition-opacity">View Details</button>
+<button class="px-5 py-2 bg-white text-error border border-red-100 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors">Dismiss</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Grid Layout for Notifications and Sidebar -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Notification List (8 Columns) -->
+<div class="lg:col-span-8 space-y-6">
+<div class="flex items-center justify-between">
+<h4 class="font-headline font-bold text-lg text-primary">Recent Notifications</h4>
+<button class="text-xs font-bold text-secondary hover:underline underline-offset-4">Mark all as read</button>
+</div>
+<div class="space-y-3">
+<!-- Unread Notification Item -->
+<div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_-4px_rgba(0,17,58,0.05)] border-l-4 border-secondary flex items-start gap-4 transition-transform hover:scale-[1.01] cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h5 class="text-sm font-bold text-primary">Payment Confirmed</h5>
+<span class="text-[10px] text-slate-400 font-medium">2m ago</span>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed">Deposit for the Amalfi Coast Expedition has been processed. A receipt is available in your account.</p>
+</div>
+<div class="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0"></div>
+</div>
+<!-- Read Notification Item -->
+<div class="bg-surface-container-lowest p-5 rounded-[24px] border border-transparent flex items-start gap-4 opacity-80 hover:opacity-100 transition-all cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 flex-shrink-0">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h5 class="text-sm font-semibold text-primary">Documents Ready</h5>
+<span class="text-[10px] text-slate-400 font-medium">Yesterday</span>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed">Travel vouchers are now available for download in the Documents section of your account.</p>
+</div>
+</div>
+<!-- High Priority Read Item -->
+<div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_-4px_rgba(0,17,58,0.05)] flex items-start gap-4 transition-all cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container flex-shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h5 class="text-sm font-bold text-primary">Security Update</h5>
+<span class="text-[10px] text-slate-400 font-medium">3 days ago</span>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed">A new login was detected from a Chrome browser on Windows. If this wasn't you, please update your password.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Preferences (4 Columns) -->
+<div class="lg:col-span-4 space-y-8">
+<div class="bg-white p-8 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+<h4 class="font-headline font-bold text-primary mb-6">Channels</h4>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-bold text-primary">Push Notifications</p>
+<p class="text-[10px] text-slate-500">App-based alerts</p>
+</div>
+<div class="w-10 h-5 bg-secondary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 bg-white w-3 h-3 rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-bold text-primary">Email Updates</p>
+<p class="text-[10px] text-slate-500">General account activity</p>
+</div>
+<div class="w-10 h-5 bg-secondary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 bg-white w-3 h-3 rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between opacity-50">
+<div>
+<p class="text-sm font-bold text-primary">SMS Alerts</p>
+<p class="text-[10px] text-slate-500">Travel schedule changes</p>
+</div>
+<div class="w-10 h-5 bg-slate-200 rounded-full relative cursor-pointer">
+<div class="absolute left-1 top-1 bg-white w-3 h-3 rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<div class="mt-10 pt-8 border-t border-slate-50">
+<h4 class="font-headline font-bold text-primary mb-6">Categories</h4>
+<div class="space-y-5">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 rounded border-2 border-secondary bg-secondary flex items-center justify-center text-white transition-colors">
+<span class="material-symbols-outlined text-[14px] font-bold">check</span>
+</div>
+<span class="text-xs font-medium text-slate-600 group-hover:text-primary transition-colors">Booking Reminders</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 rounded border-2 border-secondary bg-secondary flex items-center justify-center text-white transition-colors">
+<span class="material-symbols-outlined text-[14px] font-bold">check</span>
+</div>
+<span class="text-xs font-medium text-slate-600 group-hover:text-primary transition-colors">Account Updates</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-5 h-5 rounded border-2 border-slate-300 flex items-center justify-center text-white transition-colors group-hover:border-secondary">
+</div>
+<span class="text-xs font-medium text-slate-500 group-hover:text-primary transition-colors">Product News</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Support Section Heading -->
+<div class="pt-10 border-t border-slate-100 flex flex-col items-center text-center max-w-2xl mx-auto space-y-4">
+<span class="text-secondary text-xs font-bold tracking-widest uppercase">Support Desk</span>
+<h3 class="text-3xl font-headline font-extrabold text-primary">Help Center</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Resources and assistance for managing your TravelBook account and scheduled trips.</p>
+</div>
+<!-- Help Categories (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-8 bg-white rounded-[24px] border border-transparent hover:border-secondary-container transition-all group shadow-sm">
+<div class="mb-4 text-secondary opacity-60 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-3xl">travel_explore</span>
+</div>
+<h5 class="font-headline font-bold text-primary mb-2">Booking Management</h5>
+<p class="text-xs text-slate-500 leading-relaxed mb-4">Procedures for rescheduling bookings and adjusting travel dates.</p>
+<a class="text-[10px] font-bold text-secondary flex items-center gap-1 group/link" href="#">
+                        View Guide <span class="material-symbols-outlined text-sm transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+</a>
+</div>
+<div class="p-8 bg-white rounded-[24px] border border-transparent hover:border-secondary-container transition-all group shadow-sm">
+<div class="mb-4 text-secondary opacity-60 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
+</div>
+<h5 class="font-headline font-bold text-primary mb-2">Refund Processing</h5>
+<p class="text-xs text-slate-500 leading-relaxed mb-4">Track the status of refund requests and standard processing timelines.</p>
+<a class="text-[10px] font-bold text-secondary flex items-center gap-1 group/link" href="#">
+                        Track Status <span class="material-symbols-outlined text-sm transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+</a>
+</div>
+<div class="p-8 bg-white rounded-[24px] border border-transparent hover:border-secondary-container transition-all group shadow-sm">
+<div class="mb-4 text-secondary opacity-60 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-3xl">verified_user</span>
+</div>
+<h5 class="font-headline font-bold text-primary mb-2">Account Security</h5>
+<p class="text-xs text-slate-500 leading-relaxed mb-4">General information regarding travel insurance and account protection.</p>
+<a class="text-[10px] font-bold text-secondary flex items-center gap-1 group/link" href="#">
+                        Security Info <span class="material-symbols-outlined text-sm transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Contact Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+<!-- Support Contact Form (8 Columns) -->
+<div class="lg:col-span-8 bg-white p-10 rounded-[24px] shadow-[0_15px_50px_-15px_rgba(0,17,58,0.06)]">
+<h4 class="font-headline font-bold text-xl text-primary mb-2">Message the Help Desk</h4>
+<p class="text-slate-500 text-sm mb-8">Submit your inquiry below and an agent will respond via your notification center.</p>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Account Name</label>
+<input class="w-full h-12 px-4 bg-[#E1E3E4] border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all outline-none" placeholder="Alex Sterling" type="text" value="Alex Sterling"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+<input class="w-full h-12 px-4 bg-[#E1E3E4] border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all outline-none" placeholder="alex@sterling.com" type="email" value="alex@sterling.com"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Inquiry Topic</label>
+<div class="relative">
+<select class="w-full h-12 px-4 bg-[#E1E3E4] border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all outline-none appearance-none">
+<option>General Support Inquiry</option>
+<option>Booking Modification</option>
+<option>Payment Issue</option>
+<option>Technical Assistance</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Details</label>
+<textarea class="w-full p-4 bg-[#E1E3E4] border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all outline-none resize-none" placeholder="Provide details for your request..." rows="5"></textarea>
+</div>
+<div class="flex items-center justify-between pt-4">
+<p class="text-[11px] text-slate-400 max-w-[280px]">By submitting, you agree to the processing of your data as outlined in the Privacy Policy.</p>
+<button class="bg-secondary text-white px-10 py-4 rounded-xl font-headline font-bold hover:bg-[#005a5a] transition-colors shadow-lg shadow-secondary/20" type="submit">
+                                Send Message
+                            </button>
+</div>
+</form>
+</div>
+<!-- Contact Details (4 Columns) -->
+<div class="lg:col-span-4 space-y-6">
+<div class="bg-primary text-white p-8 rounded-[24px] relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
+<h4 class="font-headline font-bold text-lg mb-6 relative z-10">Direct Contact</h4>
+<div class="space-y-8 relative z-10">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white">mail</span>
+</div>
+<div>
+<p class="text-[10px] font-bold text-primary-fixed-dim uppercase tracking-wider mb-1">Email</p>
+<p class="text-sm font-semibold">care@travelbook.com</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white">call</span>
+</div>
+<div>
+<p class="text-[10px] font-bold text-primary-fixed-dim uppercase tracking-wider mb-1">Phone</p>
+<p class="text-sm font-semibold">+1 (800) 456-7890</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white">schedule</span>
+</div>
+<div>
+<p class="text-[10px] font-bold text-primary-fixed-dim uppercase tracking-wider mb-1">Availability</p>
+<p class="text-sm font-semibold">Live Agents Available Daily</p>
+<p class="text-[11px] text-white/60">Response within 24 hours</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container p-6 rounded-[24px] flex items-center justify-between group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary">chat</span>
+</div>
+<div>
+<p class="text-xs font-bold text-primary">Live Chat Support</p>
+<p class="text-[10px] text-slate-500">Agent Status: Active</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer (Shared Component) -->
+<footer class="mt-20 border-t border-slate-100 bg-white">
+<div class="max-w-[1200px] mx-auto py-8 px-8">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col items-center md:items-start">
+<span class="text-lg font-bold text-blue-900 font-headline">TravelBook</span>
+<p class="text-[10px] text-slate-400 font-manrope tracking-widest uppercase mt-1">© 2024 TravelBook. All rights reserved.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-[11px] font-bold text-slate-400 hover:text-blue-800 transition-colors uppercase tracking-widest" href="#">Privacy Policy</a>
+<a class="text-[11px] font-bold text-slate-400 hover:text-blue-800 transition-colors uppercase tracking-widest" href="#">Terms</a>
+<a class="text-[11px] font-bold text-slate-400 hover:text-blue-800 transition-colors uppercase tracking-widest" href="#">Legal</a>
+</div>
+</div>
+</div>
+</footer>
+</main>
+</body></html>

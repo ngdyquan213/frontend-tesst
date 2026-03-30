@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Foundation Design System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error-container": "#ffdad6",
+              "tertiary-fixed-dim": "#ffb59c",
+              "surface-container": "#edeeef",
+              "on-tertiary-container": "#e56c3e",
+              "on-surface-variant": "#444650",
+              "on-secondary-fixed-variant": "#004f4f",
+              "primary": "#00113a",
+              "tertiary": "#2c0800",
+              "on-secondary-container": "#006e6e",
+              "outline": "#757682",
+              "on-tertiary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-primary": "#ffffff",
+              "secondary-fixed": "#93f2f2",
+              "tertiary-fixed": "#ffdbcf",
+              "on-primary-fixed-variant": "#2a4386",
+              "surface-variant": "#e1e3e4",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-error": "#ffffff",
+              "primary-fixed": "#dbe1ff",
+              "inverse-surface": "#2e3132",
+              "on-tertiary-fixed": "#380c00",
+              "surface": "#f8f9fa",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#e7e8e9",
+              "outline-variant": "#c5c6d2",
+              "on-primary-fixed": "#00174a",
+              "primary-fixed-dim": "#b3c5ff",
+              "inverse-primary": "#b3c5ff",
+              "background": "#f8f9fa",
+              "on-primary-container": "#758dd5",
+              "surface-bright": "#f8f9fa",
+              "primary-container": "#002366",
+              "on-tertiary-fixed-variant": "#822800",
+              "surface-container-low": "#f3f4f5",
+              "on-secondary-fixed": "#002020",
+              "on-background": "#191c1d",
+              "surface-dim": "#d9dadb",
+              "surface-container-highest": "#e1e3e4",
+              "secondary-container": "#90efef",
+              "surface-tint": "#435b9f",
+              "secondary": "#006a6a",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#f0f1f2",
+              "error": "#ba1a1a",
+              "tertiary-container": "#4e1500",
+              "on-surface": "#191c1d"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-panel {
+        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.8);
+      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #c5c6d2; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-container">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-blue-900 dark:text-blue-50 font-headline">TravelBook</div>
+<nav class="hidden md:flex items-center gap-8 font-manrope font-semibold tracking-tight">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors" href="#">Destinations</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors" href="#">Experiences</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors" href="#">Journal</a>
+<a class="text-blue-900 dark:text-white border-b-2 border-blue-900 dark:border-blue-400 pb-1" href="#">Concierge</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-50 p-2 rounded-full transition-all">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-50 p-2 rounded-full transition-all">account_circle</button>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-20 max-w-7xl mx-auto px-6 lg:px-8">
+<!-- Hero Section -->
+<section class="mb-24">
+<h1 class="text-5xl md:text-7xl font-headline font-extrabold text-primary tracking-tighter mb-6">Foundation <span class="text-secondary">Reference.</span></h1>
+<p class="text-xl text-on-surface-variant max-w-2xl font-light leading-relaxed">The unified visual language for TravelBook. A system built on editorial authority, tonal layering, and the Digital Curator philosophy.</p>
+</section>
+<!-- 1. Visual System Summary -->
+<section class="mb-32">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+<h2 class="text-sm font-bold tracking-[0.2em] text-secondary uppercase">01. Visual System</h2>
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Color Palette -->
+<div class="space-y-6">
+<h3 class="font-headline text-2xl font-bold">Azure Horizon Palette</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="p-4 rounded-xl bg-primary text-on-primary aspect-square flex flex-col justify-end">
+<span class="text-xs opacity-70">Primary</span>
+<span class="font-bold">#00113A</span>
+</div>
+<div class="p-4 rounded-xl bg-secondary text-on-secondary aspect-square flex flex-col justify-end">
+<span class="text-xs opacity-70">Secondary</span>
+<span class="font-bold">#006A6A</span>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-highest text-on-surface aspect-square flex flex-col justify-end border border-outline-variant/10">
+<span class="text-xs opacity-70">Surface High</span>
+<span class="font-bold">#E1E3E4</span>
+</div>
+<div class="p-4 rounded-xl bg-secondary-container text-on-secondary-container aspect-square flex flex-col justify-end">
+<span class="text-xs opacity-70">Accent</span>
+<span class="font-bold">#90EFEF</span>
+</div>
+</div>
+</div>
+<!-- Typography -->
+<div class="space-y-6">
+<h3 class="font-headline text-2xl font-bold">Typography Hierarchy</h3>
+<div class="space-y-4">
+<div class="border-b border-outline-variant/20 pb-4">
+<p class="font-headline text-4xl font-extrabold tracking-tighter">Display Large</p>
+<p class="text-xs text-outline mt-1 italic">Manrope ExtraBold - 3.5rem</p>
+</div>
+<div class="border-b border-outline-variant/20 pb-4">
+<p class="font-headline text-xl font-bold">Headline Medium</p>
+<p class="text-xs text-outline mt-1 italic">Manrope Bold - 1.75rem</p>
+</div>
+<div>
+<p class="font-body text-base leading-relaxed">Body text is crafted for long-form editorial reading. Legibility is our primary luxury.</p>
+<p class="text-xs text-outline mt-1 italic">Inter Regular - 1rem</p>
+</div>
+</div>
+</div>
+<!-- Spacing & Radius -->
+<div class="space-y-6">
+<h3 class="font-headline text-2xl font-bold">Structural Tokens</h3>
+<div class="bg-surface-container-low p-6 rounded-xl space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium">Corner Radius (XL)</span>
+<div class="w-12 h-12 bg-primary rounded-xl"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium">Corner Radius (Full)</span>
+<div class="w-16 h-8 bg-secondary rounded-full"></div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<p class="text-xs leading-relaxed text-on-surface-variant italic">Rules: No 1px borders between major sections. Use tonal shifts for boundaries.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Shell Hierarchy -->
+<section class="mb-32">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+<h2 class="text-sm font-bold tracking-[0.2em] text-secondary uppercase">02. Shell Hierarchy</h2>
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Public Shell -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-outline-variant/5">
+<div class="h-40 bg-slate-200 relative overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="vibrant blue glacial lake surrounded by snow capped mountains under clear sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbTzNTJnmfFmqFdHeLXx6ly42WCD6Rep1JtwOkCDz-yymWCSZwUvenJQUBRjcXItKdmt2AhC622qgHELn6Rxch8LnXvpwIyWaW_rG3dGMCR4mSwmM243j1j63xqMkUGAQTwZvdmOtyGw-dshZiq0jCP2p6i-5Zh1ppM61CNltsqPnZT6l5fLbfEaDotTFdmoJ0cGGQbcSHqHliA6Yq9usowHhbLM-gOa4tZTD8bQNdY013oiuiBwlBKcs-Yhr5LzFNnZDYvtwsP4I-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="p-6">
+<h4 class="font-headline font-bold mb-1">Public / Editorial</h4>
+<p class="text-xs text-outline uppercase tracking-widest mb-4">Focus: Breathability &amp; Aspiration</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold">TRANSPARENT NAV</span>
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold">HERO IMAGERY</span>
+</div>
+</div>
+</div>
+<!-- Admin Shell -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm flex border border-outline-variant/5">
+<div class="w-16 bg-primary h-full flex flex-col items-center py-6 gap-6">
+<div class="w-8 h-8 rounded-lg bg-white/20"></div>
+<div class="w-8 h-8 rounded-lg bg-white/10"></div>
+<div class="w-8 h-8 rounded-lg bg-white/10"></div>
+</div>
+<div class="p-6 flex-1">
+<h4 class="font-headline font-bold mb-1">Admin / Operational</h4>
+<p class="text-xs text-outline uppercase tracking-widest mb-4">Focus: Density &amp; Efficiency</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold">SIDE NAV</span>
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold">DATA GRIDS</span>
+</div>
+</div>
+</div>
+<!-- Auth Shell -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-outline-variant/5 p-12 flex flex-col items-center text-center">
+<div class="w-12 h-12 bg-secondary-container rounded-xl mb-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">lock</span>
+</div>
+<h4 class="font-headline font-bold mb-1">Auth / Security</h4>
+<p class="text-xs text-outline uppercase tracking-widest">Focus: Zero Distractions</p>
+</div>
+<!-- Success Splash -->
+<div class="group relative bg-primary rounded-xl overflow-hidden shadow-sm border border-outline-variant/5 p-12 flex flex-col items-center text-center text-on-primary">
+<div class="w-12 h-12 bg-white/10 rounded-full mb-4 flex items-center justify-center">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<h4 class="font-headline font-bold mb-1">Transaction Success</h4>
+<p class="text-xs opacity-60 uppercase tracking-widest">Focus: Emotional Payoff</p>
+</div>
+</div>
+</section>
+<!-- 3. Component Families -->
+<section class="mb-32">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+<h2 class="text-sm font-bold tracking-[0.2em] text-secondary uppercase">03. Component Families</h2>
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+</div>
+<div class="space-y-24">
+<!-- Buttons -->
+<div>
+<h3 class="font-headline text-2xl font-bold mb-8">Button Hierarchy</h3>
+<div class="flex flex-wrap items-end gap-8">
+<div class="space-y-3">
+<button class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-bold shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-all">Primary Action</button>
+<p class="text-[10px] text-center text-outline font-bold uppercase">Gradient Fill</p>
+</div>
+<div class="space-y-3">
+<button class="px-8 py-4 bg-secondary text-on-secondary rounded-lg font-bold hover:bg-on-secondary-container transition-all">High Conversion</button>
+<p class="text-[10px] text-center text-outline font-bold uppercase">Teal Accent</p>
+</div>
+<div class="space-y-3">
+<button class="px-8 py-4 border-2 border-primary text-primary rounded-lg font-bold hover:bg-primary/5 transition-all">Outline State</button>
+<p class="text-[10px] text-center text-outline font-bold uppercase">Ghost/Secondary</p>
+</div>
+<div class="space-y-3">
+<button class="px-6 py-2 text-primary font-bold hover:underline transition-all underline-offset-4">Tertiary Link</button>
+<p class="text-[10px] text-center text-outline font-bold uppercase">Minimalist</p>
+</div>
+</div>
+</div>
+<!-- Cards -->
+<div>
+<h3 class="font-headline text-2xl font-bold mb-8">Card Families</h3>
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-12">
+<!-- Tour Card Horizontal -->
+<div class="flex flex-col md:flex-row bg-white rounded-xl overflow-hidden shadow-sm border border-outline-variant/10 group">
+<div class="md:w-48 h-48 md:h-auto overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="luxury boutique hotel pool at twilight with soft ambient lighting and palm trees" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEjwYw5KMjjJylmD7ai-AFOWDgAM5sEGGsKS7jFe6FsekKESAgo7fT4AZ5bsXqRQZjRI1MyoQ24gZTzRhPH01Tgo_GfTx4vN_BZBAjnbxRDXFVIME3nffTGZR_4MbCBSo7KHEjMc9YHidbDjfgf42bgReaPJc9AVBjyAxkHinmcfjgVYooGUPrFbm4qb-xOZb_qRhwurSBlGYa9i0jw2dN_kh76543chBUWGVqDJmtZiDoVSHWKbNTjSdLUEA_N9CxM_dbNy9-q-Hd"/>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-2">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase">Exclusive</span>
+<span class="text-sm font-bold text-primary">$1,250/pp</span>
+</div>
+<h4 class="text-xl font-headline font-bold">Amalfi Coast Retreat</h4>
+<p class="text-sm text-on-surface-variant line-clamp-2 mt-1">Experience the sheer cliffs and rugged shoreline of Italy's most famous coast.</p>
+</div>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-surface-container">
+<div class="flex items-center gap-1 text-xs text-outline">
+<span class="material-symbols-outlined text-sm">schedule</span> 7 Days
+                                    </div>
+<div class="flex items-center gap-1 text-xs text-outline">
+<span class="material-symbols-outlined text-sm">group</span> Max 12
+                                    </div>
+</div>
+</div>
+</div>
+<!-- Compact Admin Card -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">event_available</span>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">Booking #8829</p>
+<p class="text-xs text-outline">Johnathan Doe • 24 Oct 2024</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-[10px] font-bold uppercase">Confirmed</span>
+</div>
+</div>
+</div>
+<!-- Forms -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+<div>
+<h3 class="font-headline text-2xl font-bold mb-8">Form Controls</h3>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-outline ml-1">Destination Name</label>
+<input class="w-full px-6 py-4 bg-surface-container-highest border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-on-surface" placeholder="e.g. Kyoto, Japan" type="text"/>
+</div>
+<div class="flex gap-4">
+<div class="flex-1 space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-outline ml-1">Check In</label>
+<div class="relative">
+<input class="w-full px-6 py-4 bg-surface-container-highest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface" type="date"/>
+</div>
+</div>
+<div class="flex-1 space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-outline ml-1">Guests</label>
+<select class="w-full px-6 py-4 bg-surface-container-highest border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-on-surface appearance-none">
+<option>2 Adults, 1 Child</option>
+<option>1 Adult</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-headline text-2xl font-bold mb-8">Status &amp; Feedback</h3>
+<div class="space-y-4">
+<div class="p-4 bg-green-50 text-green-800 rounded-xl border border-green-100 flex items-center gap-3">
+<span class="material-symbols-outlined text-green-600">check_circle</span>
+<span class="text-sm font-medium">Your luxury suite has been reserved.</span>
+</div>
+<div class="p-4 bg-amber-50 text-amber-800 rounded-xl border border-amber-100 flex items-center gap-3">
+<span class="material-symbols-outlined text-amber-600">pending</span>
+<span class="text-sm font-medium">Payment verification in progress.</span>
+</div>
+<div class="p-4 bg-red-50 text-red-800 rounded-xl border border-red-100 flex items-center gap-3">
+<span class="material-symbols-outlined text-red-600">error</span>
+<span class="text-sm font-medium">We couldn't process your transaction.</span>
+</div>
+<div class="p-4 bg-blue-50 text-blue-800 rounded-xl border border-blue-100 flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-600">info</span>
+<span class="text-sm font-medium">A new itinerary update is available.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Tables & Data Patterns -->
+<section class="mb-32">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+<h2 class="text-sm font-bold tracking-[0.2em] text-secondary uppercase">04. Data Patterns</h2>
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 overflow-hidden shadow-sm">
+<div class="p-6 border-b border-surface-container flex flex-col md:flex-row justify-between items-center gap-4">
+<h3 class="font-headline font-bold text-lg">Inventory Management</h3>
+<div class="flex gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-12 pr-6 py-2 bg-surface-container-low border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-primary/10" placeholder="Search listing..." type="text"/>
+</div>
+<button class="px-4 py-2 bg-surface-container text-on-surface rounded-full text-xs font-bold hover:bg-surface-container-high transition-all">Filters</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="bg-surface-container-low text-on-surface-variant font-bold uppercase text-[10px] tracking-widest">
+<tr>
+<th class="px-6 py-4">Property</th>
+<th class="px-6 py-4">Category</th>
+<th class="px-6 py-4">Stock</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-bold text-primary">Villa Azure, Mykonos</td>
+<td class="px-6 py-4 text-outline">Luxury Stay</td>
+<td class="px-6 py-4">04 Units</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-green-100 text-green-700 rounded-md font-bold text-[10px]">ACTIVE</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-bold text-primary">Safari Loft, Kenya</td>
+<td class="px-6 py-4 text-outline">Adventure</td>
+<td class="px-6 py-4">02 Units</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-amber-100 text-amber-700 rounded-md font-bold text-[10px]">LOW STOCK</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- 5. System States -->
+<section class="mb-32">
+<div class="flex items-center gap-4 mb-10">
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+<h2 class="text-sm font-bold tracking-[0.2em] text-secondary uppercase">05. System States</h2>
+<span class="h-px flex-1 bg-outline-variant/30"></span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Empty State -->
+<div class="bg-surface-container-low rounded-2xl p-12 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-outline mb-6">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'wght' 200;">travel_explore</span>
+</div>
+<h4 class="text-xl font-headline font-bold mb-2">No Journeys Found</h4>
+<p class="text-sm text-on-surface-variant max-w-xs mb-8 italic">Your travel history is currently empty. Start exploring our curated collections to find your next escape.</p>
+<button class="px-8 py-3 bg-primary text-white rounded-full font-bold text-sm">Explore Collections</button>
+</div>
+<!-- Loading State -->
+<div class="bg-white rounded-2xl p-8 border border-outline-variant/10 space-y-6">
+<div class="h-48 bg-surface-container rounded-xl animate-pulse"></div>
+<div class="space-y-3">
+<div class="h-6 w-2/3 bg-surface-container rounded-md animate-pulse"></div>
+<div class="h-4 w-full bg-surface-container rounded-md animate-pulse"></div>
+<div class="h-4 w-1/2 bg-surface-container rounded-md animate-pulse"></div>
+</div>
+<div class="flex gap-4">
+<div class="h-10 w-24 bg-surface-container rounded-full animate-pulse"></div>
+<div class="h-10 w-24 bg-surface-container rounded-full animate-pulse"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Continuity Notes -->
+<section class="bg-primary text-on-primary rounded-[2rem] p-12 md:p-20 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary blur-[120px] opacity-20 -mr-32 -mt-32"></div>
+<div class="relative z-10">
+<h2 class="text-3xl font-headline font-bold mb-8">Continuity Guidelines</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="space-y-4">
+<div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-secondary">01</div>
+<h4 class="font-bold">Spacing is Luxury</h4>
+<p class="text-sm opacity-70 leading-relaxed">If a layout feels crowded, jump two levels up the spacing scale. White space is functional.</p>
+</div>
+<div class="space-y-4">
+<div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-secondary">02</div>
+<h4 class="font-bold">No Harsh Borders</h4>
+<p class="text-sm opacity-70 leading-relaxed">Avoid solid 1px dividers. Use background tonal shifts or generous spacing to define content boundaries.</p>
+</div>
+<div class="space-y-4">
+<div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-secondary">03</div>
+<h4 class="font-bold">Typography First</h4>
+<p class="text-sm opacity-70 leading-relaxed">Pair Manrope's authority with Inter's clarity. Keep metadata small, tracked-out, and bold.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Anchor -->
+<footer class="w-full border-t border-slate-200 dark:border-slate-800 mt-20 bg-slate-50 dark:bg-slate-950">
+<div class="max-w-7xl mx-auto px-8 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="font-bold text-blue-900 dark:text-blue-100 font-headline">TravelBook</div>
+<div class="flex gap-8 text-sm font-manrope tracking-wide text-slate-500 dark:text-slate-400">
+<a class="hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Press Kit</a>
+<a class="hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Contact Support</a>
+</div>
+<p class="text-xs text-slate-500 font-manrope">© 2024 TravelBook Luxury Collective. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

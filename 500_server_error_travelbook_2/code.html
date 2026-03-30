@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-container": "#758dd5",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "primary-fixed": "#dbe1ff",
+                        "on-background": "#191c1d",
+                        "secondary": "#006a6a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#380c00",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f8f9fa",
+                        "primary-container": "#002366",
+                        "surface-tint": "#435b9f",
+                        "outline-variant": "#c5c6d2",
+                        "tertiary-container": "#4e1500",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#757682",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-container": "#006e6e",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed": "#93f2f2",
+                        "inverse-primary": "#b3c5ff",
+                        "on-surface-variant": "#444650",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d9dadb",
+                        "tertiary": "#2c0800",
+                        "on-secondary": "#ffffff",
+                        "primary": "#00113a",
+                        "on-secondary-fixed": "#002020",
+                        "on-tertiary-container": "#e56c3e",
+                        "surface-container-low": "#f3f4f5",
+                        "secondary-container": "#90efef",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-primary-fixed": "#00174a",
+                        "surface": "#f8f9fa",
+                        "inverse-surface": "#2e3132",
+                        "background": "#f8f9fa",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-container-high": "#e7e8e9",
+                        "on-surface": "#191c1d",
+                        "surface-container": "#edeeef"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3BaseFilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/baseFilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.015;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm shadow-blue-900/5">
+<div class="flex justify-between items-center h-16 px-8 max-w-[1200px] mx-auto w-full">
+<div class="text-2xl font-bold tracking-tight text-blue-900 dark:text-white font-headline">TravelBook</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="font-manrope text-sm font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors" href="#">Home</a>
+<a class="font-manrope text-sm font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors" href="#">Destinations</a>
+<a class="font-manrope text-sm font-medium tracking-wide text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors" href="#">Support</a>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-primary">menu</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-32 pb-20 px-6">
+<div class="max-w-[1200px] mx-auto flex flex-col items-center text-center">
+<!-- 500 Visual Anchor -->
+<div class="relative mb-12 select-none">
+<span class="text-[12rem] md:text-[20rem] font-extrabold leading-none text-surface-container-high opacity-40 font-headline tracking-tighter">500</span>
+<div class="absolute inset-0 flex items-center justify-center pt-8">
+<span class="material-symbols-outlined text-8xl text-primary/10">cloud_off</span>
+</div>
+</div>
+<!-- Error Message -->
+<div class="max-w-2xl">
+<h1 class="font-headline text-4xl md:text-5xl font-extrabold text-primary mb-6 tracking-tight">
+                    Something went wrong on our end
+                </h1>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-10 font-body">
+                    We are experiencing a temporary server issue. Your data is secure, and we are working to resolve this as quickly as possible. Please try refreshing the page or return to your dashboard.
+                </p>
+</div>
+<!-- Primary Actions -->
+<div class="flex flex-col md:flex-row gap-4 mb-16 w-full md:w-auto">
+<button class="px-8 py-4 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white font-semibold text-base shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500">refresh</span>
+                    Retry Action
+                </button>
+<button class="px-8 py-4 rounded-xl border-2 border-outline-variant text-primary font-semibold text-base hover:bg-surface-container-low transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">help_outline</span>
+                    Go to Support
+                </button>
+</div>
+<!-- Supporting Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
+<div class="p-6 rounded-xl bg-surface-container-lowest border border-white/40 shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex items-start gap-4 text-left">
+<div class="w-12 h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">query_stats</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-primary mb-1">Check Status</h3>
+<p class="text-sm text-on-surface-variant">View real-time system health and ongoing fixes.</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-lowest border border-white/40 shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex items-start gap-4 text-left">
+<div class="w-12 h-12 rounded-full bg-primary-fixed-dim/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">dashboard</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-primary mb-1">Return to Dashboard</h3>
+<p class="text-sm text-on-surface-variant">Head back to your personalized travel overview.</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 mt-auto bg-slate-50 dark:bg-slate-950">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 max-w-[1200px] mx-auto w-full">
+<div class="mb-6 md:mb-0">
+<div class="font-bold text-blue-900 dark:text-white font-headline mb-2">TravelBook</div>
+<p class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500">© 2024 TravelBook. Your journey, curated.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-blue-200 hover:underline decoration-blue-900/30 transition-all" href="#">Privacy Policy</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-blue-200 hover:underline decoration-blue-900/30 transition-all" href="#">Terms of Service</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-blue-200 hover:underline decoration-blue-900/30 transition-all" href="#">System Status</a>
+</div>
+</div>
+</footer>
+<!-- Ambient Texture Layer -->
+<div class="fixed inset-0 pointer-events-none bg-noise z-0"></div>
+</body></html>

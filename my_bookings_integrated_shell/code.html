@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Bookings - TravelBook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-surface-variant": "#444650",
+              "tertiary": "#2c0800",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed": "#380c00",
+              "background": "#f8f9fa",
+              "surface": "#f8f9fa",
+              "on-primary-container": "#758dd5",
+              "surface-container-highest": "#e1e3e4",
+              "surface-container-low": "#f3f4f5",
+              "on-error": "#ffffff",
+              "secondary": "#006a6a",
+              "tertiary-fixed": "#ffdbcf",
+              "outline": "#757682",
+              "primary": "#00113a",
+              "secondary-container": "#90efef",
+              "primary-container": "#002366",
+              "primary-fixed-dim": "#b3c5ff",
+              "on-primary-fixed-variant": "#2a4386",
+              "on-secondary-fixed": "#002020",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-secondary-container": "#006e6e",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#dbe1ff",
+              "on-tertiary-container": "#e56c3e",
+              "on-surface": "#191c1d",
+              "on-secondary": "#ffffff",
+              "surface-container-high": "#e7e8e9",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e1e3e4",
+              "on-error-container": "#93000a",
+              "tertiary-container": "#4e1500",
+              "on-primary-fixed": "#00174a",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-bright": "#f8f9fa",
+              "outline-variant": "#c5c6d2",
+              "surface-dim": "#d9dadb",
+              "surface-container": "#edeeef",
+              "inverse-surface": "#2e3132",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-primary": "#ffffff",
+              "surface-tint": "#435b9f",
+              "on-secondary-fixed-variant": "#004f4f",
+              "on-background": "#191c1d",
+              "tertiary-fixed-dim": "#ffb59c",
+              "inverse-primary": "#b3c5ff",
+              "secondary-fixed": "#93f2f2",
+              "error": "#ba1a1a"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .booking-card-shadow {
+            shadow: 0 40px 60px -15px rgba(0,0,0,0.06);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 w-full z-50 glass-header shadow-[0_40px_60px_-15px_rgba(0,0,0,0.06)] border-none">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-bold tracking-tighter text-blue-900 font-headline">TravelBook</span>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-500 hover:text-blue-800 transition-colors font-headline tracking-tight font-semibold" href="#">Explore</a>
+<a class="text-slate-500 hover:text-blue-800 transition-colors font-headline tracking-tight font-semibold" href="#">Destinations</a>
+<a class="text-slate-500 hover:text-blue-800 transition-colors font-headline tracking-tight font-semibold" href="#">Journals</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="p-2 text-slate-500 hover:bg-slate-100/50 rounded-lg transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100/50 rounded-lg transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-white shadow-sm cursor-pointer active:scale-95 transition-transform">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Professional portrait of a traveler with a friendly expression in soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY3ng0zvxqSNXCd0f9bV2uD4iTStkEDub11aHtQ3SO5t55zF0rvPrPBbQkEr7W-sXYF4vfB4E5xCGf_uXAxylDoouVVsTkfC8UXTTjnr8V7R7ucHQi4_xOyVzlukmYRSo5zA-Dlj6BJXX1RqDxwWMAkqfQRafJmlzt1_kFtMP3Np0UDZanFNPt2vnPZxx-xdrtpagewqVodRATYgit7IzVlR8uCcXidflLrkuOzBtHvezxcp6tqO3p-YMNlmEPd__NLMq0eQioEePv"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-20">
+<!-- Sub-Navigation -->
+<div class="w-full bg-surface border-none mb-12">
+<div class="max-w-[1200px] mx-auto px-6">
+<div class="flex items-center gap-10 border-none overflow-x-auto no-scrollbar">
+<a class="py-4 text-slate-500 hover:text-primary transition-colors font-headline font-semibold text-sm tracking-wide" href="#">Dashboard</a>
+<a class="py-4 text-slate-500 hover:text-primary transition-colors font-headline font-semibold text-sm tracking-wide" href="#">Profile</a>
+<a class="py-4 text-primary border-b-2 border-primary font-headline font-bold text-sm tracking-wide" href="#">Bookings</a>
+<a class="py-4 text-slate-500 hover:text-primary transition-colors font-headline font-semibold text-sm tracking-wide" href="#">Vouchers</a>
+<a class="py-4 text-slate-500 hover:text-primary transition-colors font-headline font-semibold text-sm tracking-wide" href="#">Documents</a>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="max-w-[1200px] mx-auto px-6">
+<header class="mb-10 flex justify-between items-end">
+<div>
+<h1 class="text-4xl font-headline font-extrabold tracking-tight text-primary mb-2">My Bookings</h1>
+<p class="text-on-surface-variant font-body">Manage your upcoming journeys and past explorations.</p>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all active:scale-95">
+                    New Booking
+                </button>
+</header>
+<!-- Bookings List -->
+<div class="space-y-8">
+<!-- Card 1: Upcoming -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-[0_40px_60px_-15px_rgba(0,0,0,0.06)] transition-all hover:translate-y-[-4px]">
+<div class="w-full md:w-72 h-48 md:h-auto shrink-0 relative">
+<img alt="Coastal Amalfi" class="w-full h-full object-cover" data-alt="Stunning sunset view of Amalfi Coast with pastel colored houses perched on cliffs overlooking deep blue Mediterranean sea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY8jhi6vbC9bTEUt-_VsDJpfeo9fdE6Zo7HzWJG4GWJrB51PymwIFgvlIYvEqQScBd5fPO4CKFF-etwKaH-8de6uYqHmo9bOblW4ZTOWtud5e-2xPsCfRfFxs1X0UwIMYulsBSiuk1kyPwe_izkWOYIYV21X37dUney4wGTUrboRiomX45jtKeGmWqbJBen7ti1st0gpb3W9fP9ElqI4C9z7FMoHwNZxalsXvv9RweHrI75N6uylbvdC5Ikm9Q9mVE27Y2HrgVBcsv"/>
+</div>
+<div class="p-8 flex-grow flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-[10px] uppercase tracking-[0.1em] font-bold text-outline mb-1 block">Booking ID: #TB-88290</span>
+<h3 class="text-2xl font-headline font-bold text-primary">Amalfi Coast Private Explorer</h3>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">Oct 12 — Oct 19, 2024</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="person_pin_circle">person_pin_circle</span>
+<span class="text-sm">Positano, Italy</span>
+</div>
+</div>
+</div>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">Confirmed</span>
+</div>
+<div class="flex items-center justify-between pt-6 border-t border-surface-container-low">
+<div class="flex -space-x-3">
+<div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait of a male traveler" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe4A-RJwgQcWvnw-lBOh4B8OQkl9EncrI-AXZFEKpjbdPF9fqo5JJqQAzccK1lcSxjrz_deCUK9tuLw_GUe03-URsuDp_RghhJzFD4wi_0bgB-Os2N1dqpN0c311GogvUwhq1r39-GZ6lxX3r0aywOWVWDn8rx0Ejyk4_R1cGsXpfIdfObyK6AzAqaltZdeqdbMPx7btR47zqEFW14IqFn2kl6pFxvGtC5qlswnwszDGCYv4aO3wh9Z3WldbNjfAN0WboKN9i6kxo5"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait of a female traveler" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5kBPWT704aNaD4Fhx-tn-FnoFOYG8Lk-QBYNCeBe8sj6Y2RL-c2b8D5T4X8etqnbRtAlHYPIeJDaBm3MszF8cuCh2WtbapkAj_IE38GEfOjOYISD7Y2Aa954t1G2FOELUB6EQDEAHrw4lkYFmf91fo87WYHWQE5jqa_3LVauAViLF2OCP-zrGLVPAenGxrYWmCRLtllMxeFN8dd2cySsB4OMMOrLN_KO8JqzUUPBPkATVFlvHJC2wwYYxzHa4fGIz7KodlKANcttP"/>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border-2 border-white flex items-center justify-center text-[10px] font-bold text-on-surface-variant">
+                                    +2
+                                </div>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 rounded-lg border border-outline-variant text-primary font-semibold text-sm hover:bg-surface-container transition-colors">Manage</button>
+<button class="px-5 py-2.5 rounded-lg bg-primary text-white font-semibold text-sm shadow-md hover:bg-primary-container transition-all">Get Tickets</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Pending -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-[0_40px_60px_-15px_rgba(0,0,0,0.06)] transition-all hover:translate-y-[-4px]">
+<div class="w-full md:w-72 h-48 md:h-auto shrink-0 relative">
+<img alt="Kyoto Temple" class="w-full h-full object-cover" data-alt="Serene traditional Japanese Zen garden with a red pagoda nestled among lush green trees and raked gravel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0FSxtSzqs4QZX9uoDjhA5kpclklhqnbQr3nWV22doJQrWsNwisd_ZJcMgoZrC50ndSt8atqAh2V0Awi-wFaiVSqsplpPQU4h2Yj-D0qT4UvhaNzTfmAGmp2dnkrwpzjr--lxjLi8mDtKPpp_6mcgcwffYiG2gqo2GdHCCPFIVzSCvq9wm1h7eL02LI-HcWDQBzkCqda-j4_zY7Zs0CMFesP0iVXumCW4T7562tCCwgGU_giQWBUOSoZ50BgXv3ONgfab8_0l63NQM"/>
+</div>
+<div class="p-8 flex-grow flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-[10px] uppercase tracking-[0.1em] font-bold text-outline mb-1 block">Booking ID: #TB-90412</span>
+<h3 class="text-2xl font-headline font-bold text-primary">Zen Sanctuaries of Kyoto</h3>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">Nov 04 — Nov 10, 2024</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="person_pin_circle">person_pin_circle</span>
+<span class="text-sm">Kyoto, Japan</span>
+</div>
+</div>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">Pending Payment</span>
+</div>
+<div class="flex items-center justify-between pt-6 border-t border-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-amber-600" data-icon="warning">warning</span>
+<p class="text-xs text-on-surface-variant">Reservation expires in 4 hours.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 rounded-lg border border-outline-variant text-primary font-semibold text-sm hover:bg-surface-container transition-colors">Cancel</button>
+<button class="px-5 py-2.5 rounded-lg bg-secondary text-white font-semibold text-sm shadow-md hover:bg-on-secondary-fixed-variant transition-all">Pay Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Past -->
+<div class="bg-surface-container-low rounded-2xl overflow-hidden flex flex-col md:flex-row opacity-80 filter grayscale-[0.3]">
+<div class="w-full md:w-72 h-48 md:h-auto shrink-0 relative">
+<img alt="Swiss Alps" class="w-full h-full object-cover" data-alt="Majestic snow-capped Swiss Alps under a clear blue sky with a traditional alpine chalet in the foreground" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbO6wTw2JNFvGuBxOhv8_aKP1i-xNs7RJLNh56DQHykL8CC1eJeDK82kkQBI1lsjI-SRZe7-Yk_wm5ZfkBWSRErqaMNTxlezgOVTgL6M84RZi-w1-GiH38kp4iXajc33nQZ0Y_LP6H95xWr-wELyh1gWuY1Z9q3fn1a8w-Uq27ImRimuzU23yGxJ77M903nns97o4hx4OlTYZgzX2xk0EVU4yX0YEHbdBV0nUnrb4-dpmFwrI66wBy1doSBphrFbgcfwAJwF1eIO0H"/>
+</div>
+<div class="p-8 flex-grow flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-[10px] uppercase tracking-[0.1em] font-bold text-outline mb-1 block">Booking ID: #TB-77301</span>
+<h3 class="text-2xl font-headline font-bold text-primary">Swiss Alps Glacier Express</h3>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">Aug 15 — Aug 22, 2024</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="person_pin_circle">person_pin_circle</span>
+<span class="text-sm">Zermatt, Switzerland</span>
+</div>
+</div>
+</div>
+<span class="bg-surface-container-highest text-outline px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">Completed</span>
+</div>
+<div class="flex items-center justify-between pt-6 border-t border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<p class="text-xs text-on-surface-variant">Review submitted. Thank you!</p>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 rounded-lg bg-white border border-outline-variant text-primary font-semibold text-sm hover:shadow-sm transition-all">Download Invoice</button>
+<button class="px-5 py-2.5 rounded-lg border border-primary text-primary font-semibold text-sm hover:bg-primary hover:text-white transition-all">Book Again</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination/Load More (Subtle) -->
+<div class="mt-16 flex flex-col items-center">
+<p class="text-sm text-outline mb-4">Showing 3 of 12 bookings</p>
+<button class="text-primary font-headline font-bold text-sm hover:underline flex items-center gap-2 transition-all">
+                    Load previous years
+                    <span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer Space -->
+<footer class="mt-20 py-12 bg-surface-container-low">
+<div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+<p class="text-outline text-sm">© 2024 TravelBook Global Concierge. All rights reserved.</p>
+<div class="flex gap-8">
+<a class="text-sm text-outline hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+</body></html>

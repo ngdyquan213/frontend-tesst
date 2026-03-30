@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook Admin - Booking Operations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#004f4f",
+              "inverse-surface": "#2e3132",
+              "surface-container": "#edeeef",
+              "on-tertiary-container": "#e56c3e",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-tertiary-fixed-variant": "#822800",
+              "background": "#f8f9fa",
+              "on-tertiary": "#ffffff",
+              "primary-container": "#002366",
+              "on-primary-fixed": "#00174a",
+              "error-container": "#ffdad6",
+              "surface-container-low": "#f3f4f5",
+              "on-secondary-fixed": "#002020",
+              "error": "#ba1a1a",
+              "surface-container-high": "#e7e8e9",
+              "on-secondary-container": "#006e6e",
+              "on-primary-container": "#758dd5",
+              "on-secondary": "#ffffff",
+              "secondary": "#006a6a",
+              "on-error-container": "#93000a",
+              "surface-bright": "#f8f9fa",
+              "on-primary": "#ffffff",
+              "on-primary-fixed-variant": "#2a4386",
+              "tertiary-fixed": "#ffdbcf",
+              "on-background": "#191c1d",
+              "surface-container-highest": "#e1e3e4",
+              "surface-tint": "#435b9f",
+              "tertiary-container": "#4e1500",
+              "secondary-container": "#90efef",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#dbe1ff",
+              "primary-fixed-dim": "#b3c5ff",
+              "tertiary": "#2c0800",
+              "outline": "#757682",
+              "surface-variant": "#e1e3e4",
+              "primary": "#00113a",
+              "on-surface-variant": "#444650",
+              "on-tertiary-fixed": "#380c00",
+              "secondary-fixed": "#93f2f2",
+              "on-error": "#ffffff",
+              "surface": "#f8f9fa",
+              "outline-variant": "#c5c6d2",
+              "tertiary-fixed-dim": "#ffb59c",
+              "surface-dim": "#d9dadb",
+              "inverse-primary": "#b3c5ff",
+              "on-surface": "#191c1d"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-manrope { font-family: 'Manrope', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .shimmer {
+            background: linear-gradient(90deg, transparent 25%, rgba(0, 17, 58, 0.05) 50%, transparent 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased flex overflow-hidden">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-4 h-screen w-64 bg-slate-50 border-r border-slate-200/50 z-50">
+<div class="mb-8 px-4">
+<h1 class="text-2xl font-bold tracking-tight text-primary">TravelBook</h1>
+<p class="text-xs font-manrope font-medium tracking-wide text-slate-500 uppercase mt-1">Admin Area</p>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto no-scrollbar">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-primary hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-primary hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Tours</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-primary hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Schedules</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-primary hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Pricing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/5 text-primary rounded-xl font-bold" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-primary hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">keyboard_return</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-primary hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-primary hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings_applications</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Operations</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center h-16 px-8 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm z-40">
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-sm w-80 focus:ring-2 focus:ring-primary/20 font-body" placeholder="Search travel records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:text-primary transition-all duration-300">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-primary transition-all duration-300">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-xs font-bold font-manrope text-primary">Alex Rivera</p>
+<p class="text-[10px] text-slate-500 font-medium">Operator</p>
+</div>
+<img alt="Alex Rivera" class="h-9 w-9 rounded-full object-cover border-2 border-primary/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1kc6EjuDEwCMxtJZLSOEUg0x3vUQX3XrXNgjlTT7SOXvfrRdZILVfJcJNmVsIyCId-Hp9p5Bhb3MD81lgPfVRvdROLIP-OLe87ei0Jbp0wuHl5UaMhpX7ogQi_Di2FqobPO-GnLv3dmWhesWHX_eMxLVUuQYGsrP6VvBFkVpYSMtCn0rn5ErS7cpwJQM5rd0kMNK8mOPhnBZtkorHBzKC2y1CLymBYUMj1J1XARYF6b8wr6kPqHTx09oJoP1P2S2D04CSjdHA2ELL"/>
+</div>
+</div>
+</header>
+<!-- Dynamic Content Canvas -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Table Section -->
+<section class="flex-1 p-8 overflow-y-auto no-scrollbar bg-surface">
+<div class="mb-8">
+<h2 class="text-3xl font-manrope font-extrabold text-primary tracking-tight">Booking Operations</h2>
+<p class="text-slate-500 mt-1 font-body">Review and manage travel booking lifecycle records.</p>
+</div>
+<!-- Filter Toolbar -->
+<div class="flex items-center justify-between mb-6 bg-white p-2 rounded-2xl shadow-sm">
+<div class="flex items-center gap-1">
+<button class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-white shadow-md">All Records</button>
+<button class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50">Pending</button>
+<button class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50">Confirmed</button>
+<button class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50">Cancelled</button>
+</div>
+<div class="flex items-center gap-3 px-2">
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-primary border border-primary/10 hover:bg-slate-50 transition-all">
+<span class="material-symbols-outlined text-lg">refresh</span>
+                        Refresh Queue
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-primary bg-surface-container hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Export Records
+                    </button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,17,58,0.05)] overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest font-manrope">Booking ID</th>
+<th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest font-manrope">Traveler</th>
+<th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest font-manrope">Destination</th>
+<th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest font-manrope">Date</th>
+<th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest font-manrope">Status</th>
+<th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest font-manrope">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="bg-primary/5 transition-colors cursor-pointer group">
+<td class="px-6 py-3">
+<span class="font-manrope font-bold text-primary">#TB-9241</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-primary/5 flex items-center justify-center text-primary font-bold text-xs">EL</div>
+<span class="font-semibold text-on-surface">Elena Lysenko</span>
+</div>
+</td>
+<td class="px-6 py-3 text-slate-600 font-medium">Santorini, Greece</td>
+<td class="px-6 py-3 text-slate-500 text-xs">Oct 24, 2023</td>
+<td class="px-6 py-3">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 uppercase tracking-wider">Pending</span>
+</td>
+<td class="px-6 py-3">
+<button class="p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-white transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors cursor-pointer group">
+<td class="px-6 py-3">
+<span class="font-manrope font-bold text-primary">#TB-8812</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-secondary/5 flex items-center justify-center text-secondary font-bold text-xs">JM</div>
+<span class="font-semibold text-on-surface">Julian Martinez</span>
+</div>
+</td>
+<td class="px-6 py-3 text-slate-600 font-medium">Kyoto, Japan</td>
+<td class="px-6 py-3 text-slate-500 text-xs">Oct 22, 2023</td>
+<td class="px-6 py-3">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container uppercase tracking-wider">Confirmed</span>
+</td>
+<td class="px-6 py-3">
+<button class="p-2 rounded-lg text-slate-400 hover:text-primary transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 bg-white flex items-center justify-between border-t border-slate-50">
+<span class="text-xs font-medium text-slate-400">Showing 1 to 10 of 248 entries</span>
+<div class="flex items-center gap-1">
+<button class="p-2 text-slate-400 hover:text-primary disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-white text-xs font-bold shadow-sm">1</button>
+<button class="w-8 h-8 rounded-lg text-slate-500 text-xs font-bold hover:bg-slate-100">2</button>
+<button class="w-8 h-8 rounded-lg text-slate-500 text-xs font-bold hover:bg-slate-100">3</button>
+<span class="text-slate-300 mx-1">...</span>
+<button class="w-8 h-8 rounded-lg text-slate-500 text-xs font-bold hover:bg-slate-100">25</button>
+<button class="p-2 text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Detail Preview Panel (Right Sidebar) -->
+<aside class="w-[420px] bg-white border-l border-slate-100 shadow-2xl flex flex-col z-10">
+<div class="p-6 border-b border-slate-50 flex items-center justify-between">
+<div>
+<h3 class="text-xl font-manrope font-extrabold text-primary">Booking Details</h3>
+<p class="text-xs text-slate-400 font-semibold tracking-wide uppercase mt-1">Ref: #TB-9241</p>
+</div>
+<button class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-8">
+<!-- Record Summary -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl">
+<img alt="Elena Lysenko" class="h-16 w-16 rounded-xl object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCs4eiLcms-XCLDPIGaX_rELWdOFICp7Kw3ikDgRwDQugkOcs9ZYO685vbr5Pd08F3JbeG4Bwp1eFSr-TZXUx3VjkBsJMP-wlLtHXOIim30E9AK9TdYxo2aymzUybxGbidarIVwF03FjiWHyV3BvsR7NcmKpLEdOi2urck6BwOliSwYKCl2RxNuVfTeXiwcNLr9-OCNqE0TWK0SoRorK35ctyJx_DVCoCHYmjyfk-EZcdnD3hAGsO2-ORM7CCpSmL5xiIf32T9s6IBR"/>
+<div>
+<p class="font-manrope font-bold text-primary text-lg leading-tight">Elena Lysenko</p>
+<p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Traveler ID: TR-88019</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded uppercase">Verified</span>
+<span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded uppercase">Oct 24, 2023</span>
+</div>
+</div>
+</div>
+<!-- Verification Data -->
+<div class="space-y-4">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest font-manrope">Verification Record</h4>
+<div class="relative group cursor-zoom-in rounded-2xl overflow-hidden shadow-md aspect-[3/2] bg-slate-900">
+<img alt="Identity Document" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjzhKu48OXxv2w5Zp25hUaQ7TruLSpKCK6oe3blENNXhv4zBLVNxI-2AonXpKUtMATI4GIX0YSN2KUmoJ3OOvVtG6DJSCEkik4ws2ktiA8O4UHBuk4ob0xGvFiM2HvPKX6jfJ3a-WZxJLKcwmDJpcOap4kK_YlsJFB3GyYwZghntYLhKNggGEySzIDUibGalo1PMhZuadhWFG0PLo0ev3_gBRhIfZupMu3hrROddsQhFaQli_0wWEpefP5dvzNn9zMody8pYgCVfEn"/>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-primary/20 backdrop-blur-[1px]">
+<span class="material-symbols-outlined text-white text-3xl">zoom_in</span>
+</div>
+</div>
+<p class="text-[11px] text-slate-400 text-center font-medium">Passport_Scan_EL.pdf (2.4 MB)</p>
+</div>
+<!-- Financials & Request Notes -->
+<div class="space-y-4">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest font-manrope">Operational Details</h4>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Package Price</p>
+<p class="font-manrope font-bold text-primary">$4,290.00</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Status Code</p>
+<p class="font-manrope font-bold text-secondary">PEND-02</p>
+</div>
+</div>
+<div class="p-4 rounded-2xl bg-surface-container-low">
+<p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Internal Remarks</p>
+<p class="text-sm text-on-surface leading-relaxed font-body">Verification documents submitted. Pending final operator review of traveler eligibility for Santorini group tour. Initial deposit processed via credit card.</p>
+</div>
+</div>
+</div>
+<!-- Review Decision Module -->
+<div class="p-6 bg-surface-container-low/60 border-t border-slate-100">
+<div class="bg-white p-5 rounded-2xl shadow-sm space-y-4">
+<h4 class="text-sm font-bold text-primary font-manrope">Operator Decision</h4>
+<div>
+<label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">Decision Notes</label>
+<textarea class="w-full rounded-xl border-slate-100 bg-surface text-sm p-3 focus:ring-primary/10 focus:border-primary/30 transition-all placeholder:text-slate-300" placeholder="Enter reason for approval or rejection..." rows="2"></textarea>
+</div>
+<div class="flex gap-3 pt-2">
+<button class="flex-1 bg-secondary text-white font-manrope font-bold py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-secondary/90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                            Approve
+                        </button>
+<button class="flex-1 border border-slate-200 text-slate-600 font-manrope font-bold py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-50 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">cancel</span>
+                            Reject
+                        </button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+</body></html>

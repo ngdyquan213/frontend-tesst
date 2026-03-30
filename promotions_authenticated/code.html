@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Promotions - TravelBook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#002020",
+              "background": "#f8f9fa",
+              "tertiary-container": "#4e1500",
+              "secondary-fixed-dim": "#76d6d5",
+              "secondary": "#006a6a",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-tint": "#435b9f",
+              "surface-container-low": "#f3f4f5",
+              "primary-fixed": "#dbe1ff",
+              "on-primary-fixed": "#00174a",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-secondary-container": "#006e6e",
+              "on-background": "#191c1d",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "inverse-primary": "#b3c5ff",
+              "secondary-fixed": "#93f2f2",
+              "on-surface": "#191c1d",
+              "surface-dim": "#d9dadb",
+              "surface": "#f8f9fa",
+              "surface-container": "#edeeef",
+              "on-primary-container": "#758dd5",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#c5c6d2",
+              "on-surface-variant": "#444650",
+              "on-error": "#ffffff",
+              "surface-variant": "#e1e3e4",
+              "tertiary-fixed": "#ffdbcf",
+              "primary-container": "#002366",
+              "surface-bright": "#f8f9fa",
+              "primary-fixed-dim": "#b3c5ff",
+              "outline": "#757682",
+              "error-container": "#ffdad6",
+              "secondary-container": "#90efef",
+              "inverse-surface": "#2e3132",
+              "on-primary-fixed-variant": "#2a4386",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-highest": "#e1e3e4",
+              "primary": "#00113a",
+              "surface-container-high": "#e7e8e9",
+              "on-tertiary-container": "#e56c3e",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#380c00",
+              "tertiary": "#2c0800",
+              "on-secondary-fixed-variant": "#004f4f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm shadow-blue-900/5 tonal-shift bg-slate-50/50 dark:bg-slate-900/50">
+<div class="max-w-[1200px] mx-auto flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tight text-blue-950 dark:text-white font-headline">TravelBook</span>
+<div class="hidden md:flex items-center gap-6 font-manrope text-sm tracking-wide">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Tours</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Destinations</a>
+<a class="text-blue-900 dark:text-teal-400 font-semibold border-b-2 border-blue-900 dark:border-teal-400 pb-1" href="#">Promotions</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Help</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-surface-container rounded-full px-4 py-2 w-64">
+<span class="material-symbols-outlined text-outline text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 placeholder:text-outline" placeholder="Search offers..." type="text"/>
+</div>
+<button class="p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-100">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-fixed cursor-pointer">
+<img alt="User profile menu" data-alt="Close up portrait of a smiling middle-aged man with short groomed beard in a professional setting with soft office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfwnn3zP89C_Tih4xPzv3vHuHpDXrFILwLDZKDhFRQl-yf1xM3RdWjn2Gyc2COE55gnHE_N3iITc-5lZuemNeNgvKHS1VxdAvFt1n_jr5wcQMTVo--qp7QUK_XI6ZA4yXKleHwCMwmIxkUZTdAVZwLlOCguBMbIvApHX6lOuRbuLixlxjokuRodOqB5CntMg2quFrMIbXpnh-5LuO4HIjJUo3CfH2FDvhgQPFpRJ7UoxuD7hz-jlNaSGPWhUJo3OueqqKYyXI9vDEg"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="flex-grow max-w-[1200px] mx-auto w-full px-6 py-12">
+<!-- Hero Section -->
+<header class="mb-16">
+<h1 class="font-headline text-4xl font-extrabold text-primary mb-4 tracking-tight">Current Promotions</h1>
+<p class="text-on-surface-variant text-lg max-w-2xl leading-relaxed">
+                Explore our curated selection of seasonal travel offers and member-exclusive benefits. Verified deals for your next reliable journey.
+            </p>
+</header>
+<!-- Featured Seasonal Promo (Asymmetric Layout) -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20 items-center">
+<div class="lg:col-span-7 rounded-xl overflow-hidden shadow-sm">
+<div class="aspect-[16/9] w-full bg-surface-container relative">
+<img class="object-cover w-full h-full" data-alt="Serene coastal landscape with calm turquoise water and white sandy beach under a clear blue sky at midday" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgRXuzB_hthIVj0ZU94w616nspovK-JJHr6zdvCOd6ase2hbLxDa9IGhkOQgUUJZZ2odm6GKYKaIaNdkip7_DFbtM_yWcQUtBgcje3vsoB5tnr5rw8sdz0vzFNH54vXqtRcsTeWexXk46E8irYe0N8juGEY7eYPucJ6rNbQ5-MPJVEET1yGwImnIS_ARyMtb6N6C9iInASKLL4j1fxOC_zCbm27cfbgW2Nc7rMu04AnBL6SWEvoQJtqfXNruTqR4ir8nkBKqFA1Mx4"/>
+<div class="absolute top-6 left-6">
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase font-label">Summer Collection 2024</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 flex flex-col gap-6 lg:pl-8">
+<div>
+<span class="text-secondary font-semibold text-sm tracking-widest uppercase font-label">Featured Destination</span>
+<h2 class="font-headline text-3xl font-bold text-primary mt-2">Nordic Summer Retreats</h2>
+<p class="text-on-surface-variant mt-4 leading-relaxed">
+                        Experience the midnight sun with curated stays across Norway and Iceland. Member-only rates available for bookings made before June 15th.
+                    </p>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-secondary">verified</span>
+<span class="text-sm">Flexible cancellation policies on all Nordic stays</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface">
+<span class="material-symbols-outlined text-secondary">loyalty</span>
+<span class="text-sm">Double points for Platinum members</span>
+</div>
+</div>
+<div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-3 rounded-lg font-semibold text-sm hover:opacity-90 transition-all shadow-md">
+                        Explore Collection
+                    </button>
+</div>
+</div>
+</section>
+<!-- Promotions Grid -->
+<div class="mb-12 flex justify-between items-end">
+<h3 class="font-headline text-2xl font-bold text-primary">Member Offers</h3>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-container-high rounded-full text-xs font-semibold text-on-surface-variant">All Offers</button>
+<button class="px-4 py-2 bg-white rounded-full text-xs font-semibold text-outline hover:text-primary transition-colors">Flights</button>
+<button class="px-4 py-2 bg-white rounded-full text-xs font-semibold text-outline hover:text-primary transition-colors">Hotels</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Offer Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+<div class="h-48 overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Luxury hotel lobby with modern architecture and large glass windows overlooking a manicured tropical garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOzLWHSCNfv-2UQ4PvumNxcK9HNXOlGJHYf6PQlqU3kETaQLRx0SWyEhwmtE6Eye8aDQP1nyTMjIgqFLs9MBiRxEyXwMLkY-hnNdhuTdzpOzC0-qy23ciFf602xvcptj6kBPZ7sz3aLe7MfOhzhIqOC4QvLxCKwic4KAOJSk9yds9fF2mE2ZuXBUJr1nwY-Ts6knNSDrBUX7g_6MZ2WgWY8u3eKhFmFIMncZsEydExRXHAVSPRBl574ZJtLC_pW5zJHLd-TijnQebU"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded text-xs font-bold uppercase tracking-tighter">Save 20%</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline font-bold text-lg text-primary">City Breaks: Paris</h4>
+<span class="material-symbols-outlined text-outline text-lg">bookmark</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-6 line-clamp-2">Premium boutique stays in the heart of the 1st arrondissement. Includes breakfast daily.</p>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-container">
+<span class="text-xs text-outline font-label uppercase tracking-widest">Ends in 3 days</span>
+<a class="text-secondary font-bold text-sm hover:underline" href="#">View Deal</a>
+</div>
+</div>
+</div>
+<!-- Offer Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+<div class="h-48 overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close-up of a commercial airplane wing soaring above a thick blanket of white clouds during sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrHVcVeGUGgHpbKlX30T6V_sNcTDhR8LqZZtHuY6mV6Zh4UGBCjIAALkTfOZrN2O6ePYFPxzV5hTRwtsy57y63dzzJClXziWw7XShgfTg6HlXcMnlfiwbwasjgmPjNiEkBWE5gpTpgLhQSths9Er4qDXrU0eBLdmMsrSllwJY1rbSex30D7ltVidDes5HFi6QP3pMcwaci5e1MfTn1AS-NmYDavoZu8gM4AbXOsaz4Lqq3rLcLZk1FMMv2NSbV0bnwnyVQ_lOrvX3G"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded text-xs font-bold uppercase tracking-tighter">Bonus Points</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline font-bold text-lg text-primary">Transatlantic Routes</h4>
+<span class="material-symbols-outlined text-outline text-lg">bookmark</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-6 line-clamp-2">Earn 5,000 bonus TravelPoints on all business class bookings to North America.</p>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-container">
+<span class="text-xs text-outline font-label uppercase tracking-widest">Limited availability</span>
+<a class="text-secondary font-bold text-sm hover:underline" href="#">View Deal</a>
+</div>
+</div>
+</div>
+<!-- Offer Card 3 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+<div class="h-48 overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Minimalist resort balcony with two wooden chairs facing the deep blue mediterranean sea at dusk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCnRleIWWbGKz-oE2qA_QFm8DhSoFSOgUHne-3cX9D5bzjL2t8zgQmFIEh3zRYsxcqFlyBdPck1qBdAmw4jqRxQ1ECJFOAS8HwvJ0vpvHRqyHtyLQvXHHFhW8UieuGvA4yf32uXEPSol0nx8uhgD_0Dkh49ubUnkQDvnQbHk7hU_Z4f2WI69xGjkJh_pLLcPletGiJ_HT0PLWA-uGdaGkS8WWjidCveMG0xr-fYoqyw8SL-lzvpURWUVpEIBMOxHAn2VjOAXQa7ONU"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded text-xs font-bold uppercase tracking-tighter">Member Only</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline font-bold text-lg text-primary">Hidden Gem: Crete</h4>
+<span class="material-symbols-outlined text-outline text-lg" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-6 line-clamp-2">Early bird access to our new villa collection in Southern Crete. Private pools included.</p>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-container">
+<span class="text-xs text-outline font-label uppercase tracking-widest">Exclusive Access</span>
+<a class="text-secondary font-bold text-sm hover:underline" href="#">View Deal</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Trust Banner Section -->
+<section class="mt-24 p-12 bg-surface-container rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12">
+<div class="max-w-md">
+<h3 class="font-headline text-2xl font-bold text-primary mb-4">The TravelBook Guarantee</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                    All promotions listed are verified directly with our partners. We ensure no hidden fees or restrictive fine print, so you can book with complete confidence.
+                </p>
+</div>
+<div class="flex gap-8 flex-wrap justify-center">
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">security</span>
+</div>
+<span class="text-xs font-semibold text-primary uppercase font-label">Secure Booking</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">support_agent</span>
+</div>
+<span class="text-xs font-semibold text-primary uppercase font-label">24/7 Assistance</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">price_check</span>
+</div>
+<span class="text-xs font-semibold text-primary uppercase font-label">Price Matching</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900 tonal-layering-low-noise">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center px-6 py-12 gap-6">
+<div class="text-slate-500 dark:text-slate-400 font-manrope text-xs tracking-widest uppercase">
+                © 2024 TravelBook Editorial. All rights reserved.
+            </div>
+<div class="flex gap-8">
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4 text-xs font-manrope tracking-widest uppercase" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4 text-xs font-manrope tracking-widest uppercase" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4 text-xs font-manrope tracking-widest uppercase" href="#">Cookie Settings</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4 text-xs font-manrope tracking-widest uppercase" href="#">Contact Us</a>
+</div>
+</div>
+</footer>
+</body></html>

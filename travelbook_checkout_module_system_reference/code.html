@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Secure Checkout</title>
+<!-- Tailwind CSS with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .premium-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+        .ghost-border {
+            border: 1px solid rgba(117, 118, 130, 0.2);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-secondary-fixed-variant": "#004f4f",
+                "secondary-fixed": "#93f2f2",
+                "primary-container": "#002366",
+                "surface-variant": "#e1e3e4",
+                "primary-fixed-dim": "#b3c5ff",
+                "on-primary-fixed-variant": "#2a4386",
+                "tertiary-fixed": "#ffdbcf",
+                "on-tertiary-container": "#e56c3e",
+                "on-error": "#ffffff",
+                "surface-container-high": "#e7e8e9",
+                "surface-dim": "#d9dadb",
+                "on-tertiary": "#ffffff",
+                "on-secondary": "#ffffff",
+                "on-primary-fixed": "#00174a",
+                "tertiary-container": "#4e1500",
+                "inverse-primary": "#b3c5ff",
+                "surface": "#f8f9fa",
+                "surface-bright": "#f8f9fa",
+                "on-secondary-fixed": "#002020",
+                "tertiary-fixed-dim": "#ffb59c",
+                "error": "#ba1a1a",
+                "on-primary-container": "#758dd5",
+                "error-container": "#ffdad6",
+                "on-primary": "#ffffff",
+                "tertiary": "#2c0800",
+                "outline-variant": "#c5c6d2",
+                "outline": "#757682",
+                "surface-tint": "#435b9f",
+                "on-error-container": "#93000a",
+                "on-background": "#191c1d",
+                "on-secondary-container": "#006e6e",
+                "background": "#f8f9fa",
+                "secondary-fixed-dim": "#76d6d5",
+                "surface-container-low": "#f3f4f5",
+                "surface-container-highest": "#e1e3e4",
+                "inverse-surface": "#2e3132",
+                "on-surface": "#191c1d",
+                "surface-container": "#edeeef",
+                "on-tertiary-fixed-variant": "#822800",
+                "secondary-container": "#90efef",
+                "primary-fixed": "#dbe1ff",
+                "surface-container-lowest": "#ffffff",
+                "on-surface-variant": "#444650",
+                "inverse-on-surface": "#f0f1f2",
+                "primary": "#00113a",
+                "secondary": "#006a6a",
+                "on-tertiary-fixed": "#380c00"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center px-8 py-4 max-w-[1200px] mx-auto">
+<div class="text-2xl font-extrabold text-blue-900 dark:text-blue-100 font-headline tracking-tight">TravelBook</div>
+<div class="flex items-center gap-2 text-blue-900 dark:text-blue-200 font-bold">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+<span class="font-label text-sm tracking-wide">Secure Checkout</span>
+</div>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 h-px"></div>
+</header>
+<main class="flex-grow pt-24 pb-20">
+<div class="max-w-[1200px] mx-auto px-8">
+<!-- Progress Stepper -->
+<div class="mb-12 flex items-center justify-center max-w-2xl mx-auto">
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">1</div>
+<span class="text-xs font-bold text-primary tracking-wider uppercase">Review</span>
+</div>
+<div class="flex-grow h-px bg-outline-variant mx-4 mb-6"></div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-outline flex items-center justify-center font-bold text-sm">2</div>
+<span class="text-xs font-medium text-outline tracking-wider uppercase">Payment</span>
+</div>
+<div class="flex-grow h-px bg-outline-variant mx-4 mb-6"></div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-outline flex items-center justify-center font-bold text-sm">3</div>
+<span class="text-xs font-medium text-outline tracking-wider uppercase">Confirmation</span>
+</div>
+</div>
+<!-- Checkout Shell Split Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+<!-- Left Content: Modules -->
+<div class="lg:col-span-2 space-y-10">
+<!-- Traveler Info Module -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<h2 class="text-2xl font-headline font-bold mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+                            Traveler Information
+                        </h2>
+<div class="space-y-8">
+<!-- Lead Traveler -->
+<div>
+<h3 class="text-sm font-bold text-outline uppercase tracking-widest mb-4">Lead Traveler</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">First Name</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface" placeholder="e.g. John" type="text" value="Julian"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">Last Name</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface" placeholder="e.g. Doe" type="text" value="Amsel"/>
+</div>
+<div class="md:col-span-2 flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">Email Address</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface" placeholder="email@example.com" type="email" value="julian.amsel@voyage.com"/>
+</div>
+</div>
+</div>
+<!-- Guest Details -->
+<div class="pt-6 border-t border-surface-variant">
+<h3 class="text-sm font-bold text-outline uppercase tracking-widest mb-4">Guest 2 Details</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">First Name</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface" placeholder="Optional" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">Last Name</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface" placeholder="Optional" type="text"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Payment Method Selector -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+<h2 class="text-2xl font-headline font-bold mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+                            Payment Method
+                        </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<label class="relative flex items-center justify-between p-4 rounded-xl border-2 border-primary bg-primary/5 cursor-pointer transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="credit_card">credit_card</span>
+<span class="text-sm font-bold text-primary">Credit Card</span>
+</div>
+<div class="w-4 h-4 rounded-full border-4 border-primary bg-white"></div>
+<input checked="" class="hidden" name="payment" type="radio"/>
+</label>
+<label class="relative flex items-center justify-between p-4 rounded-xl border-2 border-transparent bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-sm font-bold text-on-surface-variant">PayPal</span>
+</div>
+<div class="w-4 h-4 rounded-full border-2 border-outline bg-white"></div>
+<input class="hidden" name="payment" type="radio"/>
+</label>
+<label class="relative flex items-center justify-between p-4 rounded-xl border-2 border-transparent bg-surface-container-low hover:bg-surface-container transition-all cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_balance">account_balance</span>
+<span class="text-sm font-bold text-on-surface-variant">Transfer</span>
+</div>
+<div class="w-4 h-4 rounded-full border-2 border-outline bg-white"></div>
+<input class="hidden" name="payment" type="radio"/>
+</label>
+</div>
+<!-- Card Detail Inputs -->
+<div class="space-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">Card Number</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface pr-12" placeholder="0000 0000 0000 0000" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="lock">lock</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">Expiry Date</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface" placeholder="MM / YY" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-semibold text-on-surface-variant ml-1">CVV</label>
+<input class="bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/50 transition-all text-on-surface" placeholder="123" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Reassurance Module -->
+<div class="flex flex-wrap items-center justify-center gap-8 py-4 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user" data-weight="fill">verified_user</span>
+<span class="text-xs font-bold font-label">256-BIT SSL ENCRYPTION</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="security" data-weight="fill">security</span>
+<span class="text-xs font-bold font-label">PCI DSS COMPLIANT</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="gpp_maybe" data-weight="fill">gpp_maybe</span>
+<span class="text-xs font-bold font-label">PROTECTED BY TRAVELBOOK</span>
+</div>
+</div>
+<!-- Result States (Reference) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10">
+<!-- Success State -->
+<div class="bg-secondary-container/30 border border-secondary/20 p-6 rounded-xl flex items-start gap-4">
+<div class="bg-secondary text-white p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</div>
+<div>
+<h4 class="font-bold text-on-secondary-container">Booking Confirmed</h4>
+<p class="text-sm text-on-secondary-container/80">Check your inbox for the receipt.</p>
+</div>
+</div>
+<!-- Failure State -->
+<div class="bg-error-container/30 border border-error/20 p-6 rounded-xl flex items-start gap-4">
+<div class="bg-error text-white p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="error">error</span>
+</div>
+<div>
+<h4 class="font-bold text-on-error-container">Payment Declined</h4>
+<p class="text-sm text-on-error-container/80">Please check card details and try again.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Sticky Summary Module -->
+<aside class="sticky top-28 space-y-6">
+<div class="bg-surface-container-lowest rounded-xl shadow-lg overflow-hidden">
+<!-- Product Preview -->
+<div class="relative h-32 w-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="dramatic wide shot of Amalfi Coast sailing boat on crystal blue water during golden sunset with rugged cliffs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyWXN8rIob1qVNysjWeYh0C00c3TuaIJdV0EG1jjCglkA7BdNf4sTACKUc289u81IQg0VutskgiQFAC43t5LQ-e3E7fO-_eILVVA8fAAaaVpUoSbk-lt78kcDq4UseIKOiIe2C4hjitgYX6bQzMCh3oza1DKfEb_PKrLAGkzjhTw89GNBtazZW-yy1IsWtqpcoy2EAZ0JxMOnJp9WG7Yt3yhBymA42eh93AtsnKAysg4e1sDDmrf7kgx7DYOhv5CzjYS9biPcBTqJ5"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-headline font-bold text-lg leading-tight">Amalfi Coast Sailing Expedition</h3>
+</div>
+</div>
+<!-- Details -->
+<div class="p-6 space-y-6">
+<div class="space-y-4">
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span>Departure Date</span>
+</div>
+<span class="font-bold">Oct 24, 2024</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="group">group</span>
+<span>Travelers</span>
+</div>
+<span class="font-bold">2 Adults</span>
+</div>
+</div>
+<div class="bg-surface-container-low h-px w-full"></div>
+<!-- Pricing -->
+<div class="space-y-3">
+<div class="flex items-center justify-between text-sm text-on-surface-variant">
+<span>Subtotal</span>
+<span>$2,450.00</span>
+</div>
+<div class="flex items-center justify-between text-sm text-on-surface-variant">
+<span>Service Fee &amp; Taxes</span>
+<span>$184.50</span>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-headline font-bold text-lg text-primary">Total Amount</span>
+<span class="font-headline font-extrabold text-2xl text-primary">$2,634.50</span>
+</div>
+</div>
+<!-- CTA -->
+<button class="w-full premium-gradient text-white font-bold py-4 rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4">
+<span class="material-symbols-outlined text-lg" data-icon="verified">verified</span>
+                                Complete Secure Booking
+                            </button>
+<p class="text-[10px] text-center text-outline-variant uppercase tracking-widest">
+                                Instant Confirmation &amp; Mobile Ticket
+                            </p>
+</div>
+</div>
+<!-- Small Reassurance -->
+<div class="bg-surface-container/50 border border-surface-variant rounded-xl p-4 flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="lock_reset">lock_reset</span>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<strong>100% Secure Payment.</strong> Your payment information is encrypted and never stored on our servers.
+                        </p>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full mt-auto border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+<div class="max-w-[1200px] mx-auto px-8 py-12 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-inter text-sm tracking-wide text-slate-600 dark:text-slate-400">© 2024 TravelBook. All transactions are encrypted.</p>
+<div class="flex gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-100 transition-opacity duration-300 font-inter text-sm tracking-wide" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-900 dark:hover:text-blue-100 transition-opacity duration-300 font-inter text-sm tracking-wide" href="#">Terms of Service</a>
+<a class="underline text-teal-700 dark:text-teal-300 hover:text-blue-900 dark:hover:text-blue-100 transition-opacity duration-300 font-inter text-sm tracking-wide" href="#">Security Guarantee</a>
+</div>
+</div>
+</footer>
+</body></html>

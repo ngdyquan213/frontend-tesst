@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Status &amp; Feedback System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed": "#380c00",
+                        "primary-container": "#002366",
+                        "on-primary-container": "#758dd5",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "inverse-surface": "#2e3132",
+                        "inverse-primary": "#b3c5ff",
+                        "tertiary-fixed": "#ffdbcf",
+                        "surface-dim": "#d9dadb",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-secondary-container": "#006e6e",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "surface-bright": "#f8f9fa",
+                        "surface-tint": "#435b9f",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c5c6d2",
+                        "background": "#f8f9fa",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "outline": "#757682",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "secondary-fixed": "#93f2f2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#e56c3e",
+                        "secondary": "#006a6a",
+                        "on-primary-fixed": "#00174a",
+                        "surface": "#f8f9fa",
+                        "on-surface-variant": "#444650",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#002020",
+                        "on-background": "#191c1d",
+                        "primary": "#00113a",
+                        "tertiary": "#2c0800",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#90efef",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "tertiary-container": "#4e1500",
+                        "surface-container": "#edeeef",
+                        "on-error": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f4f5"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-16 max-w-[1200px] mx-auto left-0 right-0 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm shadow-blue-900/5">
+<div class="text-xl font-bold tracking-tight text-blue-900 dark:text-blue-50">TravelBook</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 font-manrope text-sm font-medium tracking-wide" href="#">Guidelines</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 font-manrope text-sm font-medium tracking-wide" href="#">Components</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 font-manrope text-sm font-medium tracking-wide" href="#">Patterns</a>
+<a class="text-teal-600 dark:text-teal-400 font-bold border-b-2 border-teal-600 font-manrope text-sm tracking-wide" href="#">Status</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-600 cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-slate-600 cursor-pointer">settings</span>
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="close up professional portrait of a smiling user with soft studio lighting and a clean neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Wms_D3BNuztQ4ZrkZFOvtdraQ5wOUJgFYRnU_oPgaAmC0fTwIJmjJk-9n2kau6AoEsqFgB2nDqbxKt-AdK0kTdv1A0dJfoKKJIrYzzukdnhcxgdEQ0tjO0dVQV9xbN_4V4B5tFqfRHkXdMVkBGFCJlFq82DGEIycwLVFgQphls2BuLLYQS9qhR4PhUetSzm-0RPu1I6jX9pv1R881cyv2gN6SjNHCbwF6qrmcJVXQlmzcNEyt8iQsRUdAvpxEVRDOGtqf5WTbQFS"/>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col fixed left-0 top-16 bottom-0 p-4 h-screen w-64 bg-slate-50 dark:bg-slate-950">
+<div class="mb-8 px-4">
+<h2 class="font-bold text-blue-900 font-manrope text-sm">Azure Horizon</h2>
+<p class="text-xs text-slate-500">Design System v1.0</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:translate-x-1 transition-transform duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:translate-x-1 transition-transform duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">feedback</span> Feedback
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-900 text-teal-600 font-semibold rounded-xl shadow-sm font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">check_circle</span> Status
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:translate-x-1 transition-transform duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">map</span> Navigation
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:translate-x-1 transition-transform duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">grid_view</span> Layout
+            </a>
+</nav>
+<button class="mt-auto mx-4 py-3 px-4 bg-primary text-on-primary rounded-xl font-medium text-sm hover:opacity-90 transition-opacity">
+            Submit Feedback
+        </button>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-24 pb-20 px-8 min-h-screen">
+<div class="max-w-[1200px] mx-auto">
+<!-- Header Section -->
+<header class="mb-16">
+<h1 class="text-4xl font-extrabold tracking-tight text-primary mb-4">Status &amp; Feedback System</h1>
+<p class="text-lg text-on-surface-variant max-w-2xl leading-relaxed">A cohesive framework for communicating system states, transaction results, and guidance. Designed for clarity, calmness, and immediate comprehension.</p>
+</header>
+<!-- 1. Semantic Mapping Overview -->
+<section class="mb-20">
+<h2 class="text-2xl font-bold text-primary mb-8">Semantic Mapping Overview</h2>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<!-- Success -->
+<div class="bg-surface-container p-6 rounded-2xl flex flex-col items-center text-center">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="check_circle">check_circle</span>
+</div>
+<h3 class="font-bold text-secondary mb-1">Success</h3>
+<p class="text-xs text-on-surface-variant">Confirmed, completed, or validated actions.</p>
+<div class="mt-4 text-xs font-mono py-1 px-2 bg-white rounded-lg">#006A6A</div>
+</div>
+<!-- Info -->
+<div class="bg-surface-container p-6 rounded-2xl flex flex-col items-center text-center">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+</div>
+<h3 class="font-bold text-primary mb-1">Information</h3>
+<p class="text-xs text-on-surface-variant">System updates, tips, and neutral status.</p>
+<div class="mt-4 text-xs font-mono py-1 px-2 bg-white rounded-lg">#002366</div>
+</div>
+<!-- Warning -->
+<div class="bg-surface-container p-6 rounded-2xl flex flex-col items-center text-center">
+<div class="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="warning">warning</span>
+</div>
+<h3 class="font-bold text-on-tertiary-container mb-1">Warning</h3>
+<p class="text-xs text-on-surface-variant">Potential issues or required attention.</p>
+<div class="mt-4 text-xs font-mono py-1 px-2 bg-white rounded-lg">#E56C3E</div>
+</div>
+<!-- Error -->
+<div class="bg-surface-container p-6 rounded-2xl flex flex-col items-center text-center">
+<div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-error" data-icon="error">error</span>
+</div>
+<h3 class="font-bold text-error mb-1">Error</h3>
+<p class="text-xs text-on-surface-variant">Failed actions, timeouts, or invalid data.</p>
+<div class="mt-4 text-xs font-mono py-1 px-2 bg-white rounded-lg">#BA1A1A</div>
+</div>
+<!-- Pending -->
+<div class="bg-surface-container p-6 rounded-2xl flex flex-col items-center text-center">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-outline" data-icon="pending">pending</span>
+</div>
+<h3 class="font-bold text-outline mb-1">Processing</h3>
+<p class="text-xs text-on-surface-variant">Ongoing background tasks or retries.</p>
+<div class="mt-4 text-xs font-mono py-1 px-2 bg-white rounded-lg">#757682</div>
+</div>
+</div>
+</section>
+<!-- 2. Status Badges & 3. Inline Feedback -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+<section>
+<h2 class="text-2xl font-bold text-primary mb-8">Status Badges &amp; Chips</h2>
+<div class="bg-surface-container-low p-8 rounded-2xl space-y-8">
+<div class="flex flex-wrap gap-4 items-center">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold uppercase tracking-wider">Confirmed</span>
+<span class="px-3 py-1 bg-surface-container-highest text-outline rounded-full text-xs font-semibold uppercase tracking-wider">Pending</span>
+<span class="px-3 py-1 bg-error-container text-error rounded-full text-xs font-semibold uppercase tracking-wider">Cancelled</span>
+</div>
+<div class="flex flex-wrap gap-4 items-center">
+<span class="px-3 py-1 bg-primary-fixed text-primary rounded-full text-xs font-semibold uppercase tracking-wider">Refunded</span>
+<span class="px-3 py-1 bg-surface-dim text-on-surface-variant rounded-full text-xs font-semibold uppercase tracking-wider">Expired</span>
+<span class="px-3 py-1 border border-outline-variant text-outline rounded-full text-xs font-semibold uppercase tracking-wider">Unavailable</span>
+</div>
+</div>
+</section>
+<section>
+<h2 class="text-2xl font-bold text-primary mb-8">Inline Feedback</h2>
+<div class="bg-surface-container-low p-8 rounded-2xl space-y-6">
+<div class="space-y-2">
+<label class="block text-sm font-medium text-primary">Cardholder Name</label>
+<input class="w-full bg-white border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-secondary/50 shadow-sm" readonly="" type="text" value="ALEX VOYAGER"/>
+<p class="text-xs text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> Name matches verified identity.</p>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-primary">Passport Number</label>
+<input class="w-full bg-white border-2 border-error/20 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-error/50 shadow-sm" placeholder="E.g. A1234567" type="text"/>
+<p class="text-xs text-error flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">error</span> Please enter a valid passport number format.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- 4. Alert Banners & Toasts -->
+<section class="mb-20">
+<h2 class="text-2xl font-bold text-primary mb-8">Alert Banners &amp; Toasts</h2>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<!-- Banner -->
+<div class="lg:col-span-2 space-y-4">
+<div class="flex items-start gap-4 p-4 bg-tertiary-fixed rounded-xl border border-on-tertiary-container/10">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="warning">warning</span>
+<div class="flex-1">
+<h4 class="text-sm font-bold text-on-tertiary-container">Travel Advisory: Regional Strike</h4>
+<p class="text-xs text-on-tertiary-fixed-variant leading-relaxed">Flights into the Paris region may experience delays of up to 4 hours due to local industrial action. Contact support if your connection is tight.</p>
+</div>
+<span class="material-symbols-outlined text-on-tertiary-container cursor-pointer opacity-50 hover:opacity-100">close</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-primary-container text-on-primary-container rounded-xl">
+<span class="material-symbols-outlined">info</span>
+<p class="text-xs font-medium flex-1">A new version of the TravelBook itinerary is available. Refresh to sync.</p>
+<button class="text-xs font-bold underline underline-offset-4">Refresh Now</button>
+</div>
+</div>
+<!-- Toast Overlay Simulation -->
+<div class="space-y-4 relative">
+<div class="p-4 bg-inverse-surface text-inverse-on-surface rounded-xl shadow-xl flex items-center gap-3 animate-pulse">
+<span class="material-symbols-outlined text-secondary-fixed">cloud_done</span>
+<p class="text-xs font-medium">Draft saved successfully</p>
+<span class="material-symbols-outlined text-[16px] ml-auto opacity-50">close</span>
+</div>
+<div class="p-4 bg-inverse-surface text-inverse-on-surface rounded-xl shadow-xl flex items-center gap-3">
+<span class="material-symbols-outlined text-error-container">error</span>
+<p class="text-xs font-medium">Failed to upload attachment</p>
+<button class="text-xs font-bold text-secondary-fixed ml-auto">Retry</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Feedback Cards (24px radius, soft shadows) -->
+<section class="mb-20">
+<h2 class="text-2xl font-bold text-primary mb-8">High-Priority Feedback Cards</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Success Card -->
+<div class="bg-surface-container-lowest p-10 rounded-2xl shadow-xl shadow-primary/5 border border-outline-variant/10 text-center flex flex-col items-center">
+<div class="w-20 h-20 rounded-full bg-secondary-container flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-4xl text-on-secondary-container" data-icon="celebration">celebration</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-2">Booking Confirmed!</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed text-sm">Your journey to the Maldives is secured. Check your email for the flight itinerary and arrival instructions.</p>
+<div class="flex gap-4 w-full">
+<button class="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">View Itinerary</button>
+<button class="flex-1 py-3 bg-surface-container text-primary rounded-xl font-bold text-sm">Add to Calendar</button>
+</div>
+</div>
+<!-- Error Card -->
+<div class="bg-surface-container-lowest p-10 rounded-2xl shadow-xl shadow-error/5 border border-error-container/20 text-center flex flex-col items-center">
+<div class="w-20 h-20 rounded-full bg-error-container flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-4xl text-error" data-icon="report_problem">report_problem</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-2">Payment Verification Failed</h3>
+<p class="text-on-surface-variant mb-8 leading-relaxed text-sm">We couldn't verify your credit card details. Please ensure the card hasn't expired or try a different payment method.</p>
+<div class="flex gap-4 w-full">
+<button class="flex-1 py-3 bg-error text-on-error rounded-xl font-bold text-sm">Try Again</button>
+<button class="flex-1 py-3 bg-surface-container text-primary rounded-xl font-bold text-sm">Contact Bank</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. System States -->
+<section class="mb-20">
+<h2 class="text-2xl font-bold text-primary mb-8">System States</h2>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Empty State -->
+<div class="bg-white rounded-2xl p-8 border border-outline-variant/30 flex flex-col items-center text-center">
+<div class="w-32 h-32 bg-surface-container rounded-full mb-6 flex items-center justify-center overflow-hidden">
+<img class="opacity-40 grayscale" data-alt="minimalist aesthetic illustration of a single empty suitcase on a clean white background with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3Ep-SphofpGaZhvF8p83LTCx2r8Ogz6gr1HZEByENgjF00GCRsTWwG-1WC13JRLaOQv-DwwLragsTe3x9Du0_czMrBsTkGa-rdwRQY3v2L-MdjoN8V_O-qwegxVeVhiEFmH-mVTkHDAJIAm7ipIdWZK47pu6ND-08TMB72Pv-lwu0O-nD71nJJo61rS4C3eazLCjMnNARcQLpa9X7Qa6vl0kLBhichg552TDNdbM4hi7YgUqkn-qPBrAaE1kdOi8nOwBJE7_-fb-c"/>
+</div>
+<h4 class="font-bold text-primary mb-2">No Past Trips Found</h4>
+<p class="text-xs text-on-surface-variant mb-6">It looks like you haven't booked any adventures yet. Your future travels will appear here.</p>
+<button class="px-6 py-2 bg-secondary text-on-secondary rounded-full text-xs font-bold">Start Exploring</button>
+</div>
+<!-- Skeleton Loader -->
+<div class="bg-white rounded-2xl p-8 border border-outline-variant/30 space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-slate-100 rounded-xl animate-pulse"></div>
+<div class="space-y-2 flex-1">
+<div class="h-3 w-1/2 bg-slate-100 rounded animate-pulse"></div>
+<div class="h-2 w-1/4 bg-slate-100 rounded animate-pulse"></div>
+</div>
+</div>
+<div class="h-32 w-full bg-slate-50 rounded-xl animate-pulse"></div>
+<div class="flex gap-2">
+<div class="h-8 w-1/3 bg-slate-100 rounded-full animate-pulse"></div>
+<div class="h-8 w-1/3 bg-slate-100 rounded-full animate-pulse"></div>
+</div>
+</div>
+<!-- Processing / Retry -->
+<div class="bg-white rounded-2xl p-8 border border-outline-variant/30 flex flex-col justify-center items-center text-center">
+<div class="relative w-16 h-16 mb-6">
+<div class="absolute inset-0 border-4 border-surface-container-highest rounded-full"></div>
+<div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+</div>
+<h4 class="font-bold text-primary mb-2">Optimizing Your Route</h4>
+<p class="text-xs text-on-surface-variant mb-6">We're calculating the most efficient way to get you from Tokyo to Osaka. Please wait.</p>
+<div class="flex items-center gap-2 text-xs text-outline">
+<span class="material-symbols-outlined text-[16px]">sync</span> Retrying connection... (Attempt 2)
+                        </div>
+</div>
+</div>
+</section>
+<!-- Documentation Appendix -->
+<section class="pt-16 border-t border-outline-variant/20 grid grid-cols-1 md:grid-cols-2 gap-12 text-sm text-on-surface-variant">
+<div>
+<h3 class="font-bold text-primary mb-4">1. Shared Status and Feedback Family</h3>
+<p class="mb-4">All components utilize the <strong>Manrope</strong> display font for titles and <strong>Inter</strong> for supporting text. Surfaces are built using <code>surface-container</code> and <code>surface-container-lowest</code> to ensure tonal layering without harsh borders.</p>
+<h3 class="font-bold text-primary mb-4">2. Semantic Mapping Rules</h3>
+<ul class="list-disc pl-5 space-y-2">
+<li><strong>Success:</strong> Teal (#006A6A) - For affirmative outcomes only.</li>
+<li><strong>Warning:</strong> Amber (#E56C3E) - For time-sensitive or advisory info.</li>
+<li><strong>Error:</strong> Red (#BA1A1A) - For blocking issues and data failures.</li>
+</ul>
+</div>
+<div>
+<h3 class="font-bold text-primary mb-4">3. Urgency and State Transitions</h3>
+<p class="mb-4">Transient feedback (Toasts) should persist for 3.5 seconds unless a 'Retry' action is present. Permanent states (Empty/Error cards) must provide at least one primary way out (CTA) to avoid user dead-ends.</p>
+<h3 class="font-bold text-primary mb-4">4. Shared Form Continuity</h3>
+<p>Inline validation must be mapped 1:1 with the Status Badge family. Use `on-error` backgrounds for input highlighting and matching icons to ensure accessibility compliance (WCAG 2.1 AA).</p>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full max-w-[1200px] mx-auto flex flex-col items-center gap-6 pb-12 mt-20 py-12 bg-slate-50 dark:bg-slate-900">
+<div class="flex gap-8">
+<a class="text-slate-400 hover:text-blue-900 hover:underline decoration-teal-500 underline-offset-4 font-manrope text-xs tracking-widest uppercase" href="#">Documentation</a>
+<a class="text-slate-400 hover:text-blue-900 hover:underline decoration-teal-500 underline-offset-4 font-manrope text-xs tracking-widest uppercase" href="#">Changelog</a>
+<a class="text-slate-400 hover:text-blue-900 hover:underline decoration-teal-500 underline-offset-4 font-manrope text-xs tracking-widest uppercase" href="#">Support</a>
+<a class="text-slate-400 hover:text-blue-900 hover:underline decoration-teal-500 underline-offset-4 font-manrope text-xs tracking-widest uppercase" href="#">Terms</a>
+</div>
+<p class="text-slate-500 dark:text-slate-400 font-manrope text-xs tracking-widest uppercase">© 2024 TravelBook Global. Elevated Voyager Edition.</p>
+</footer>
+</body></html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook Admin | Operational Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#435b9f",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "surface-container-highest": "#e1e3e4",
+                        "outline": "#757682",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "tertiary-fixed": "#ffdbcf",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "background": "#f8f9fa",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary-container": "#90efef",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#758dd5",
+                        "outline-variant": "#c5c6d2",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-surface-variant": "#444650",
+                        "inverse-primary": "#b3c5ff",
+                        "on-primary-fixed": "#00174a",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#2c0800",
+                        "secondary-fixed": "#93f2f2",
+                        "surface": "#f8f9fa",
+                        "primary": "#00113a",
+                        "surface-container": "#edeeef",
+                        "secondary": "#006a6a",
+                        "on-secondary-container": "#006e6e",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#002020",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "tertiary-container": "#4e1500",
+                        "surface-container-low": "#f3f4f5",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-background": "#191c1d",
+                        "primary-container": "#002366",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed-variant": "#2a4386"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-on-surface antialiased overflow-hidden">
+<!-- Fixed SideNavBar: Execution of Shared Component JSON -->
+<aside class="w-64 h-screen fixed left-0 top-0 overflow-y-auto bg-slate-50 flex flex-col py-6 px-4 z-50 font-['Manrope'] antialiased tracking-tight">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-bold text-[#00113A] tracking-tight">TravelBook</h1>
+<p class="text-xs text-slate-500 font-medium">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-1 custom-scrollbar">
+<!-- Active State Logic: Dashboard is currently active -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#006A6A] font-semibold border-r-4 border-[#006A6A] bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span>Tours</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span>Schedules</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Pricing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_return">assignment_return</span>
+<span>Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span>Operations</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-100">
+<button class="w-full bg-primary text-white py-3 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 duration-150 shadow-md shadow-primary/10">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                New Booking
+            </button>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-64 h-screen flex flex-col bg-surface relative">
+<!-- TopNavBar Execution -->
+<header class="sticky top-0 w-full z-40 bg-white/80 backdrop-blur-md flex justify-between items-center h-16 px-8 shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#006A6A]/20 outline-none transition-all placeholder:text-slate-400" placeholder="Search bookings, tours, or operations..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:text-primary transition-all relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 text-slate-500 hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-primary leading-tight">Alex Sterling</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Senior Admin</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm group-hover:border-secondary transition-all" data-alt="portrait of a professional male administrator in his 30s with a friendly expression and clean-cut appearance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY6xgyw5f0mHAEJ8F48hqS2LqQ3I2qD3PBUaIK2x9uyMJbTollSY0Yy6uB9EdFV7dVzfpavTYYuIKqVWD_4o-NlDP6HrIv5T0RdpeUWacPcnMRgBEwmZS677tTLUOyGS3rlUK_W-mYFYXZF25DEDlc4evX_QxF5SBBntIhD7ChgRESZRxp4p87A0JvEVUu6AjNonyFBqtMflTouhwxN3r8g5nQ2a1kaQMwGHnh73DG_RIB3UYYQHlS2eEN_DsG2rYVilyNdCHqHYeH"/>
+</div>
+</div>
+</header>
+<!-- Canvas Area (1200px limit) -->
+<section class="flex-1 overflow-y-auto custom-scrollbar p-8">
+<div class="max-w-[1200px] mx-auto space-y-8">
+<!-- Page Header & Filter Bar -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-3xl font-extrabold text-primary tracking-tight">Operation Workspace</h2>
+<p class="text-on-surface-variant font-medium mt-1">Manage active tours and pending schedules.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex bg-surface-container-low p-1 rounded-xl">
+<button class="px-4 py-2 text-xs font-bold bg-white text-primary rounded-lg shadow-sm">Real-time</button>
+<button class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-primary transition-colors">Historical</button>
+</div>
+<button class="flex items-center gap-2 bg-surface-container-highest px-4 py-2.5 rounded-xl text-sm font-semibold text-primary hover:bg-outline-variant transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+                            Advanced Filters
+                        </button>
+</div>
+</div>
+<!-- Bento Grid Layout: High-Level Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="col-span-1 bg-white p-6 rounded-2xl shadow-sm space-y-2 border-l-4 border-secondary">
+<p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Active Tours</p>
+<h3 class="text-3xl font-extrabold text-primary">124</h3>
+<div class="flex items-center gap-1 text-secondary text-xs font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span>+12% vs last month</span>
+</div>
+</div>
+<div class="col-span-1 bg-white p-6 rounded-2xl shadow-sm space-y-2 border-l-4 border-primary">
+<p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Open Refunds</p>
+<h3 class="text-3xl font-extrabold text-primary">08</h3>
+<p class="text-slate-400 text-xs font-medium">3 requiring urgent action</p>
+</div>
+<div class="col-span-2 bg-primary-container p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col justify-between">
+<div class="relative z-10">
+<h3 class="text-white text-xl font-bold">System Integrity</h3>
+<p class="text-on-primary-container text-sm mt-1">Operational nodes are all operational.</p>
+</div>
+<div class="mt-4 flex gap-2 z-10">
+<span class="w-full h-1.5 bg-secondary rounded-full"></span>
+<span class="w-full h-1.5 bg-secondary rounded-full opacity-60"></span>
+<span class="w-full h-1.5 bg-secondary rounded-full opacity-30"></span>
+</div>
+<!-- Background Texture -->
+<div class="absolute right-0 bottom-0 opacity-10 translate-x-4 translate-y-4">
+<span class="material-symbols-outlined text-9xl text-white" data-icon="shield_check">shield</span>
+</div>
+</div>
+</div>
+<!-- Dense Table Workspace -->
+<div class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col">
+<div class="px-6 py-4 border-b border-surface-container-low flex justify-between items-center bg-surface-container-lowest">
+<h4 class="font-bold text-primary">Recent Schedules</h4>
+<div class="flex gap-2">
+<button class="p-1.5 hover:bg-surface-container rounded-lg text-slate-400"><span class="material-symbols-outlined text-lg" data-icon="download">download</span></button>
+<button class="p-1.5 hover:bg-surface-container rounded-lg text-slate-400"><span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-[10px] uppercase tracking-widest font-extrabold text-slate-500">
+<th class="px-6 py-3">Tour Details</th>
+<th class="px-6 py-3">Operator</th>
+<th class="px-6 py-3">Status</th>
+<th class="px-6 py-3">Booking Rate</th>
+<th class="px-6 py-3 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<!-- Table Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="dramatic wide landscape shot of Yosemite valley with towering granite cliffs and pine trees in soft blue light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuFxxdv-_0vMxmOJ7d0U99eRXSd3_tY6PMCjQeODJT06TC7-LwHQpk3cjc-81wwFoiLxgzMJcOi0NOozeNC-oV__5LP4Z3H_yQlFPkLqLvF4m9VwAjNd-ICSgZ0rXGFK067-Kh50MqlL7JKn-LQg05ND0GoI4nkisI6ip65LnZU9RsfTQ2rc3O6r5lJ7EeNTRiwnUFpTx6rK49BneG5V45XaX4gHtjygFmfDV3cTQSCGmyMEPJM7q5z0VJJsgSDiqqHylNXGsDV8ko"/>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">Alpine Ridge Explorer</p>
+<p class="text-[11px] text-slate-400 font-medium">ID: TB-90210-AL</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-3">
+<p class="text-sm font-medium text-on-surface">Summit Guiding Co.</p>
+<p class="text-[11px] text-slate-400 font-medium">Lead: Marcus V.</p>
+</td>
+<td class="px-6 py-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container uppercase tracking-wider">Ready</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-secondary w-[85%] h-full"></div>
+</div>
+<span class="text-xs font-bold text-primary">85%</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-secondary hover:bg-secondary-container/30 rounded-lg transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="p-2 text-primary hover:bg-surface-container rounded-lg transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+</div>
+</td>
+</tr>
+<!-- Table Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="aerial view of a bright blue turquoise swimming pool surrounded by white architecture in Santorini Greece" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTCb4ares9sI314RWpy2D5-YpUbldDdqQ8w-qhFFZ7twHmJDMIIe_NohhLKlRHNmenSBWbOvs2QGMuW_IEIR8uAV235Ux7W4zxMivX-6S_XS-PvyO_BsdVnsjTzYubv1te3RLIwssh5FVdaKejNdgFXZXcLVztOIqe9qOPDMKnbHOlXOXHjk5knRadBd3XpD0TKBcn6FVJnKtu1Sd9s5juHTIAmFkSkqDw2ufUtbwVDfmbyIeQ5giaWdSdqge5vIjqA-kUV5jY0hB0"/>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">Aegean Sunsets</p>
+<p class="text-[11px] text-slate-400 font-medium">ID: TB-44201-AE</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-3">
+<p class="text-sm font-medium text-on-surface">Blue Wave Charters</p>
+<p class="text-[11px] text-slate-400 font-medium">Lead: Elena K.</p>
+</td>
+<td class="px-6 py-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider">Processing</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-amber-400 w-[42%] h-full"></div>
+</div>
+<span class="text-xs font-bold text-primary">42%</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-secondary hover:bg-secondary-container/30 rounded-lg transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="p-2 text-primary hover:bg-surface-container rounded-lg transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+</div>
+</td>
+</tr>
+<!-- Table Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="misty forest at dawn with sunlight rays filtering through tall trees and lush ferns on the ground" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYZo7NbRTkfG2SmdLlrhg3nZzK_5Mr1Y7iP8wFQwfu2Obc-wtRZTDvswffzARo0RkeoAp6p48FrwwFVgqhIn5mg7YYhGuqOf_qszYXKIZUC-q6khDCmUPTDoSO2AT11vwRroCLr_x4qo45y-I7y3wqxtiauStDwheyxrQO5LycskMQEJM2pmf503nYG3j5Cgo_fc62bGCXC36GPcOYs3bEOQVEUUOCumKCKiRrcQ34UUgxLyM9DvAln2VSqOsxpSr3_jDDKqH0TUrI"/>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">Forest Canopy Walk</p>
+<p class="text-[11px] text-slate-400 font-medium">ID: TB-11055-FC</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-3">
+<p class="text-sm font-medium text-on-surface">EcoTravel Hub</p>
+<p class="text-[11px] text-slate-400 font-medium">Lead: Julian R.</p>
+</td>
+<td class="px-6 py-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-error-container text-on-error-container uppercase tracking-wider">Alert</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-error w-[15%] h-full"></div>
+</div>
+<span class="text-xs font-bold text-primary">15%</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-secondary hover:bg-secondary-container/30 rounded-lg transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="p-2 text-primary hover:bg-surface-container rounded-lg transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-3 bg-surface-container-low/30 flex justify-between items-center">
+<p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Showing 1-10 of 124 Results</p>
+<div class="flex items-center gap-1">
+<button class="p-1 hover:bg-surface-container rounded transition-colors text-primary"><span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span></button>
+<button class="p-1 hover:bg-surface-container rounded transition-colors text-primary"><span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</div>
+<!-- Operator Detail Scaffold (Side-by-side view) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Detail Form Column -->
+<div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-sm space-y-8">
+<div>
+<h4 class="text-xl font-extrabold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+                                Operator Verification Details
+                            </h4>
+<p class="text-sm text-slate-500 mt-1">Review legal documentation and insurance status.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider block">Legal Business Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-sm font-semibold text-primary focus:ring-0 cursor-default" readonly="" type="text" value="Summit Guiding Co. Ltd."/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider block">Tax Identification Number</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-sm font-semibold text-primary focus:ring-0 cursor-default" readonly="" type="text" value="TX-880029-BC"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider block">Primary Region</label>
+<div class="w-full bg-surface-container-low rounded-xl px-4 py-3 text-sm font-semibold text-primary flex items-center justify-between">
+<span>Pacific Northwest, USA</span>
+<span class="material-symbols-outlined text-sm text-slate-400" data-icon="public">public</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider block">Insurance Status</label>
+<div class="w-full bg-surface-container-low rounded-xl px-4 py-3 text-sm font-semibold text-secondary flex items-center justify-between">
+<span>Active until Dec 2024</span>
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-surface-container-low flex justify-end gap-3">
+<button class="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 hover:bg-surface-container transition-all">Request Changes</button>
+<button class="px-6 py-2.5 bg-secondary text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-secondary/20 transition-all">Approve Operator</button>
+</div>
+</div>
+<!-- Quick Insights Sidebar Column -->
+<div class="lg:col-span-1 space-y-6">
+<div class="bg-primary p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
+<h5 class="text-sm font-bold uppercase tracking-widest opacity-70">Operator Performance</h5>
+<div class="mt-4 space-y-1">
+<p class="text-4xl font-extrabold">4.92</p>
+<div class="flex text-amber-400 gap-0.5">
+<span class="material-symbols-outlined fill" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined fill" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined fill" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined fill" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined fill" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center text-xs font-medium border-t border-white/10 pt-4">
+<span>156 Tours Led</span>
+<span class="bg-white/10 px-2 py-1 rounded">Top 5%</span>
+</div>
+<!-- Background Decor -->
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
+</div>
+<div class="bg-surface-container p-6 rounded-2xl space-y-4">
+<h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Recent Activity Log</h5>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-[13px] font-bold text-primary">Insurance docs updated</p>
+<p class="text-[11px] text-slate-500">2 hours ago</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-[13px] font-bold text-primary">Tour schedule TB-90210 modified</p>
+<p class="text-[11px] text-slate-500">Yesterday at 4:12 PM</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1.5 flex-shrink-0"></div>
+<div>
+<p class="text-[13px] font-bold text-primary">Profile image changed</p>
+<p class="text-[11px] text-slate-500">3 days ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Technical Rules Footer -->
+<footer class="max-w-[1200px] mx-auto mt-12 mb-8 pt-8 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-8">
+<div>
+<h6 class="text-[11px] font-extrabold text-primary uppercase tracking-widest mb-4">1. Admin Shell Rules</h6>
+<ul class="text-xs text-slate-500 space-y-2 font-medium">
+<li>Fixed 256px sidebar</li>
+<li>1200px Max Canvas width</li>
+<li>Sticky h-16 Top Header</li>
+<li>Soft Tonal Transitions</li>
+</ul>
+</div>
+<div>
+<h6 class="text-[11px] font-extrabold text-primary uppercase tracking-widest mb-4">2. Reusable Components</h6>
+<ul class="text-xs text-slate-500 space-y-2 font-medium">
+<li>Rounded-2xl Containers</li>
+<li>Material Symbols Outlined</li>
+<li>Manrope Heavy Headlines</li>
+<li>Shadow-sm Base elevation</li>
+</ul>
+</div>
+<div>
+<h6 class="text-[11px] font-extrabold text-primary uppercase tracking-widest mb-4">3. Table &amp; Density Rules</h6>
+<ul class="text-xs text-slate-500 space-y-2 font-medium">
+<li>12px Vertical Padding</li>
+<li>8px Inline Status Pills</li>
+<li>Hover Action visibility</li>
+<li>Subtle Row Dividers</li>
+</ul>
+</div>
+<div>
+<h6 class="text-[11px] font-extrabold text-primary uppercase tracking-widest mb-4">4. Continuity Notes</h6>
+<ul class="text-xs text-slate-500 space-y-2 font-medium">
+<li>Azure Horizon Palette</li>
+<li>#00113A Navigation Base</li>
+<li>#006A6A Interaction Accent</li>
+<li>Surface-Low Zone Shifts</li>
+</ul>
+</div>
+</footer>
+</section>
+</main>
+</body></html>

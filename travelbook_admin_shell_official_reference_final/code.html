@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook - Internal Admin Continuity Reference</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#444650",
+              "on-tertiary-container": "#e56c3e",
+              "outline": "#757682",
+              "on-background": "#191c1d",
+              "surface-container-high": "#e7e8e9",
+              "on-surface": "#191c1d",
+              "on-secondary": "#ffffff",
+              "surface-container": "#edeeef",
+              "secondary-fixed-dim": "#76d6d5",
+              "surface-bright": "#f8f9fa",
+              "secondary-container": "#90efef",
+              "primary-container": "#002366",
+              "surface-container-low": "#f3f4f5",
+              "error": "#ba1a1a",
+              "on-secondary-fixed-variant": "#004f4f",
+              "secondary-fixed": "#93f2f2",
+              "on-error": "#ffffff",
+              "on-primary-fixed-variant": "#2a4386",
+              "inverse-surface": "#2e3132",
+              "surface": "#f8f9fa",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "primary": "#00113a",
+              "tertiary": "#2c0800",
+              "outline-variant": "#c5c6d2",
+              "primary-fixed": "#dbe1ff",
+              "on-secondary-fixed": "#002020",
+              "tertiary-fixed": "#ffdbcf",
+              "on-primary-fixed": "#00174a",
+              "surface-tint": "#435b9f",
+              "on-primary-container": "#758dd5",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#f0f1f2",
+              "error-container": "#ffdad6",
+              "background": "#f8f9fa",
+              "surface-container-highest": "#e1e3e4",
+              "tertiary-container": "#4e1500",
+              "inverse-primary": "#b3c5ff",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-secondary-container": "#006e6e",
+              "secondary": "#006a6a",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed-dim": "#b3c5ff",
+              "surface-variant": "#e1e3e4",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-tertiary-fixed": "#380c00"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+        .reference-label {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #00113a;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            z-index: 20;
+        }
+        .locked-pattern {
+            border: 1px dashed #758dd5;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 flex flex-col bg-slate-50 border-r border-slate-200 font-manrope text-sm antialiased overflow-y-auto custom-scrollbar">
+<div class="px-6 py-8">
+<div class="text-2xl font-bold tracking-tight text-blue-900">
+                TravelBook
+            </div>
+</div>
+<nav class="flex-1 px-4 space-y-1 locked-pattern m-2 pt-6 rounded-lg">
+<span class="reference-label">Sidebar IA &amp; Active State</span>
+<a class="flex items-center gap-3 px-6 py-4 text-blue-900 font-bold bg-white rounded-l-full ml-4 shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 hover:text-blue-800 hover:bg-blue-50/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span>Tours</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 hover:text-blue-800 hover:bg-blue-50/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Schedules</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 hover:text-blue-800 hover:bg-blue-50/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Pricing</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 hover:text-blue-800 hover:bg-blue-50/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 hover:text-blue-800 hover:bg-blue-50/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="keyboard_return">keyboard_return</span>
+<span>Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 hover:text-blue-800 hover:bg-blue-50/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 hover:text-blue-800 hover:bg-blue-50/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span>Operations</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="bg-slate-100 rounded-xl p-4">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-2">System Status</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-xs font-semibold text-slate-700">Service Connectivity Stable</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 flex items-center justify-between h-16 px-8 font-manrope text-sm font-medium">
+<div class="locked-pattern px-4 py-2 rounded flex items-center gap-4">
+<span class="reference-label">Page Header Variant</span>
+<h1 class="text-lg font-bold text-blue-900">Continuity Reference</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center locked-pattern p-1 rounded-full">
+<span class="reference-label">Utility Search</span>
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-lg" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-sm w-64 focus:ring-0" placeholder="Internal search..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-slate-500">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300"></div>
+</div>
+</div>
+</header>
+<!-- Canvas Area -->
+<div class="max-w-[1200px] mx-auto w-full p-8 space-y-8">
+<!-- Dashboard Bento Header -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Primary Status Card -->
+<div class="md:col-span-2 bg-primary-gradient rounded-xl p-8 text-white relative overflow-hidden shadow-lg locked-pattern">
+<span class="reference-label">Primary Hero Pattern</span>
+<div class="relative z-10 h-full flex flex-col justify-between">
+<div>
+<span class="inline-flex px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold uppercase tracking-widest mb-4">Operational Summary Pattern</span>
+<h2 class="text-3xl font-headline font-extrabold mb-2">Locked Interface State</h2>
+<p class="text-primary-fixed/80 text-sm max-w-xs">All interface decisions recorded here are the strict source of truth for admin development.</p>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[180px] opacity-10 pointer-events-none" data-icon="verified">verified</span>
+</div>
+<!-- Secondary Status Cards -->
+<div class="bg-secondary-container text-on-secondary-container rounded-xl p-6 flex flex-col justify-between shadow-sm locked-pattern">
+<span class="reference-label">Sub-Metric Pattern</span>
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined p-2 bg-white/40 rounded-lg" data-icon="rule">rule</span>
+</div>
+<div>
+<p class="text-sm font-medium opacity-80">Reference Category</p>
+<p class="text-xl font-headline font-bold">Approved Logic</p>
+</div>
+</div>
+<div class="bg-surface-container-highest text-on-surface rounded-xl p-6 flex flex-col justify-between shadow-sm locked-pattern">
+<span class="reference-label">Sub-Metric Pattern</span>
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined p-2 bg-white/40 rounded-lg text-primary" data-icon="fact_check">fact_check</span>
+</div>
+<div>
+<p class="text-sm font-medium opacity-60">Status Validation</p>
+<p class="text-xl font-headline font-bold">Verified Components</p>
+</div>
+</div>
+</section>
+<!-- Operational Component Library Preview -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-xl font-headline font-bold text-primary">High-Density Component Rules</h3>
+</div>
+<!-- Filter Toolbar Pattern -->
+<div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-lg locked-pattern">
+<span class="reference-label">Tabbed Navigation</span>
+<button class="px-4 py-2 text-xs font-bold bg-white shadow-sm rounded-md text-primary">Stable</button>
+<button class="px-4 py-2 text-xs font-medium text-slate-500">Review</button>
+<button class="px-4 py-2 text-xs font-medium text-slate-500">Blocked</button>
+</div>
+</div>
+<!-- High-Density Table Component -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 overflow-hidden locked-pattern">
+<span class="reference-label">Standard Data Table Pattern</span>
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-slate-100">
+<tr>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Inventory Identification</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Reference Date</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Semantic Logic</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Utility</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- High-Density Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Coastline" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKMexchsWjsyfkvNHFnQKW8cZV_8s1WoFdw1rXHBpJH1K4l2dAgmeD1M_dyG2DzpC0DDgUiz4BYWSTDOjyN7dSUyV2hhRx2yemcXRtJ9BgtbTSHXiO1A5xzFR8kwuD6aqtsqstk0UcLYr403SbpTrWYZ_UlzfpBAFko74uiJgtYR6lVtfoDjCVNTsCnpoAJ07EN78E8v_W4XpU_PZZwhJUV-gEa0Q1SipyXojntXEkhPYFDZQInLupPxt1noejEitR0rnZS3jpssPx"/>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-900">Amalfi Coast Sailing</p>
+<p class="text-[10px] text-slate-400 font-mono uppercase">ID-REF-001</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-slate-600">Standard Date View</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex px-2 py-0.5 rounded-md bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-tight">Stable</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Lake" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdl1uphzZj3CUEPztPcqvj8BewU3BrE_SepXazu3JBNlXEPkss-4EPQTRkNDONylo56EQQ9X9y7YtKaC-GPpTtTbkMYh3ux-053SViH6I9_a7o9LXZj5pD0WA_zW50tcYDbockfJab5CoZavlE98wTezgznylAgzIYsD3vc_sOuAI1DtUQAEAQDUl35MVJBZxmSTJvgtm4MTtNVY6_C-H-QWKZKDk8vQ9wQZqNYIOdqGAHGjG6OmU4wERzVRpZ_5O4s-g8QRNGRy6V"/>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-900">Glacier Ice Trek</p>
+<p class="text-[10px] text-slate-400 font-mono uppercase">ID-REF-002</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-slate-600">Standard Date View</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex px-2 py-0.5 rounded-md bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold uppercase tracking-tight">Review</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-300" data-icon="image">image</span>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-900">Placeholder Entry</p>
+<p class="text-[10px] text-slate-400 font-mono uppercase">ID-REF-003</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-slate-600">Standard Date View</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex px-2 py-0.5 rounded-md bg-error-container text-on-error-container text-[10px] font-bold uppercase tracking-tight">Blocked</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Priority Operations & Documentation -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Action Queue Section -->
+<div class="lg:col-span-2 space-y-6">
+<h3 class="text-lg font-headline font-bold text-primary">CTA Hierarchy Patterns</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-slate-100 locked-pattern">
+<span class="reference-label">Primary Action Pattern</span>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-800">Primary Task Layout</p>
+<p class="text-xs text-slate-500">Used for single critical system processes</p>
+</div>
+</div>
+<button class="px-4 py-2 bg-primary-gradient text-white text-[10px] font-bold rounded-lg shadow-md">Primary CTA</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-slate-100 locked-pattern">
+<span class="reference-label">Secondary Action Pattern</span>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-800">Secondary Task Layout</p>
+<p class="text-xs text-slate-500">Used for routine administrative review</p>
+</div>
+</div>
+<button class="px-4 py-2 text-primary text-[10px] font-bold rounded-lg border border-primary/20 hover:bg-slate-50">Secondary CTA</button>
+</div>
+</div>
+</div>
+<!-- Admin Rules / Guidelines -->
+<div class="bg-surface-container rounded-xl p-6 space-y-4 border border-slate-200">
+<h3 class="text-sm font-headline font-bold text-primary uppercase tracking-widest">Continuity Notes</h3>
+<ul class="space-y-4">
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5" data-icon="lock">lock</span>
+<div>
+<p class="text-xs font-bold text-slate-800">Component Locking</p>
+<p class="text-[10px] text-slate-500 leading-relaxed">No custom styles outside this reference. All components must inherit TravelBook Global Theme tokens.</p>
+</div>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5" data-icon="responsive_layout">responsive_layout</span>
+<div>
+<p class="text-xs font-bold text-slate-800">Responsive Logic</p>
+<p class="text-[10px] text-slate-500 leading-relaxed">Sidebar collapses to hamburger at 1024px. Data tables pivot to stacked card lists below 768px.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Minimal Footer -->
+<footer class="mt-auto border-t border-slate-100 bg-white p-4 flex items-center justify-between px-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+<span>© 2023 TravelBook</span>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span>
+<span>Reference Version 1.0.4</span>
+</div>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Tours Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#002020",
+              "background": "#f8f9fa",
+              "tertiary-container": "#4e1500",
+              "secondary-fixed-dim": "#76d6d5",
+              "secondary": "#006a6a",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-tint": "#435b9f",
+              "surface-container-low": "#f3f4f5",
+              "primary-fixed": "#dbe1ff",
+              "on-primary-fixed": "#00174a",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-secondary-container": "#006e6e",
+              "on-background": "#191c1d",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "inverse-primary": "#b3c5ff",
+              "secondary-fixed": "#93f2f2",
+              "on-surface": "#191c1d",
+              "surface-dim": "#d9dadb",
+              "surface": "#f8f9fa",
+              "surface-container": "#edeeef",
+              "on-primary-container": "#758dd5",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#c5c6d2",
+              "on-surface-variant": "#444650",
+              "on-error": "#ffffff",
+              "surface-variant": "#e1e3e4",
+              "tertiary-fixed": "#ffdbcf",
+              "primary-container": "#002366",
+              "surface-bright": "#f8f9fa",
+              "primary-fixed-dim": "#b3c5ff",
+              "outline": "#757682",
+              "error-container": "#ffdad6",
+              "secondary-container": "#90efef",
+              "inverse-surface": "#2e3132",
+              "on-primary-fixed-variant": "#2a4386",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-highest": "#e1e3e4",
+              "primary": "#00113a",
+              "surface-container-high": "#e7e8e9",
+              "on-tertiary-container": "#e56c3e",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#380c00",
+              "tertiary": "#2c0800",
+              "on-secondary-fixed-variant": "#004f4f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm shadow-blue-900/5 tonal-shift bg-slate-50/50 dark:bg-slate-900/50">
+<div class="max-w-[1200px] mx-auto flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-bold tracking-tight text-blue-950 dark:text-white font-headline">TravelBook</span>
+<nav class="hidden md:flex items-center gap-8 font-manrope text-sm tracking-wide">
+<a class="text-blue-900 dark:text-teal-400 font-semibold border-b-2 border-blue-900 dark:border-teal-400 pb-1" href="#">Tours</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Destinations</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Promotions</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Help</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-surface-container rounded-full px-4 py-2 w-64">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-full ml-2 text-on-surface-variant" placeholder="Search destinations..." type="text"/>
+</div>
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-surface-container-high cursor-pointer hover:scale-105 transition-transform">
+<img alt="User profile menu" data-alt="Close up portrait of a professional man in a business casual outfit with a friendly expression and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGLn0KQDDFpP9sP4L_1c-q3VF29eFG0msmY4kgubjpzuf9zpfAVo_mrgtoG1lPsz5HbZo2x2MTIJWjnNtUyfxYevuk-bFkCEzCRThgDM9ebbcig0Pi0-GU39p7NixsbALZzpvXB6EB8TQxcXxniXZ0p-7C6_ufsKguWtKKWS3ufbzZOnX11OMdrudicHM_fND85u_UF6CQxz4z4IqmLzd3MDnYtuKivijfBxVtPNqoj-yCt6tkrcwl9fOg16kqbYiSV-WCtkia_HmR"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-6 py-8">
+<!-- Hero & Context -->
+<div class="mb-10">
+<h1 class="font-headline text-4xl font-extrabold text-primary mb-2 tracking-tight">Explore Available Tours</h1>
+<p class="text-on-surface-variant max-w-2xl">Compare vetted travel packages across 40+ destinations. Filter by duration, price, or activity type to find your next journey.</p>
+</div>
+<!-- Filter & Search Bar Section -->
+<section class="mb-12 space-y-6">
+<div class="flex flex-col md:flex-row gap-4">
+<div class="flex-grow flex items-center bg-surface-container-lowest border border-outline-variant/20 rounded-xl px-4 py-3 shadow-sm">
+<span class="material-symbols-outlined text-outline" data-icon="travel_explore">travel_explore</span>
+<input class="bg-transparent border-none focus:ring-0 w-full ml-3 text-on-surface font-medium placeholder:text-outline/60" placeholder="Where do you want to go?" type="text"/>
+</div>
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant/20 rounded-xl px-4 py-3 shadow-sm min-w-[200px]">
+<span class="material-symbols-outlined text-outline" data-icon="calendar_month">calendar_month</span>
+<span class="ml-3 text-on-surface text-sm font-medium">Any Date</span>
+</div>
+<button class="bg-primary hover:bg-primary-container text-on-primary px-8 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+                    Find Tours
+                </button>
+</div>
+<!-- Filter Chips -->
+<div class="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2">
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 flex-shrink-0">
+<span class="material-symbols-outlined text-base" data-icon="tune">tune</span>
+                    All Filters
+                </button>
+<div class="h-6 w-[1px] bg-outline-variant/30 mx-2"></div>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-variant transition-colors flex-shrink-0">Europe</button>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-variant transition-colors flex-shrink-0">Hiking &amp; Trekking</button>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-variant transition-colors flex-shrink-0">Under $2000</button>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-variant transition-colors flex-shrink-0">7-10 Days</button>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-variant transition-colors flex-shrink-0">Family Friendly</button>
+</div>
+</section>
+<!-- Tours Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+<!-- Tour Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img alt="Amalfi Coast views" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="scenic view of colorful buildings on the cliffs of the amalfi coast in italy during a bright sunny day with deep blue sea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjt5isQsmtBwDv4SPtqm_xO3_DY72QLWcl6oQsrLQ83YMleWa3vf1f8N6uil0ZcTZr0NBGK5Ge9QTfRwI585Z2tlIC8TuQIl9h9dCYYTSZp2X8H5v_S4Nf4ARmQSaZPzn0JZrfv6xutLIm5JCA9au7JMad07ojsOwDzVrpUa90GeOk1M1Ukahr3AQ30rSqPr1W8Fkb6Fx95uj0ExPDYuuvYFy9oUC03jK3Slt3_A_KwGEr8lgNw3NMOD1LeSCqYFC4h7doqsTRBwm8"/>
+<div class="absolute top-4 left-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Bestseller</span>
+</div>
+<button class="absolute top-4 right-4 h-8 w-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-secondary font-semibold text-xs uppercase tracking-widest">Italy • 8 Days</span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-amber-500" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.9</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Amalfi Coast Cultural Discovery</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">Experience the history and gastronomy of Positano and Amalfi with expert local guides and boutique stays.</p>
+<div class="mt-auto pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+<div>
+<span class="text-xs text-outline block">Starting from</span>
+<span class="text-xl font-extrabold text-primary">$2,450</span>
+</div>
+<button class="bg-secondary text-on-secondary px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">View Details</button>
+</div>
+</div>
+</div>
+<!-- Tour Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img alt="Yosemite Valley" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="panoramic landscape of yosemite valley mountains and pine forests with soft afternoon light hitting the granite peaks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdyEOeQzPQ_lGRjC6Fdo2c-xBk7a1c48dmsD0UlkFTugSBvI67FZ_-PjRqIBQjexnz8Qf0GajbrcuXqOq7dcymsIT--eOPT6pSGXQ_DGxpxjuWzd_WdcVVN5lvWzJBM4p7zYz2n7VKD6DDB95vKPA0U5_16-NMwNNs5Pk7lwqSRJWMCr7pAAV-rgX9y1B1O0KOHqQTql0487mW0kAm31PP6DbV6_aztMKY2TVOpfJzL4oJuM4kMyuK_w2duKH7yOEraRKJ7avv0mcC"/>
+<div class="absolute top-4 left-4">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">National Park</span>
+</div>
+<button class="absolute top-4 right-4 h-8 w-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-secondary font-semibold text-xs uppercase tracking-widest">USA • 5 Days</span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-amber-500" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.8</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Yosemite Wilderness Trek</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">A guided small-group hiking tour through the high sierras, including backcountry camping and El Capitan vistas.</p>
+<div class="mt-auto pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+<div>
+<span class="text-xs text-outline block">Starting from</span>
+<span class="text-xl font-extrabold text-primary">$1,200</span>
+</div>
+<button class="bg-secondary text-on-secondary px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">View Details</button>
+</div>
+</div>
+</div>
+<!-- Tour Card 3 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img alt="Kyoto Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="traditional japanese zen garden with stone lanterns and manicured trees in front of a wooden temple in kyoto japan during autumn" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRAeBcRZpuF4KIyNG4H8GT3OnRmLnJEKCWsFmMxRLDJBpzNpsCTRXAcVPQY_hrWkwuQvYFCkBEBfaw9biFfN0h3-Pzs6gnV43B0OhFbWtTB2QRHLgrcJxPDdNGL4mMcqREZTOaju2u02DOqDR-tQvMIf4OUZE-kFTM7rgc3RR520m2eyD69HvcWwqonj2g_VKVec4GDQKAm_KJ41IrNSgduffnGpIdkKP7XrndLOGRlrdr3pv8GChtfbrwJ6SFbHwsm1C9n6sVFYZ3"/>
+<div class="absolute top-4 left-4">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Cultural</span>
+</div>
+<button class="absolute top-4 right-4 h-8 w-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-secondary font-semibold text-xs uppercase tracking-widest">Japan • 12 Days</span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-amber-500" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">5.0</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Heritage of the Rising Sun</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">Comprehensive rail tour through Tokyo, Kyoto, and Hiroshima exploring ancient traditions and modern life.</p>
+<div class="mt-auto pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+<div>
+<span class="text-xs text-outline block">Starting from</span>
+<span class="text-xl font-extrabold text-primary">$3,890</span>
+</div>
+<button class="bg-secondary text-on-secondary px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">View Details</button>
+</div>
+</div>
+</div>
+<!-- Tour Card 4 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img alt="Greek Islands" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="aerial drone view of whitewashed buildings with blue domes on the island of santorini greece overlooking the volcanic caldera sea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTfFwnoJMdXI2xMw5qal0no1dgRD60wv6tak-dER4rN2dtL0cBfLetPY8CuDTsxTZIEC39G-U4hyZ0ayC2bR723VlF1s4L2jRHWITuDHG7bo-uSBa57tY1jp1XdYoDm4kKL4bFK77lNu4GbkA-s7i-HHLBUi8rvrdbjlx3dtYbN323cbdqhs3Bu_7X3uu07JZEEu7_6uFNMwtkjS4qQHz0Nr85apSLjs9D7tOcZ2b35zgSgDqr9NNPbFdo5CdeanUZ-93Rna58pXNw"/>
+<button class="absolute top-4 right-4 h-8 w-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-secondary font-semibold text-xs uppercase tracking-widest">Greece • 10 Days</span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-amber-500" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.7</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Cyclades Island Hopping</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">Sail through Mykonos, Naxos, and Santorini with private boat transfers and authentic taverna dining.</p>
+<div class="mt-auto pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+<div>
+<span class="text-xs text-outline block">Starting from</span>
+<span class="text-xl font-extrabold text-primary">$2,100</span>
+</div>
+<button class="bg-secondary text-on-secondary px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">View Details</button>
+</div>
+</div>
+</div>
+<!-- Tour Card 5 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img alt="Venice Canal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="peaceful early morning scene of a gondola floating on a narrow canal in venice italy with sunlight reflecting on the water" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw7OyzhNtcVx-kHkKMe8ZrDaAV_wuSdctN1dE4ey_I5zOEapn43tC8NExvkwORxZ1C29NWdfbRShlFk1mmeacpg8_TpFswkABwtRvZ5exI210V66dcv7IpM-vaAFb0QhDJlfTMvQrWqTW_NOtx0o7UnOfMw4v7HF8fV0Rk1NtrjCYwaC4rGSCdA1xV5C0ClvTSKWlzedmWtdGbMdh3JgTuCyhyzIbVuhJBpQDQ3whZlgbPZzTaF6wFOIOFTwWaF1wbm2ijUP2No4NF"/>
+<button class="absolute top-4 right-4 h-8 w-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-secondary font-semibold text-xs uppercase tracking-widest">Italy • 6 Days</span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-amber-500" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.6</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Venetian Art &amp; History</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">Exclusive access to Doge's Palace and artisan workshops in Murano, led by history scholars.</p>
+<div class="mt-auto pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+<div>
+<span class="text-xs text-outline block">Starting from</span>
+<span class="text-xl font-extrabold text-primary">$1,750</span>
+</div>
+<button class="bg-secondary text-on-secondary px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">View Details</button>
+</div>
+</div>
+</div>
+<!-- Tour Card 6 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img alt="Swiss Alps" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="snow capped mountains of the swiss alps with a clear blue sky and small wooden cabin nestled in a green valley below" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO3365QNda0NUp0Oc7gF55ntXF_U3Ra0nPgn9jzRPNcmLWCzKbeHGldTDUidaYm1aqWKyc3iXLjqcWfYQ_7sTY-CZNDSU1g1l_OOuHw4iNWJDp79DR4NQBA5G-6oRGlozTil-_XN5J64sg-ytIXguSaJrc4jTQqktM6fCUESMvjJo2mj3UuZZXrdVDV2ixFY5lbG0HGhENOr0K9y_mlcbepfydImChogvXreq38pQiy2O8WokFKaeRfPonbTl9jP9iMA2Tqh8dFXTA"/>
+<div class="absolute top-4 left-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Limited Seats</span>
+</div>
+<button class="absolute top-4 right-4 h-8 w-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<span class="text-secondary font-semibold text-xs uppercase tracking-widest">Switzerland • 7 Days</span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-amber-500" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.9</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Alpine Peaks &amp; Railways</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">Explore the Bernese Oberland via world-famous cogwheel trains and stay in scenic mountain villages.</p>
+<div class="mt-auto pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+<div>
+<span class="text-xs text-outline block">Starting from</span>
+<span class="text-xl font-extrabold text-primary">$3,200</span>
+</div>
+<button class="bg-secondary text-on-secondary px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">View Details</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination / Load More -->
+<div class="flex flex-col items-center gap-4 mb-20">
+<button class="px-8 py-3 border border-outline text-primary font-bold rounded-xl hover:bg-surface-container transition-colors">Load more tours</button>
+<p class="text-xs text-outline font-medium">Showing 6 of 142 tours</p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900 tonal-layering-low-noise">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center px-6 py-12 gap-6">
+<p class="font-manrope text-xs tracking-widest uppercase text-slate-500 dark:text-slate-400">© 2024 TravelBook Editorial. All rights reserved.</p>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4" href="#">Privacy Policy</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4" href="#">Terms of Service</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4" href="#">Cookie Settings</a>
+<a class="font-manrope text-xs tracking-widest uppercase text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors underline underline-offset-4" href="#">Contact Us</a>
+</div>
+</div>
+</footer>
+</body></html>

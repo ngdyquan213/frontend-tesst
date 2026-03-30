@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook Authentication System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#191c1d",
+              "outline": "#757682",
+              "inverse-surface": "#2e3132",
+              "surface-tint": "#435b9f",
+              "surface": "#f8f9fa",
+              "on-secondary-fixed": "#002020",
+              "surface-variant": "#e1e3e4",
+              "secondary-container": "#90efef",
+              "surface-container": "#edeeef",
+              "primary-container": "#002366",
+              "inverse-primary": "#b3c5ff",
+              "on-error": "#ffffff",
+              "on-primary-fixed": "#00174a",
+              "on-secondary-container": "#006e6e",
+              "surface-bright": "#f8f9fa",
+              "secondary": "#006a6a",
+              "error": "#ba1a1a",
+              "surface-container-lowest": "#ffffff",
+              "on-surface-variant": "#444650",
+              "surface-container-high": "#e7e8e9",
+              "primary": "#00113a",
+              "outline-variant": "#c5c6d2",
+              "on-primary-fixed-variant": "#2a4386",
+              "tertiary-fixed": "#ffdbcf",
+              "on-surface": "#191c1d",
+              "secondary-fixed": "#93f2f2",
+              "tertiary-fixed-dim": "#ffb59c",
+              "tertiary-container": "#4e1500",
+              "primary-fixed": "#dbe1ff",
+              "inverse-on-surface": "#f0f1f2",
+              "on-tertiary-container": "#e56c3e",
+              "error-container": "#ffdad6",
+              "tertiary": "#2c0800",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-tertiary": "#ffffff",
+              "background": "#f8f9fa",
+              "surface-dim": "#d9dadb",
+              "surface-container-highest": "#e1e3e4",
+              "primary-fixed-dim": "#b3c5ff",
+              "surface-container-low": "#f3f4f5",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#380c00",
+              "on-primary-container": "#758dd5",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-secondary-fixed-variant": "#004f4f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .auth-bg {
+            background: radial-gradient(circle at top right, #dbe1ff 0%, #f8f9fa 40%, #ffffff 100%);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased auth-bg min-h-screen">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full flex justify-center items-center py-8 px-6 z-50">
+<div class="flex items-center gap-2">
+<span class="text-2xl font-bold tracking-tight text-primary font-headline">TravelBook</span>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 items-start">
+<!-- 1. Login Form -->
+<section class="flex flex-col gap-6">
+<h2 class="font-headline text-on-surface-variant text-sm uppercase tracking-widest px-4">01. Login Interface</h2>
+<div class="w-full max-w-[480px] bg-surface-container-lowest rounded-2xl p-10 shadow-sm border border-outline-variant/10">
+<div class="mb-8 flex flex-col items-center">
+<div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="lock">lock</span>
+</div>
+<h1 class="font-headline text-2xl font-bold text-primary">Welcome Back</h1>
+<p class="text-on-surface-variant mt-2 text-center">Continue your premium travel journey</p>
+</div>
+<form class="space-y-5">
+<div class="space-y-2">
+<label class="text-sm font-semibold font-headline ml-1">Email Address</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-4 px-5 focus:ring-2 focus:ring-primary/20 placeholder:text-outline" placeholder="traveler@travelbook.com" type="email"/>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center ml-1">
+<label class="text-sm font-semibold font-headline">Password</label>
+<a class="text-xs text-secondary font-medium hover:underline" href="#">Forgot Password?</a>
+</div>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-4 px-5 focus:ring-2 focus:ring-primary/20 placeholder:text-outline" placeholder="••••••••" type="password"/>
+</div>
+<button class="w-full primary-gradient text-on-primary font-headline font-bold py-4 rounded-xl shadow-lg shadow-primary/10 transition-transform active:scale-95 mt-4">
+                    Sign In
+                </button>
+<div class="pt-4 text-center">
+<p class="text-sm text-on-surface-variant">Don't have an account? <a class="text-primary font-bold hover:underline" href="#">Register</a></p>
+</div>
+</form>
+</div>
+</section>
+<!-- 2. Register Form -->
+<section class="flex flex-col gap-6">
+<h2 class="font-headline text-on-surface-variant text-sm uppercase tracking-widest px-4">02. Registration</h2>
+<div class="w-full max-w-[480px] bg-surface-container-lowest rounded-2xl p-10 shadow-sm border border-outline-variant/10">
+<div class="mb-8">
+<h1 class="font-headline text-2xl font-bold text-primary">Create Account</h1>
+<p class="text-on-surface-variant mt-2">Join our community of travelers</p>
+</div>
+<form class="space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-xs font-semibold font-headline uppercase tracking-wider ml-1">First Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20" placeholder="Julian" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold font-headline uppercase tracking-wider ml-1">Last Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20" placeholder="Mars" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold font-headline uppercase tracking-wider ml-1">Email</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20" placeholder="julian.mars@travelbook.com" type="email"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold font-headline uppercase tracking-wider ml-1">Password</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20" placeholder="••••••••" type="password"/>
+<!-- Strength Indicator -->
+<div class="pt-2">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-bold text-secondary-fixed-dim uppercase tracking-tighter">Password Strength</span>
+<span class="text-[10px] font-bold text-secondary uppercase">Strong</span>
+</div>
+<div class="flex gap-1 h-1">
+<div class="flex-1 bg-secondary rounded-full"></div>
+<div class="flex-1 bg-secondary rounded-full"></div>
+<div class="flex-1 bg-secondary rounded-full"></div>
+<div class="flex-1 bg-surface-container-highest rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3 py-2">
+<input class="mt-1 rounded border-outline-variant text-primary focus:ring-primary/20" type="checkbox"/>
+<p class="text-xs text-on-surface-variant leading-relaxed">I agree to the <span class="text-primary underline">Terms of Service</span> and <span class="text-primary underline">Privacy Policy</span>.</p>
+</div>
+<button class="w-full primary-gradient text-on-primary font-headline font-bold py-4 rounded-xl shadow-lg mt-2">
+                    Complete Registration
+                </button>
+</form>
+</div>
+</section>
+<!-- 3. Forgot & Reset -->
+<section class="flex flex-col gap-12">
+<div class="flex flex-col gap-6">
+<h2 class="font-headline text-on-surface-variant text-sm uppercase tracking-widest px-4">03. Recovery</h2>
+<div class="w-full max-w-[480px] bg-surface-container-lowest rounded-2xl p-8 shadow-sm border border-outline-variant/10">
+<div class="mb-6">
+<div class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="shield">shield</span>
+</div>
+<h1 class="font-headline text-xl font-bold text-primary">Forgot Password?</h1>
+<p class="text-sm text-on-surface-variant mt-1">Enter your email and we'll send a link to reset your account access.</p>
+</div>
+<form class="space-y-4">
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20" placeholder="Enter your email" type="email"/>
+<button class="w-full bg-primary-container text-on-primary-container font-headline font-bold py-3 rounded-xl transition-all hover:bg-primary-fixed-dim">
+                        Send Reset Link
+                    </button>
+</form>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<h2 class="font-headline text-on-surface-variant text-sm uppercase tracking-widest px-4">04. Password Update</h2>
+<div class="w-full max-w-[480px] bg-surface-container-lowest rounded-2xl p-8 shadow-sm border border-outline-variant/10">
+<h1 class="font-headline text-xl font-bold text-primary mb-6">Reset Password</h1>
+<form class="space-y-4">
+<div class="space-y-1">
+<label class="text-xs font-bold text-outline uppercase tracking-widest ml-1">New Password</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20" type="password"/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-outline uppercase tracking-widest ml-1">Confirm New Password</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20" type="password"/>
+</div>
+<button class="w-full primary-gradient text-on-primary font-headline font-bold py-3 rounded-xl">
+                        Update Password
+                    </button>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- State Demonstrations Section (Visual Library) -->
+<section class="max-w-7xl mx-auto px-4 pb-24">
+<h2 class="font-headline text-on-surface-variant text-sm uppercase tracking-widest px-4 mb-8">05. Interaction States &amp; UI Library</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Validation Error -->
+<div class="bg-surface-container p-8 rounded-2xl space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-wider text-error">Validation Error</h3>
+<div class="space-y-2">
+<label class="text-sm font-semibold">Email Address</label>
+<div class="relative">
+<input class="w-full bg-error-container/30 border border-error/20 rounded-xl py-4 px-5 text-error focus:ring-error/20" type="text" value="invalid-email-address"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-error text-xl" data-icon="error">error</span>
+</div>
+<p class="text-xs text-error font-medium flex items-center gap-1">
+                    Please enter a valid email format (e.g., name@domain.com)
+                </p>
+</div>
+</div>
+<!-- Focused State -->
+<div class="bg-surface-container p-8 rounded-2xl space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-wider text-primary">Focused State</h3>
+<div class="space-y-2">
+<label class="text-sm font-semibold">Username</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-2 border-primary-container/30 rounded-xl py-4 px-5 focus:outline-none focus:ring-4 focus:ring-primary-fixed ring-opacity-50 transition-all" type="text" value="travel_enthusiast"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-primary-container" data-icon="edit">edit</span>
+</div>
+</div>
+</div>
+<!-- Success State -->
+<div class="bg-surface-container p-8 rounded-2xl space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-wider text-secondary">Success State</h3>
+<div class="bg-secondary-container/40 border border-secondary/20 rounded-xl p-5 flex items-start gap-4">
+<div class="bg-secondary p-1.5 rounded-full mt-0.5">
+<span class="material-symbols-outlined text-white text-sm" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<div class="space-y-1">
+<p class="font-headline font-bold text-on-secondary-container text-sm">Action Successful</p>
+<p class="text-xs text-on-secondary-container leading-relaxed">Your recovery instructions have been successfully dispatched to your inbox.</p>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-secondary-container">Verified Code</label>
+<input class="w-full bg-secondary-container/20 border-2 border-secondary/20 rounded-xl py-4 px-5 text-secondary font-bold text-center tracking-[1em]" disabled="" type="text" value="8 4 2 1"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row justify-between items-center px-12 py-6 w-full fixed bottom-0 z-40">
+<div class="text-blue-950 dark:text-blue-500 font-inter text-xs tracking-widest uppercase mb-4 md:mb-0">
+        © 2024 TravelBook. All rights reserved.
+    </div>
+<div class="flex gap-8">
+<a class="text-slate-400 dark:text-slate-600 font-inter text-xs tracking-widest uppercase hover:text-blue-950 dark:hover:text-white underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-600 font-inter text-xs tracking-widest uppercase hover:text-blue-950 dark:hover:text-white underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-600 font-inter text-xs tracking-widest uppercase hover:text-blue-950 dark:hover:text-white underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Security Center</a>
+</div>
+</footer>
+<!-- Decorative Corner Element -->
+<div class="fixed top-24 -right-24 w-64 h-64 bg-secondary-container/10 blur-[100px] pointer-events-none"></div>
+<div class="fixed -bottom-24 -left-24 w-96 h-96 bg-primary-fixed/20 blur-[120px] pointer-events-none"></div>
+</body></html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Navigation System | TravelBook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-container": "#edeeef",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-dim": "#d9dadb",
+                        "surface-bright": "#f8f9fa",
+                        "on-secondary-container": "#006e6e",
+                        "primary": "#00113a",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed": "#ffdbcf",
+                        "outline-variant": "#c5c6d2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#93f2f2",
+                        "on-tertiary-fixed": "#380c00",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "outline": "#757682",
+                        "on-error-container": "#93000a",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#758dd5",
+                        "tertiary-container": "#4e1500",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#90efef",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "primary-container": "#002366",
+                        "on-secondary-fixed": "#002020",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#191c1d",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "surface": "#f8f9fa",
+                        "background": "#f8f9fa",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#444650",
+                        "tertiary": "#2c0800",
+                        "secondary": "#006a6a",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-primary-fixed": "#00174a",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b3c5ff",
+                        "surface-tint": "#435b9f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-manrope { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-background min-h-screen">
+<!-- Hero Header -->
+<header class="pt-20 pb-12 px-8 max-w-7xl mx-auto">
+<div class="flex flex-col space-y-4">
+<span class="text-secondary font-semibold tracking-widest text-xs uppercase">Design System Authority</span>
+<h1 class="text-5xl font-extrabold text-primary tracking-tighter leading-tight">Global Navigation System</h1>
+<p class="text-on-surface-variant text-lg max-w-2xl leading-relaxed">
+                A unified architectural framework for TravelBook's interface layers, ensuring consistency across public, transactional, and administrative environments.
+            </p>
+</div>
+</header>
+<main class="space-y-24 pb-32">
+<!-- 1. PUBLIC NAV SECTION -->
+<section class="px-8 max-w-7xl mx-auto">
+<div class="mb-8">
+<h2 class="text-2xl font-bold text-primary mb-2">01. Public Navigation Shell</h2>
+<p class="text-on-surface-variant text-sm">Primary header for marketing and discovery pages.</p>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-8 border border-outline-variant/20 shadow-sm overflow-hidden">
+<!-- TopNavBar Component Execution -->
+<nav class="bg-white/80 backdrop-blur-lg flex justify-between items-center w-full px-8 py-4 max-w-full mx-auto shadow-sm sticky top-0 z-50 rounded-xl">
+<div class="flex items-center">
+<span class="text-2xl font-bold tracking-tighter text-primary">TravelBook</span>
+<div class="hidden md:flex ml-12 space-x-8 font-manrope text-sm tracking-wide">
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="#">Tours</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="#">Destinations</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="#">Promotions</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="#">Help</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:text-primary font-bold text-sm px-4 py-2 transition-all">Sign In</button>
+<button class="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-md active:scale-95 transition-transform">Get Started</button>
+<div class="md:hidden flex items-center ml-2">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+</div>
+</div>
+</nav>
+</div>
+</section>
+<!-- 2. CHECKOUT NAV SECTION -->
+<section class="px-8 max-w-7xl mx-auto">
+<div class="mb-8">
+<h2 class="text-2xl font-bold text-primary mb-2">02. Checkout &amp; Transactional</h2>
+<p class="text-on-surface-variant text-sm">Focused shell to minimize friction during high-intent conversion.</p>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-8 border border-outline-variant/20 shadow-sm overflow-hidden">
+<nav class="bg-white py-5 px-8 flex justify-between items-center rounded-xl shadow-sm border border-outline-variant/10">
+<div class="flex items-center space-x-2 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+<span class="text-sm font-semibold font-label">Back to Search</span>
+</div>
+<div class="text-2xl font-black tracking-tighter text-primary">TravelBook</div>
+<div class="flex items-center space-x-2 bg-secondary-container/30 px-4 py-1.5 rounded-full border border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="text-secondary text-[10px] font-bold uppercase tracking-widest">Secure Checkout</span>
+</div>
+</nav>
+<div class="mt-8 flex justify-center">
+<div class="w-full max-w-md h-32 bg-white/50 rounded-xl border border-dashed border-outline-variant flex items-center justify-center text-outline text-xs italic">
+                       Payment Context Area
+                   </div>
+</div>
+</div>
+</section>
+<!-- 3. ACCOUNT SIDEBAR SECTION -->
+<section class="px-8 max-w-7xl mx-auto">
+<div class="mb-8">
+<h2 class="text-2xl font-bold text-primary mb-2">03. Account Side Navigation</h2>
+<p class="text-on-surface-variant text-sm">Personalized dashboard with Tonal Layering.</p>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-8 border border-outline-variant/20 shadow-sm flex flex-col md:flex-row gap-8">
+<!-- SideNavBar Component Execution -->
+<aside class="flex flex-col h-full py-8 bg-white w-full md:w-64 rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10">
+<div class="px-6 mb-10">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-primary-fixed overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional traveler smiling in warm evening sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvtVZnjQcVp2XTL6lZx0-W88E6JlO37ysH014lfhjFqhLyqm_B-r9LVpAofJBZl3qs-NCZrKx64By0k_S888dharl8_7yXITLdkrl5xNqVIqf-7o6Kpl2_GtdRldvfkqyRAEkzAhpFc407B8L9o_S0fHgDS_k1RQW84aX8ZLyY8V505i-SmS1xSB8tX4Oe8HGKbzZkUjZ7iXIk_F01t7F5ViSvcpo5_i6A_-vj_OjYP25l-mGI80CCtlUwS3vDjvZcLsjKDSIZ5aSn"/>
+</div>
+<div>
+<h4 class="text-sm font-bold text-primary">TravelBook</h4>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Account Overview</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 font-manrope text-sm font-medium space-y-1">
+<a class="flex items-center space-x-4 bg-primary/5 text-primary border-l-4 border-primary px-6 py-3 font-bold" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">person</span>
+<span>Profile</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">group</span>
+<span>Travelers</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">event_available</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">confirmation_number</span>
+<span>Vouchers</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">payments</span>
+<span>Refunds</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">notifications</span>
+<span>Notifications</span>
+</a>
+<a class="flex items-center space-x-4 text-on-surface-variant hover:bg-surface-container px-6 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">contact_support</span>
+<span>Support</span>
+</a>
+</nav>
+</aside>
+<div class="flex-1 bg-white rounded-2xl shadow-sm p-8 self-start border border-outline-variant/10">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-xl font-bold text-primary">Overview</h3>
+<div class="flex space-x-2">
+<span class="px-3 py-1 bg-secondary-container/30 text-on-secondary-container text-[10px] font-bold rounded-full uppercase tracking-widest">Active Status</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="h-32 bg-surface-container-low rounded-xl border border-outline-variant/10"></div>
+<div class="h-32 bg-surface-container-low rounded-xl border border-outline-variant/10"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. ADMIN SIDEBAR SECTION -->
+<section class="px-8 max-w-7xl mx-auto">
+<div class="mb-8">
+<h2 class="text-2xl font-bold text-primary mb-2">04. Admin Operational Sidebar</h2>
+<p class="text-on-surface-variant text-sm">High-density controls for inventory and fulfillment management.</p>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-8 border border-outline-variant/20 shadow-sm flex flex-col md:flex-row gap-8">
+<aside class="w-full md:w-64 bg-primary text-white h-[640px] rounded-2xl flex flex-col py-6 overflow-hidden">
+<div class="px-6 mb-10 flex items-center space-x-3">
+<div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center font-bold text-white italic text-sm">TB</div>
+<span class="text-lg font-bold tracking-tight">TravelBook</span>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="px-6 py-2 opacity-40 text-[10px] uppercase font-bold tracking-widest">Global Ops</div>
+<a class="flex items-center space-x-3 px-6 py-2.5 hover:bg-white/10 transition-colors opacity-80" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-6 py-2.5 bg-secondary/30 text-white border-l-4 border-secondary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="text-sm font-bold">Tours</span>
+</a>
+<a class="flex items-center space-x-3 px-6 py-2.5 hover:bg-white/10 transition-colors opacity-80" href="#">
+<span class="material-symbols-outlined text-xl">calendar_today</span>
+<span class="text-sm font-medium">Schedules</span>
+</a>
+<a class="flex items-center space-x-3 px-6 py-2.5 hover:bg-white/10 transition-colors opacity-80" href="#">
+<span class="material-symbols-outlined text-xl">payments</span>
+<span class="text-sm font-medium">Pricing</span>
+</a>
+<div class="px-6 py-2 mt-6 opacity-40 text-[10px] uppercase font-bold tracking-widest">Fulfillment</div>
+<a class="flex items-center space-x-3 px-6 py-2.5 hover:bg-white/10 transition-colors opacity-80" href="#">
+<span class="material-symbols-outlined text-xl">confirmation_number</span>
+<span class="text-sm font-medium">Bookings</span>
+</a>
+<a class="flex items-center space-x-3 px-6 py-2.5 hover:bg-white/10 transition-colors opacity-80" href="#">
+<span class="material-symbols-outlined text-xl">assignment_return</span>
+<span class="text-sm font-medium">Refunds</span>
+</a>
+<a class="flex items-center space-x-3 px-6 py-2.5 hover:bg-white/10 transition-colors opacity-80" href="#">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+<span class="text-sm font-medium">Documents</span>
+</a>
+<a class="flex items-center space-x-3 px-6 py-2.5 hover:bg-white/10 transition-colors opacity-80" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span class="text-sm font-medium">Operations</span>
+</a>
+</nav>
+</aside>
+<div class="flex-1 bg-surface-container-highest/20 rounded-2xl border border-outline-variant/10 p-8">
+<div class="flex items-center justify-between mb-8">
+<div class="h-8 w-48 bg-outline-variant/20 rounded-md"></div>
+<div class="h-8 w-32 bg-outline-variant/20 rounded-md"></div>
+</div>
+<div class="space-y-4">
+<div class="h-12 bg-white rounded-lg shadow-sm border border-outline-variant/10"></div>
+<div class="h-12 bg-white rounded-lg shadow-sm border border-outline-variant/10"></div>
+<div class="h-12 bg-white rounded-lg shadow-sm border border-outline-variant/10"></div>
+<div class="h-12 bg-white rounded-lg shadow-sm border border-outline-variant/10"></div>
+<div class="h-12 bg-white rounded-lg shadow-sm border border-outline-variant/10"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. UTILITY & FOOTER SECTION -->
+<section class="px-8 max-w-7xl mx-auto">
+<div class="mb-12">
+<h2 class="text-2xl font-bold text-primary mb-2">05. Utility Patterns &amp; Universal Footer</h2>
+<p class="text-on-surface-variant text-sm">Secondary navigation components for path-finding and legal compliance.</p>
+</div>
+<!-- Breadcrumbs -->
+<div class="mb-16 inline-flex px-1">
+<nav class="flex items-center space-x-3 font-manrope text-sm tracking-tight">
+<a class="text-on-surface-variant/60 hover:text-primary transition-colors font-medium" href="#">Home</a>
+<span class="material-symbols-outlined text-outline-variant text-base">chevron_right</span>
+<a class="text-on-surface-variant/60 hover:text-primary transition-colors font-medium" href="#">Tours</a>
+<span class="material-symbols-outlined text-outline-variant text-base">chevron_right</span>
+<span class="text-primary font-bold">Amalfi Coast</span>
+</nav>
+</div>
+<!-- Footer Component Execution -->
+<footer class="w-full py-16 px-8 bg-surface-container rounded-3xl border border-outline-variant/10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 border-b border-outline-variant/20 pb-16">
+<div class="lg:col-span-5">
+<span class="text-2xl font-black text-primary">TravelBook</span>
+<p class="mt-6 text-on-surface-variant max-w-sm text-sm leading-relaxed font-medium">Curating the world's most breathtaking journeys with precision and passion since 2024.</p>
+</div>
+<div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8"><div class="flex flex-col space-y-3">
+<span class="font-manrope text-[10px] tracking-[0.2em] uppercase text-primary font-extrabold mb-2">Explore</span>
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors font-medium" href="#">Home</a>
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors font-medium" href="#">Tours</a>
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors font-medium" href="#">Destinations</a>
+</div>
+<div class="flex flex-col space-y-3">
+<span class="font-manrope text-[10px] tracking-[0.2em] uppercase text-primary font-extrabold mb-2">Discovery</span>
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors font-medium" href="#">Promotions</a>
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors font-medium" href="#">Help</a>
+</div>
+<div class="flex flex-col space-y-3">
+<span class="font-manrope text-[10px] tracking-[0.2em] uppercase text-primary font-extrabold mb-2">Support</span>
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors font-medium" href="#">Help Center</a>
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors font-medium" href="#">Contact Support</a>
+</div></div>
+</div>
+<div class="pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="font-manrope text-[10px] tracking-widest uppercase text-outline font-bold">
+                        © 2024 TravelBook. All rights reserved.
+                    </p>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-2">
+<a class="text-outline text-[10px] font-bold tracking-widest uppercase hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-outline text-[10px] font-bold tracking-widest uppercase hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-outline text-[10px] font-bold tracking-widest uppercase hover:text-primary transition-colors" href="#">Cookie Settings</a>
+</div>
+</div>
+</footer>
+</section>
+</main>
+</body></html>

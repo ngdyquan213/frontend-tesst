@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Destinations | TravelBook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#002020",
+                        "background": "#f8f9fa",
+                        "tertiary-container": "#4e1500",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "secondary": "#006a6a",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-tint": "#435b9f",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-fixed": "#00174a",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-secondary-container": "#006e6e",
+                        "on-background": "#191c1d",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#b3c5ff",
+                        "secondary-fixed": "#93f2f2",
+                        "on-surface": "#191c1d",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "on-primary-container": "#758dd5",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c5c6d2",
+                        "on-surface-variant": "#444650",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary-fixed": "#ffdbcf",
+                        "primary-container": "#002366",
+                        "surface-bright": "#f8f9fa",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "outline": "#757682",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#90efef",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary": "#00113a",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#380c00",
+                        "tertiary": "#2c0800",
+                        "on-secondary-fixed-variant": "#004f4f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm shadow-blue-900/5 tonal-shift bg-slate-50/50">
+<div class="max-w-[1200px] mx-auto flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tight text-blue-950 dark:text-white font-headline">TravelBook</span>
+<nav class="hidden md:flex items-center gap-6 font-manrope text-sm tracking-wide">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Tours</a>
+<a class="text-blue-900 dark:text-teal-400 font-semibold border-b-2 border-blue-900 dark:border-teal-400 pb-1" href="#">Destinations</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Promotions</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white transition-colors" href="#">Help</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-surface-container rounded-full px-4 py-2 w-64">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-outline" placeholder="Search locations..." type="text"/>
+</div>
+<button class="p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-all scale-98 active:opacity-80">
+<span class="material-symbols-outlined text-slate-600" data-icon="notifications">notifications</span>
+</button>
+<div class="flex items-center gap-3 pl-2 ml-2 border-l border-outline-variant/30">
+<img alt="User profile menu" class="w-9 h-9 rounded-full object-cover" data-alt="Professional portrait of a traveler with a friendly expression in natural daylight for a user profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvcjX8MfBuu3sBkcLLpgqWHiFg8AlEzha0oFcdMZMblcTiuDSKT39wbxmhJ3fkMEzFWBUKf2HX-uAPHUfmQGQf0fz0sKqew4XX7MKih6upNAse7d3ar5Be1IPjd3bP_vOxtXUQlQsPUIwPJXi_5lD1u_UZPrHfRFXjhvg6_lkuoF6RfAZzaIIiwIOLGOgdG4I2k-d78Ulyh0kRIcj-LhGKQlowCGUFbRYhXFzKATTa72Nn3oxLC71_lFLyWe-r-84hDtte6E98_bur"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="max-w-[1200px] mx-auto px-6 py-12">
+<div class="flex flex-col md:flex-row gap-12 items-end mb-16">
+<div class="md:w-1/2">
+<h1 class="font-headline text-5xl font-extrabold text-primary mb-6 leading-tight">Explore verified<br/>destinations.</h1>
+<p class="text-lg text-on-surface-variant max-w-md">Browse our curated list of global locations, categorized by region to help you plan your next reliable journey with TravelBook.</p>
+</div>
+<div class="md:w-1/2 flex gap-4">
+<div class="bg-surface-container-high p-6 rounded-xl flex-1">
+<span class="text-3xl font-bold text-primary block">42</span>
+<span class="text-sm font-label uppercase tracking-widest text-outline">Countries</span>
+</div>
+<div class="bg-secondary-container p-6 rounded-xl flex-1">
+<span class="text-3xl font-bold text-on-secondary-container block">120+</span>
+<span class="text-sm font-label uppercase tracking-widest text-on-secondary-container">Guided Tours</span>
+</div>
+</div>
+</div>
+<!-- Regions Grid -->
+<div class="space-y-20">
+<!-- Region: Europe -->
+<section>
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="font-headline text-2xl font-bold text-primary">Western Europe</h2>
+<p class="text-on-surface-variant">Stable climates and historic cultural hubs.</p>
+</div>
+<button class="text-primary font-semibold flex items-center gap-2 hover:underline">
+                            View all Europe
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Destination Card -->
+<div class="group cursor-pointer">
+<div class="relative overflow-hidden rounded-xl aspect-[4/5] mb-4">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Scenic view of a historic clock tower and cobblestone street in a quiet European city at dusk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNtN2vDIxqXqZIOwN3SKYwXq1kZOb6XcIbRwvLxNJ6dc4MQm-ugCMu8BPIWO5VDk6FRTwKvr0H0QGEhVFxFAkYQrk9g5M1xr0Ui7vCDeMNnj0oFADSOj1do6u0-DoweBUr0c379ahb96HdrDhgcEI-j7wOzULlmBxt5JtH1kYC5Lp0NK4lcHLrE1QxAJdX6ZfQ9FKdSDf-kneu9pbSqbXYNHbm3Yq5dqD8ckMqHR555e_uXxPZqya1nDl3cSp_pS7I-Q2N7SEs7akh"/>
+<div class="absolute top-4 right-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Top Rated</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary">Prague, Czechia</h3>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant text-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="tour">tour</span> 8 Tours
+                                </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span> Apr - Oct
+                                </span>
+</div>
+</div>
+<!-- Destination Card -->
+<div class="group cursor-pointer">
+<div class="relative overflow-hidden rounded-xl aspect-[4/5] mb-4">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Colorful houses on a steep cliffside overlooking the turquoise Mediterranean sea in Cinque Terre, Italy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDleVsAy63ZZ_9l5_S6D1BY-JUriwVvV_FtOMMhipny6oDyaRHcPQ6JD6ibfBMJ43gcQ6A-SZ_8ZBCi4HNsgpcHEW75JOD0zDqpbb-EQaCxpHhSQQriH7hd4OPTmfJKOmJBTWnuhuC8z15BTtzAcalYvNYhHNoLtEAayFGS55edAe-ScsuFBVudD2dWlMGujowRAuEPb2Y7523or_PApM6tsMV-xe6jZWFWTm9pwXSbCkg1q8od7kElvzVRO1FQJ4rN7A797mH5ynT_"/>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary">Cinque Terre, Italy</h3>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant text-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="tour">tour</span> 12 Tours
+                                </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span> May - Sep
+                                </span>
+</div>
+</div>
+<!-- Destination Card -->
+<div class="group cursor-pointer">
+<div class="relative overflow-hidden rounded-xl aspect-[4/5] mb-4">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Iconic blue-domed churches and white buildings of Santorini overlooking the caldera under a clear sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7KpeRdA6uyvQZJ8XCgsrx7k10n_S2mFP1ArO7DkRwOXTCv2vshK1Dj4omWOVWkkXF_OUkX5fEuo-UrXgEaiVlxiYpxVJQNbewCQKXC77Bj8pZeLeHt4wj-tScEKRnV8Euk1f8LKlsyRKeNiwVfTXfOIvGwC4vnKKSKqRVTT-fg6NtO2GT0rVG5BBWWMr15FOnAS6EFzPifM5rifwx5EeKUxclwikVQgQLmU9FCtq1q8JoHTFCZCDCNbYP9DWsHQEzUSebSUVh-d0C"/>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary">Santorini, Greece</h3>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant text-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="tour">tour</span> 5 Tours
+                                </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span> Jun - Aug
+                                </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Region: Southeast Asia -->
+<section class="bg-surface-container-low -mx-6 px-6 py-16 rounded-3xl">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="font-headline text-2xl font-bold text-primary">Southeast Asia</h2>
+<p class="text-on-surface-variant">Immersive landscapes and established travel circuits.</p>
+</div>
+<button class="text-primary font-semibold flex items-center gap-2 hover:underline">
+                            View all Asia
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Bento Small Card -->
+<div class="group cursor-pointer bg-white rounded-xl p-4 shadow-sm border border-outline-variant/10">
+<div class="aspect-square rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover" data-alt="Mist rising over green rice terraces in the mountains of Vietnam during early morning" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWaY7wfyFZfqHdQAB4gMzdxk7KzXU305-MqVFmqBrFrGBc3QxA63dn08EkXWJrd_8zH6E28zTY1jGgpT2ee8dH7e1I0fgra7hpM13-oXVQRCLAwgBLsH97ep3k7L-1oRcMypkyD0HAnnFjebYIImw5DHoz4OJJnA3t190IPACrW71qSyq040eW0ruwUmdxMMMMQfJS-cIV_1p97ymrQZBL2C3rN4SyjHIU_F2F80vp_b94H0S8kE8GoMRFYGhizT6dIrQ86nAy95iV"/>
+</div>
+<h4 class="font-bold text-primary">Sapa, Vietnam</h4>
+<p class="text-xs text-on-surface-variant mt-1">Cultural heritage &amp; trekking</p>
+</div>
+<!-- Bento Small Card -->
+<div class="group cursor-pointer bg-white rounded-xl p-4 shadow-sm border border-outline-variant/10">
+<div class="aspect-square rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover" data-alt="Golden temples of Bagan, Myanmar, silhouetted against a vibrant sunset sky with hot air balloons" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsd_-H5mahg-RK8FQvIvpdf2bhcHO1AbECf-685p401Fzm_s-ilO3K6YMTm-qIHsSych9SCtx3fiMgXaUpMDUb1u8GDd7j7jAvsYS8sXu_Q86d42S0j2wzieBEqgDKi9dtP-_zp5gHO9JcsrE9BSQTTXOei9iOEjv5ErzGCxOTMx2OyDw9YRZ-r-E8iw-uwZB1IdgtSgE_E8221Z_Fyj56fGe5fparR7y2jakSvcd6SOU6GC-hJbniJVw46-EGV9ax6Tg6hBEHfirF"/>
+</div>
+<h4 class="font-bold text-primary">Bagan, Myanmar</h4>
+<p class="text-xs text-on-surface-variant mt-1">Archeological wonders</p>
+</div>
+<!-- Bento Small Card -->
+<div class="group cursor-pointer bg-white rounded-xl p-4 shadow-sm border border-outline-variant/10">
+<div class="aspect-square rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover" data-alt="Lush tropical forest and a traditional Balinese temple entrance with intricate stone carvings" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDezlU3reOFTlcMLa4zwiowaZ-q3_QbMbxOUseggCYnm8ZUZ1DeiAKs6jPORG7ews17WF0s2_OoNWfgqtmVvAoYkZMt2OEcRfszbBzsLDqH20V5DW-hZMQW0rkT78te8eSLNNOVALXZi3FM-nXywJIhY_FK-yiTaQYzuFbTYIzvTbZOdp1KIlBju_RGyt_1COuizRnY_0y1rn7_puIa_iSFmlncWtXWxRObSB2ionwdg3aQ3y4Tdr0pEPrWgevFD7GU6-8nG6lJ00ML"/>
+</div>
+<h4 class="font-bold text-primary">Ubud, Indonesia</h4>
+<p class="text-xs text-on-surface-variant mt-1">Wellness &amp; spirituality</p>
+</div>
+<!-- Bento Small Card -->
+<div class="group cursor-pointer bg-white rounded-xl p-4 shadow-sm border border-outline-variant/10">
+<div class="aspect-square rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover" data-alt="Crystal clear turquoise water and overwater bungalows at a luxury resort in the Maldives" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-7lMjPlMi4_J5FVPlXk2P1xwmCdq0Ef4B6kZ9MbmVQ7nmQmq1TNZ2OOK6f6WN5u-LUDaNqQAQ80jBimKfCPsZzSlVlcC4CtLAVhkMs9SNCakrAru6jndsZ8BerolBQLHGCnC9zHkQLsprV-rgyTXo5clT7oO540acHUTVVnq8PKFe8c1jWORHsdpPbT0uybtgINuNGskPeyc-cJuwe72pcuHyp825sUrhhqYykhPe6DcleOEzK300NlcrVF0O7VAurjocLMYeZGin"/>
+</div>
+<h4 class="font-bold text-primary">Maldives</h4>
+<p class="text-xs text-on-surface-variant mt-1">Island relaxation</p>
+</div>
+</div>
+</section>
+<!-- Help/Trust Banner -->
+<section class="grid md:grid-cols-2 gap-8 items-center py-12">
+<div class="relative h-[400px] rounded-2xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close-up of a high-quality physical map and a compass lying on a rustic wooden table with soft focus trees background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEqw3m-adU7eetjLTejujfklPy9u_mT8ecsh6tXcAbX-pDLVO4krs6LVmAbHy9pub11Yr52xegMpL-fIlv_7JuEJIm11hLVIewNCD-gQyK6Fl1iO7BvQU3vrGxmtVY69YgR9wzt0aN7nrDIn_ipBxrfWGMBDCsUJ448kPCkt042J-JosHkJqBdHENnRy7hwc34GMdiiiTHGl9gxEHUvfVjuXvpJFHIJb9a1DtcOUgzO7Qq3olYEgmRUvH6zRmUsDyBdd7lbRU-4umE"/>
+<div class="absolute inset-0 bg-primary/20"></div>
+</div>
+<div class="space-y-6">
+<h2 class="font-headline text-3xl font-bold text-primary">Travel with Confidence.</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed">Every destination in our catalog undergoes a strict verification process. We ensure local tour operators meet our safety standards and ethical guidelines before they appear on your dashboard.</p>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="verified">verified</span>
+<div>
+<span class="font-bold text-primary block">Verified Operators</span>
+<span class="text-sm text-on-surface-variant">We only partner with established local businesses.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="support_agent">support_agent</span>
+<div>
+<span class="font-bold text-primary block">24/7 Assistance</span>
+<span class="text-sm text-on-surface-variant">Our support team is available during your entire trip.</span>
+</div>
+</li>
+</ul>
+<button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold text-sm tracking-wide transition-all hover:opacity-90 active:scale-95 mt-4">
+                            Learn About Our Standards
+                        </button>
+</div>
+</section>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900 tonal-layering-low-noise">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center px-6 py-12 gap-6">
+<div class="flex flex-col items-center md:items-start gap-4">
+<span class="text-slate-500 dark:text-slate-400 font-manrope text-xs tracking-widest uppercase">© 2024 TravelBook Editorial. All rights reserved.</span>
+</div>
+<nav class="flex gap-8">
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors font-manrope text-xs tracking-widest uppercase underline-offset-4 hover:underline" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors font-manrope text-xs tracking-widest uppercase underline-offset-4 hover:underline" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors font-manrope text-xs tracking-widest uppercase underline-offset-4 hover:underline" href="#">Cookie Settings</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-blue-900 dark:hover:text-white transition-colors font-manrope text-xs tracking-widest uppercase underline-offset-4 hover:underline" href="#">Contact Us</a>
+</nav>
+</div>
+</footer>
+</body></html>

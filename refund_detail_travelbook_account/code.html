@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Refund Detail - TravelBook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#f8f9fa",
+              "surface-container-high": "#e7e8e9",
+              "on-primary-fixed": "#00174a",
+              "surface-container-low": "#f3f4f5",
+              "on-surface": "#191c1d",
+              "surface-bright": "#f8f9fa",
+              "secondary-container": "#90efef",
+              "on-secondary-fixed-variant": "#004f4f",
+              "inverse-surface": "#2e3132",
+              "secondary": "#006a6a",
+              "on-tertiary-container": "#e56c3e",
+              "on-background": "#191c1d",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed": "#ffdbcf",
+              "error": "#ba1a1a",
+              "surface": "#f8f9fa",
+              "on-secondary-container": "#006e6e",
+              "on-surface-variant": "#444650",
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "inverse-on-surface": "#f0f1f2",
+              "error-container": "#ffdad6",
+              "surface-container-highest": "#e1e3e4",
+              "on-primary-container": "#758dd5",
+              "tertiary-container": "#4e1500",
+              "on-secondary-fixed": "#002020",
+              "surface-container": "#edeeef",
+              "primary-fixed-dim": "#b3c5ff",
+              "primary-container": "#002366",
+              "outline": "#757682",
+              "on-error-container": "#93000a",
+              "tertiary-fixed-dim": "#ffb59c",
+              "secondary-fixed-dim": "#76d6d5",
+              "primary-fixed": "#dbe1ff",
+              "primary": "#00113a",
+              "secondary-fixed": "#93f2f2",
+              "surface-variant": "#e1e3e4",
+              "on-tertiary-fixed": "#380c00",
+              "on-error": "#ffffff",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#b3c5ff",
+              "surface-tint": "#435b9f",
+              "on-tertiary-fixed-variant": "#822800",
+              "tertiary": "#2c0800",
+              "outline-variant": "#c5c6d2",
+              "on-primary-fixed-variant": "#2a4386"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .bg-primary-gradient {
+        background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+      }
+      .soft-shadow {
+        box-shadow: 0 10px 40px -10px rgba(25, 28, 29, 0.06);
+      }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-slate-50 flex flex-col p-4 gap-2 z-50">
+<div class="px-4 py-6 mb-4">
+<h1 class="text-2xl font-bold tracking-tight text-blue-950 font-headline">TravelBook</h1>
+<p class="text-xs text-slate-500 font-medium tracking-widest uppercase mt-1">Luxury Concierge</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Travelers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="local_activity">local_activity</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Vouchers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700 font-bold bg-white rounded-lg shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-manrope text-sm font-bold tracking-wide">Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-blue-900 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span class="font-manrope text-sm font-medium tracking-wide">Support</span>
+</a>
+</nav>
+<div class="mt-auto p-4 flex items-center gap-3 bg-slate-100 rounded-xl">
+<img alt="User profile avatar" class="w-10 h-10 rounded-full object-cover" data-alt="Professional portrait of a male user in his 30s with a friendly expression, soft daylight, blurred office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL19mU4807BMud1-JjlGxK-DfXEs-Jyc1BbDYW2kb4RK_josq53s_-5M4SztgBl5lu-XPcDyOZf9nG1dZcbKbPvp6nzOLVigW7ZSdaLqcOZe6w7iNYLhvDRobg4zKA59fwIFf-rDzREbgsqeloxu2r-wDIho7Lag7GFpzK5UTrbVWQrLP7BOJ25D6IL3OC5PATcsN0AGfM1lQw-8XuVlWVj-Tl00jA4w8ad_PWM62rRo39ElnIYLiAAh1iW7Vp2lhywotCi-864tCH"/>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-blue-950">Alex Mercer</span>
+<span class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">Premium Plan</span>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-white/80 backdrop-blur-md flex justify-end items-center px-8 gap-6 border-b border-slate-100">
+<div class="flex-1 max-w-md">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search bookings or vouchers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 text-slate-500">
+<button class="hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<button class="hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-slate-200" data-alt="Close up portrait of a smiling user with soft natural lighting, high end photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyZbok1SEy4i0dhsThexvezkAhkxMiTpUaXlI6SSxEDbuw6XU1P1PMB_4DWzDyh9Recj23tq_9zu3sMLiIYZy6tNYQVM1-AUeqK6Z0U0KHSbaimwPCs7ifWxDETRDkLqeyIK44P0DaNI3kW8nGE2SY6RqLWjXPmDgokRyNJWCl0Is1OIa-kyCh1H-_wP4rNr6_Ljcl7qQFj5oPQHZaEPbIiXV7jBpdR0syPHmvCxCzHCETm4vkcidO05Hr41I_Onwzxw2RWnsENrFM"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pl-64 pt-16 min-h-screen">
+<div class="max-w-[1200px] mx-auto px-12 py-10">
+<!-- Header Section -->
+<div class="flex flex-col gap-6 mb-10">
+<a class="group flex items-center gap-2 text-primary font-semibold text-sm transition-all hover:translate-x-[-4px]" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_back">arrow_back</span>
+                    Back to Refunds
+                </a>
+<h2 class="font-headline text-4xl font-extrabold text-primary tracking-tight">Refund Detail</h2>
+</div>
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Summary & Progress -->
+<div class="col-span-12 lg:col-span-7 flex flex-col gap-8">
+<!-- Summary Card -->
+<section class="bg-surface-container-lowest p-8 rounded-2xl soft-shadow flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-slate-400 tracking-[0.1em] uppercase">Refund Identification</span>
+<h3 class="font-headline text-2xl font-bold text-primary">RF-8291</h3>
+</div>
+<div class="bg-amber-50 text-amber-700 px-4 py-2 rounded-full flex items-center gap-2 border border-amber-100">
+<span class="material-symbols-outlined text-[18px]" data-icon="pending">pending</span>
+<span class="text-sm font-semibold">Refund processing is underway</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6 pt-6 border-t border-slate-100">
+<div>
+<span class="text-[10px] font-bold text-slate-400 tracking-[0.1em] uppercase block mb-1">Booking Reference</span>
+<a class="text-primary font-semibold hover:text-teal-600 underline underline-offset-4 decoration-slate-200 hover:decoration-teal-600 transition-all" href="#">TB-1044</a>
+</div>
+<div>
+<span class="text-[10px] font-bold text-slate-400 tracking-[0.1em] uppercase block mb-1">Estimated Completion</span>
+<span class="text-on-surface font-medium">Oct 24, 2023</span>
+</div>
+</div>
+</section>
+<!-- Refund Timeline -->
+<section class="bg-surface-container-lowest p-8 rounded-2xl soft-shadow">
+<h4 class="font-headline text-lg font-bold text-primary mb-8">Refund Timeline</h4>
+<div class="relative flex flex-col gap-8">
+<!-- Vertical Line -->
+<div class="absolute left-[11px] top-2 bottom-2 w-[2px] bg-slate-100"></div>
+<!-- Steps -->
+<div class="relative flex gap-4">
+<div class="w-6 h-6 rounded-full bg-teal-600 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-white text-[14px] font-bold" data-icon="check">check</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-primary">Request Received</span>
+<span class="text-xs text-slate-500">Oct 12, 2023 • 09:42 AM</span>
+<div class="mt-2 inline-flex">
+<span class="bg-teal-50 text-teal-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md">Verified</span>
+</div>
+</div>
+</div>
+<div class="relative flex gap-4">
+<div class="w-6 h-6 rounded-full bg-teal-600 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-white text-[14px] font-bold" data-icon="check">check</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-primary">Under Review</span>
+<span class="text-xs text-slate-500">Oct 14, 2023 • 02:15 PM</span>
+<div class="mt-2 inline-flex">
+<span class="bg-teal-50 text-teal-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md">Completed</span>
+</div>
+</div>
+</div>
+<div class="relative flex gap-4">
+<div class="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center z-10 ring-4 ring-amber-50">
+<div class="w-2 h-2 rounded-full bg-white"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-primary">Approval Pending</span>
+<span class="text-xs text-slate-500">Currently being processed by banking partner</span>
+<div class="mt-2 inline-flex">
+<span class="bg-amber-50 text-amber-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md">In Progress</span>
+</div>
+</div>
+</div>
+<div class="relative flex gap-4 opacity-40">
+<div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center z-10"></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-primary">Refund Issued</span>
+<span class="text-xs text-slate-500">Pending final authorization</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Request Context -->
+<section class="bg-surface-container-low p-8 rounded-2xl">
+<h4 class="font-headline text-lg font-bold text-primary mb-4">Request Context</h4>
+<div class="flex flex-col gap-4">
+<div>
+<span class="text-[10px] font-bold text-slate-400 tracking-[0.1em] uppercase block mb-1">Reason for Refund</span>
+<p class="text-on-surface font-medium leading-relaxed">Cancellation by operator due to adverse weather conditions in the Positano port area. The sailing excursion was deemed unsafe by the coast guard.</p>
+</div>
+<div class="pt-4 border-t border-slate-200">
+<span class="text-[10px] font-bold text-slate-400 tracking-[0.1em] uppercase block mb-1">Additional Notes</span>
+<p class="text-on-surface-variant text-sm italic">"Customer requested a full refund instead of rescheduling for a later date."</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Details & Actions -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-8">
+<!-- Linked Booking Card -->
+<section class="bg-surface-container-lowest p-6 rounded-2xl soft-shadow">
+<h4 class="font-headline text-sm font-bold text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="link">link</span>
+                            Linked Booking
+                        </h4>
+<div class="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl">
+<img alt="Amalfi Coast View" class="w-16 h-16 rounded-lg object-cover" data-alt="Stunning aerial view of colorful Positano buildings perched on a cliffside overlooking the deep blue Amalfi sea at midday" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnC-Ke_A83ycbbqgNbLsnWpcWHdvXgRhSSMlBJslkLUBELmZhtrJEHUztGxZMD_1AXCWFy5O3YiSxkJ9rX5_obxNFpCCSx65G1EarBZcMuYD4UKCpQUASufVW_i0W3yF5NxOLapksLqC0BoZnTuI_IYbcfdhbvjMh45xcYZjtqlVSN0LegMknZUlvYCiltzM95fdVVN-Fle0DLiziy1nnbTEHrf1XoR2TYlDhTr-ycHRteeHHxJQIIYbHGOdv1-AbeQhHDxzb60_g8"/>
+<div class="flex flex-col overflow-hidden">
+<span class="text-primary font-bold truncate">Amalfi Coast Sailing</span>
+<div class="flex items-center gap-3 mt-1">
+<span class="text-[11px] text-slate-500 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="calendar_today">calendar_today</span>
+                                        Oct 15, 2023
+                                    </span>
+<span class="text-[11px] text-slate-500 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="group">group</span>
+                                        2 Travelers
+                                    </span>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 text-center py-3 text-sm font-bold text-primary border-2 border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
+                            View Booking Details
+                        </button>
+</section>
+<!-- Amount Summary -->
+<section class="bg-primary text-white p-8 rounded-2xl soft-shadow flex flex-col gap-6 relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary-container rounded-full opacity-50 blur-3xl"></div>
+<div class="relative z-10">
+<span class="text-[10px] font-bold text-on-primary-container tracking-[0.2em] uppercase">Total Refund Amount</span>
+<div class="text-4xl font-headline font-extrabold mt-2">$1,240.00</div>
+</div>
+<div class="relative z-10 pt-6 border-t border-white/10 flex flex-col gap-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-primary-container font-medium">Original Payment</span>
+<span class="font-semibold">Visa ending in 4242</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-primary-container font-medium">Transaction Date</span>
+<span class="font-semibold">Aug 12, 2023</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-primary-container font-medium">Refund Method</span>
+<span class="font-semibold">Back to Original Card</span>
+</div>
+</div>
+</section>
+<!-- Support Module -->
+<section class="bg-surface-container-lowest p-8 rounded-2xl soft-shadow border border-slate-100/50">
+<div class="flex flex-col gap-4">
+<div class="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-teal-700" data-icon="support_agent">support_agent</span>
+</div>
+<div>
+<h4 class="font-headline text-lg font-bold text-primary">Need assistance?</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed mt-2">Our support team is available 24/7 to help with any questions regarding your refund status or payment timelines.</p>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<a class="text-teal-700 text-sm font-semibold flex items-center gap-2 hover:underline" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
+                                    Review Refund Policy
+                                </a>
+<a class="text-teal-700 text-sm font-semibold flex items-center gap-2 hover:underline" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="mail">mail</span>
+                                    Email Support Desk
+                                </a>
+</div>
+<button class="w-full mt-4 py-4 bg-primary-gradient text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl transition-all scale-98 active:scale-95">
+                                Contact Support
+                            </button>
+</div>
+</section>
+</div>
+</div>
+<!-- Helpful Tip Footer -->
+<div class="mt-12 p-6 bg-slate-100 rounded-2xl flex items-start gap-4">
+<span class="material-symbols-outlined text-slate-500 mt-1" data-icon="info">info</span>
+<p class="text-sm text-slate-600 leading-relaxed">
+                    Refunds typically take <span class="font-bold text-slate-800">5-10 business days</span> to appear on your bank statement once issued. This timeframe depends solely on your financial institution's processing policies.
+                </p>
+</div>
+</div>
+</main>
+</body></html>

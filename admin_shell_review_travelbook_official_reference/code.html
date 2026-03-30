@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook Admin Console - Shell Review</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#444650",
+              "on-tertiary-container": "#e56c3e",
+              "outline": "#757682",
+              "on-background": "#191c1d",
+              "surface-container-high": "#e7e8e9",
+              "on-surface": "#191c1d",
+              "on-secondary": "#ffffff",
+              "surface-container": "#edeeef",
+              "secondary-fixed-dim": "#76d6d5",
+              "surface-bright": "#f8f9fa",
+              "secondary-container": "#90efef",
+              "primary-container": "#002366",
+              "surface-container-low": "#f3f4f5",
+              "error": "#ba1a1a",
+              "on-secondary-fixed-variant": "#004f4f",
+              "secondary-fixed": "#93f2f2",
+              "on-error": "#ffffff",
+              "on-primary-fixed-variant": "#2a4386",
+              "inverse-surface": "#2e3132",
+              "surface": "#f8f9fa",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "primary": "#00113a",
+              "tertiary": "#2c0800",
+              "outline-variant": "#c5c6d2",
+              "primary-fixed": "#dbe1ff",
+              "on-secondary-fixed": "#002020",
+              "tertiary-fixed": "#ffdbcf",
+              "on-primary-fixed": "#00174a",
+              "surface-tint": "#435b9f",
+              "on-primary-container": "#758dd5",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#f0f1f2",
+              "error-container": "#ffdad6",
+              "background": "#f8f9fa",
+              "surface-container-highest": "#e1e3e4",
+              "tertiary-container": "#4e1500",
+              "inverse-primary": "#b3c5ff",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-secondary-container": "#006e6e",
+              "secondary": "#006a6a",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed-dim": "#b3c5ff",
+              "surface-variant": "#e1e3e4",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-tertiary-fixed": "#380c00"
+            },
+            fontFamily: {
+              "headline": ["Manrope", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 flex flex-col bg-slate-50 dark:bg-slate-900 border-r-0 shadow-[40px_0_40px_-20px_rgba(25,28,29,0.06)] font-manrope text-sm antialiased overflow-y-auto custom-scrollbar">
+<div class="text-2xl font-bold tracking-tight text-blue-900 dark:text-white px-6 py-8">
+            TravelBook
+            <span class="block text-xs font-medium text-slate-500 mt-1 uppercase tracking-widest">Admin Console</span>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Active State Logic: Dashboard is currently active -->
+<a class="flex items-center gap-3 px-6 py-4 text-blue-900 dark:text-blue-400 font-bold bg-white dark:bg-slate-800 rounded-l-full ml-4 shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span>Tours</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Schedules</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Pricing</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="keyboard_return">keyboard_return</span>
+<span>Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-blue-50/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span>Operations</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="bg-slate-100 dark:bg-slate-800/50 rounded-xl p-4">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-2">System Status</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-xs font-semibold text-slate-700">All Servers Operational</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 w-full z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 flex items-center justify-between h-16 px-8 font-manrope text-sm font-medium">
+<div class="flex items-center gap-4">
+<h1 class="text-lg font-bold text-blue-900 dark:text-blue-400">Admin Operations</h1>
+<span class="h-4 w-[1px] bg-slate-200"></span>
+<nav class="flex items-center gap-6">
+<a class="text-blue-900 dark:text-blue-400 font-semibold" href="#">Overview</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-700 transition-colors" href="#">Audit Logs</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-lg" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Global search..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative text-slate-500 hover:text-blue-900 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="text-slate-500 hover:text-blue-900 transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="flex items-center gap-3 pl-2 border-l border-slate-100">
+<div class="text-right">
+<p class="text-xs font-bold text-blue-900 leading-none">Alex Rivera</p>
+<p class="text-[10px] text-slate-500">Ops Lead</p>
+</div>
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full border border-slate-200" data-alt="Professional portrait of a male administrative operations lead with neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-MPS8N-nE9mzXRqbAKp5xIIzVW31C88DpWqKlONexQfl2fy6n7Xap4umHpgLg64LNUNy5ghjvx1A4isv_GWTsAThKXXJ4W2SEvk6-5BwN8FFWwHOX29ZFzU5nz16W8RlfRQ1elox8BU5EMpBp3ksDqnpzjzUrvlYxn-Go8HB-0zQVkUP-QZ4WvQCvJNZ9JT4-V7oWPqKnSclzoeVbj7L2J_itKo2yiIcz8bfdUJRbUe0wlHVBxQwzoncVc-In-f4HxqzMxKitgvkq"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas Area -->
+<div class="max-w-[1200px] mx-auto w-full p-8 space-y-8">
+<!-- Dashboard Bento Header -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Primary Status Card -->
+<div class="md:col-span-2 bg-primary-gradient rounded-xl p-8 text-white relative overflow-hidden shadow-lg">
+<div class="relative z-10 h-full flex flex-col justify-between">
+<div>
+<span class="inline-flex px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold uppercase tracking-widest mb-4">Operational Status</span>
+<h2 class="text-3xl font-headline font-extrabold mb-2">Deployment Active</h2>
+<p class="text-primary-fixed/80 text-sm max-w-xs">All 42 active tour routes are synchronized with real-time logistics providers.</p>
+</div>
+<div class="mt-8 flex items-baseline gap-2">
+<span class="text-4xl font-headline font-bold">98.2%</span>
+<span class="text-xs text-secondary-fixed opacity-80">Route Efficiency</span>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[180px] opacity-10 pointer-events-none" data-icon="cloud_done">cloud_done</span>
+</div>
+<!-- Secondary Status Cards -->
+<div class="bg-secondary-container text-on-secondary-container rounded-xl p-6 flex flex-col justify-between shadow-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined p-2 bg-white/40 rounded-lg" data-icon="pending_actions">pending_actions</span>
+<span class="text-xs font-bold">+12 today</span>
+</div>
+<div>
+<p class="text-sm font-medium opacity-80">Action Queue</p>
+<p class="text-2xl font-headline font-bold">24 Items</p>
+</div>
+</div>
+<div class="bg-surface-container-highest text-on-surface rounded-xl p-6 flex flex-col justify-between shadow-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined p-2 bg-white/40 rounded-lg text-primary" data-icon="receipt_long">receipt_long</span>
+<span class="text-xs font-bold text-secondary">Verified</span>
+</div>
+<div>
+<p class="text-sm font-medium opacity-60">Settlements</p>
+<p class="text-2xl font-headline font-bold">$14.2k</p>
+</div>
+</div>
+</section>
+<!-- Operational Component Library Preview -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-xl font-headline font-bold text-primary">Operational Queue</h3>
+<p class="text-sm text-slate-500">Live booking and tour synchronization logs</p>
+</div>
+<!-- Filter Toolbar Pattern -->
+<div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-lg">
+<button class="px-4 py-2 text-xs font-bold bg-white shadow-sm rounded-md text-primary">Pending</button>
+<button class="px-4 py-2 text-xs font-medium text-slate-500 hover:text-primary transition-colors">In-Progress</button>
+<button class="px-4 py-2 text-xs font-medium text-slate-500 hover:text-primary transition-colors">Flagged</button>
+</div>
+</div>
+<!-- High-Density Table Component -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-slate-100">
+<tr>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Tour Identification</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Scheduled Time</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Capacity</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- High-Density Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Wide shot of a misty canyon at dawn with orange and teal lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOCoe52bfyIGGb92JpH2nkXjHO-E0D6SACWubyYXtGiDeTG2449_2a3rwer5Fa0yKiDI_-LvIw4cHqMe0eLF82XAPAqURWD3L7ToHTzDcTekDOHEie8ZE-tAuxeUfAlvvLYk-gQCjikxwcs9tMIsHPPKapfJrlYTQai8uAmUizHSh33JtXwFQY2Jyyz2vfJ_Qs2Uco7cm-ZvHakrR4DyEgK2gJI0dzUnX5hijGWE8Eki6gtJ__JHCS5Y0D8TuSt9o942V3gn2M8Pdu"/>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-900">Grand Canyon Flight</p>
+<p class="text-[10px] text-slate-400 font-mono uppercase tracking-tighter">TRX-9402-AZ</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs">
+<p class="font-semibold text-slate-700">Oct 24, 2023</p>
+<p class="text-slate-400">08:30 AM (MST)</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-4/5"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-600">12/15</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex px-2 py-0.5 rounded-md bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-tight">Confirmed</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- High-Density Row 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Italian coastal village with colorful houses clinging to cliffs over deep blue sea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKMexchsWjsyfkvNHFnQKW8cZV_8s1WoFdw1rXHBpJH1K4l2dAgmeD1M_dyG2DzpC0DDgUiz4BYWSTDOjyN7dSUyV2hhRx2yemcXRtJ9BgtbTSHXiO1A5xzFR8kwuD6aqtsqstk0UcLYr403SbpTrWYZ_UlzfpBAFko74uiJgtYR6lVtfoDjCVNTsCnpoAJ07EN78E8v_W4XpU_PZZwhJUV-gEa0Q1SipyXojntXEkhPYFDZQInLupPxt1noejEitR0rnZS3jpssPx"/>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-900">Amalfi Coast Drive</p>
+<p class="text-[10px] text-slate-400 font-mono uppercase tracking-tighter">TRX-1102-IT</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs">
+<p class="font-semibold text-slate-700">Oct 25, 2023</p>
+<p class="text-slate-400">09:00 AM (CET)</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container w-full"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-600">8/8</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex px-2 py-0.5 rounded-md bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold uppercase tracking-tight">Full Capacity</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- High-Density Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="Snow capped mountain peak reflected in a still glacial lake with soft blue tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdl1uphzZj3CUEPztPcqvj8BewU3BrE_SepXazu3JBNlXEPkss-4EPQTRkNDONylo56EQQ9X9y7YtKaC-GPpTtTbkMYh3ux-053SViH6I9_a7o9LXZj5pD0WA_zW50tcYDbockfJab5CoZavlE98wTezgznylAgzIYsD3vc_sOuAI1DtUQAEAQDUl35MVJBZxmSTJvgtm4MTtNVY6_C-H-QWKZKDk8vQ9wQZqNYIOdqGAHGjG6OmU4wERzVRpZ_5O4s-g8QRNGRy6V"/>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-900">Glacier Ice Trek</p>
+<p class="text-[10px] text-slate-400 font-mono uppercase tracking-tighter">TRX-7740-IS</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs">
+<p class="font-semibold text-slate-700">Oct 26, 2023</p>
+<p class="text-slate-400">10:45 AM (GMT)</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-error w-1/4"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-600">2/10</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex px-2 py-0.5 rounded-md bg-error-container text-on-error-container text-[10px] font-bold uppercase tracking-tight">Low Interest</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-slate-50/50 flex items-center justify-between border-t border-slate-100">
+<p class="text-[10px] text-slate-400 font-medium">Showing 3 of 152 tours</p>
+<div class="flex items-center gap-1">
+<button class="p-1 text-slate-400 hover:text-primary"><span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span></button>
+<button class="px-2 py-1 text-[10px] font-bold text-primary">1</button>
+<button class="px-2 py-1 text-[10px] font-bold text-slate-400">2</button>
+<button class="px-2 py-1 text-[10px] font-bold text-slate-400">3</button>
+<button class="p-1 text-slate-400 hover:text-primary"><span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Action-Required Queue & Documentation Rules -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Action Queue Section -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-headline font-bold text-primary">Priority Operations</h3>
+<span class="text-[10px] font-bold text-error bg-error-container px-2 py-1 rounded-full uppercase">Immediate Attention</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border-l-4 border-error">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-800">Refund Request #8821</p>
+<p class="text-xs text-slate-500">Overdue by 2 hours • High Value ($1,200)</p>
+</div>
+</div>
+<button class="px-4 py-2 bg-primary-gradient text-white text-[10px] font-bold rounded-lg shadow-md hover:scale-[0.98] transition-transform">Process Now</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border-l-4 border-secondary">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="group_add">group_add</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-800">New Agency Onboarding</p>
+<p class="text-xs text-slate-500">3 documents pending verification</p>
+</div>
+</div>
+<button class="px-4 py-2 text-primary text-[10px] font-bold rounded-lg border border-primary/20 hover:bg-slate-50 transition-colors">Review Docs</button>
+</div>
+</div>
+</div>
+<!-- Admin Rules / Guidelines Bento Item -->
+<div class="bg-surface-container rounded-xl p-6 space-y-4">
+<h3 class="text-sm font-headline font-bold text-primary uppercase tracking-widest">Mobile Behavior Rules</h3>
+<ul class="space-y-4">
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5" data-icon="devices">devices</span>
+<div>
+<p class="text-xs font-bold text-slate-800">Responsive Pivot</p>
+<p class="text-[10px] text-slate-500 leading-relaxed">On mobile, sidebar collapses into a hamburger menu. Top utility bar items transition to a bottom-action-sheet.</p>
+</div>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5" data-icon="view_compact">view_compact</span>
+<div>
+<p class="text-xs font-bold text-slate-800">Table Stacking</p>
+<p class="text-[10px] text-slate-500 leading-relaxed">High-density tables convert to expandable card stacks. Columns: 'ID' and 'Status' are persistent.</p>
+</div>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-secondary text-lg mt-0.5" data-icon="touch_app">touch_app</span>
+<div>
+<p class="text-xs font-bold text-slate-800">Interaction Scaling</p>
+<p class="text-[10px] text-slate-500 leading-relaxed">Minimum touch target size increases to 44px. Hover effects are suppressed in favor of active-state scale transitions.</p>
+</div>
+</li>
+</ul>
+<div class="pt-4 border-t border-slate-200">
+<div class="bg-primary/5 rounded-lg p-3">
+<p class="text-[9px] font-bold text-primary/60 uppercase mb-1">Visual Palette Check</p>
+<div class="flex gap-1">
+<div class="w-4 h-4 rounded-sm bg-primary"></div>
+<div class="w-4 h-4 rounded-sm bg-secondary"></div>
+<div class="w-4 h-4 rounded-sm bg-surface-container-high"></div>
+<div class="w-4 h-4 rounded-sm bg-error"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Operational Footer for Focused Tasks -->
+<footer class="mt-auto border-t border-slate-100 bg-white/60 backdrop-blur-sm p-4 flex items-center justify-between px-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+<div class="flex gap-8">
+<span>© 2023 TravelBook Console</span>
+<a class="hover:text-primary transition-colors" href="#">API Documentation</a>
+<a class="hover:text-primary transition-colors" href="#">Security Audit</a>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span>Session Active: 0h 42m</span>
+</div>
+</footer>
+</main>
+<!-- FAB Suppression: No FAB on Admin Review Screens per logic -->
+</body></html>

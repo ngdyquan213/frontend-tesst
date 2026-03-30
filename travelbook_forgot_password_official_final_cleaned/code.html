@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Forgot Password - TravelBook</title>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#002020",
+              "on-error-container": "#93000a",
+              "inverse-primary": "#b3c5ff",
+              "surface-container-low": "#f3f4f5",
+              "error-container": "#ffdad6",
+              "on-background": "#191c1d",
+              "on-primary-fixed-variant": "#2a4386",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-container-highest": "#e1e3e4",
+              "secondary-container": "#90efef",
+              "primary-fixed-dim": "#b3c5ff",
+              "on-secondary-container": "#006e6e",
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#444650",
+              "outline-variant": "#c5c6d2",
+              "on-secondary-fixed-variant": "#004f4f",
+              "on-tertiary": "#ffffff",
+              "surface-tint": "#435b9f",
+              "surface-container-high": "#e7e8e9",
+              "on-surface": "#191c1d",
+              "primary-fixed": "#dbe1ff",
+              "tertiary-fixed": "#ffdbcf",
+              "surface-bright": "#f8f9fa",
+              "on-secondary": "#ffffff",
+              "surface-container": "#edeeef",
+              "on-tertiary-container": "#e56c3e",
+              "secondary-fixed-dim": "#76d6d5",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-container": "#758dd5",
+              "surface-variant": "#e1e3e4",
+              "tertiary-fixed-dim": "#ffb59c",
+              "tertiary": "#2c0800",
+              "on-error": "#ffffff",
+              "inverse-surface": "#2e3132",
+              "on-tertiary-fixed-variant": "#822800",
+              "secondary-fixed": "#93f2f2",
+              "on-tertiary-fixed": "#380c00",
+              "primary": "#00113a",
+              "error": "#ba1a1a",
+              "secondary": "#006a6a",
+              "tertiary-container": "#4e1500",
+              "on-primary-fixed": "#00174a",
+              "outline": "#757682",
+              "surface-dim": "#d9dadb",
+              "surface": "#f8f9fa",
+              "background": "#f8f9fa",
+              "primary-container": "#002366"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-radial-gradient {
+            background: radial-gradient(circle at center, #ffffff 0%, #edeeef 100%);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen flex flex-col">
+<!-- Subtle Background Wrapper -->
+<main class="flex-grow flex flex-col items-center justify-center p-6 bg-radial-gradient">
+<!-- Branding Anchor -->
+<div class="mb-10 text-center">
+<h1 class="font-headline text-3xl font-extrabold tracking-tight text-primary">
+                TravelBook
+            </h1>
+</div>
+<!-- Auth Card: 480px width constraint -->
+<section class="w-full max-w-[480px] bg-surface-container-lowest rounded-xl shadow-[0_40px_60px_-15px_rgba(25,28,29,0.06)] p-10 border border-outline-variant/10">
+<!-- Header -->
+<div class="mb-8">
+<h2 class="font-headline text-2xl font-bold text-on-surface mb-3">Forgot password?</h2>
+<p class="text-on-surface-variant leading-relaxed text-[0.9375rem]">
+                    Enter your email address and we will send you a link to reset your password.
+                </p>
+</div>
+<!-- Form -->
+<form action="#" class="space-y-6" method="POST">
+<div class="space-y-2">
+<label class="block font-label text-sm font-semibold text-on-surface-variant ml-1" for="email">
+                        Email Address
+                    </label>
+<input class="w-full h-14 px-5 bg-surface-container-highest border-none rounded-[12px] text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-all duration-200" id="email" name="email" placeholder="name@example.com" required="" type="email"/>
+</div>
+<!-- Action CTA -->
+<button class="w-full h-14 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 active:scale-[0.98]" type="submit">
+                    Send Reset Link
+                </button>
+</form>
+<!-- Support / Back to Login -->
+<div class="mt-8 pt-8 border-t border-surface-container text-center">
+<p class="text-sm text-on-surface-variant font-label">
+                    Remembered your password? 
+                    <a class="text-primary font-bold hover:underline transition-all" href="#">Sign In</a>
+</p>
+</div>
+</section>
+<!-- Reassurance Footer -->
+<div class="mt-8 flex items-center justify-center gap-2 max-w-[480px] text-center">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="verified_user">verified_user</span>
+<p class="text-[0.75rem] font-label uppercase tracking-widest text-outline">Secure account recovery protected by TravelBook security standards.</p>
+</div>
+</main>
+<!-- Footer - Shared Component -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full bottom-0 border-t-0 flex flex-col md:flex-row justify-center items-center gap-6 py-8 w-full">
+<div class="flex flex-col md:flex-row gap-6 items-center">
+<span class="font-inter text-xs tracking-wider uppercase text-slate-400 dark:text-slate-500">© 2024 TravelBook. All rights reserved.</span>
+<div class="flex gap-6">
+<a class="font-inter text-xs tracking-wider uppercase text-slate-400 dark:text-slate-500 hover:text-teal-600 transition-opacity" href="#">Terms of Service</a>
+<a class="font-inter text-xs tracking-wider uppercase text-slate-400 dark:text-slate-500 hover:text-teal-600 transition-opacity" href="#">Help Center</a>
+<a class="font-inter text-xs tracking-wider uppercase text-slate-400 dark:text-slate-500 hover:text-teal-600 transition-opacity" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</body></html>

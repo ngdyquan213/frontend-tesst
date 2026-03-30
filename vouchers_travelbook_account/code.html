@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#90efef",
+                        "on-primary-container": "#758dd5",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed": "#380c00",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-surface": "#191c1d",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "outline": "#757682",
+                        "surface": "#f8f9fa",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed": "#00174a",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-primary": "#b3c5ff",
+                        "outline-variant": "#c5c6d2",
+                        "on-background": "#191c1d",
+                        "secondary-fixed": "#93f2f2",
+                        "surface-container-low": "#f3f4f5",
+                        "tertiary-container": "#4e1500",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#e56c3e",
+                        "tertiary": "#2c0800",
+                        "on-secondary-container": "#006e6e",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "surface-tint": "#435b9f",
+                        "surface-container": "#edeeef",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "primary-container": "#002366",
+                        "primary": "#00113a",
+                        "on-secondary-fixed": "#002020",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "inverse-surface": "#2e3132",
+                        "on-surface-variant": "#444650",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary": "#006a6a"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .brand-font { font-family: 'Manrope', sans-serif; }
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            background: rgba(248, 249, 250, 0.8);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-[256px] z-40 bg-slate-50 dark:bg-slate-900 shadow-[40px_0_40px_rgba(25,28,29,0.06)] flex flex-col">
+<div class="px-8 py-10">
+<h1 class="text-2xl font-bold tracking-tight text-blue-900 dark:text-white mb-1">TravelBook</h1>
+<p class="text-xs text-slate-500 font-medium tracking-wider uppercase">Premium Concierge</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span style="letter-spacing: 0.05rem">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span style="letter-spacing: 0.05rem">Profile</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span style="letter-spacing: 0.05rem">Travelers</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span style="letter-spacing: 0.05rem">Bookings</span>
+</a>
+<!-- Active State: Vouchers -->
+<a class="flex items-center gap-3 px-6 py-3 text-blue-900 dark:text-cyan-400 font-bold border-r-4 border-blue-900 dark:border-cyan-400 bg-slate-100 dark:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="local_activity">local_activity</span>
+<span style="letter-spacing: 0.05rem">Vouchers</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span style="letter-spacing: 0.05rem">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span style="letter-spacing: 0.05rem">Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span style="letter-spacing: 0.05rem">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 font-medium hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span style="letter-spacing: 0.05rem">Support</span>
+</a>
+</nav>
+<div class="p-8 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional traveler smiling in a modern office with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAuwzWMU5U10RNMAe8S-TwriWZqC9-7Z6oXcWLDWXafk2Tyz42vp7AifdqTFl-VbUbz1d6zlkARsnUJZ4-NoTP9U_ccOntaS4QMIAvPHoLAbteFShwIPo-RqHNX_R1AbTIhrt3cQp-z6N-O0u_zAi3Ph2y3g7KSf9BThHGGvmLKvNPs8v10HBdAUCubEf5eLr7O07S5XNloNV8mOoZ7wdGUI3S-uhw8Qd_GD-K4aDlnG0l_tHuBeg_1ndHD8EnJMHcpLBOdCjfGNP2"/>
+</div>
+<div>
+<p class="text-sm font-bold text-blue-900">Julian Smith</p>
+<p class="text-[10px] text-slate-500">Premium Member</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[256px] min-h-screen bg-surface flex flex-col">
+<!-- TopNavBar Shell -->
+<header class="w-full h-16 sticky top-0 z-30 bg-white/80 backdrop-blur-md flex items-center px-8 border-b border-transparent">
+<div class="flex justify-between items-center w-full max-w-[1200px] mx-auto h-16">
+<div class="flex items-center gap-8">
+<span class="text-slate-400 text-sm font-medium">Dashboard / Vouchers</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-slate-500 hover:text-blue-900 transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:text-blue-900 transition-colors" data-icon="settings">settings</button>
+<button class="material-symbols-outlined text-slate-500 hover:text-blue-900 transition-colors" data-icon="account_circle">account_circle</button>
+</div>
+</div>
+</header>
+<!-- Canvas Area -->
+<div class="w-full max-w-[1200px] mx-auto p-12 space-y-12">
+<!-- Hero Header Section -->
+<section class="space-y-4">
+<h2 class="text-4xl font-extrabold text-primary tracking-tight">Vouchers</h2>
+<p class="text-on-surface-variant text-lg max-w-2xl leading-relaxed">
+                    Access and download your travel vouchers here. Please ensure you have these documents ready either digitally or printed before your departure.
+                </p>
+</section>
+<!-- Voucher Status Filtering (Visual Indicator) -->
+<div class="flex gap-4 border-b border-surface-container-high pb-4">
+<button class="px-6 py-2 rounded-full bg-primary text-white font-semibold text-sm">Available (4)</button>
+<button class="px-6 py-2 rounded-full bg-surface-container text-on-surface-variant font-medium text-sm hover:bg-surface-container-high transition-colors">Pending (1)</button>
+</div>
+<!-- Bento Grid of Voucher Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Voucher Card 1: Ready -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-[0_10px_30px_rgba(25,28,29,0.04)] border border-outline-variant/10 flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300">
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold tracking-widest uppercase">Tour Voucher</span>
+<span class="text-on-surface-variant text-xs font-mono">#TB-48291</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-2">Amalfi Coast Sailing</h3>
+<p class="text-sm text-on-surface-variant mb-6">Full Day Mediterranean Expedition</p>
+<div class="flex items-center gap-2 mb-8">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-secondary font-semibold text-sm">Ready to Download</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl primary-gradient text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+                        Download Voucher
+                    </button>
+</div>
+<!-- Voucher Card 2: Ready -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-[0_10px_30px_rgba(25,28,29,0.04)] border border-outline-variant/10 flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300">
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold tracking-widest uppercase">Transfer Voucher</span>
+<span class="text-on-surface-variant text-xs font-mono">#TB-48292</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-2">Airport Private Luxury</h3>
+<p class="text-sm text-on-surface-variant mb-6">NAP Airport to Positano Center</p>
+<div class="flex items-center gap-2 mb-8">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-secondary font-semibold text-sm">Ready to Download</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl primary-gradient text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+                        Download Voucher
+                    </button>
+</div>
+<!-- Voucher Card 3: Processing -->
+<div class="bg-surface-container-low p-8 rounded-2xl border border-dashed border-outline-variant/40 flex flex-col justify-between opacity-80">
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold tracking-widest uppercase">Activity Voucher</span>
+<span class="text-on-surface-variant text-xs font-mono">#TB-49105</span>
+</div>
+<h3 class="text-xl font-bold text-primary/60 mb-2">Vatican Museum Pass</h3>
+<p class="text-sm text-on-surface-variant/70 mb-6">Skip-the-line Morning Access</p>
+<div class="flex items-center gap-2 mb-8">
+<div class="w-2 h-2 rounded-full bg-amber-500"></div>
+<span class="text-amber-600 font-semibold text-sm">Processing</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl bg-surface-container-highest text-on-surface-variant font-bold text-sm flex items-center justify-center gap-2 cursor-not-allowed">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+                        View Details
+                    </button>
+</div>
+<!-- Voucher Card 4: Ready -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-[0_10px_30px_rgba(25,28,29,0.04)] border border-outline-variant/10 flex flex-col justify-between group hover:scale-[1.02] transition-all duration-300">
+<div>
+<div class="flex justify-between items-start mb-6">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold tracking-widest uppercase">Dining Voucher</span>
+<span class="text-on-surface-variant text-xs font-mono">#TB-48301</span>
+</div>
+<h3 class="text-xl font-bold text-primary mb-2">Terrazza Cele Tasting</h3>
+<p class="text-sm text-on-surface-variant mb-6">8-Course Signature Dinner Menu</p>
+<div class="flex items-center gap-2 mb-8">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-secondary font-semibold text-sm">Ready to Download</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl primary-gradient text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+                        Download Voucher
+                    </button>
+</div>
+</div>
+<!-- Support Block (Asymmetric Layout) -->
+<section class="mt-16 bg-primary text-white p-12 rounded-2xl flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+<div class="z-10 flex-1 space-y-6">
+<h3 class="text-3xl font-bold">Missing a Voucher?</h3>
+<p class="text-on-primary-container text-lg leading-relaxed max-w-lg">
+                        Some vouchers are generated closer to the travel date. If your booking is confirmed but you don't see a voucher within 48 hours of departure, our support team is ready to assist.
+                    </p>
+<div class="flex gap-4">
+<button class="px-8 py-3 bg-secondary text-white rounded-xl font-bold hover:brightness-110 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                            Live Support
+                        </button>
+<button class="px-8 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+                            Email Inquiry
+                        </button>
+</div>
+</div>
+<div class="relative w-full md:w-1/3 aspect-square rounded-xl overflow-hidden shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+<img class="w-full h-full object-cover" data-alt="vibrant blue Mediterranean water and white buildings on a cliff side under bright sunny sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCANkVA62-ChauPL2iDvqKElR4RktvX3TQ0VDgnENHrLRM9FxWDY077BUYu0sfqRNOjUj1xdN6qcPreelgl6SDDxcJEU_T9QIpEm20sGKeKLIDSqSnsQFxU0XTdAaw3TVe-DGJIRvpyQZ8lsoILahykUvM0gNx0FvZfjdHj6mtObIDxV0ndJTcYeOt5MexS-zVLGSMEYni_eyddaQGzLwAdCCmPX9T4m4VuwE9W_5lMusp6udLagBT7OdJdO8ZkgY0qhYDo2Q6jtKgB"/>
+<div class="absolute inset-0 bg-primary/20"></div>
+</div>
+<!-- Background decorative element -->
+<div class="absolute -right-20 -bottom-20 w-80 h-80 bg-secondary rounded-full opacity-10 blur-3xl"></div>
+</section>
+</div>
+<!-- Footer / Bottom Space -->
+<footer class="mt-auto py-12 px-8 flex justify-center border-t border-surface-container">
+<p class="text-sm text-on-surface-variant font-medium">© 2024 TravelBook Concierge. All travel documents are encrypted and secure.</p>
+</footer>
+</main>
+</body></html>

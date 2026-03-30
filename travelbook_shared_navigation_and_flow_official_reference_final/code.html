@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Shared Navigation and Flow Component Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#002020",
+                        "tertiary-fixed": "#ffdbcf",
+                        "surface-container": "#edeeef",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-surface": "#2e3132",
+                        "primary-container": "#002366",
+                        "on-surface": "#191c1d",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#435b9f",
+                        "tertiary-container": "#4e1500",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-tertiary-fixed": "#380c00",
+                        "primary": "#00113a",
+                        "background": "#f8f9fa",
+                        "primary-fixed": "#dbe1ff",
+                        "on-background": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-dim": "#d9dadb",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f3f4f5",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#93f2f2",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#006e6e",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00174a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-surface-variant": "#444650",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "outline-variant": "#c5c6d2",
+                        "outline": "#757682",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-primary-container": "#758dd5",
+                        "inverse-primary": "#b3c5ff",
+                        "secondary": "#006a6a",
+                        "secondary-container": "#90efef",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#2c0800",
+                        "surface": "#f8f9fa"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="text-on-surface antialiased">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 h-20 max-w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg shadow-[0_40px_60px_-15px_rgba(25,28,29,0.06)]">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-extrabold tracking-tight text-blue-900 dark:text-blue-50">TravelBook</span>
+<div class="hidden md:flex items-center gap-8 font-manrope text-sm font-semibold tracking-wide">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300" href="#">Home</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300" href="#">Tours</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300" href="#">Destinations</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300" href="#">Promotions</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300" href="#">Help</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-500">
+<span class="material-symbols-outlined cursor-pointer hover:bg-slate-50/50 p-2 rounded-full transition-all" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-slate-50/50 p-2 rounded-full transition-all" data-icon="help">help</span>
+</div>
+<div class="h-10 w-10 rounded-full bg-surface-container overflow-hidden ring-2 ring-surface-variant">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="professional headshot of a person with a friendly expression in clean bright studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnsidHu6cEEb7VshdTl8MnPaEECeaIAt_cEvq4Gahm4dkZrkgTqR-d1qAX9jgQUC85YzORmdV8PMgUIS7gp4HVeTLkeAm_2TUGozNWwvtD8Z3MweXke03pGKjgDLmZFvOwtIWF9W4sJgplpAoKacb2tN0L9d5XXpKkQTDUvMHIqqvDWFFh_jDcKjQtBqISTFeuFsGepsNlvdjhxGDhFwFYJ5gikaihblrsacofuAt1VUgrNkNXVmUnG42veCR10EBDy1UHeZcuK5o1"/>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-32 pb-24 px-8 max-w-[1200px] mx-auto space-y-16">
+<!-- Header Section -->
+<section class="space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<span class="text-secondary font-bold tracking-[0.05rem] uppercase text-[10px] label-md">Design Standards Reference</span>
+<h1 class="text-4xl md:text-5xl font-extrabold text-primary leading-tight tracking-tight">Shared Navigation and Flow Component Library</h1>
+<p class="text-on-surface-variant max-w-2xl text-lg body-lg">The source of truth for all navigational and task-flow elements within the TravelBook ecosystem, ensuring consistency across every journey.</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-3 rounded-xl border-outline-variant border-opacity-20 border text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined block" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<div class="w-full h-[1px] bg-outline-variant opacity-20"></div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Sidebar for Account/Admin Navigation -->
+<aside class="lg:col-span-3 space-y-8">
+<div class="bg-surface-container-low rounded-2xl p-6 space-y-6">
+<h3 class="text-sm font-bold text-primary uppercase tracking-widest">Account</h3>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 bg-surface-container-lowest text-secondary shadow-sm rounded-xl px-4 py-3 font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-manrope">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-manrope">Profile</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-manrope">Travelers</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-manrope">Bookings</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-manrope">Vouchers</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-manrope">Documents</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-manrope">Refunds</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-manrope">Notifications</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:translate-x-1 transition-transform px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="font-manrope">Support</span>
+</a>
+</nav>
+</div>
+<div class="relative rounded-2xl overflow-hidden aspect-square">
+<img alt="Amalfi Coast" class="w-full h-full object-cover" data-alt="vibrant blue glacial lake surrounded by snow-capped mountains in late afternoon alpine light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi2ZdlpoPSIZebCGJCm_6SNtrIT3c12_30RRNukJngZxj5af3Tu3TvQV4vQXso3kYCjnb-HFjcEAN1v3CNLfFIoaQCtNS-AVwtL-V9xDUJ8Y0MrS5ao2LBCLOwYo7FizOhzJEs_EspDJeSH8gHBYI_8oCQ3OIpBXf3rbRTxg1275aseEAj9BeSEzWAXk97KdoRVhXbEgG_t33CFGStrFWh0RD5Yo-MyYqeQPOslhrKD3PvRykH0IYiJyhnCZNYgJtDs4wjdGjyrtTU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-6">
+<span class="text-on-primary font-bold text-lg">Amalfi Coast Sailing</span>
+<p class="text-on-primary/70 text-sm">Experience the beauty of the Italian coast.</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="lg:col-span-9 space-y-20">
+<!-- 1. Page & Section Headers -->
+<section class="space-y-8">
+<div class="flex items-center gap-4">
+<span class="h-8 w-1 bg-secondary rounded-full"></span>
+<h2 class="text-2xl font-bold tracking-tight text-primary">01. Page &amp; Section Headers</h2>
+</div>
+<div class="p-10 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm space-y-12">
+<!-- Main Header Pattern -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm font-medium">
+<span>Tours</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-semibold">Amalfi Coast Sailing</span>
+</div>
+<h3 class="text-3xl font-extrabold text-primary">Amalfi Coast Sailing</h3>
+</div>
+<!-- Secondary Header Pattern -->
+<div class="flex items-center justify-between bg-surface-container-low p-6 rounded-xl">
+<div class="space-y-1">
+<h4 class="text-lg font-bold text-primary">Booking Manifest</h4>
+<p class="text-sm text-on-surface-variant">24 Confirmed, 2 Pending arrivals</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-white text-primary text-sm font-bold rounded-lg border border-outline-variant/20 shadow-sm">Export</button>
+<button class="px-4 py-2 bg-secondary text-on-secondary text-sm font-bold rounded-lg shadow-sm">Add Traveler</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Breadcrumbs & Tabs -->
+<section class="space-y-8">
+<div class="flex items-center gap-4">
+<span class="h-8 w-1 bg-secondary rounded-full"></span>
+<h2 class="text-2xl font-bold tracking-tight text-primary">02. Breadcrumbs &amp; Tabs</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm space-y-6">
+<p class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant/60">Inline Navigation</p>
+<div class="flex items-center gap-3 text-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Profile</a>
+<span class="text-outline-variant">/</span>
+<span class="text-primary font-bold">Bookings</span>
+</div>
+</div>
+<div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm space-y-6">
+<p class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant/60">Switching Pattern</p>
+<div class="flex bg-surface-container p-1 rounded-xl">
+<button class="flex-1 py-2 text-sm font-bold bg-white text-primary rounded-lg shadow-sm">Overview</button>
+<button class="flex-1 py-2 text-sm font-medium text-on-surface-variant hover:text-primary">Documents</button>
+<button class="flex-1 py-2 text-sm font-medium text-on-surface-variant hover:text-primary">Policy</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Stepper & Flow Progress -->
+<section class="space-y-8">
+<div class="flex items-center gap-4">
+<span class="h-8 w-1 bg-secondary rounded-full"></span>
+<h2 class="text-2xl font-bold tracking-tight text-primary">03. Stepper &amp; Flow Progress</h2>
+</div>
+<div class="p-10 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm">
+<div class="flex items-center justify-between max-w-3xl mx-auto">
+<!-- Step 1: Completed -->
+<div class="flex flex-col items-center gap-3 relative flex-1">
+<div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[20px]" data-icon="check">check</span>
+</div>
+<span class="text-sm font-bold text-primary">Review</span>
+<div class="absolute top-5 left-1/2 w-full h-[2px] bg-secondary"></div>
+</div>
+<!-- Step 2: Active -->
+<div class="flex flex-col items-center gap-3 relative flex-1">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center ring-4 ring-primary/10 z-10">
+<span class="text-sm font-bold">02</span>
+</div>
+<span class="text-sm font-bold text-primary">Payment</span>
+<div class="absolute top-5 left-1/2 w-full h-[2px] bg-surface-container-high"></div>
+</div>
+<!-- Step 3: Upcoming -->
+<div class="flex flex-col items-center gap-3 flex-0">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center z-10">
+<span class="text-sm font-bold">03</span>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">Confirmation</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Modals & Drawers -->
+<section class="space-y-8">
+<div class="flex items-center gap-4">
+<span class="h-8 w-1 bg-secondary rounded-full"></span>
+<h2 class="text-2xl font-bold tracking-tight text-primary">04. Modals &amp; Drawers</h2>
+</div>
+<div class="relative min-h-[500px] bg-surface-dim rounded-2xl overflow-hidden p-8 flex items-center justify-center">
+<div class="absolute inset-0 z-0">
+<img alt="Scenic background" class="w-full h-full object-cover" data-alt="blurred background of a modern airport lounge with soft morning light filtering through large glass windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfQ0-jTDCdIzkMQFGkBdGBv7o07-gtYaRuMjUUk1jLY58dIZTsWONRtQIMySXLQWV5SYSAKO2FZLZj4AklIWoSgKkwaSH8TgxqG7CocF9UJ364jJlwL41s8t1tYjunuX2ieShpgVw-mratu9-6zq2RAQ4-sYs5awTYDeD0d14FdNA0YSAix94mziajgDHRh_AzGRyLZeqojWxr5SrkA1fVmeGND0mYYsC60rdIme2gkqnkHCRp64BOdWA5_RJXVQ8VE8BL-x1YvoEN"/>
+<div class="absolute inset-0 bg-primary/20 backdrop-blur-sm"></div>
+</div>
+<!-- Modal Mockup -->
+<div class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 space-y-6">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<h4 class="text-xl font-bold text-primary">Cancel Booking</h4>
+<p class="text-sm text-on-surface-variant">Are you sure you want to cancel your Amalfi Coast Sailing tour? This action is irreversible.</p>
+</div>
+<button class="text-outline hover:text-primary">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="bg-error-container/20 p-4 rounded-xl flex gap-3 items-start border border-error/10">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<p class="text-xs text-on-error-container leading-relaxed">A non-refundable cancellation fee of $150.00 will be applied according to your booking terms.</p>
+</div>
+<div class="flex gap-3 pt-2">
+<button class="flex-1 py-3 text-sm font-bold text-on-surface-variant bg-surface-container-low rounded-xl">Keep Booking</button>
+<button class="flex-1 py-3 text-sm font-bold text-on-error bg-error rounded-xl shadow-lg shadow-error/20">Yes, Cancel</button>
+</div>
+</div>
+<!-- Mini Drawer Mockup -->
+<div class="absolute top-4 right-4 h-[calc(100%-32px)] w-64 bg-white rounded-xl shadow-2xl p-6 hidden md:flex flex-col gap-6 z-20">
+<div class="flex items-center justify-between">
+<span class="text-sm font-bold text-primary">Tour Details</span>
+<span class="material-symbols-outlined text-outline" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</div>
+<div class="space-y-4">
+<div class="w-full h-24 rounded-lg overflow-hidden">
+<img alt="Mountain" class="w-full h-full object-cover" data-alt="close-up of a sharp mountain peak with crisp morning shadows and blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjlKrp350QpvXZcEcM-m3AM8oOYE07Ui8jwJBNt8TemPegijNdVbKWv7Z09FE5uHqHmxQbN6YVaj5PXyyLfFkwBS62SKWN5zSeHY2cNe1wU9u4KDV-y-GiSR-KWA-Rl5wxl2M86Z_k6e9M2IYQmA11jmIge1eTbmczwiyFfHODcDWLNH1YmkRM1lC5vEddeZks8uCY4WlEcpYKvLXBZtP9AItWeLsDmF7yOudZgdsIJjZDhphYy1u8CJhEbEokwDeeWR_Hy7tHSME7"/>
+</div>
+<div class="space-y-2">
+<p class="text-xs font-bold text-secondary uppercase tracking-wider">Confirmed</p>
+<h5 class="font-bold text-primary">Kyoto Discovery</h5>
+<p class="text-[10px] text-on-surface-variant">Aug 12 - Aug 18, 2024</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Pagination & List Controls -->
+<section class="space-y-8">
+<div class="flex items-center gap-4">
+<span class="h-8 w-1 bg-secondary rounded-full"></span>
+<h2 class="text-2xl font-bold tracking-tight text-primary">05. Pagination &amp; List Controls</h2>
+</div>
+<div class="p-8 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm space-y-8">
+<!-- List Controls -->
+<div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+<div class="relative w-full md:w-96">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search tours..." type="text"/>
+</div>
+<div class="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+<button class="px-4 py-2 bg-surface-container-low text-primary text-sm font-semibold rounded-lg flex items-center gap-2 shrink-0">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span> Filter
+                                </button>
+<button class="px-4 py-2 bg-surface-container-low text-primary text-sm font-semibold rounded-lg flex items-center gap-2 shrink-0">
+                                    Date: Newest <span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-between pt-6 border-t border-outline-variant/10">
+<p class="text-sm text-on-surface-variant">Showing <span class="font-bold text-primary">1-10</span> of 248 results</p>
+<div class="flex items-center gap-1">
+<button class="p-2 text-outline-variant hover:text-primary transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary text-sm font-bold">1</button>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-surface-container-low text-sm font-bold">2</button>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-surface-container-low text-sm font-bold">3</button>
+<span class="px-2 text-outline-variant">...</span>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-surface-container-low text-sm font-bold">25</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer Shell -->
+<footer class="bg-white border-t border-outline-variant/10 py-12 px-8">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<span class="text-xl font-extrabold text-blue-900">TravelBook</span>
+<div class="flex gap-8 text-sm font-medium text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Help Center</a>
+</div>
+<p class="text-xs text-on-surface-variant/60">© 2024 TravelBook Inc. All rights reserved.</p>
+</div>
+</footer>
+<!-- Bottom Navigation Shell (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-10px_40px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-6 py-2 hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-manrope text-[10px] font-bold uppercase tracking-[0.05rem]">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-6 py-2 hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-manrope text-[10px] font-bold uppercase tracking-[0.05rem]">Saved</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-6 py-2 hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-manrope text-[10px] font-bold uppercase tracking-[0.05rem]">Checkout</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 rounded-2xl px-6 py-2">
+<span class="material-symbols-outlined" data-icon="person_outline">person_outline</span>
+<span class="font-manrope text-[10px] font-bold uppercase tracking-[0.05rem]">Profile</span>
+</div>
+</nav>
+</body></html>

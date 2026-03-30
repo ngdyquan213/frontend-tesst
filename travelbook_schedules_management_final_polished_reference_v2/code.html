@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Schedules Management - TravelBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-tint": "#435b9f",
+              "on-surface-variant": "#444650",
+              "inverse-primary": "#b3c5ff",
+              "error": "#ba1a1a",
+              "error-container": "#ffdad6",
+              "outline-variant": "#c5c6d2",
+              "tertiary-fixed-dim": "#ffb59c",
+              "background": "#f8f9fa",
+              "outline": "#757682",
+              "on-primary": "#ffffff",
+              "on-tertiary-container": "#e56c3e",
+              "surface-container": "#edeeef",
+              "primary-fixed": "#dbe1ff",
+              "surface-container-low": "#f3f4f5",
+              "on-tertiary": "#ffffff",
+              "tertiary": "#2c0800",
+              "secondary": "#006a6a",
+              "on-error": "#ffffff",
+              "surface-container-highest": "#e1e3e4",
+              "primary-container": "#002366",
+              "secondary-fixed": "#93f2f2",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#90efef",
+              "on-primary-container": "#758dd5",
+              "on-secondary-container": "#006e6e",
+              "surface-container-high": "#e7e8e9",
+              "on-primary-fixed-variant": "#2a4386",
+              "primary-fixed-dim": "#b3c5ff",
+              "surface": "#f8f9fa",
+              "on-tertiary-fixed": "#380c00",
+              "inverse-surface": "#2e3132",
+              "tertiary-fixed": "#ffdbcf",
+              "on-background": "#191c1d",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-variant": "#e1e3e4",
+              "on-secondary-fixed": "#002020",
+              "on-primary-fixed": "#00174a",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-secondary-fixed-variant": "#004f4f",
+              "surface-bright": "#f8f9fa",
+              "on-surface": "#191c1d",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#4e1500",
+              "on-error-container": "#93000a",
+              "on-tertiary-fixed-variant": "#822800",
+              "primary": "#00113a",
+              "surface-dim": "#d9dadb"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sidebar-active {
+            box-shadow: none;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e1e3e4;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Sidebar Navigation -->
+<aside class="flex flex-col h-screen w-64 fixed left-0 top-0 z-40 bg-slate-50 border-r-0 font-manrope text-sm tracking-wide">
+<div class="p-8">
+<h1 class="text-xl font-bold text-blue-900 tracking-tight">TravelBook</h1>
+</div>
+<nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+<a class="flex items-center px-4 py-3 text-slate-500 hover:text-blue-800 hover:bg-slate-200/30 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 text-slate-500 hover:text-blue-800 hover:bg-slate-200/30 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined mr-3">explore</span>
+<span>Tours</span>
+</a>
+<!-- Active Tab -->
+<a class="flex items-center px-4 py-3 text-blue-900 font-bold border-r-4 border-blue-900 bg-slate-200/50 rounded-l-xl active:scale-98 transition-transform" href="#">
+<span class="material-symbols-outlined mr-3">calendar_month</span>
+<span>Schedules</span>
+</a>
+<a class="flex items-center px-4 py-3 text-slate-500 hover:text-blue-800 hover:bg-slate-200/30 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined mr-3">payments</span>
+<span>Pricing</span>
+</a>
+<a class="flex items-center px-4 py-3 text-slate-500 hover:text-blue-800 hover:bg-slate-200/30 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined mr-3">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center px-4 py-3 text-slate-500 hover:text-blue-800 hover:bg-slate-200/30 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined mr-3">keyboard_return</span>
+<span>Refunds</span>
+</a>
+<a class="flex items-center px-4 py-3 text-slate-500 hover:text-blue-800 hover:bg-slate-200/30 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined mr-3">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center px-4 py-3 text-slate-500 hover:text-blue-800 hover:bg-slate-200/30 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined mr-3">settings_applications</span>
+<span>Operations</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="bg-slate-200/30 rounded-2xl p-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+</div>
+<div class="overflow-hidden">
+<p class="text-sm font-bold text-primary truncate">Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top Utility Bar -->
+<header class="flex justify-between items-center h-16 px-8 sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-outline text-sm mr-2">search</span>
+<input class="bg-transparent border-none text-sm w-full focus:ring-0 placeholder:text-outline" placeholder="Search tours or departures..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-500 hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="text-slate-500 hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-100"></div>
+<div class="flex items-center gap-3">
+<span class="text-sm font-medium text-primary">Schedules</span>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="max-w-[1200px] mx-auto px-8 py-10">
+<!-- Operational Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<h2 class="font-headline text-3xl font-extrabold text-primary tracking-tight">Schedules Management</h2>
+<p class="text-outline text-lg mt-1 font-body">Review and manage departure dates, availability, and publication states.</p>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/10 hover:opacity-90 transition-opacity active:scale-95">
+<span class="material-symbols-outlined">add</span>
+<span>New Schedule</span>
+</button>
+</div>
+<!-- Global Filter Toolbar -->
+<div class="bg-surface-container-lowest rounded-2xl p-4 mb-8 flex flex-wrap items-center justify-between gap-4 shadow-sm border border-outline-variant/10">
+<div class="flex flex-wrap items-center gap-3">
+<button class="bg-primary text-white px-5 py-2 rounded-full text-sm font-medium">All</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant px-5 py-2 rounded-full text-sm font-medium transition-colors">Open</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant px-5 py-2 rounded-full text-sm font-medium transition-colors">Full</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant px-5 py-2 rounded-full text-sm font-medium transition-colors">Draft</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant px-5 py-2 rounded-full text-sm font-medium transition-colors">Paused</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant/30 rounded-xl text-sm font-medium text-outline hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                    Date Range
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant/30 rounded-xl text-sm font-medium text-outline hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                    More Filters
+                </button>
+</div>
+</div>
+<!-- Schedule High-Density List -->
+<div class="space-y-4">
+<!-- Table Header -->
+<div class="hidden md:grid grid-cols-12 px-6 text-xs font-bold uppercase tracking-[0.1em] text-outline mb-2">
+<div class="col-span-4">Tour Name</div>
+<div class="col-span-2">Departure</div>
+<div class="col-span-2">Return</div>
+<div class="col-span-1.5">Capacity</div>
+<div class="col-span-1.5">Status</div>
+<div class="col-span-1 text-right">Actions</div>
+</div>
+<!-- Schedule Row: Active -->
+<div class="bg-surface-container-lowest hover:bg-surface-bright transition-colors rounded-2xl p-4 md:px-6 md:py-3 shadow-sm flex flex-col md:grid md:grid-cols-12 items-center gap-4 group">
+<div class="col-span-4 flex items-center gap-4 w-full">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+<img alt="Amalfi Coast Sailing" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3uZXmH6n94gDZURF9PqhNNIy-FDyXqUgJt6A5L4tAk3T5wdlsTCIBPUPW4SAKiAi8P2WYQWY7fObStrB_48Q4Ui99-UYj2HfS_oubnFTAL2iMSME6WXhY5lJjGwSXBTT5Py2Mw8Csr3NZjr4Nbl_sz0Xp3gmmm_JXn3DQf_FxLPGIsJVKDswPYtFw8R6-ncobAq45PwQqs0Gaw6NzxjNqnSRqjNIEqbLGqcGN_99xlC_0FsZqc6LIAjBItuhdpKgQ6yvp8otYDKf_"/>
+</div>
+<span class="font-semibold text-primary whitespace-normal">Amalfi Coast Sailing</span>
+</div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Oct 12, 2024</span></div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Oct 19, 2024</span></div>
+<div class="col-span-1.5 w-full md:w-auto">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium">8/12 Travelers</span>
+<div class="w-20 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 66%"></div>
+</div>
+</div>
+</div>
+<div class="col-span-1.5 w-full md:w-auto"><span class="inline-block bg-secondary-container text-on-secondary-container text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider leading-none">Active</span></div>
+<div class="col-span-1 flex items-center justify-end gap-1 w-full md:w-auto">
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</div>
+</div>
+<!-- Schedule Row: Full -->
+<div class="bg-surface-container-lowest hover:bg-surface-bright transition-colors rounded-2xl p-4 md:px-6 md:py-3 shadow-sm flex flex-col md:grid md:grid-cols-12 items-center gap-4 group">
+<div class="col-span-4 flex items-center gap-4 w-full">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+<img alt="Golden Triangle Explorer" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6lIzjYKaI0fO9zRipbR9Mz4nfWRPP3BIebbneXMeRS6G888G7daTXPZkFslM055to7NptozO9vOM1ims3t9KuNwnsmmNUJKNwON6jzVLOxNl17a6FJ3yg9YsaE80Q5XAxAhyi4WjDQONUFQOUrEgp5M1scWs0uTpXOo67_YhcYkRkmAWeCuDctvLrwSOjwkHbVr_uR6aqjA7XX3Qu1bfqb2_gcLbPnbrK91i8ShPt-KcribmvHbRl6JVs3QIgyVBud-G7tW5pUipR"/>
+</div>
+<span class="font-semibold text-primary whitespace-normal">Golden Triangle Explorer</span>
+</div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Nov 05, 2024</span></div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Nov 15, 2024</span></div>
+<div class="col-span-1.5 w-full md:w-auto">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium text-error font-bold">16/16 Travelers</span>
+<div class="w-20 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-error h-full w-full"></div>
+</div>
+</div>
+</div>
+<div class="col-span-1.5 w-full md:w-auto"><span class="inline-block bg-error-container text-on-error-container text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider leading-none">Full</span></div>
+<div class="col-span-1 flex items-center justify-end gap-1 w-full md:w-auto">
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline transition-all"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</div>
+</div>
+<!-- Schedule Row: Draft -->
+<div class="bg-surface-container-lowest hover:bg-surface-bright transition-colors rounded-2xl p-4 md:px-6 md:py-3 shadow-sm flex flex-col md:grid md:grid-cols-12 items-center gap-4 group">
+<div class="col-span-4 flex items-center gap-4 w-full">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+<img alt="Maldives Retreat" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBPUeBDXZlzeI0sAzuh-ilPC2mJWoH8ohkGepLHUYvnJLlvhQmXhwMgpHREMgkW51HvVx9IM6WTnvRL5VIzJFqMcFaUJ3hUkHugxyWFR1k8l6AfiAGKVWLcfvOy0und3x9ZJmoxw1Q4H0ty7OBcvEt2hRxln_ita_OlzjWQ7WEjIH2-suYcfwcBsL3f4ODDxffnERT7MD-JGyIdhfOmoq4EhLad62S22Sw2xCtA99S2-O0oesPJK35KH7bZRoL4mnCA4-dgd3iDDYF"/>
+</div>
+<span class="font-semibold text-primary whitespace-normal">Maldives Retreat</span>
+</div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Dec 20, 2024</span></div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Dec 27, 2024</span></div>
+<div class="col-span-1.5 w-full md:w-auto">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium">0/10 Travelers</span>
+<div class="w-20 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-slate-300 h-full w-0"></div>
+</div>
+</div>
+</div>
+<div class="col-span-1.5 w-full md:w-auto"><span class="inline-block bg-tertiary-fixed text-on-tertiary-fixed-variant text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider leading-none">Draft</span></div>
+<div class="col-span-1 flex items-center justify-end gap-1 w-full md:w-auto">
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline transition-all"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</div>
+</div>
+<!-- Schedule Row: Paused -->
+<div class="bg-surface-container-lowest hover:bg-surface-bright transition-colors rounded-2xl p-4 md:px-6 md:py-3 shadow-sm flex flex-col md:grid md:grid-cols-12 items-center gap-4 group">
+<div class="col-span-4 flex items-center gap-4 w-full">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+<img alt="Parisian Highlights" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQnKB8s11UqmV9LWz_S8ihaYTNl9QDytIFatHafbI25891BxH4sGHfR1ZyI8DBvZnSLbJKXGx7rhu1x1yaSQeHtrwcimzuMl1oKSrd_OUyDetEZKWXwF7b1oGwQCyLfuJXmnXkFRysqoOc5HcU9TiZnjTgOQFvpKvbwJ-l1jnjZcn1cWCbwRPHvJDUuIguYYx3YVk87IshcQlKaLnSiPQqWlTA0eeP_doAOCmFFBhzODm9_19oAVhnOSSrk77W1hy5AY135Zu9s86a"/>
+</div>
+<span class="font-semibold text-primary whitespace-normal">Parisian Highlights</span>
+</div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Oct 28, 2024</span></div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Nov 02, 2024</span></div>
+<div class="col-span-1.5 w-full md:w-auto">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium">4/20 Travelers</span>
+<div class="w-20 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 20%"></div>
+</div>
+</div>
+</div>
+<div class="col-span-1.5 w-full md:w-auto"><span class="inline-block bg-surface-variant text-on-surface-variant text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider leading-none">Paused</span></div>
+<div class="col-span-1 flex items-center justify-end gap-1 w-full md:w-auto">
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline transition-all"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</div>
+</div>
+<!-- Schedule Row: Active 2 -->
+<div class="bg-surface-container-lowest hover:bg-surface-bright transition-colors rounded-2xl p-4 md:px-6 md:py-3 shadow-sm flex flex-col md:grid md:grid-cols-12 items-center gap-4 group">
+<div class="col-span-4 flex items-center gap-4 w-full">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+<img alt="Yosemite Backcountry" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDajl6NmVk9nqpBDzsBY9zJ-y5YzFEqDsY5LBwkBba5myicpCXfQb8j28B69BBn94VupsBd73PkavuGmV43FbnjgkMpaMqfDZau62QrR0TLAUNynBp2tAX2Q_4sEXfiBF6lz6zajyu7aceI1jIETE7sniXhIipT_j7xDw7c3tCh3azVJXf6vSgXITj4HEcCwJTLZAxPBanTsquPEEUITvZPBlPjboYe7pyGDn6oYAkppGihxgFk8Z2tyZtVdZZQNZzQQMkpQoy8JUvh"/>
+</div>
+<span class="font-semibold text-primary whitespace-normal">Yosemite Backcountry</span>
+</div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Sep 15, 2024</span></div>
+<div class="col-span-2 w-full md:w-auto"><span class="text-sm font-medium">Sep 22, 2024</span></div>
+<div class="col-span-1.5 w-full md:w-auto">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium">6/8 Travelers</span>
+<div class="w-20 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 75%"></div>
+</div>
+</div>
+</div>
+<div class="col-span-1.5 w-full md:w-auto"><span class="inline-block bg-secondary-container text-on-secondary-container text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider leading-none">Active</span></div>
+<div class="col-span-1 flex items-center justify-end gap-1 w-full md:w-auto">
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline hover:text-primary transition-all" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 hover:bg-surface-container rounded-full text-outline transition-all"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-12 flex items-center justify-end">
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-outline-variant/30 text-outline hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-medium">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-outline transition-colors font-medium">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-outline transition-colors font-medium">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-outline-variant/30 text-outline hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Navigation Toggle -->
+<div class="fixed bottom-6 right-6 md:hidden z-50">
+<button class="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</body></html>

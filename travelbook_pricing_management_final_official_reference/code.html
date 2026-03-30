@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pricing Management | TravelBook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Inter:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "inverse-primary": "#b3c5ff",
+                        "primary-container": "#002366",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#2c0800",
+                        "on-primary-container": "#758dd5",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-container": "#e56c3e",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-highest": "#e1e3e4",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#90efef",
+                        "on-primary-fixed": "#00174a",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-surface-variant": "#444650",
+                        "surface": "#f8f9fa",
+                        "secondary": "#006a6a",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-secondary-container": "#006e6e",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "primary": "#00113a",
+                        "surface-tint": "#435b9f",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-container": "#4e1500",
+                        "background": "#f8f9fa",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#93f2f2",
+                        "on-secondary-fixed": "#002020",
+                        "error-container": "#ffdad6",
+                        "outline": "#757682",
+                        "outline-variant": "#c5c6d2",
+                        "on-background": "#191c1d",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="flex flex-col h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-900 font-manrope text-sm tracking-wide z-50">
+<div class="p-6">
+<h1 class="text-xl font-bold text-blue-900 dark:text-blue-50">TravelBook</h1>
+</div>
+<nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+                Tours
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                Schedules
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-900 dark:text-blue-200 font-bold border-r-4 border-blue-900 dark:border-blue-400 bg-slate-100 dark:bg-slate-800 transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                Pricing
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+                Bookings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_return">assignment_return</span>
+                Refunds
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                Documents
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+                Operations
+            </a>
+</nav>
+<div class="p-6 mt-auto bg-slate-200/50 dark:bg-slate-800/50">
+<div class="flex items-center gap-3">
+<img alt="Operator Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="Professional male corporate executive portrait in a navy suit with soft office lighting background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3kTBHflERMwuGwbFgWaKvUol43_vKbXkCKQEkhOyXt8rYCC-Hh00Zl4DBKY1WPxjaMgm4ckqt-RY7nBZJWMfiVUeyPLwtFmezgAvDpQglfeszy1AtJkM3-R4s6f3Nd05akl5hp2FYu4aYaLtoOq4D0EWVj2paiDA8PQ7K-ft8MzaZ_4SwTkzD2zloJmbmsxp1oCGOZQ4gzv-SRdWNws_Ptr4RmfEM06jUoU_hfKss2JWcXs0rvV1PM2o-vLSUndSDmugGVcZLxPLm"/>
+<div>
+<p class="text-xs font-bold text-blue-900 dark:text-blue-100">Operator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="flex items-center justify-between px-8 ml-64 h-16 w-[calc(100%-16rem)] fixed top-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none z-40 transition-all duration-300 ease-in-out">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 font-body" placeholder="Search pricing rules, tours, or IDs..." type="text"/>
+</div>
+<span class="text-blue-900 dark:text-blue-200 font-semibold font-manrope text-base">Pricing Management</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-px bg-slate-200 mx-2"></div>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZtSJalTN-0ISu34L5byxRaKu9E_rTrpUO9s2ImsBgBTZLnX8B1EOWobXPqgniv5S9eiBfkLpw4HMQ32qwQMI7ruQD46bbY9Fg_VxvjuPSkwVOqXZ2VRnVH3LE-aamYFOH1WurRlTKCBlcjKBKcXWrIfjUeb3eUcfGTZLyhihaNm3OGEovvZC9AU4ZVzPS9BTfELMoyoV_duMZx2on7UT95OXmyXem5tZlZJIIn1w7C7YgL5zNNDs9eRou-bmsFfR_5JK25OByQoRu"/>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="max-w-[1200px] mx-auto px-8 py-10">
+<!-- Page Header -->
+<div class="flex items-end justify-between mb-10">
+<div class="max-w-2xl">
+<h2 class="text-4xl font-headline font-extrabold text-primary tracking-tight mb-2">Pricing Management</h2>
+<p class="text-on-surface-variant font-body leading-relaxed">
+                        Manage global tour rates and currency settings. Use this module to define base pricing, seasonal adjustments, and inventory-specific rules for the upcoming operational cycle.
+                    </p>
+</div>
+<button class="primary-gradient text-on-primary px-6 py-3 rounded-xl font-manrope font-bold shadow-lg shadow-primary/20 flex items-center gap-2 hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">add</span>
+                    New Pricing Rule
+                </button>
+</div>
+<!-- Filter Toolbar -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 mb-8 flex flex-wrap items-center gap-4 shadow-sm border border-transparent">
+<div class="flex-1 min-w-[240px]">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Tour Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">tour</span>
+<select class="w-full bg-surface-container-low border-none rounded-xl py-2 pl-10 pr-4 text-sm font-body appearance-none focus:ring-primary/10">
+<option>All Active Tours</option>
+<option>Alpine Peaks Explorer</option>
+<option>Azure Coast Sail</option>
+<option>Midnight Sun Trek</option>
+</select>
+</div>
+</div>
+<div class="w-48">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Rule Type</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl py-2 px-4 text-sm font-body appearance-none focus:ring-primary/10">
+<option>All Types</option>
+<option>Base Rate</option>
+<option>Seasonal Adjustment</option>
+<option>Last Minute</option>
+</select>
+</div>
+<div class="w-48">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Status</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl py-2 px-4 text-sm font-body appearance-none focus:ring-primary/10">
+<option>All Statuses</option>
+<option>Active</option>
+<option>Draft</option>
+<option>Paused</option>
+</select>
+</div>
+<div class="self-end pb-0.5">
+<button class="bg-surface-container hover:bg-surface-container-high text-primary px-5 py-2 rounded-xl font-bold text-sm transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                        Reset Filters
+                    </button>
+</div>
+</div>
+<!-- Table Workspace -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Tour Name &amp; ID</th>
+<th class="py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Schedule Context</th>
+<th class="py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Rule Type</th>
+<th class="py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-right">Base Price</th>
+<th class="py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Status</th>
+<th class="py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="py-4 px-6">
+<div class="font-bold text-primary text-sm">Alpine Peaks Explorer</div>
+<div class="text-[11px] text-on-surface-variant font-mono uppercase tracking-tighter">PRC-CH-9021</div>
+</td>
+<td class="py-4 px-6">
+<div class="text-sm text-on-surface">Summer Season 2024</div>
+<div class="text-xs text-on-surface-variant">Jun 01 - Aug 31</div>
+</td>
+<td class="py-4 px-6">
+<span class="bg-surface-container text-primary px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider">Seasonal</span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="font-extrabold text-primary text-base">$1,249.00</div>
+<div class="text-[10px] text-on-surface-variant uppercase">Per Adult</div>
+</td>
+<td class="py-4 px-6">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                    Active
+                                </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-xl">content_copy</span>
+</button>
+<button class="p-2 hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined text-xl">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="py-4 px-6">
+<div class="font-bold text-primary text-sm">Azure Coast Sail</div>
+<div class="text-[11px] text-on-surface-variant font-mono uppercase tracking-tighter">PRC-FR-2287</div>
+</td>
+<td class="py-4 px-6">
+<div class="text-sm text-on-surface">Year Round Base</div>
+<div class="text-xs text-on-surface-variant">Standard Departure</div>
+</td>
+<td class="py-4 px-6">
+<span class="bg-surface-container text-primary px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider">Base Rate</span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="font-extrabold text-primary text-base">$2,800.00</div>
+<div class="text-[10px] text-on-surface-variant uppercase">Min. Charter</div>
+</td>
+<td class="py-4 px-6">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-fixed-variant"></span>
+                                    Draft
+                                </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-xl">content_copy</span>
+</button>
+<button class="p-2 hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined text-xl">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="py-4 px-6">
+<div class="font-bold text-primary text-sm">Midnight Sun Trek</div>
+<div class="text-[11px] text-on-surface-variant font-mono uppercase tracking-tighter">PRC-NO-1154</div>
+</td>
+<td class="py-4 px-6">
+<div class="text-sm text-on-surface">Winter Blackout</div>
+<div class="text-xs text-on-surface-variant">Nov 15 - Feb 28</div>
+</td>
+<td class="py-4 px-6">
+<span class="bg-surface-container text-primary px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider">Dynamic</span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="font-extrabold text-primary text-base">$850.00</div>
+<div class="text-[10px] text-on-surface-variant uppercase">Fixed Seat</div>
+</td>
+<td class="py-4 px-6">
+<span class="bg-error-container text-on-error-container px-3 py-1 rounded-xl text-xs font-bold inline-flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                    Paused
+                                </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-xl">content_copy</span>
+</button>
+<button class="p-2 hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined text-xl">archive</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Table Footer/Pagination -->
+<div class="px-6 py-4 bg-surface-container-low/50 flex items-center justify-end">
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-base">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface transition-colors text-xs font-bold">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-base">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Operational Guidance Footer -->
+<div class="mt-12 flex gap-8 items-start">
+<div class="flex-1 p-8 rounded-2xl bg-surface-container-low border border-surface-variant/50">
+<h4 class="text-sm font-bold uppercase tracking-widest text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-base">analytics</span>
+                        Pricing Strategy Guidance
+                    </h4>
+<p class="text-sm leading-relaxed text-on-surface-variant mb-4">
+                        Base Rates serve as the foundation for all pricing. Seasonal Adjustments can be layered to account for peak demand periods or regional holidays. Ensure that overlapping rules are reviewed for conflicts.
+                    </p>
+<p class="text-sm leading-relaxed text-on-surface-variant">
+                        Inventory-based rules may be applied to specific departures to optimize occupancy rates during low-volume windows.
+                    </p>
+</div>
+<div class="flex-1 p-8 rounded-2xl bg-surface-container-low border border-surface-variant/50">
+<h4 class="text-sm font-bold uppercase tracking-widest text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-base">event_note</span>
+                        Operational Log
+                    </h4>
+<ul class="text-sm space-y-3 text-on-surface-variant">
+<li class="flex justify-between items-center py-1 border-b border-surface-variant/30">
+<span>Alpine Peaks Explorer: Base Rate updated</span>
+<span class="text-xs font-medium opacity-60">Today, 14:20</span>
+</li>
+<li class="flex justify-between items-center py-1 border-b border-surface-variant/30">
+<span>Midnight Sun Trek: Seasonal rule created</span>
+<span class="text-xs font-medium opacity-60">Today, 09:15</span>
+</li>
+<li class="flex justify-between items-center py-1">
+<span>Azure Coast Sail: Status changed to Draft</span>
+<span class="text-xs font-medium opacity-60">Yesterday</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+</body></html>

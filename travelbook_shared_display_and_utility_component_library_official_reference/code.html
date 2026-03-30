@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Component Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline-variant": "#c5c6d2",
+                        "on-secondary-fixed": "#002020",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "primary": "#00113a",
+                        "surface-container": "#edeeef",
+                        "surface-tint": "#435b9f",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#444650",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#2c0800",
+                        "secondary-container": "#90efef",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "secondary": "#006a6a",
+                        "inverse-surface": "#2e3132",
+                        "background": "#f8f9fa",
+                        "secondary-fixed": "#93f2f2",
+                        "surface-container-low": "#f3f4f5",
+                        "tertiary-fixed": "#ffdbcf",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8e9",
+                        "on-error": "#ffffff",
+                        "outline": "#757682",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#758dd5",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#00174a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-container": "#e56c3e",
+                        "surface-bright": "#f8f9fa",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "surface-variant": "#e1e3e4",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "inverse-primary": "#b3c5ff",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-dim": "#d9dadb",
+                        "on-surface": "#191c1d",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "primary-container": "#002366",
+                        "on-secondary-container": "#006e6e",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "tertiary-container": "#4e1500"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem", // 24px as per Design System
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tonal-layering {
+            background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(243,244,245,1) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background antialiased pb-20">
+<!-- TopNavBar: Shared Component -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm shadow-blue-900/5">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto w-full">
+<span class="text-2xl font-bold tracking-tight text-blue-900 dark:text-blue-50 font-headline">TravelBook</span>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-slate-500 font-manrope text-sm font-medium tracking-wide hover:text-blue-800 transition-colors" href="#">Discover</a>
+<a class="text-slate-500 font-manrope text-sm font-medium tracking-wide hover:text-blue-800 transition-colors" href="#">Bookings</a>
+<a class="text-slate-500 font-manrope text-sm font-medium tracking-wide hover:text-blue-800 transition-colors" href="#">Favorites</a>
+<a class="text-blue-900 font-bold border-b-2 border-blue-900 pb-1 font-manrope text-sm tracking-wide" href="#">Profile</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="settings">settings</span>
+</div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 pt-32 space-y-24">
+<!-- Header Section -->
+<header class="space-y-4">
+<h1 class="font-headline text-5xl font-extrabold text-primary tracking-tight">Visual Truth System</h1>
+<p class="text-on-surface-variant text-lg max-w-2xl leading-relaxed">
+                The foundational components of the TravelBook ecosystem. Engineered for clarity, elegance, and the Digital Curator aesthetic.
+            </p>
+</header>
+<!-- 1. Base Card Family -->
+<section class="space-y-10">
+<div class="flex items-baseline justify-between border-b border-outline-variant/20 pb-4">
+<h2 class="font-headline text-2xl font-bold text-primary">01. Base Card Family</h2>
+<span class="font-label text-xs uppercase tracking-[0.1em] text-outline">Surface Tier 1 &amp; 2</span>
+</div>
+<div class="grid md:grid-cols-2 gap-12">
+<!-- Standard Surface Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_40px_rgba(25,28,29,0.06)] overflow-hidden">
+<div class="px-8 py-6 border-b border-surface-container">
+<h3 class="font-headline text-xl font-bold text-primary">Booking Header</h3>
+</div>
+<div class="px-8 py-10 space-y-4">
+<p class="text-on-surface-variant leading-relaxed">The base card uses a 24px (xl) radius and a subtle ambient shadow. We prioritize whitespace over visible borders to create a premium, editorial feel.</p>
+<div class="h-32 bg-surface-container rounded-lg flex items-center justify-center text-outline italic">Content Area</div>
+</div>
+<div class="px-8 py-6 bg-surface-container-low flex justify-end gap-4">
+<button class="px-6 py-2 text-primary font-semibold text-sm">Cancel</button>
+<button class="px-8 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-md font-bold shadow-sm active:scale-95 transition-all">Proceed</button>
+</div>
+</div>
+<!-- Glassmorphism Variant -->
+<div class="relative rounded-xl overflow-hidden p-1 bg-gradient-to-tr from-surface-container via-white to-surface-container shadow-sm">
+<div class="h-full w-full bg-white/60 backdrop-blur-xl rounded-[1.4rem] p-8 flex flex-col justify-between min-h-[400px]">
+<div class="space-y-6">
+<span class="inline-block px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold tracking-wider">PREMIUM TIER</span>
+<h3 class="font-headline text-3xl font-extrabold text-primary leading-tight">Elevated Glass Surface</h3>
+<p class="text-on-surface-variant leading-relaxed">Used for floating overlays and high-impact context menus. Ensures the travel photography remains the star while providing legible interaction layers.</p>
+</div>
+<div class="flex items-center gap-4 pt-8">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-primary font-bold font-headline">Member Exclusive Access</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Stat & Feature Cards -->
+<section class="space-y-10">
+<div class="flex items-baseline justify-between border-b border-outline-variant/20 pb-4">
+<h2 class="font-headline text-2xl font-bold text-primary">02. Stat &amp; Feature Cards</h2>
+<span class="font-label text-xs uppercase tracking-[0.1em] text-outline">Data Summaries</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-low p-6 rounded-xl space-y-2">
+<p class="font-label text-xs font-semibold text-outline tracking-wider uppercase">Total Trips</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-headline font-extrabold text-primary">24</span>
+<span class="text-secondary text-sm font-bold font-label">↑ 12%</span>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-low p-6 rounded-xl space-y-2">
+<p class="font-label text-xs font-semibold text-outline tracking-wider uppercase">Saved Places</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-headline font-extrabold text-primary">158</span>
+</div>
+</div>
+<!-- Editorial Feature Card -->
+<div class="md:col-span-2 relative group cursor-pointer overflow-hidden rounded-xl h-48">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="dramatic coastline of tropical island with turquoise water and volcanic rocks under soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5oXwuDjLegjo4K_gW-cZyzqFHHwRQR-HWrgBvF3otql1nkPccbYEXiUDgGEtuuuSWsuI-hTdPNyL4H7ao9vhq5y1REnLSdwWf6geIYWx9QyhnFm6TU7NkfaTmV7yvkKNsjG2K-oJAxOLPcA3rDvj6qvxbUSV_F3bYoxZ8ljdFTp-JibKaGeLrbK_N7WP9473G1mkLfep1lzBDd0_Kaxlksp4P6qigc3rKyBN2_LrGPzftBw3K-7NzMHPbztx5RJIimHtYMzUcDwDm"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<h4 class="text-white font-headline text-xl font-bold">The Hidden Azure Coves</h4>
+<p class="text-primary-fixed-dim text-sm">Curated Summer Expedition • 2024</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Avatars & Badges -->
+<section class="space-y-10">
+<div class="flex items-baseline justify-between border-b border-outline-variant/20 pb-4">
+<h2 class="font-headline text-2xl font-bold text-primary">03. Identity &amp; Status</h2>
+<span class="font-label text-xs uppercase tracking-[0.1em] text-outline">Core Markers</span>
+</div>
+<div class="flex flex-wrap items-center gap-12">
+<!-- Avatar Stack -->
+<div class="space-y-4">
+<p class="font-label text-xs font-bold text-outline uppercase tracking-widest">Avatar Styles</p>
+<div class="flex items-center -space-x-3">
+<img class="w-12 h-12 rounded-full border-2 border-white object-cover" data-alt="portrait of a young traveler with sunglasses smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSEAY1XX8Q1DAn9mFJznE81AxdNS-fkBxdWokb-GMoLPQowKbsI13FdgOQYHTs0Od44M5ZnuxNkZi3c92e6sSdqbu2g73NfOyHpQcyPSC-vSARpYWKKcQszKC-hUf8FTORe_5HYNFrm9OlHZS3GCq3er3TEBc-uv7vENWs2PgovnZkyrePxFfiPBJMZlmTasThi6PZmSt6QIJ8JLn3dw1j0I6kCuTKyr4fy9msOe-hEeS6oP1tTUoZohmxPyH5A91FVn1ToCUqAJ_5"/>
+<img class="w-12 h-12 rounded-full border-2 border-white object-cover" data-alt="man with beard wearing a travel hat looking into distance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkImmmlf6XAoIRm7DJ-g25hEBw677SDesTAHaqV0O05MVEt4gqd1Y4A5T5irlDd62wAD_yC9GLAabBqKLKkLvDzRQQaDuQSU7alShXhQvBCd7ajLclKeCsUb3W37Lk0nYzU7YnJaiphcY41HiMbQHU_g3KrI18tGkx_-8zcEtHYj3T-FqTNAjYaH-TUjbG5T2eiHHgoxKr2eDVXNo_k9k7zYPVmao8OfA-Tccrt17oqw9latV5689Vk4stCvX5gEv0FIWlRyV02aLC"/>
+<div class="w-12 h-12 rounded-full border-2 border-white bg-primary text-white flex items-center justify-center font-bold text-xs">+14</div>
+</div>
+</div>
+<!-- Status Badges -->
+<div class="space-y-4">
+<p class="font-label text-xs font-bold text-outline uppercase tracking-widest">Semantic Badges</p>
+<div class="flex gap-4">
+<span class="px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold tracking-wide flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Confirmed
+                        </span>
+<span class="px-4 py-1.5 bg-error-container text-on-error-container rounded-full text-xs font-bold tracking-wide flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Cancelled
+                        </span>
+<span class="px-4 py-1.5 bg-tertiary-fixed text-on-tertiary-fixed rounded-full text-xs font-bold tracking-wide flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span> Pending
+                        </span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Data & Metadata Rows -->
+<section class="space-y-10">
+<div class="flex items-baseline justify-between border-b border-outline-variant/20 pb-4">
+<h2 class="font-headline text-2xl font-bold text-primary">04. Scannable Metadata</h2>
+<span class="font-label text-xs uppercase tracking-[0.1em] text-outline">Utility Rows</span>
+</div>
+<div class="bg-white rounded-xl shadow-sm border border-surface-container overflow-hidden">
+<div class="p-6 flex items-center justify-between hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="flight_takeoff">flight_takeoff</span>
+</div>
+<div>
+<p class="font-headline font-bold text-primary">TB-9402 International</p>
+<p class="text-sm text-outline">Departure: 08:45 AM • Terminal 3</p>
+</div>
+</div>
+<div class="flex items-center gap-12 text-right">
+<div>
+<p class="font-label text-xs font-bold text-outline uppercase tracking-widest">Gate</p>
+<p class="font-headline font-bold text-primary">B22</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<div class="p-6 flex items-center justify-between border-t border-surface-container hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="hotel" style="font-variation-settings: 'FILL' 1;">hotel</span>
+</div>
+<div>
+<p class="font-headline font-bold text-primary">Azure Horizon Resort</p>
+<p class="text-sm text-outline">Check-in: Friday, Oct 12</p>
+</div>
+</div>
+<div class="flex items-center gap-12 text-right">
+<div>
+<p class="font-label text-xs font-bold text-outline uppercase tracking-widest">Rating</p>
+<p class="font-headline font-bold text-secondary">4.9 ★</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. State Utilities -->
+<section class="space-y-10">
+<div class="flex items-baseline justify-between border-b border-outline-variant/20 pb-4">
+<h2 class="font-headline text-2xl font-bold text-primary">05. Support &amp; State</h2>
+<span class="font-label text-xs uppercase tracking-[0.1em] text-outline">Empty &amp; Loading</span>
+</div>
+<div class="grid md:grid-cols-2 gap-12">
+<!-- Empty State -->
+<div class="flex flex-col items-center justify-center p-12 bg-surface-container-lowest rounded-xl border-2 border-dashed border-outline-variant/30 text-center">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-outline text-4xl" data-icon="travel_explore">travel_explore</span>
+</div>
+<h4 class="font-headline text-xl font-bold text-primary mb-2">No active journeys</h4>
+<p class="text-on-surface-variant text-sm max-w-xs mb-8">It looks like you haven't booked any trips yet. Explore our curated destinations to get started.</p>
+<button class="px-8 py-3 bg-secondary text-on-secondary rounded-md font-bold text-sm tracking-wide">Find Inspiration</button>
+</div>
+<!-- Skeleton Loaders -->
+<div class="space-y-8 p-12 bg-white rounded-xl shadow-sm">
+<div class="animate-pulse flex items-center gap-4">
+<div class="w-16 h-16 bg-surface-container rounded-lg"></div>
+<div class="flex-1 space-y-3">
+<div class="h-4 bg-surface-container rounded w-3/4"></div>
+<div class="h-3 bg-surface-container-low rounded w-1/2"></div>
+</div>
+</div>
+<div class="animate-pulse space-y-4">
+<div class="h-40 bg-surface-container rounded-xl"></div>
+<div class="flex gap-4">
+<div class="h-10 bg-surface-container rounded w-1/4"></div>
+<div class="h-10 bg-surface-container rounded w-1/4"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. Media Thumbnails -->
+<section class="space-y-10">
+<div class="flex items-baseline justify-between border-b border-outline-variant/20 pb-4">
+<h2 class="font-headline text-2xl font-bold text-primary">06. Media Thumbnails</h2>
+<span class="font-label text-xs uppercase tracking-[0.1em] text-outline">Visual Artifacts</span>
+</div>
+<div class="flex flex-wrap gap-8">
+<!-- Document Thumbnail -->
+<div class="w-32 group cursor-pointer">
+<div class="h-44 bg-white border border-outline-variant/30 rounded-lg shadow-sm group-hover:shadow-md transition-shadow relative overflow-hidden flex items-center justify-center p-4">
+<span class="material-symbols-outlined text-outline text-5xl" data-icon="description">description</span>
+<div class="absolute bottom-0 left-0 right-0 h-1.5 bg-secondary transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+</div>
+<p class="mt-3 text-[11px] font-bold text-primary uppercase tracking-wider text-center">Boarding_Pass.pdf</p>
+</div>
+<!-- Tour Preview -->
+<div class="w-48 group cursor-pointer">
+<div class="h-64 rounded-xl overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="ancient architecture in Rome with warm golden light reflecting off cobblestones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGHHS3xKq60vQKulAheoaNwmhpyrZvz09PxYVzk3PJ0abQBrPDJrbxmHm_h84YYkzazdT8kwtTkHkt-MEfw0AcK2VXJqzvJbwVmZ4Hx22AQKa23ZY8YjqT7CteUuDSU95QN7Sa9llqoCD3OsAOtenCekMcq-zcohcPvs_ugLYRhjIQwtxYoZZzTKzaPP5tgGInlvLkaCQClECyoBE-02HDo1L62JSOVn1ApJzgfBL4fG4qjy9l9SvmJrHiBwl5fEDpFqIMbFTMjG48"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors"></div>
+<div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg" data-icon="favorite">favorite</span>
+</div>
+</div>
+<p class="mt-3 font-headline font-bold text-primary">Rome After Dark</p>
+<p class="text-xs text-secondary font-bold">4.8 Rating</p>
+</div>
+<!-- Wide Asset -->
+<div class="flex-1 min-w-[300px] h-64 rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" data-alt="majestic mountain lake with mirrored reflection of pine trees and snow peaks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbcf-B14SsCmAW5A6qoB075oPN3bDxdNwHGOpplyrbYgMZ6h71dtHv2YTHNycNmGMH0ncJU_616vmYxi-xXeHDbV9fsQcgk7qV82nBFFYs03HA7Mwlpisovp3cjrtpxgqAcP1EobwbzJBnTxzeYHU-vaknFWTtXj7ziLQPaJPvkRLXI7xeIsLK_5rF0jXOCVJuiWD3QsT6y0_Yz07QtUMxy8FVUhRp5SFi80e-Qg4DlA9B9aRzpzrQ6McVx2beeIXF-n-rRZboLldS"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-white/90 px-8 py-4 rounded-xl backdrop-blur-sm border border-white/50">
+<p class="font-headline font-extrabold text-primary text-center">GALLERY PREVIEW</p>
+<p class="text-xs text-outline text-center">View all 24 photographs</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar: Shared Component -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl rounded-t-3xl shadow-[0_-4px_40px_rgba(25,28,29,0.06)] border-t border-slate-100">
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05rem] font-semibold mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05rem] font-semibold mt-1">Saved</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05rem] font-semibold mt-1">Trips</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-teal-50 text-teal-800 rounded-2xl px-5 py-2 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05rem] font-semibold mt-1">Account</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Shared Form Primitive Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "secondary-fixed": "#93f2f2",
+                "on-surface-variant": "#444650",
+                "on-secondary": "#ffffff",
+                "on-error-container": "#93000a",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-highest": "#e1e3e4",
+                "secondary": "#006a6a",
+                "surface-container-low": "#f3f4f5",
+                "secondary-container": "#90efef",
+                "on-primary-fixed": "#00174a",
+                "surface-bright": "#f8f9fa",
+                "background": "#f8f9fa",
+                "tertiary-fixed": "#ffdbcf",
+                "on-error": "#ffffff",
+                "tertiary-container": "#4e1500",
+                "tertiary-fixed-dim": "#ffb59c",
+                "on-tertiary-fixed": "#380c00",
+                "primary-fixed-dim": "#b3c5ff",
+                "surface-container-high": "#e7e8e9",
+                "secondary-fixed-dim": "#76d6d5",
+                "primary-fixed": "#dbe1ff",
+                "surface-dim": "#d9dadb",
+                "on-secondary-fixed": "#002020",
+                "on-tertiary": "#ffffff",
+                "on-surface": "#191c1d",
+                "primary": "#00113a",
+                "inverse-surface": "#2e3132",
+                "inverse-on-surface": "#f0f1f2",
+                "on-primary-container": "#758dd5",
+                "on-tertiary-fixed-variant": "#822800",
+                "on-secondary-container": "#006e6e",
+                "tertiary": "#2c0800",
+                "surface-container": "#edeeef",
+                "inverse-primary": "#b3c5ff",
+                "surface-tint": "#435b9f",
+                "outline-variant": "#c5c6d2",
+                "on-secondary-fixed-variant": "#004f4f",
+                "error-container": "#ffdad6",
+                "on-tertiary-container": "#e56c3e",
+                "on-background": "#191c1d",
+                "surface-variant": "#e1e3e4",
+                "surface": "#f8f9fa",
+                "on-primary-fixed-variant": "#2a4386",
+                "primary-container": "#002366",
+                "error": "#ba1a1a",
+                "on-primary": "#ffffff",
+                "outline": "#757682"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .form-input-focus:focus-within {
+            ring: 2px;
+            ring-color: #00113a;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary-container">
+<!-- Top Navigation Bar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg flex items-center justify-between px-8 h-20 shadow-sm shadow-blue-900/5">
+<div class="text-2xl font-bold tracking-tight text-blue-900 font-headline">TravelBook</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-slate-400 font-manrope text-sm font-medium tracking-wide hover:text-blue-800 transition-colors" href="#">Home</a>
+<a class="text-blue-900 font-bold border-b-2 border-blue-900 pb-1 font-manrope text-sm tracking-wide" href="#">Destinations</a>
+<a class="text-slate-400 font-manrope text-sm font-medium tracking-wide hover:text-blue-800 transition-colors" href="#">Tours</a>
+<a class="text-slate-400 font-manrope text-sm font-medium tracking-wide hover:text-blue-800 transition-colors" href="#">Help</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-50/50 transition-all text-blue-900">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-50/50 transition-all text-blue-900">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</nav>
+<div class="pt-28 pb-20 max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-4 gap-12">
+<!-- Sidebar Navigation -->
+<aside class="lg:col-span-1">
+<div class="sticky top-28 space-y-2">
+<h2 class="font-headline font-bold text-primary mb-6 text-xl tracking-tight">Form Library</h2>
+<nav class="flex flex-col gap-1">
+<a class="px-4 py-3 rounded-xl bg-blue-50/50 text-primary font-semibold flex items-center gap-3 transition-all" href="#text-inputs">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+                        Text Inputs
+                    </a>
+<a class="px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-100 font-medium flex items-center gap-3 transition-all" href="#selectors">
+<span class="material-symbols-outlined text-[20px]">stat_0</span>
+                        Selectors &amp; Steppers
+                    </a>
+<a class="px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-100 font-medium flex items-center gap-3 transition-all" href="#selection-controls">
+<span class="material-symbols-outlined text-[20px]">check_box</span>
+                        Selection Controls
+                    </a>
+<a class="px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-100 font-medium flex items-center gap-3 transition-all" href="#action-rows">
+<span class="material-symbols-outlined text-[20px]">smart_button</span>
+                        Action Rows
+                    </a>
+</nav>
+<div class="mt-12 p-6 bg-surface-container rounded-3xl overflow-hidden relative group">
+<div class="relative z-10">
+<p class="text-sm font-semibold text-primary/60 mb-2 uppercase tracking-widest">Guide</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">All components follow the 12px rounding rule and use tonal layering for elevation.</p>
+</div>
+<div class="absolute -bottom-4 -right-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[120px]">travel_explore</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="lg:col-span-3 space-y-16">
+<!-- Intro -->
+<header>
+<h1 class="font-headline text-4xl font-extrabold text-primary mb-4">Shared Form Primitive Library</h1>
+<p class="text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                    A collection of high-end, functional form elements designed for the TravelBook ecosystem. 
+                    Built with accessibility, visual hierarchy, and performance in mind.
+                </p>
+</header>
+<!-- Text Inputs Section -->
+<section class="space-y-8" id="text-inputs">
+<div class="flex items-end justify-between border-b border-surface-container-high pb-4">
+<h3 class="font-headline text-2xl font-bold text-primary">Text Inputs</h3>
+<span class="text-xs font-label uppercase tracking-widest text-slate-400">Section 01</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Standard Input -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Full Name <span class="text-secondary">*</span></label>
+<input class="w-full px-5 py-3.5 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary placeholder:text-slate-400 transition-all" placeholder="e.g. Alexander Hamilton" type="text"/>
+<p class="text-xs text-slate-500 ml-1">Please enter your name as it appears on your passport.</p>
+</div>
+<!-- Input with Suffix (Search) -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Search Destination</label>
+<div class="relative flex items-center">
+<input class="w-full pl-5 pr-12 py-3.5 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary transition-all" placeholder="Where to?" type="text"/>
+<span class="material-symbols-outlined absolute right-4 text-slate-400">search</span>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Account Password</label>
+<div class="relative flex items-center">
+<input class="w-full pl-5 pr-12 py-3.5 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary transition-all" type="password" value="••••••••••••"/>
+<button class="absolute right-4 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Date Input -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Departure Date</label>
+<div class="relative flex items-center">
+<input class="w-full pl-5 pr-4 py-3.5 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary transition-all text-slate-600" type="date"/>
+</div>
+</div>
+<!-- Prefix Slot (Currency) -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Budget Preference</label>
+<div class="relative flex items-center">
+<span class="absolute left-5 text-slate-400 font-semibold">$</span>
+<input class="w-full pl-10 pr-5 py-3.5 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary transition-all" placeholder="0.00" type="number"/>
+</div>
+</div>
+<!-- Invalid State -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-error ml-1">Email Address</label>
+<input class="w-full px-5 py-3.5 bg-error-container/30 border border-error/20 rounded-xl focus:ring-2 focus:ring-error transition-all text-on-error-container" type="email" value="invalid-email@"/>
+<div class="flex items-center gap-1.5 text-xs text-error ml-1">
+<span class="material-symbols-outlined text-sm">error</span>
+                            Please enter a valid email address.
+                        </div>
+</div>
+</div>
+<!-- Textarea -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Special Requirements</label>
+<textarea class="w-full px-5 py-4 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary transition-all resize-none" placeholder="Dietary restrictions, accessibility needs, etc." rows="4"></textarea>
+</div>
+</section>
+<!-- Selectors & Steppers Section -->
+<section class="space-y-8" id="selectors">
+<div class="flex items-end justify-between border-b border-surface-container-high pb-4">
+<h3 class="font-headline text-2xl font-bold text-primary">Selectors &amp; Steppers</h3>
+<span class="text-xs font-label uppercase tracking-widest text-slate-400">Section 02</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Custom Select -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Travel Class</label>
+<div class="relative">
+<select class="w-full appearance-none px-5 py-3.5 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary transition-all pr-12">
+<option>Economy Light</option>
+<option>Standard Economy</option>
+<option>Premium Business</option>
+<option>First Class Suite</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+</div>
+</div>
+<!-- Quantity Stepper -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-primary ml-1">Traveler Count</label>
+<div class="flex items-center bg-surface-container-low rounded-xl w-fit overflow-hidden border border-transparent focus-within:ring-2 focus-within:ring-primary transition-all">
+<button class="px-5 py-3.5 hover:bg-surface-container-high text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">remove</span>
+</button>
+<div class="px-6 py-3.5 font-bold text-primary min-w-[60px] text-center border-x border-surface-container-high/50">2</div>
+<button class="px-5 py-3.5 hover:bg-surface-container-high text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Selection Controls Section -->
+<section class="space-y-8" id="selection-controls">
+<div class="flex items-end justify-between border-b border-surface-container-high pb-4">
+<h3 class="font-headline text-2xl font-bold text-primary">Selection Controls</h3>
+<span class="text-xs font-label uppercase tracking-widest text-slate-400">Section 03</span>
+</div>
+<div class="bg-surface-container-low/50 p-8 rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-12">
+<!-- Checkboxes -->
+<div class="space-y-4">
+<h4 class="text-sm font-bold text-primary uppercase tracking-wider">Amenities</h4>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded-lg border-none bg-surface-container-high text-secondary focus:ring-secondary transition-all" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Complimentary WiFi</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded-lg border-none bg-surface-container-high text-secondary focus:ring-secondary transition-all" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Breakfast Included</span>
+</label>
+<label class="flex items-center gap-3 opacity-50 cursor-not-allowed">
+<input class="w-5 h-5 rounded-lg border-none bg-surface-container-high text-secondary transition-all" disabled="" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant">Airport Shuttle</span>
+</label>
+</div>
+</div>
+<!-- Radio Group -->
+<div class="space-y-4">
+<h4 class="text-sm font-bold text-primary uppercase tracking-wider">Payment Plan</h4>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 border-none bg-surface-container-high text-primary focus:ring-primary transition-all" name="payment" type="radio"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Pay in Full</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 border-none bg-surface-container-high text-primary focus:ring-primary transition-all" name="payment" type="radio"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Installments (3x)</span>
+</label>
+</div>
+</div>
+<!-- Toggle/Switches -->
+<div class="space-y-4">
+<h4 class="text-sm font-bold text-primary uppercase tracking-wider">Preferences</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between gap-4">
+<span class="text-sm font-medium text-on-surface-variant">Flexible Dates</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between gap-4">
+<span class="text-sm font-medium text-on-surface-variant">Newsletter</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- State Demo Bento Grid -->
+<section class="space-y-8">
+<div class="flex items-end justify-between border-b border-surface-container-high pb-4">
+<h3 class="font-headline text-2xl font-bold text-primary">Input States Gallery</h3>
+<span class="text-xs font-label uppercase tracking-widest text-slate-400">Reference</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+<!-- Typing/Active -->
+<div class="bg-white p-6 rounded-2xl border border-primary/10 shadow-xl shadow-primary/5 space-y-3">
+<span class="text-[10px] font-bold text-primary bg-primary-fixed px-2 py-0.5 rounded-full uppercase tracking-tighter">Active State</span>
+<div class="space-y-1">
+<label class="text-xs font-bold text-primary">Phone Number</label>
+<div class="px-4 py-2.5 bg-surface-container-lowest border-2 border-primary rounded-xl text-primary font-medium">
+                                +1 (555) 000-00_
+                            </div>
+</div>
+</div>
+<!-- Disabled -->
+<div class="bg-surface-container-low p-6 rounded-2xl opacity-60 space-y-3">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full uppercase tracking-tighter">Disabled</span>
+<div class="space-y-1">
+<label class="text-xs font-bold text-slate-400">Coupon Code</label>
+<div class="px-4 py-2.5 bg-slate-100/50 rounded-xl text-slate-400 italic">
+                                Feature unavailable
+                            </div>
+</div>
+</div>
+<!-- Valid -->
+<div class="bg-secondary-container/20 p-6 rounded-2xl space-y-3 border border-secondary/10">
+<span class="text-[10px] font-bold text-secondary bg-secondary-container px-2 py-0.5 rounded-full uppercase tracking-tighter">Validated</span>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary">Passport Number</label>
+<div class="relative flex items-center">
+<div class="w-full px-4 py-2.5 bg-white border border-secondary rounded-xl text-secondary font-medium">
+                                    US129384756
+                                </div>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Read Only -->
+<div class="bg-surface-container-low p-6 rounded-2xl space-y-3">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full uppercase tracking-tighter">Read Only</span>
+<div class="space-y-1">
+<label class="text-xs font-bold text-slate-500">Booking Reference</label>
+<div class="px-4 py-2.5 text-primary font-bold tracking-widest bg-white/50 rounded-xl">
+                                TRV-9981-XP
+                            </div>
+</div>
+</div>
+<!-- Loading -->
+<div class="bg-white p-6 rounded-2xl space-y-3 shadow-sm">
+<span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full uppercase tracking-tighter">Loading</span>
+<div class="space-y-1">
+<label class="text-xs font-bold text-slate-400">Verifying Identity...</label>
+<div class="px-4 py-2.5 bg-surface-container rounded-xl flex items-center justify-between">
+<div class="h-2 w-24 bg-slate-300 rounded-full animate-pulse"></div>
+<div class="w-4 h-4 border-2 border-slate-300 border-t-primary rounded-full animate-spin"></div>
+</div>
+</div>
+</div>
+<!-- Surface Tonal Shift -->
+<div class="bg-primary p-6 rounded-2xl space-y-3 shadow-xl">
+<span class="text-[10px] font-bold text-white/50 bg-white/10 px-2 py-0.5 rounded-full uppercase tracking-tighter">Dark Background</span>
+<div class="space-y-1">
+<label class="text-xs font-bold text-white/80">Premium Access Key</label>
+<div class="px-4 py-2.5 bg-white/10 rounded-xl text-white placeholder-white/30">
+                                Enter Key
+                            </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Action Rows Section -->
+<section class="space-y-8" id="action-rows">
+<div class="flex items-end justify-between border-b border-surface-container-high pb-4">
+<h3 class="font-headline text-2xl font-bold text-primary">Action Rows</h3>
+<span class="text-xs font-label uppercase tracking-widest text-slate-400">Section 04</span>
+</div>
+<div class="space-y-12">
+<!-- Standard CTA Group -->
+<div class="p-8 bg-white rounded-[24px] shadow-lg shadow-primary/5 space-y-6">
+<p class="text-sm font-medium text-slate-500">Standard Action Pairing (Right Aligned)</p>
+<div class="flex flex-col sm:flex-row items-center justify-end gap-4">
+<button class="w-full sm:w-auto px-8 py-3 text-primary font-bold hover:bg-surface-container transition-all rounded-xl">
+                                Cancel Changes
+                            </button>
+<button class="w-full sm:w-auto px-10 py-3 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                                Save Profile
+                            </button>
+</div>
+</div>
+<!-- Step Navigation -->
+<div class="p-8 bg-white rounded-[24px] shadow-lg shadow-primary/5 space-y-6">
+<p class="text-sm font-medium text-slate-500">Wizard Step Navigation (Spread)</p>
+<div class="flex items-center justify-between gap-4">
+<button class="flex items-center gap-2 px-6 py-3 text-primary font-bold bg-surface-container rounded-xl hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">arrow_back</span>
+                                Previous Step
+                            </button>
+<button class="flex items-center gap-2 px-10 py-3 bg-secondary text-white font-bold rounded-xl shadow-lg shadow-secondary/20 hover:bg-on-secondary-container transition-all">
+                                Continue to Billing
+                                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Single Centered CTA -->
+<div class="flex flex-col items-center gap-4 py-8">
+<button class="px-16 py-4 bg-gradient-to-br from-primary to-primary-container text-white text-lg font-bold rounded-2xl shadow-xl shadow-primary/25 hover:shadow-2xl transition-all">
+                            Complete Your Booking
+                        </button>
+<p class="text-xs text-slate-400">By clicking complete, you agree to our Terms of Service.</p>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer (Shared Component) -->
+<footer class="w-full border-t border-slate-100 bg-white pt-12 pb-8">
+<div class="max-w-[1200px] mx-auto px-8">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+<div class="text-lg font-bold text-blue-900 font-headline">TravelBook</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-slate-400 hover:text-blue-600 transition-colors font-manrope text-xs tracking-widest uppercase" href="#">Privacy Policy</a>
+<a class="text-slate-400 hover:text-blue-600 transition-colors font-manrope text-xs tracking-widest uppercase" href="#">Terms of Service</a>
+<a class="text-slate-400 hover:text-blue-600 transition-colors font-manrope text-xs tracking-widest uppercase" href="#">Cookie Settings</a>
+<a class="text-slate-400 hover:text-blue-600 transition-colors font-manrope text-xs tracking-widest uppercase" href="#">Contact Us</a>
+</div>
+</div>
+<div class="text-center md:text-left text-[10px] text-slate-400 uppercase tracking-widest border-t border-slate-50 pt-8">
+                © 2024 TravelBook Global. All rights reserved. Built for the modern traveler.
+            </div>
+</div>
+</footer>
+</body></html>

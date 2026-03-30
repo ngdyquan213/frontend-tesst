@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Your Profile | Voyager</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed-dim": "#b3c5ff",
+              "on-primary-container": "#758dd5",
+              "inverse-on-surface": "#f0f1f2",
+              "on-secondary-fixed-variant": "#004f4f",
+              "tertiary-container": "#4e1500",
+              "on-secondary-fixed": "#002020",
+              "tertiary": "#2c0800",
+              "inverse-surface": "#2e3132",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary": "#ffffff",
+              "primary-fixed": "#dbe1ff",
+              "primary-container": "#002366",
+              "on-primary-fixed-variant": "#2a4386",
+              "on-error": "#ffffff",
+              "on-surface": "#191c1d",
+              "surface-container-highest": "#e1e3e4",
+              "on-surface-variant": "#444650",
+              "error": "#ba1a1a",
+              "on-secondary-container": "#006e6e",
+              "surface-container-high": "#e7e8e9",
+              "surface-bright": "#f8f9fa",
+              "on-primary-fixed": "#00174a",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "error-container": "#ffdad6",
+              "on-error-container": "#93000a",
+              "tertiary-fixed-dim": "#ffb59c",
+              "surface-container": "#edeeef",
+              "primary": "#00113a",
+              "background": "#f8f9fa",
+              "surface-variant": "#e1e3e4",
+              "tertiary-fixed": "#ffdbcf",
+              "surface-tint": "#435b9f",
+              "outline": "#757682",
+              "inverse-primary": "#b3c5ff",
+              "secondary": "#006a6a",
+              "outline-variant": "#c5c6d2",
+              "on-background": "#191c1d",
+              "secondary-fixed": "#93f2f2",
+              "on-tertiary-fixed": "#380c00",
+              "surface": "#f8f9fa",
+              "on-tertiary-container": "#e56c3e",
+              "surface-container-low": "#f3f4f5",
+              "secondary-container": "#90efef",
+              "secondary-fixed-dim": "#76d6d5"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "24px": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-manrope { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg shadow-sm dark:shadow-none tonal-shift bg-slate-50/50 dark:bg-slate-900/50 h-20 flex justify-between items-center px-8">
+<div class="text-2xl font-bold tracking-tight text-blue-900 dark:text-white">Voyager</div>
+<nav class="hidden md:flex items-center gap-x-8">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-slate-200 font-manrope text-sm tracking-wide" href="#">Destinations</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-slate-200 font-manrope text-sm tracking-wide" href="#">Experiences</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-slate-200 font-manrope text-sm tracking-wide" href="#">Journal</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-100/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden ml-2 ring-2 ring-primary-fixed">
+<img alt="User profile avatar" data-alt="close-up portrait of a professional man with a kind expression and soft natural lighting in a modern architectural setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaS4cxBJsBeCxkeSxHEURt9Z25mtG8v0e-fgxCvXS7VLhfzQReVNllVcRIZdrq8mh8SoBQmHzaIQ_a0bI8YsEYGGKLsRyLuhQGdDcjoTAlL_zu79uaGepnMdpKfCcaz5n-o7njqsi2SbotrvsxYC7i10eV5F226G13gSXiRzq_IsivPiaKIbvH-HnIHy5CP5yNhlZmUVLqxv_qTNcUahhno_OsEih83Yu7BXMhG7IVEAkQthOVZgf_YuzzIzM16BYO9-YrMNA9IJ-r"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 bg-slate-50 dark:bg-slate-900 flex flex-col p-6 gap-y-2 z-40 hidden md:flex">
+<div class="mb-8 px-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</div>
+<div>
+<div class="font-manrope font-bold text-blue-950 dark:text-teal-500">Alex Rivers</div>
+<div class="text-xs text-slate-500">Elite Voyager</div>
+</div>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="text-slate-500 dark:text-slate-400 py-3 px-4 hover:translate-x-1 flex items-center gap-3 hover:text-blue-900 dark:hover:text-white transition-all duration-200 font-manrope font-medium text-base" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="text-slate-500 dark:text-slate-400 py-3 px-4 hover:translate-x-1 flex items-center gap-3 hover:text-blue-900 dark:hover:text-white transition-all duration-200 font-manrope font-medium text-base" href="#">
+<span class="material-symbols-outlined">event_available</span> Bookings
+            </a>
+<a class="text-slate-500 dark:text-slate-400 py-3 px-4 hover:translate-x-1 flex items-center gap-3 hover:text-blue-900 dark:hover:text-white transition-all duration-200 font-manrope font-medium text-base" href="#">
+<span class="material-symbols-outlined">favorite</span> Wishlist
+            </a>
+<a class="text-slate-500 dark:text-slate-400 py-3 px-4 hover:translate-x-1 flex items-center gap-3 hover:text-blue-900 dark:hover:text-white transition-all duration-200 font-manrope font-medium text-base" href="#">
+<span class="material-symbols-outlined">military_tech</span> Loyalty
+            </a>
+<a class="text-slate-500 dark:text-slate-400 py-3 px-4 hover:translate-x-1 flex items-center gap-3 hover:text-blue-900 dark:hover:text-white transition-all duration-200 font-manrope font-medium text-base" href="#">
+<span class="material-symbols-outlined">contact_support</span> Support
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-200/50">
+<button class="w-full py-4 px-4 bg-primary text-white rounded-xl font-manrope font-bold shadow-md hover:shadow-lg transition-all active:scale-95 mb-4">
+                Plan New Trip
+            </button>
+<a class="text-slate-500 dark:text-slate-400 py-3 px-4 hover:translate-x-1 flex items-center gap-3 hover:text-blue-900 dark:hover:text-white transition-all duration-200 font-manrope font-medium text-base" href="#">
+<span class="material-symbols-outlined">logout</span> Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:pl-64 pt-20 min-h-screen bg-surface">
+<div class="max-w-[800px] mx-auto px-6 py-12">
+<!-- Page Header -->
+<header class="mb-12">
+<h1 class="text-4xl font-extrabold text-primary tracking-tight font-manrope">Your Profile</h1>
+<p class="text-slate-500 mt-2 font-body">Manage your personal details and travel preferences.</p>
+</header>
+<div class="space-y-10">
+<!-- Section 1: User Identity Card -->
+<section class="bg-surface-container-low p-8 rounded-24px flex flex-col md:flex-row items-center gap-8 shadow-sm">
+<div class="relative group">
+<div class="w-32 h-32 rounded-full overflow-hidden ring-4 ring-white shadow-lg">
+<img alt="User avatar" data-alt="portrait of a confident man with subtle smile in high-end studio lighting with a soft gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4D6b79vIRLAlolt1u-pAWB3XtuQNCn9tKbBJchEXpwKS7Q4XXRWzxn-wbsYvGQwU9LtuGfgnMS2q7Gyt-PW5GXFH4tLJilCNWQb7plPx1OVWMRSb42iTsmlb1D38utPQvn0gUaQqlRLeHM9Kj8M9DwumtvV2RhgTr14zX-32JaXgEwviTFVTUhSwUocyCfBaVZzRmngC1xpipQdquDVysm_QqNdXvnG1L65e9ZcCoKkH3GULMX8RaAUYuPll5tyLa2JCikF_sOMga"/>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="flex-grow text-center md:text-left">
+<div class="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold uppercase tracking-widest mb-2 font-label">
+                            Elite Member
+                        </div>
+<h2 class="text-2xl font-bold text-primary font-manrope">Alex Rivers</h2>
+<p class="text-slate-500 font-body">alex.rivers@voyager-travel.com</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2 rounded-xl bg-white border border-outline-variant/20 text-primary font-bold text-sm hover:bg-slate-50 transition-colors font-manrope">
+                            View Public Profile
+                        </button>
+</div>
+</section>
+<!-- Section 2: Personal Details Form -->
+<section class="bg-white p-10 rounded-24px shadow-[0_40px_60px_-15px_rgba(25,28,29,0.06)]">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-xl font-bold text-primary font-manrope">Personal Details</h3>
+<span class="text-secondary text-sm font-semibold cursor-pointer hover:underline">Edit all</span>
+</div>
+<form class="space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 font-label">First Name</label>
+<input class="w-full bg-surface-variant/30 border-none rounded-xl px-5 py-4 text-primary font-manrope focus:ring-2 focus:ring-primary/20 transition-all outline-none" type="text" value="Alex"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 font-label">Last Name</label>
+<input class="w-full bg-surface-variant/30 border-none rounded-xl px-5 py-4 text-primary font-manrope focus:ring-2 focus:ring-primary/20 transition-all outline-none" type="text" value="Rivers"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 font-label">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">mail</span>
+<input class="w-full bg-surface-variant/30 border-none rounded-xl pl-12 pr-5 py-4 text-primary font-manrope focus:ring-2 focus:ring-primary/20 transition-all outline-none" type="email" value="alex.rivers@voyager-travel.com"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 font-label">Phone Number</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">phone</span>
+<input class="w-full bg-surface-variant/30 border-none rounded-xl pl-12 pr-5 py-4 text-primary font-manrope focus:ring-2 focus:ring-primary/20 transition-all outline-none" type="tel" value="+1 (555) 000-1234"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 font-label">Date of Birth</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">calendar_today</span>
+<input class="w-full bg-surface-variant/30 border-none rounded-xl pl-12 pr-5 py-4 text-primary font-manrope focus:ring-2 focus:ring-primary/20 transition-all outline-none" type="text" value="March 12, 1988"/>
+</div>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 font-label">Home Location</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">location_on</span>
+<input class="w-full bg-surface-variant/30 border-none rounded-xl pl-12 pr-5 py-4 text-primary font-manrope focus:ring-2 focus:ring-primary/20 transition-all outline-none" type="text" value="Vancouver, BC, Canada"/>
+</div>
+</div>
+<div class="pt-6 flex justify-end gap-4">
+<button class="px-8 py-3 text-slate-500 font-bold font-manrope hover:text-primary transition-colors" type="button">Discard</button>
+<button class="px-10 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl font-bold font-manrope shadow-lg hover:shadow-xl active:scale-95 transition-all" type="button">Save Changes</button>
+</div>
+</form>
+</section>
+<!-- Section 3: Preferences Bento Grid (Bonus) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 bg-surface-container-high p-8 rounded-24px flex items-center justify-between group cursor-pointer hover:bg-surface-container transition-colors">
+<div>
+<h4 class="font-manrope font-bold text-primary text-lg">Travel Preferences</h4>
+<p class="text-slate-500 text-sm font-body">Customize your flight and stay needs.</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary shadow-sm group-hover:translate-x-1 transition-transform">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+<div class="bg-secondary p-8 rounded-24px text-white flex flex-col justify-between">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<div>
+<h4 class="font-manrope font-bold text-lg">Trust Level</h4>
+<p class="text-secondary-fixed/80 text-sm font-body">Verified Traveler</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Spacing -->
+<div class="h-20"></div>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md flex justify-around items-center h-16 px-4 z-50 border-t border-slate-100">
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">DASHBOARD</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">event_available</span>
+<span class="text-[10px] font-bold">BOOKINGS</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-bold">PROFILE</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">military_tech</span>
+<span class="text-[10px] font-bold">LOYALTY</span>
+</button>
+</nav>
+</body></html>

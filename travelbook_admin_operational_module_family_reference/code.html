@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook Admin - Operational Suite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#002366",
+                        "on-secondary-fixed": "#002020",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#90efef",
+                        "on-tertiary-container": "#e56c3e",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "on-primary-container": "#758dd5",
+                        "tertiary-container": "#4e1500",
+                        "on-background": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#93f2f2",
+                        "on-tertiary-fixed": "#380c00",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "outline": "#757682",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed": "#ffdbcf",
+                        "outline-variant": "#c5c6d2",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "surface-container": "#edeeef",
+                        "on-primary-fixed-variant": "#2a4386",
+                        "surface-dim": "#d9dadb",
+                        "surface-bright": "#f8f9fa",
+                        "on-secondary-container": "#006e6e",
+                        "primary": "#00113a",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#435b9f",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b3c5ff",
+                        "secondary": "#006a6a",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-primary-fixed": "#00174a",
+                        "tertiary": "#2c0800",
+                        "on-surface-variant": "#444650",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "surface": "#f8f9fa",
+                        "background": "#f8f9fa",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#191c1d",
+                        "surface-container-high": "#e7e8e9"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-screen w-[256px] border-r-0 bg-slate-50 dark:bg-slate-900 flex flex-col py-6 z-50">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold text-blue-900 dark:text-blue-100 font-headline">TravelBook</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-medium">Operational Suite</p>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<!-- Active Tab: Operations -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span>Tours</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Schedules</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Pricing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span>Bookings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_return">assignment_return</span>
+<span>Refunds</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-800 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-900 dark:text-blue-400 font-bold border-r-4 border-blue-900 dark:border-blue-400 bg-slate-200/50 dark:bg-slate-800 font-manrope text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="settings_applications">settings_applications</span>
+<span>Operations</span>
+</a>
+</nav>
+<div class="px-6 pt-6 border-t border-slate-100 dark:border-slate-800/50 mt-auto">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="professional headshot of a male admin user with a neutral expression and clean corporate attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS_QPGArcQrVJIfqKrkgXFNdbzPWqYGsgS8AciKc-Lxjwz3FcOfs0P_1das9wgiMJF4klKjQ4IT1f8hqIMjD-itnZqPpn882XW50V_h_5qrKetZ4M8L82FDMeBCPvms_GkEgQHNi7pgCI-e77SnWHyEFZ8SpBAmKqie_OVbnDWXQVZ3K15_mjrZjs753p7_aJ8ZE0Og9JySCLZKy32w2iZJvHx0WPC6Q_VyV9tYOcOV1TcMrwsCghv1DCGf22-Wp3OBBQEgo6RirRY"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Admin User</p>
+<p class="text-[10px] text-slate-500 truncate">System Operator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 w-[calc(100%-256px)] h-16 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md z-40 border-b border-slate-100 dark:border-slate-800/50 shadow-sm flex items-center">
+<div class="flex justify-between items-center px-8 w-full max-w-[1200px] mx-auto">
+<div class="flex items-center bg-surface-container rounded-full px-4 py-1.5 w-72">
+<span class="material-symbols-outlined text-outline text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-full font-body" placeholder="Search operations..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-500 hover:text-blue-700 transition-colors flex items-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-slate-500 hover:text-blue-700 transition-colors flex items-center">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-6 w-[1px] bg-slate-200"></div>
+<button class="flex items-center gap-2 text-sm font-semibold text-blue-900 dark:text-blue-400">
+<span>Profile</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[256px] pt-24 pb-12 px-8 min-h-screen bg-surface">
+<div class="max-w-[1200px] mx-auto">
+<header class="mb-10">
+<h2 class="text-3xl font-extrabold tracking-tight text-primary font-headline">Operations Board</h2>
+<p class="text-outline mt-1 font-body">Real-time oversight of system health and manual task queues.</p>
+</header>
+<div class="grid grid-cols-12 gap-6">
+<!-- 1. Operational Summary Cards (Bento Style) -->
+<div class="col-span-12 lg:col-span-8 grid grid-cols-2 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border-0 flex flex-col justify-between">
+<div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline-variant font-label">Bookings Observed</span>
+<div class="flex items-baseline gap-2 mt-2">
+<h3 class="text-4xl font-extrabold text-primary font-headline">1,248</h3>
+<span class="text-xs font-bold text-secondary flex items-center">+12% <span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span></span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-container flex justify-between items-center">
+<span class="text-xs text-outline font-medium">Last 24 hours</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">STABLE</span>
+</div>
+</div>
+<div class="bg-primary p-6 rounded-2xl shadow-sm border-0 flex flex-col justify-between text-white">
+<div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-primary-container font-label">Revenue Snapshot</span>
+<div class="flex items-baseline gap-2 mt-2">
+<h3 class="text-4xl font-extrabold text-white font-headline">$42,850</h3>
+<span class="text-xs font-medium text-on-primary-container">Processed</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-primary-container flex justify-between items-center">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-secondary border-2 border-primary flex items-center justify-center text-[10px] font-bold">V</div>
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed-dim border-2 border-primary flex items-center justify-center text-[10px] font-bold">M</div>
+<div class="w-6 h-6 rounded-full bg-on-primary-container border-2 border-primary flex items-center justify-center text-[10px] font-bold">A</div>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-primary-container">Direct Deposits</span>
+</div>
+</div>
+</div>
+<!-- 2. Queue Snapshot Cards -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container rounded-2xl p-6 flex flex-col gap-4">
+<h4 class="text-sm font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="reorder">reorder</span>
+                        Immediate Queues
+                    </h4>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:bg-surface-bright transition-all">
+<div>
+<p class="text-xs font-bold text-primary">Pending Approvals</p>
+<p class="text-[10px] text-outline">14 Tours require review</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-secondary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:bg-surface-bright transition-all border-l-4 border-error">
+<div>
+<p class="text-xs font-bold text-primary">Urgent Refunds</p>
+<p class="text-[10px] text-error font-semibold">3 Escalations pending</p>
+</div>
+<span class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded-md">ACTION</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:bg-surface-bright transition-all">
+<div>
+<p class="text-xs font-bold text-primary">Document Backlog</p>
+<p class="text-[10px] text-outline">82 Missing visas/IDs</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-secondary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- 3. Module Overviews -->
+<div class="col-span-12 lg:col-span-7 bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-sm font-bold text-primary">Module Status: Active Tours</h4>
+<button class="text-[10px] font-bold text-secondary uppercase tracking-widest">View All</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="vibrant view of a traditional vietnamese street market with colorful lanterns and busy local life" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl6UYiC96J8kI_7VJ_NhZEe_yy_-QMcYqVSGpWFK9ZfIUMQ-a5vMfG_KWLst6opOoEF5e8LFXGxgw2uCt8pXHhabSCVkmxgmbOt5nSlAWd6qgpTdJmBwX_JCd6L2DWp2bBl4PDR5pKcjanHA2Avx5OTw48IV6G0IzTN1sd6kz-60AWbu6o2pH01e-iKiR_ethaU3zYTbZINYPRnML9te01O8KFcaUxQF7_73YOy0X0qtMd03oflFqaQdlFc2CppFk8kbPDlbbisABe"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-primary truncate">Northern Vietnam Expedition</p>
+<p class="text-[10px] text-outline">Ha Giang • Nov 2024 Schedule</p>
+</div>
+<div class="text-right">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">PUBLISHED</span>
+<p class="text-[10px] text-outline mt-1 font-mono">ID: VN-882</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="dramatic limestone cliffs rising from emerald green waters in a tropical bay during early morning mist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKw3XObvm5iLf-lMJ7FDYqgaA_sBm2iSc8HqOzvy7lO93bzz-3saZXj1Bt9dSIrSAOsJurskreGkpGmAXSf0oglicxre0OdHCIJBCgDxvYiC6Pg0duWvuscvSBOXJfqfrujeBhLolLJasEwFOOLmMkykIsLdZJkjvpWvP3aHUGs_ccgGQ9lYoExIZQj8mfgE28qCHVO7qAI8xzluceBvrwsOdQd_Ylmua04SfV0PqlcSkE8svZ-J7z70vfuwIOXYLgcl9J7n1FsN94"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-primary truncate">Krabi Island Hopping</p>
+<p class="text-[10px] text-outline">Southern Thailand • Peak Season</p>
+</div>
+<div class="text-right">
+<span class="px-2 py-0.5 rounded-full bg-surface-variant text-on-surface-variant text-[10px] font-bold">DRAFT</span>
+<p class="text-[10px] text-outline mt-1 font-mono">ID: TH-421</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Pricing Rule Modules -->
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<div class="bg-surface-container-highest rounded-2xl p-6">
+<h4 class="text-sm font-bold text-primary mb-4">Pricing Rules: Global Margin</h4>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/20">
+<p class="text-[10px] font-bold text-outline-variant uppercase">Adult Base</p>
+<p class="text-lg font-extrabold text-primary">$299.00</p>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/20">
+<p class="text-[10px] font-bold text-outline-variant uppercase">Child (2-12)</p>
+<p class="text-lg font-extrabold text-primary">$185.00</p>
+</div>
+</div>
+<div class="mt-4 flex items-center justify-between text-[11px] font-medium text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="percent">percent</span> Tax inclusive</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="update">update</span> Last sync: 2h ago</span>
+</div>
+</div>
+<!-- 5. Truthful Integration Notes -->
+<div class="bg-tertiary-fixed p-6 rounded-2xl border border-tertiary-fixed-dim/30">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="info">info</span>
+<div>
+<h4 class="text-sm font-bold text-on-tertiary-fixed">Integration Note</h4>
+<p class="text-xs text-on-tertiary-fixed-variant mt-1 leading-relaxed">
+                                    Insurance API for automated policy generation is currently in 'Sandbox' mode.
+                                    <strong>Manual action required:</strong> Upload PDFs for all 'Gold Tier' bookings via the Documents tab.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- 6. Operations Board / Checklist -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
+<h4 class="text-sm font-bold text-primary mb-6">Daily Operational Readiness</h4>
+<div class="grid md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-5 h-5 rounded border-2 border-secondary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-secondary text-sm font-bold" data-icon="check">check</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-primary">Verify Tour Operator Availability</p>
+<p class="text-xs text-outline mt-0.5">Contact local dispatch for morning slots.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-5 h-5 rounded border-2 border-outline-variant shrink-0 mt-0.5"></div>
+<div>
+<p class="text-sm font-semibold text-primary">Approve Waiting List Promotions</p>
+<p class="text-xs text-outline mt-0.5">Check Ha Long Bay availability for priority users.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-5 h-5 rounded border-2 border-outline-variant shrink-0 mt-0.5"></div>
+<div>
+<p class="text-sm font-semibold text-primary">Cross-check API Payment Logs</p>
+<p class="text-xs text-outline mt-0.5">Manual audit of Stripe transfers vs DB records.</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-5 border border-dashed border-outline-variant/50">
+<p class="text-[10px] font-bold text-secondary uppercase tracking-[0.2em] mb-3">Integration Targets</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-[11px] mb-1.5">
+<span class="font-bold">Auto-Dispatch v2</span>
+<span class="text-outline">75%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-3/4"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[11px] mb-1.5">
+<span class="font-bold">Flight Sync API</span>
+<span class="text-outline">40%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-2/5 opacity-50"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 7. System Integrity Panel -->
+<div class="col-span-12 lg:col-span-4 bg-primary text-white p-8 rounded-2xl relative overflow-hidden flex flex-col justify-between">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+<span class="text-xs font-bold uppercase tracking-widest text-on-primary-container">System Integrity</span>
+</div>
+<h4 class="text-xl font-bold mb-2">Backend Health</h4>
+<p class="text-xs text-on-primary-container leading-relaxed">
+                            Database clusters are operating at 100% capacity with 0% data drift observed in today's synchronization cycle.
+                        </p>
+</div>
+<div class="mt-8 pt-8 border-t border-primary-container relative z-10 grid grid-cols-2 gap-4">
+<div>
+<p class="text-[10px] text-on-primary-container font-bold uppercase">Latency</p>
+<p class="text-lg font-bold">24ms</p>
+</div>
+<div>
+<p class="text-[10px] text-on-primary-container font-bold uppercase">Uptime</p>
+<p class="text-lg font-bold">99.98%</p>
+</div>
+</div>
+<!-- Decorative Graphic -->
+<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-secondary/10 rounded-full blur-3xl"></div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

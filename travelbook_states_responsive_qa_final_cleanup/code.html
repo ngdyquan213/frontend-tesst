@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | States &amp; Responsive QA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "outline-variant": "#c5c6d2",
+                "inverse-primary": "#b3c5ff",
+                "on-background": "#191c1d",
+                "surface-container-low": "#f3f4f5",
+                "secondary-fixed": "#93f2f2",
+                "tertiary-container": "#4e1500",
+                "on-secondary": "#ffffff",
+                "surface-container-high": "#e7e8e9",
+                "primary-fixed-dim": "#b3c5ff",
+                "outline": "#757682",
+                "error-container": "#ffdad6",
+                "surface-dim": "#d9dadb",
+                "on-primary-fixed": "#00174a",
+                "surface": "#f8f9fa",
+                "surface-variant": "#e1e3e4",
+                "tertiary-fixed": "#ffdbcf",
+                "on-tertiary-fixed-variant": "#822800",
+                "on-surface": "#191c1d",
+                "on-tertiary": "#ffffff",
+                "error": "#ba1a1a",
+                "on-primary-container": "#758dd5",
+                "secondary-container": "#90efef",
+                "surface-container-highest": "#e1e3e4",
+                "surface-bright": "#f8f9fa",
+                "on-tertiary-fixed": "#380c00",
+                "on-error": "#ffffff",
+                "inverse-on-surface": "#f0f1f2",
+                "secondary": "#006a6a",
+                "primary-fixed": "#dbe1ff",
+                "primary": "#00113a",
+                "on-primary-fixed-variant": "#2a4386",
+                "inverse-surface": "#2e3132",
+                "on-secondary-fixed": "#002020",
+                "on-primary": "#ffffff",
+                "background": "#f8f9fa",
+                "on-surface-variant": "#444650",
+                "on-secondary-fixed-variant": "#004f4f",
+                "surface-tint": "#435b9f",
+                "surface-container": "#edeeef",
+                "secondary-fixed-dim": "#76d6d5",
+                "primary-container": "#002366",
+                "on-tertiary-container": "#e56c3e",
+                "tertiary-fixed-dim": "#ffb59c",
+                "surface-container-lowest": "#ffffff",
+                "tertiary": "#2c0800",
+                "on-secondary-container": "#006e6e",
+                "on-error-container": "#93000a"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #edeeef 25%, #f8f9fa 50%, #edeeef 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Neutral Global Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm h-16">
+<div class="flex justify-between items-center px-8 h-full max-w-full mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tight text-blue-900 dark:text-white">TravelBook</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-500">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container ml-2">
+<img alt="User Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRAvNQMoDVfkuvSfHokkbEWCFr1eZafpXg8Od7hyqsY3fAdsEMbBEBkO5mKOHLmLMm051k9NccjOVmisu2ueUn44XnTx_4u4EYnY51SttbQdBE3x5UpMDah1To7OLlTDcBOShZp7HqgKHlsRoXVuIYRJkAm-N3r819j4LyUkS7mqF39UghgyCQKd9AHO0sb_P1hZqCryTAGCY_dR1Jw4Iu1P8NrLDQzB3ZnOn0XKvCl8tUpbf7J-NnwWeiW93gZXPuPXVRReHKtMeh"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas (Removed Sidebar) -->
+<main class="pt-24 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
+<!-- Header Section -->
+<header class="mb-12">
+<h1 class="font-headline text-4xl font-extrabold tracking-tight text-primary mb-2">Continuity &amp; State QA</h1>
+<p class="font-body text-lg text-on-surface-variant max-w-3xl">Verification standards for shared application states, booking progressions, and responsive layout behavior.</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- 1. Shared State Legend -->
+<section class="md:col-span-12 bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline text-xl font-bold">Standard UI States</h2>
+</div>
+<div class="flex flex-wrap gap-4">
+<span class="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">sync</span> Loading
+                    </span>
+<span class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">layers_clear</span> Empty
+                    </span>
+<span class="px-4 py-2 rounded-full bg-secondary text-white text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">check_circle</span> Success
+                    </span>
+<span class="px-4 py-2 rounded-full bg-primary-fixed text-on-primary-fixed text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">schedule</span> Pending
+                    </span>
+<span class="px-4 py-2 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">warning</span> Warning
+                    </span>
+<span class="px-4 py-2 rounded-full bg-inverse-surface text-inverse-on-surface text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">block</span> Blocked
+                    </span>
+<span class="px-4 py-2 rounded-full bg-error-container text-on-error-container text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">error</span> Error
+                    </span>
+</div>
+</section>
+<!-- 2. Discovery States (Skeleton) -->
+<section class="md:col-span-12 lg:col-span-6 space-y-6">
+<div class="bg-surface-container rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline text-lg font-bold">Booking Search: Loading</h2>
+</div>
+<!-- Skeleton Card Example -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden p-4 space-y-4">
+<div class="h-48 rounded-lg skeleton"></div>
+<div class="h-6 w-3/4 rounded-md skeleton"></div>
+<div class="h-4 w-1/2 rounded-md skeleton"></div>
+<div class="flex justify-between items-center pt-2">
+<div class="h-8 w-24 rounded-full skeleton"></div>
+<div class="h-8 w-8 rounded-full skeleton"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-8 border border-dashed border-outline-variant text-center">
+<span class="material-symbols-outlined text-5xl text-outline mb-4">search_off</span>
+<h3 class="font-headline text-lg font-bold mb-2">No Destinations Found</h3>
+<p class="text-sm text-on-surface-variant mb-6">We couldn't find any tours matching your current search. Try adjusting your filters.</p>
+<button class="px-6 py-2 bg-primary text-white rounded-lg text-sm font-semibold">Reset All Filters</button>
+</div>
+</section>
+<!-- 3. Form States -->
+<section class="md:col-span-12 lg:col-span-6 bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 shadow-sm">
+<h2 class="font-headline text-lg font-bold mb-6">Input Interaction States</h2>
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-bold text-outline mb-2 uppercase tracking-wide">Valid Entry</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-secondary/50" readonly="" type="text" value="traveler@example.com"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-secondary">check_circle</span>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-outline mb-2 uppercase tracking-wide">Active Focus</label>
+<input class="w-full bg-surface-container-highest border-2 border-primary/30 rounded-lg px-4 py-3 text-sm ring-4 ring-primary/5" readonly="" type="password" value="password123"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-outline mb-2 uppercase tracking-wide">Error State</label>
+<div class="relative">
+<input class="w-full bg-error-container/20 border-2 border-error/50 rounded-lg px-4 py-3 text-sm focus:ring-error/50" readonly="" type="text" value="Invalid entry. Please check and try again."/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-error">error</span>
+</div>
+<p class="text-xs text-error mt-2 font-medium">Session expired. Please sign in again to continue.</p>
+</div>
+</div>
+</section>
+<!-- 4. Checkout Processing -->
+<section class="md:col-span-12 bg-white rounded-xl p-8 shadow-sm">
+<div class="flex items-center justify-between mb-10">
+<h2 class="font-headline text-xl font-bold">Booking Flow Progression</h2>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">Step 2 of 3</span>
+</div>
+<div class="flex items-center w-full max-w-4xl mx-auto mb-12">
+<div class="flex items-center text-secondary relative">
+<div class="rounded-full h-10 w-10 py-3 border-2 border-secondary flex items-center justify-center bg-secondary text-white">
+<span class="material-symbols-outlined text-lg">check</span>
+</div>
+<div class="absolute top-0 -ml-10 text-center mt-12 w-32 text-xs font-bold uppercase tracking-tighter">Details</div>
+</div>
+<div class="flex-auto border-t-2 border-secondary"></div>
+<div class="flex items-center text-secondary relative">
+<div class="rounded-full h-10 w-10 py-3 border-2 border-secondary flex items-center justify-center bg-white">
+<span class="font-bold">2</span>
+</div>
+<div class="absolute top-0 -ml-10 text-center mt-12 w-32 text-xs font-bold uppercase tracking-tighter">Payment</div>
+</div>
+<div class="flex-auto border-t-2 border-slate-200"></div>
+<div class="flex items-center text-slate-400 relative">
+<div class="rounded-full h-10 w-10 py-3 border-2 border-slate-200 flex items-center justify-center bg-white">
+<span class="font-bold">3</span>
+</div>
+<div class="absolute top-0 -ml-10 text-center mt-12 w-32 text-xs font-bold uppercase tracking-tighter">Review</div>
+</div>
+</div>
+<!-- Processing Overlay Concept -->
+<div class="relative bg-surface rounded-xl p-12 border border-outline-variant/30 flex flex-col items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center">
+<div class="w-12 h-12 border-4 border-secondary border-t-transparent rounded-full animate-spin mb-4"></div>
+<p class="font-headline font-bold text-primary">Securing Your Booking...</p>
+</div>
+<div class="grid grid-cols-2 gap-4 w-full opacity-20">
+<div class="h-8 bg-slate-200 rounded"></div>
+<div class="h-8 bg-slate-200 rounded"></div>
+<div class="h-24 bg-slate-200 rounded col-span-2"></div>
+</div>
+</div>
+</section>
+<!-- 5. Entity States -->
+<section class="md:col-span-12 lg:col-span-7 bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/10 shadow-sm">
+<div class="p-6 border-b border-surface-container">
+<h2 class="font-headline text-lg font-bold">Booking Status Indicators</h2>
+</div>
+<div class="divide-y divide-surface-container">
+<div class="p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">sailing</span>
+</div>
+<div>
+<p class="text-sm font-bold">Amalfi Coast Sailing</p>
+<p class="text-xs text-on-surface-variant">Booking ID: AC-8829 | Success / Confirmed</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-extrabold uppercase rounded-full">Success</span>
+</div>
+<div class="p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors bg-error-container/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<p class="text-sm font-bold">Swiss Alps Traverse</p>
+<p class="text-xs text-on-surface-variant">Warning / Action Required</p>
+</div>
+</div>
+<button class="px-3 py-1 bg-error text-white text-[10px] font-extrabold uppercase rounded-full">Warning</button>
+</div>
+<div class="p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">edit_note</span>
+</div>
+<div>
+<p class="text-sm font-bold">Tuscany Wine Region Tour</p>
+<p class="text-xs text-on-surface-variant">Unpublished booking details</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-[10px] font-extrabold uppercase rounded-full">Draft</span>
+</div>
+</div>
+</section>
+<!-- 6. Responsive Logic -->
+<section class="md:col-span-12 lg:col-span-5 bg-surface-container-high rounded-xl p-8">
+<h2 class="font-headline text-lg font-bold mb-6">Standard Responsive View</h2>
+<div class="space-y-8">
+<!-- Desktop Simulation -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-xs font-bold text-outline uppercase">
+<span>Desktop View</span>
+<span>Side-by-side Layout</span>
+</div>
+<div class="bg-white rounded-lg p-2 border border-outline-variant shadow-sm flex gap-2 h-24">
+<div class="w-12 bg-surface-container rounded-md flex flex-col gap-1 p-1">
+<div class="h-2 w-full bg-primary/20 rounded"></div>
+<div class="h-2 w-full bg-primary/20 rounded"></div>
+</div>
+<div class="flex-1 bg-surface-container-lowest rounded-md p-2">
+<div class="h-2 w-1/3 bg-primary/10 rounded mb-2"></div>
+<div class="grid grid-cols-3 gap-1">
+<div class="h-8 bg-slate-50 rounded"></div>
+<div class="h-8 bg-slate-50 rounded"></div>
+<div class="h-8 bg-slate-50 rounded"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mobile Simulation -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-xs font-bold text-outline uppercase">
+<span>Mobile View</span>
+<span class="text-secondary">Stacked Elements</span>
+</div>
+<div class="bg-white rounded-lg border border-outline-variant shadow-sm flex flex-col h-40 w-32 mx-auto overflow-hidden">
+<div class="h-4 bg-primary/10 w-full mb-1"></div>
+<div class="flex-1 p-2 space-y-2">
+<div class="h-2 w-full bg-slate-100 rounded"></div>
+<div class="h-12 w-full bg-secondary/10 rounded"></div>
+</div>
+<div class="h-6 bg-slate-50 border-t border-slate-100 flex items-center justify-center">
+<div class="h-1 w-8 bg-slate-300 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-6 italic">Guidance: Navigation collapses to top-bar; primary cards and actions stack vertically.</p>
+</section>
+<!-- 7. QA Continuity Summary -->
+<section class="md:col-span-12 bg-primary text-white rounded-xl p-8">
+<h2 class="font-headline text-xl font-bold mb-4">QA Continuity Summary</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed">verified</span>
+<p class="text-sm">Consistent corner radius and tonal sectioning must be maintained across all booking modules.</p>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed">verified</span>
+<p class="text-sm">Action visibility and top-bar alignment must persist regardless of viewport size.</p>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed">verified</span>
+<p class="text-sm">Shared states (Loading, Success, Error) must use standard color tokens and icons for accessibility.</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

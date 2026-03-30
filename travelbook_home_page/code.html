@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TravelBook | Curated Luxury Experiences</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#e7e8e9",
+              "inverse-surface": "#2e3132",
+              "primary-fixed-dim": "#b3c5ff",
+              "on-tertiary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "background": "#f8f9fa",
+              "tertiary-fixed": "#ffdbcf",
+              "on-background": "#191c1d",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#822800",
+              "on-error": "#ffffff",
+              "secondary-container": "#90efef",
+              "on-surface-variant": "#444650",
+              "outline-variant": "#c5c6d2",
+              "on-primary-fixed-variant": "#2a4386",
+              "surface-dim": "#d9dadb",
+              "inverse-on-surface": "#f0f1f2",
+              "on-tertiary-container": "#e56c3e",
+              "on-primary-fixed": "#00174a",
+              "outline": "#757682",
+              "secondary-fixed-dim": "#76d6d5",
+              "on-primary": "#ffffff",
+              "error-container": "#ffdad6",
+              "surface-tint": "#435b9f",
+              "surface-container-highest": "#e1e3e4",
+              "surface-bright": "#f8f9fa",
+              "on-tertiary-fixed": "#380c00",
+              "on-secondary-fixed": "#002020",
+              "on-secondary-fixed-variant": "#004f4f",
+              "surface": "#f8f9fa",
+              "surface-container-lowest": "#ffffff",
+              "inverse-primary": "#b3c5ff",
+              "surface-container": "#edeeef",
+              "tertiary-fixed-dim": "#ffb59c",
+              "on-secondary-container": "#006e6e",
+              "surface-variant": "#e1e3e4",
+              "primary-fixed": "#dbe1ff",
+              "on-error-container": "#93000a",
+              "tertiary": "#2c0800",
+              "secondary-fixed": "#93f2f2",
+              "tertiary-container": "#4e1500",
+              "surface-container-low": "#f3f4f5",
+              "primary-container": "#002366",
+              "secondary": "#006a6a",
+              "on-surface": "#191c1d",
+              "on-primary-container": "#758dd5",
+              "primary": "#00113a"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<nav class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-bold tracking-tight text-cyan-950 dark:text-white font-headline">TravelBook</span>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-manrope text-sm tracking-wide font-bold border-b-2 border-cyan-700 dark:border-cyan-300 pb-1 text-cyan-700 dark:text-cyan-300" href="#">Tours</a>
+<a class="font-manrope text-sm tracking-wide font-medium text-slate-600 dark:text-slate-400 hover:text-cyan-900 dark:hover:text-white transition-colors" href="#">Destinations</a>
+<a class="font-manrope text-sm tracking-wide font-medium text-slate-600 dark:text-slate-400 hover:text-cyan-900 dark:hover:text-white transition-colors" href="#">Promotions</a>
+<a class="font-manrope text-sm tracking-wide font-medium text-slate-600 dark:text-slate-400 hover:text-cyan-900 dark:hover:text-white transition-colors" href="#">Help</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="font-manrope text-sm font-medium text-slate-600 hover:text-cyan-900 transition-all">Log In</button>
+<button class="hero-gradient text-white px-6 py-2.5 rounded-md font-manrope text-sm font-bold scale-95 active:scale-90 transition-transform">Sign Up</button>
+</div>
+</nav>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative px-8 py-20 max-w-7xl mx-auto">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="space-y-8">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label text-xs font-bold tracking-widest uppercase">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        World-Class Curated Travel
+                    </div>
+<h1 class="font-headline text-5xl md:text-7xl font-extrabold text-primary leading-[1.1] tracking-tight">
+                        Journey into the <span class="text-secondary">Extraordinary.</span>
+</h1>
+<p class="text-on-surface-variant text-xl leading-relaxed max-w-lg">
+                        Experience travel redefined through hand-picked destinations and seamless luxury planning. Your story begins where the horizon ends.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="hero-gradient text-white px-8 py-4 rounded-xl font-headline font-bold text-lg shadow-lg shadow-primary/20 hover:shadow-xl transition-all">
+                            Browse Tours
+                        </button>
+<button class="px-8 py-4 rounded-xl font-headline font-bold text-lg text-primary border border-outline-variant/30 hover:bg-surface-container transition-all">
+                            Explore Destinations
+                        </button>
+</div>
+</div>
+<div class="relative">
+<div class="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="luxury infinity pool overlooking a turquoise tropical ocean at sunset with soft pink and orange clouds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABWV97ScoS35wsmCpuWP8psYlOLuZHcCl7hdA8NPuXKjRFeUPaS_cUI-CWzG-d-T3tAV86GxvWxMac6JUwpgpbCZ7vHvT6HClWmJWBBXFFrnwMpmiErgYFIY-nChORRbevXSqQGozTnikLLONbAHUTDjPJdmxoSeGBzXjaDESH-rqchTyq9JvFXk55Hg_hvCc_fBey1YLS1_pCfXtyIEksmuqyNDq1Hz_O8ZfRtIRoPXi32HiQK9kQZOXWHhf-zieZPwMOcAR-6g2Q"/>
+</div>
+<div class="absolute -bottom-8 -left-8 bg-surface-container-lowest p-6 rounded-2xl shadow-xl max-w-xs hidden md:block">
+<div class="flex gap-4 items-center">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">star</span>
+</div>
+<div>
+<p class="font-headline font-bold text-primary">4.9/5 Rating</p>
+<p class="text-sm text-on-surface-variant">From 2,500+ global voyagers</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Strip -->
+<section class="bg-surface-container-low py-12">
+<div class="max-w-7xl mx-auto px-8 flex flex-wrap justify-between gap-8">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary text-3xl">verified_user</span>
+<div>
+<p class="font-headline font-bold text-primary leading-none">Secure Payments</p>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-tighter">Bank-grade encryption</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary text-3xl">support_agent</span>
+<div>
+<p class="font-headline font-bold text-primary leading-none">24/7 Support</p>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-tighter">Real-time concierge</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary text-3xl">map</span>
+<div>
+<p class="font-headline font-bold text-primary leading-none">Verified Tours</p>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-tighter">Directly vetted partners</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary text-3xl">sentiment_satisfied</span>
+<div>
+<p class="font-headline font-bold text-primary leading-none">Happiness Guarantee</p>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-tighter">Flexible cancellation</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Tours -->
+<section class="px-8 py-24 max-w-7xl mx-auto">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline text-3xl font-extrabold text-primary mb-2">Featured Experiences</h2>
+<p class="text-on-surface-variant">Our most sought-after journeys this season.</p>
+</div>
+<button class="text-secondary font-bold hover:underline underline-offset-8">View all tours</button>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Tour Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="luxury overwater bungalow in the maldives with clear blue water and sunny sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7rbYF68xNNLrAi_sBZZvcxv3Zi1TPNIHTOsmyz18aBcxLii_wMrH-YPrAieTazJVzQDQ0SAk-Y3GqecH8Pz8YvTZpjd2DSwKx81PF89x4-YIomm_OXno4ofwIB-PkzS5N4olNpz8AW7M_GCVtAUQdz19UP9SuJIjHl8Xul2xFMMzNV4PF4fokzD_YMAQ9iN3BlBxhLtWNjglpGQWnpi-IcmKh-wtJ4rAheUu5MPmdmHfuBX1Xgz2OSQV8NsrEcdUSrgAwH474TCkA"/>
+<span class="absolute top-4 right-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Available</span>
+</div>
+<div class="p-8">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-secondary text-xs font-bold tracking-widest uppercase mb-1">Maldives</p>
+<h3 class="font-headline text-xl font-bold text-primary">Azure Serenity Escape</h3>
+</div>
+</div>
+<div class="flex items-center gap-4 mb-6 text-on-surface-variant text-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 7 Days</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">group</span> Max 12</span>
+</div>
+<div class="flex justify-between items-center pt-6 border-t border-surface-container">
+<p class="font-headline text-2xl font-extrabold text-primary">$3,450 <span class="text-sm font-medium text-on-surface-variant">/ person</span></p>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tour Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="ancient temple in vietnam surrounded by misty green mountains at dawn" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZnPLwt3n823e3XaKJzmegXHOD-boBE31oB-s28PnLmWinaolQdUib-xPRxxpUk4ME4nBr70UT4LAljvdFSOmNCebdO2O5DMhZDItOjZREIcNuPR_KngpqslLKGxDkVqxGnXHKEnAv6meWjTS4F3OwR56Fu7X1h1g_6YPIPzLA2BE2cW3ZvYE-EHQcw-vnAzBQq-VAwU9IZlyRy-TWKwChaPi9VO3B0qLp7dkJA67j56oT6eMUao7QLCD9saJuLa6w_ShWf9nHvvkO"/>
+<span class="absolute top-4 right-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Available</span>
+</div>
+<div class="p-8">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-secondary text-xs font-bold tracking-widest uppercase mb-1">Vietnam</p>
+<h3 class="font-headline text-xl font-bold text-primary">Heritage &amp; Highlands</h3>
+</div>
+</div>
+<div class="flex items-center gap-4 mb-6 text-on-surface-variant text-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 10 Days</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">group</span> Max 8</span>
+</div>
+<div class="flex justify-between items-center pt-6 border-t border-surface-container">
+<p class="font-headline text-2xl font-extrabold text-primary">$2,890 <span class="text-sm font-medium text-on-surface-variant">/ person</span></p>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tour Card 3 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="snow-capped mountain peaks in the swiss alps under a clear blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBNSc_YFPUABETMaXSaaUKh1lfKsvZEk_KcVnGwwAqEUu7CTWA0XHmbILCJdkk9HFB4kDvEdFRLFgXxZ5vSREeeyT-Lp5a60Bx9rM1_LpE1EP5D9Aw7PjG0-MpouAIDoR4CI-rsq6ep4QAyuJaU-A3SwYg1XTNZ-aarMcDR-hG21N8Sy9rfNlKxJe0pJbXXrQvXu2z72fx6GHDTw4i-6m7_sBLPpjHi-CZYIrb9397miPFRlZrK-kAquszhUh4FSXdO7UxEp1l74VQ"/>
+<span class="absolute top-4 right-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Available</span>
+</div>
+<div class="p-8">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-secondary text-xs font-bold tracking-widest uppercase mb-1">Switzerland</p>
+<h3 class="font-headline text-xl font-bold text-primary">Alpine Luxury Summit</h3>
+</div>
+</div>
+<div class="flex items-center gap-4 mb-6 text-on-surface-variant text-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 5 Days</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">group</span> Max 6</span>
+</div>
+<div class="flex justify-between items-center pt-6 border-t border-surface-container">
+<p class="font-headline text-2xl font-extrabold text-primary">$4,100 <span class="text-sm font-medium text-on-surface-variant">/ person</span></p>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Destination Discovery -->
+<section class="bg-surface-container-low py-24">
+<div class="max-w-7xl mx-auto px-8">
+<div class="text-center mb-16">
+<h2 class="font-headline text-4xl font-extrabold text-primary mb-4">Discover Your Next Chapter</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto text-lg">From sun-drenched coastlines to mist-covered peaks, find the destination that speaks to your soul.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 h-[600px]">
+<div class="md:col-span-2 relative rounded-xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" data-alt="santorini white buildings with blue domes overlooking the deep blue mediterranean sea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCgYbHl-zRMZ2GkpOuFQj1EJ--44t0_1KCC1KGsQiygDEmBYifVzgMfwqJEiI9N0jNplbsG5BJlyUxeoclsDgo-dTB83xHasWJSmmJKeqYWucc66k5btwNA2u1AcvbLm3QvvgBwGXbgNi18r3QN0cOdecm7bCQzOasisB7Qj8_vtamdcBNxEBKkwxgIzGEW49oirMMAiyig_pNaQ2N5LjTo9wj3dgxCfplgWJGcQSaJTEmAzlDFKpL34uBbzrYlZbsPfgT9hsUZac_"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<div class="absolute bottom-8 left-8">
+<h4 class="text-white font-headline text-3xl font-bold mb-1">Mediterranean Coast</h4>
+<p class="text-white/80 font-medium">12 Exclusive Tours</p>
+</div>
+</div>
+<div class="relative rounded-xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" data-alt="rugged mountain range with high peaks and deep green forests" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU7okAi86fipSvZ3RKpv6_T9VmDrdyzJhOzbwch72YuDC_r6cifDTlwzBKzlJ7Fpk90mDyHIp2mpYyMIz5JVFqhgkRHTuNqR1fpe1kM7FC8fUVr5u4A59dSMFJQVxJE0LDDAkJ30mE8tvoOxaeOsXL5xGbOxPAgA_bLGG1UKdaDVRPHvEgCNOSAVOSi908qg7_dvg2JdFdoIWAmqmc0IFqfJ56c-DZgi5Ad8BoKBbw53a6k-FxlvpYy3et5V3i-z4iryLNIm06tNlJ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<h4 class="text-white font-headline text-xl font-bold mb-1">Nordic Peaks</h4>
+<p class="text-white/80 text-sm font-medium">8 Tours</p>
+</div>
+</div>
+<div class="relative rounded-xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" data-alt="vibrant neon lights of a modern city at night with flowing traffic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAsXVCEu56O0I_4amC-LYEOlVj8ab1txxUoUMHoafCBLP-x7yr7Z9JdPNHrDmh-xbOyCEMnBaI_pceV7Eup8W425W24eYEtH9B-yyA0pZ3GgjkTUOHxPyjvTA8O0IoGq0ABLQ4LnBel2Q_H7LT_XivEjAor7ao0iGz40X-vxcbWAwgavWARvVgyh4jUY5vd1Is_4QyZPdNKve0WAZAslQdVdf8DWChfmsoxNGpAThcAJsWUa1atZG7gWP15P8CsSOVjNOINTtWuntc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<h4 class="text-white font-headline text-xl font-bold mb-1">Urban Pulse</h4>
+<p class="text-white/80 text-sm font-medium">15 Tours</p>
+</div>
+</div>
+<div class="md:col-span-2 relative rounded-xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" data-alt="remote desert dunes with a luxury campsite under a vast starry sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWJnVZ1Y_VDKJuWOa7ByGZxA27sUv-32Bi4yaez01Kh1hBa-jB0teLALrt2wawFOXX9EzzQt1P4xHaeEYomzrO6pMpfj1k_MvlLblA_1EKwvDtc0ESTcaV9lAcBK8YYWcYJ-4MoPmFx6TkZDFGAgU_rz9QwPW8N7c1ifEPEDgnALTHSV1pWmqi0i4XKNLzMLi8lJiIp4fvYSNIL5X_s94GGhkIwtsCpuagDig3k3QgM3b4RQFkzHgfkR46zzdqDMEWoI8LweS9H0We"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<div class="absolute bottom-8 left-8">
+<h4 class="text-white font-headline text-3xl font-bold mb-1">Desert Solitude</h4>
+<p class="text-white/80 font-medium">5 Exclusive Tours</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works -->
+<section class="px-8 py-24 max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row gap-16 items-center">
+<div class="md:w-1/3">
+<h2 class="font-headline text-4xl font-extrabold text-primary mb-6">Seamlessly Engineered for You</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed">We've removed the complexity from luxury travel. Your only task is to decide where your heart wants to go.</p>
+</div>
+<div class="md:w-2/3 grid md:grid-cols-3 gap-12">
+<div class="space-y-4">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">travel_explore</span>
+</div>
+<h4 class="font-headline text-xl font-bold text-primary">01. Discover</h4>
+<p class="text-on-surface-variant text-sm">Browse our meticulously curated collection of boutique tours and hidden gems.</p>
+</div>
+<div class="space-y-4">
+<div class="w-16 h-16 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined text-3xl">event_available</span>
+</div>
+<h4 class="font-headline text-xl font-bold text-primary">02. Book</h4>
+<p class="text-on-surface-variant text-sm">Secure your spot with a simple, encrypted booking process and instant confirmation.</p>
+</div>
+<div class="space-y-4">
+<div class="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed-variant">
+<span class="material-symbols-outlined text-3xl">map</span>
+</div>
+<h4 class="font-headline text-xl font-bold text-primary">03. Experience</h4>
+<p class="text-on-surface-variant text-sm">Travel with confidence, backed by 24/7 local support and verified guides.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Support/Reassurance -->
+<section class="px-8 mb-24 max-w-7xl mx-auto">
+<div class="bg-surface-container rounded-[2rem] p-12 md:p-16 flex flex-col md:flex-row gap-12 items-center">
+<div class="md:w-1/2">
+<img class="w-full h-80 object-cover rounded-xl shadow-inner" data-alt="professional luxury travel agent in a modern bright office speaking on the phone with a smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQs6CY2ob2Uu5XP-6hNZWPRkg9P8IIpg6yUoE4EgumZvqeED3ezWnXdCvuv6gmxGpfhYxwzjV6VELqDQ4uUis5ACEVJKz-J3tXwVfjVr2JAEesJWocx3I9FRZ4cFa-F8_Y01sSRk_4M1pZlc5O3WEf-uiPe6RnMgDAxXeKtM6717kD1Ulbi0mQuKVtPawYD3FI9A66_BX6TlQXA_Kk9bcxzkYSA1M80sz3MSJdOF6iS2cVXzfqhXcTRGULL7-qMVdu-0PbEts99i2K"/>
+</div>
+<div class="md:w-1/2 space-y-6">
+<h2 class="font-headline text-3xl font-extrabold text-primary">Booking with Confidence</h2>
+<p class="text-on-surface-variant">We understand that plans can change. That's why we offer our industry-leading "Peace of Mind" guarantee on every single booking.</p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium text-on-surface">No-questions-asked cancellation up to 30 days prior.</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium text-on-surface">100% Secure &amp; Private transaction handling.</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium text-on-surface">Global travel insurance coverage available.</span>
+</li>
+</ul>
+<button class="text-primary font-bold flex items-center gap-2 hover:gap-4 transition-all">
+                        Learn about our security <span class="material-symbols-outlined">trending_flat</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="px-8 py-24 bg-surface-container-highest/30">
+<div class="max-w-7xl mx-auto">
+<h2 class="font-headline text-3xl font-extrabold text-primary text-center mb-16">The Voyager's Word</h2>
+<div class="grid md:grid-cols-3 gap-8">
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm italic text-on-surface-variant relative">
+<span class="material-symbols-outlined absolute -top-4 left-6 text-5xl text-secondary-container/50">format_quote</span>
+<p class="mb-6 relative z-10">"The attention to detail was unparalleled. Every aspect of our Swiss tour was handled with such grace. Truly a premium experience from start to finish."</p>
+<div class="flex items-center gap-4 pt-6 border-t border-surface-container not-italic">
+<div class="w-12 h-12 rounded-full bg-surface-dim"></div>
+<div>
+<p class="font-headline font-bold text-primary">Eleanor Vance</p>
+<p class="text-xs uppercase tracking-widest text-on-surface-variant">London, UK</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm italic text-on-surface-variant relative">
+<span class="material-symbols-outlined absolute -top-4 left-6 text-5xl text-secondary-container/50">format_quote</span>
+<p class="mb-6 relative z-10">"TravelBook didn't just book a trip; they curated a memory. The local guides in Vietnam were insightful and passionate. Simply incredible."</p>
+<div class="flex items-center gap-4 pt-6 border-t border-surface-container not-italic">
+<div class="w-12 h-12 rounded-full bg-surface-dim"></div>
+<div>
+<p class="font-headline font-bold text-primary">Jameson Thorne</p>
+<p class="text-xs uppercase tracking-widest text-on-surface-variant">New York, USA</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm italic text-on-surface-variant relative">
+<span class="material-symbols-outlined absolute -top-4 left-6 text-5xl text-secondary-container/50">format_quote</span>
+<p class="mb-6 relative z-10">"The easiest booking experience I've ever had. Their 24/7 support helped us navigate a flight delay within minutes. Total peace of mind."</p>
+<div class="flex items-center gap-4 pt-6 border-t border-surface-container not-italic">
+<div class="w-12 h-12 rounded-full bg-surface-dim"></div>
+<div>
+<p class="font-headline font-bold text-primary">Sienna Blake</p>
+<p class="text-xs uppercase tracking-widest text-on-surface-variant">Sydney, AU</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA Banner -->
+<section class="px-8 py-24 max-w-7xl mx-auto">
+<div class="hero-gradient rounded-[2rem] p-12 md:p-24 text-center text-white relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+<div class="relative z-10">
+<h2 class="font-headline text-4xl md:text-6xl font-extrabold mb-8 max-w-3xl mx-auto">Ready to transcend the ordinary?</h2>
+<p class="text-xl text-primary-fixed-dim mb-12 max-w-xl mx-auto">Join our circle of global voyagers and receive early access to seasonal tour releases.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-secondary text-on-secondary px-10 py-5 rounded-xl font-headline font-bold text-xl hover:bg-on-secondary-container transition-all shadow-xl shadow-secondary/20">
+                            Start Your Journey
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-900 w-full rounded-t-3xl mt-20 tonal-shift bg-slate-100 dark:bg-slate-800">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 px-12 py-16 max-w-7xl mx-auto">
+<div class="col-span-2 md:col-span-1">
+<span class="text-xl font-bold text-cyan-950 dark:text-white font-headline">TravelBook</span>
+<p class="mt-4 text-slate-500 dark:text-slate-400 font-manrope text-sm antialiased">Curating the world's most exceptional travel experiences since 2024.</p>
+<div class="flex gap-4 mt-8">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary cursor-pointer hover:bg-secondary hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">public</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary cursor-pointer hover:bg-secondary hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">share</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-headline font-bold text-cyan-950 dark:text-cyan-100 mb-6 uppercase tracking-widest text-xs">Explore</h4>
+<ul class="space-y-4 font-manrope text-sm">
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 underline-offset-4 hover:underline transition-opacity" href="#">Global Destinations</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 underline-offset-4 hover:underline transition-opacity" href="#">Partner Program</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 underline-offset-4 hover:underline transition-opacity" href="#">Luxury Collection</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline font-bold text-cyan-950 dark:text-cyan-100 mb-6 uppercase tracking-widest text-xs">Support</h4>
+<ul class="space-y-4 font-manrope text-sm">
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 underline-offset-4 hover:underline transition-opacity" href="#">About Us</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 underline-offset-4 hover:underline transition-opacity" href="#">Contact Support</a></li>
+<li><a class="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 underline-offset-4 hover:underline transition-opacity" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline font-bold text-cyan-950 dark:text-cyan-100 mb-6 uppercase tracking-widest text-xs">Newsletter</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4">Curated travel stories delivered to your inbox.</p>
+<div class="flex flex-col gap-2">
+<input class="bg-white/50 border-none rounded-lg text-sm px-4 py-3 focus:ring-1 focus:ring-secondary" placeholder="Your email" type="email"/>
+<button class="bg-primary text-white font-bold py-3 rounded-lg text-sm hover:opacity-90 transition-opacity">Subscribe</button>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-12 py-8 border-t border-slate-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-slate-500 dark:text-slate-400 font-manrope text-sm antialiased">© 2024 TravelBook. Curated Luxury Experiences.</p>
+<ul class="flex gap-8 text-xs font-bold text-slate-400 uppercase tracking-tighter">
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Cookies</a></li>
+</ul>
+</div>
+</footer>
+</body></html>
