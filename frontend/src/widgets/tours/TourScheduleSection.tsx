@@ -6,9 +6,11 @@ export const TourScheduleSection = ({ tourId }: { tourId: string }) => {
   const { data } = useTourSchedulesQuery(tourId)
   return (
     <section>
-      <SectionHeader title="Available departures" description="Schedule logic is now connected to checkout and booking flows." />
+      <SectionHeader
+        title="Available departures"
+        subtitle="Schedule logic is now connected to checkout and booking flows."
+      />
       <TourScheduleList schedules={data ?? []} />
     </section>
   )
 }
-

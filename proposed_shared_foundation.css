@@ -1,0 +1,168 @@
+/* Extracted shared foundation from 154 TravelBook code.html pages.
+   Purpose: provide a standalone CSS layer for testing without touching existing page files. */
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
+:root {
+  --tb-background: #f8f9fa;
+  --tb-surface: #f8f9fa;
+  --tb-surface-bright: #f8f9fa;
+  --tb-surface-dim: #d9dadb;
+  --tb-surface-variant: #e1e3e4;
+  --tb-surface-container-lowest: #ffffff;
+  --tb-surface-container-low: #f3f4f5;
+  --tb-surface-container: #edeeef;
+  --tb-surface-container-high: #e7e8e9;
+  --tb-surface-container-highest: #e1e3e4;
+
+  --tb-primary: #00113a;
+  --tb-primary-container: #002366;
+  --tb-primary-fixed: #dbe1ff;
+  --tb-primary-fixed-dim: #b3c5ff;
+  --tb-on-primary: #ffffff;
+  --tb-on-primary-container: #758dd5;
+  --tb-on-primary-fixed: #00174a;
+  --tb-on-primary-fixed-variant: #2a4386;
+  --tb-inverse-primary: #b3c5ff;
+
+  --tb-secondary: #006a6a;
+  --tb-secondary-container: #90efef;
+  --tb-secondary-fixed: #93f2f2;
+  --tb-secondary-fixed-dim: #76d6d5;
+  --tb-on-secondary: #ffffff;
+  --tb-on-secondary-container: #006e6e;
+  --tb-on-secondary-fixed: #002020;
+  --tb-on-secondary-fixed-variant: #004f4f;
+
+  --tb-tertiary: #2c0800;
+  --tb-tertiary-container: #4e1500;
+  --tb-tertiary-fixed: #ffdbcf;
+  --tb-tertiary-fixed-dim: #ffb59c;
+  --tb-on-tertiary: #ffffff;
+  --tb-on-tertiary-container: #e56c3e;
+  --tb-on-tertiary-fixed: #380c00;
+  --tb-on-tertiary-fixed-variant: #822800;
+
+  --tb-error: #ba1a1a;
+  --tb-error-container: #ffdad6;
+  --tb-on-error: #ffffff;
+  --tb-on-error-container: #93000a;
+
+  --tb-outline: #757682;
+  --tb-outline-variant: #c5c6d2;
+  --tb-on-background: #191c1d;
+  --tb-on-surface: #191c1d;
+  --tb-on-surface-variant: #444650;
+  --tb-surface-tint: #435b9f;
+  --tb-inverse-surface: #2e3132;
+  --tb-inverse-on-surface: #f0f1f2;
+
+  --tb-radius-base: 0.25rem;
+  --tb-radius-lg: 0.5rem;
+  --tb-radius-pill: 9999px;
+  --tb-gradient-primary: linear-gradient(135deg, var(--tb-primary) 0%, var(--tb-primary-container) 100%);
+}
+
+body,
+.font-body,
+.font-label {
+  font-family: "Inter", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-headline,
+.font-manrope,
+.brand-font {
+  font-family: "Manrope", sans-serif;
+}
+
+body {
+  color: var(--tb-on-surface);
+  background-color: var(--tb-surface);
+}
+
+.material-symbols-outlined {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: middle;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.bg-primary-gradient,
+.primary-gradient,
+.navy-gradient,
+.hero-gradient,
+.gradient-button,
+.btn-navy-gradient {
+  background: var(--tb-gradient-primary);
+  color: var(--tb-on-primary);
+}
+
+.glass-nav,
+.glass-header,
+.glass-panel,
+.glass-effect {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.soft-shadow,
+.shadow-soft {
+  box-shadow: 0 10px 40px -10px rgba(25, 28, 29, 0.06);
+}
+
+.sidebar-active {
+  box-shadow: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(117, 118, 130, 0.35);
+  border-radius: var(--tb-radius-pill);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(117, 118, 130, 0.55);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--tb-surface-container) 25%,
+    var(--tb-surface) 50%,
+    var(--tb-surface-container) 75%
+  );
+  background-size: 200% 100%;
+  animation: tb-shimmer 1.5s infinite;
+}
+
+@keyframes tb-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}

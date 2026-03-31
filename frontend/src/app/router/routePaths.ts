@@ -1,3 +1,5 @@
+import { ROUTES } from '@/shared/constants/routes'
+
 export { ROUTES as routePaths } from '@/shared/constants/routes'
 
 export function buildSectionHref(sectionId: string) {
