@@ -46,7 +46,7 @@ textarea {
 }
 
 .page-shell {
-  @apply mx-auto w-full max-w-[1200px] px-6;
+  @apply mx-auto w-full max-w-300 px-6;
 }
 
 .shadow-soft {

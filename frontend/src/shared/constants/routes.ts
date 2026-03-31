@@ -18,5 +18,25 @@ export const ROUTES = {
   adminDashboard: '/admin',
   forbidden: '/403',
   serverError: '/500',
+  public: {
+    home: '/',
+    tours: '/tours',
+    destinations: '/destinations',
+    promotions: '/promotions',
+    help: '/help',
+    tourDetail: '/tours/:id',
+    tourSchedules: '/tours/:id/schedules',
+  },
+  sections: {
+    featuredTours: 'featured-tours',
+    destinations: 'destinations',
+    promotions: 'promotions',
+    howItWorks: 'how-it-works',
+    bookingConfidence: 'booking-confidence',
+    testimonials: 'testimonials',
+    finalCta: 'final-cta',
+  },
 } as const
+
+
 

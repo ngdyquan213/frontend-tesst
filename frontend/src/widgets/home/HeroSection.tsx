@@ -27,7 +27,7 @@ export const HeroSection = () => (
         <img
           alt="Mountain lake"
           className="aspect-4/5 h-full w-full object-cover"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdk7awLRY2bZnS3HXJnqJfCFp0vurdFMlFgdjgEB197bjhTeGuybX6OajfwAbLnAdv902SfwZRCYr2s8_33jcugcBehRS0t1KvSXfgV05S2Ce467TDngVnJ7AMKYzFc8q3-LxdFR60Ps-qEAe5sCw260z5Jlq_vKZz8NhDS24N_-2Kh6How-P2ZzOKfcsydbqgUwuk4krrJ6oVEs8VD_oV2hMGVJWtb2KmGurdUMm0H0xevzDoyt9AccW6dME2rm1z4VGZ8I5tKMAC"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuABWV97ScoS35wsmCpuWP8psYlOLuZHcCl7hdA8NPuXKjRFeUPaS_cUI-CWzG-d-T3tAV86GxvWxMac6JUwpgpbCZ7vHvT6HClWmJWBBXFFrnwMpmiErgYFIY-nChORRbevXSqQGozTnikLLONbAHUTDjPJdmxoSeGBzXjaDESH-rqchTyq9JvFXk55Hg_hvCc_fBey1YLS1_pCfXtyIEksmuqyNDq1Hz_O8ZfRtIRoPXi32HiQK9kQZOXWHhf-zieZPwMOcAR-6g2Q"
         />
       </div>
       <div className="surface-card absolute -bottom-6 -left-6 max-w-xs p-6">

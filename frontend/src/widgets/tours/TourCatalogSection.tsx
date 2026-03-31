@@ -19,9 +19,10 @@ export const TourCatalogSection = () => {
         travelers={travelers}
       />
       <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-        {data?.map((tour) => <TourCard key={tour.id} tour={tour} />)}
+        {data?.map((tour) => (
+          <TourCard key={tour.id} tour={tour} variant="catalog" />
+        ))}
       </div>
     </section>
   )
 }
-

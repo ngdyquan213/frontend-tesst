@@ -1,6 +1,11 @@
-import type { Destination, Tour, TourSchedule } from '@/shared/types/common'
+import type {
+  Destination,
+  Tour as SharedTour,
+  TourSchedule as SharedTourSchedule,
+} from '@/shared/types/common'
 
-export type TourItem = Tour
+export type Tour = SharedTour
+export type TourItem = SharedTour
 export type TourDestination = Destination
-export type TourScheduleItem = TourSchedule
-
+export type TourSchedule = SharedTourSchedule
+export type TourScheduleItem = SharedTourSchedule
