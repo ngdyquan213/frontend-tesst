@@ -1,20 +1,13 @@
-import { usePromotionsQuery } from '@/features/promotions/queries/usePromotionsQuery'
-import { PromotionBanner } from '@/features/promotions/ui/PromotionBanner'
-import { PromotionCard } from '@/features/promotions/ui/PromotionCard'
-import { PageHeader } from '@/shared/components/PageHeader'
+import { PromotionBannerSection } from '@/widgets/promotions/PromotionBanner'
+import { PromotionCatalogSection } from '@/widgets/promotions/PromotionCatalog'
+import { PromotionHeroSection } from '@/widgets/promotions/PromotionHero'
 
-const PromotionsPage = () => {
-  const { data } = usePromotionsQuery()
+export function PromotionsPage() {
   return (
-    <div className="page-shell space-y-10 py-12">
-      <PageHeader title="Promotions" description="Offer modules remain close to the approved static references." />
-      <PromotionBanner />
-      <div className="grid gap-8 md:grid-cols-2">
-        {data?.map((promotion) => <PromotionCard key={promotion.id} promotion={promotion} />)}
-      </div>
-    </div>
+    <>
+      <PromotionHeroSection />
+      <PromotionBannerSection />
+      <PromotionCatalogSection />
+    </>
   )
 }
-
-export default PromotionsPage
-

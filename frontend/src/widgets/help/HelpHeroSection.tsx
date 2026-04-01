@@ -54,11 +54,9 @@ export function HelpHeroSection() {
         <div className="relative overflow-hidden rounded-[2.5rem] border border-white/70 bg-[linear-gradient(180deg,rgba(243,244,245,0.95),rgba(255,255,255,0.92))] px-8 py-12 shadow-[0_24px_60px_rgba(15,23,42,0.08)] md:px-14 md:py-16">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(147,242,242,0.18),transparent_28%),radial-gradient(circle_at_top_left,rgba(219,225,255,0.6),transparent_32%)]" />
           <div className="relative z-10 mx-auto max-w-4xl text-center">
-            <Badge tone="info">
-              <span className="inline-flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4" />
-                Trusted Travel Support
-              </span>
+            <Badge variant="teal" size="lg">
+              <ShieldCheck className="h-4 w-4" />
+              Trusted Travel Support
             </Badge>
 
             <div className="mt-8 space-y-5">
@@ -80,7 +78,6 @@ export function HelpHeroSection() {
               <div className="flex flex-1 items-center gap-3 px-3">
                 <Search className="h-5 w-5 text-[color:var(--color-on-surface-variant)]" />
                 <input
-                  aria-label="Search help topics"
                   value={draftQuery}
                   onChange={(event) => setDraftQuery(event.target.value)}
                   placeholder="Search booking, refunds, or trip changes..."
