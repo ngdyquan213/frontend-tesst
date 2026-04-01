@@ -55,10 +55,7 @@ export function PopularDestinationsSection({
   actionLabel = 'Explore all destinations',
   actionHref = routePaths.public.destinations,
 }: PopularDestinationsSectionProps) {
-  const { data = [], isPending, isError, error } = useDestinationsQuery({
-    featuredOnly,
-    limit,
-  })
+  const { data = [], isPending, isError, error } = useDestinationsQuery({ featuredOnly, limit })
 
   return (
     <section

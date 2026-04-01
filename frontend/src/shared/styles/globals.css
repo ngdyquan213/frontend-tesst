@@ -81,3 +81,7 @@ textarea {
 .primary-gradient {
   background: linear-gradient(135deg, #00113a 0%, #002366 100%);
 }
+
+.hero-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
+}

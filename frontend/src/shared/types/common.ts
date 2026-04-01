@@ -137,7 +137,12 @@ export interface RefundRecord {
 
 export interface SupportTicket {
   id: string
+  reference: string
   subject: string
+  fullName?: string
+  email?: string
+  topicId?: string
+  bookingReference?: string
   bookingId?: string
   status: TicketStatus
   updatedAt: string
@@ -175,4 +180,3 @@ export interface AdminTask {
   priority: 'low' | 'medium' | 'high'
   cta: string
 }
-
