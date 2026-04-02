@@ -22,6 +22,23 @@ interface AuthState {
   clearError: () => void
 }
 
+function getErrorMessage(error: unknown, fallback: string) {
+  if (typeof error === 'object' && error !== null) {
+    const responseMessage = (error as { response?: { data?: { message?: unknown } } }).response?.data
+      ?.message
+
+    if (typeof responseMessage === 'string' && responseMessage.trim().length > 0) {
+      return responseMessage
+    }
+  }
+
+  if (error instanceof Error && error.message.trim().length > 0) {
+    return error.message
+  }
+
+  return fallback
+}
+
 function persistAuth(response: AuthResponse) {
   localStorage.setItem('access_token', response.access_token)
   if (response.refresh_token) {
@@ -100,8 +117,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         isAuthenticated: true,
         isLoading: false,
       })
-    } catch (error: any) {
-      const message = error?.response?.data?.message || error?.message || 'Login failed'
+    } catch (error: unknown) {
+      const message = getErrorMessage(error, 'Login failed')
       set({ error: message, isLoading: false })
       throw error
     }
@@ -123,8 +140,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         isAuthenticated: true,
         isLoading: false,
       })
-    } catch (error: any) {
-      const message = error?.response?.data?.message || error?.message || 'Registration failed'
+    } catch (error: unknown) {
+      const message = getErrorMessage(error, 'Registration failed')
       set({ error: message, isLoading: false })
       throw error
     }

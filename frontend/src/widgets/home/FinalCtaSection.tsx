@@ -1,7 +1,10 @@
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/shared/ui/Button'
 import { routePaths } from '@/app/router/routePaths'
 
 export function FinalCtaSection() {
+  const navigate = useNavigate()
+
   return (
     <section id={routePaths.sections.finalCta} className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
       <div className="hero-gradient relative overflow-hidden rounded-[2rem] px-8 py-16 text-center text-white shadow-[0_28px_70px_rgba(0,17,58,0.22)] md:px-16 md:py-24">
@@ -14,7 +17,7 @@ export function FinalCtaSection() {
             Join our circle of global voyagers and receive early access to seasonal tour releases.
           </p>
           <div className="mt-10 flex justify-center">
-            <Button variant="soft" size="xl">
+            <Button variant="soft" size="xl" onClick={() => navigate(routePaths.register)}>
               Start Your Journey
             </Button>
           </div>

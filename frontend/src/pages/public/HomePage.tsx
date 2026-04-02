@@ -2,7 +2,6 @@ import { FeaturedToursSection } from '@/widgets/home/FeaturedToursSection'
 import { FinalCtaSection } from '@/widgets/home/FinalCtaSection'
 import { HeroSection } from '@/widgets/home/HeroSection'
 import { PopularDestinationsSection } from '@/widgets/home/PopularDestinationsSection'
-import { PromotionSection } from '@/widgets/home/PromotionSection'
 import { HowItWorksSection } from '@/widgets/home/HowItWorksSection'
 import { BookingConfidenceSection } from '@/widgets/home/BookingConfidenceSection'
 import { TestimonialsSection } from '@/widgets/home/TestimonialsSection'
@@ -14,8 +13,6 @@ const HomePage = () => (
     <TrustStrip />
     <FeaturedToursSection />
     <PopularDestinationsSection />
-
-    <PromotionSection />
     <HowItWorksSection />
     <BookingConfidenceSection />
     <TestimonialsSection />

@@ -128,7 +128,7 @@ export const supportApi = {
   getSupportTickets: () => resolveAfter(supportTickets),
   getSupportTicketDetail: (id: string) => resolveAfter(supportTickets.find((ticket) => ticket.id === id) ?? supportTickets[0]),
   createSupportTicket: async (payload: CreateSupportTicketPayload) => {
-    const normalizedBookingReference = payload.bookingReference.trim()
+    const normalizedBookingReference = payload.bookingReference?.trim() ?? ''
     const matchedBooking = bookings.find(
       (booking) => booking.reference.toLowerCase() === normalizedBookingReference.toLowerCase()
     )

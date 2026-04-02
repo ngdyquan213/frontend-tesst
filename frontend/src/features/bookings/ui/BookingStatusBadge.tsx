@@ -1,12 +1,13 @@
 import type { BookingStatus } from '@/shared/types/common'
 import { Badge } from '@/shared/ui/Badge'
 
-const toneByStatus = {
+const variantByStatus = {
   confirmed: 'success',
   pending: 'warning',
   processing: 'info',
   cancelled: 'danger',
 } as const
 
-export const BookingStatusBadge = ({ status }: { status: BookingStatus }) => <Badge tone={toneByStatus[status]}>{status}</Badge>
-
+export const BookingStatusBadge = ({ status }: { status: BookingStatus }) => (
+  <Badge variant={variantByStatus[status]}>{status}</Badge>
+)

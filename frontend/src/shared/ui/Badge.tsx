@@ -4,7 +4,7 @@ import { cn } from '@/shared/lib/cn'
 interface BadgeProps {
   label?: string
   children?: ReactNode
-  variant?: 'primary' | 'success' | 'warning' | 'danger' | 'gray' | 'teal' | 'inverse'
+  variant?: 'primary' | 'success' | 'warning' | 'danger' | 'gray' | 'teal' | 'inverse' | 'info'
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
@@ -15,6 +15,7 @@ export function Badge({ label, children, variant = 'gray', size = 'md', classNam
     success: 'bg-green-100 text-green-700',
     warning: 'bg-yellow-100 text-yellow-700',
     danger: 'bg-red-100 text-red-700',
+    info: 'bg-sky-100 text-sky-700',
     gray: 'bg-[color:var(--color-surface-low)] text-[color:var(--color-on-surface-variant)]',
     teal: 'bg-[color:var(--color-secondary-container)] text-[color:var(--color-secondary-strong)]',
     inverse: 'bg-white/10 text-white',

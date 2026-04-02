@@ -296,6 +296,7 @@ export const refunds: RefundRecord[] = [
 export const supportTickets: SupportTicket[] = [
   {
     id: 'ticket-1',
+    reference: 'SR-0001',
     subject: 'Need marina transfer timing',
     bookingId: 'booking-1',
     status: 'waiting',
@@ -365,4 +366,3 @@ export const mockDb = {
   pricingRules,
   adminTasks,
 }
-

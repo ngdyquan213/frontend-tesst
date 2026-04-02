@@ -1,4 +1,4 @@
-import { startTransition, useEffect, useState } from 'react'
+import { startTransition, useEffect, useMemo, useState } from 'react'
 import { BadgeCheck, Headphones, ShieldCheck } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import { buildTourDetailPath } from '@/app/router/routePaths'
@@ -60,17 +60,12 @@ function TourCatalogSkeleton() {
 
 export function TourCatalogSection() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const appliedFilters = parseTourSearchFilters(searchParams)
+  const appliedFilters = useMemo(() => parseTourSearchFilters(searchParams), [searchParams])
   const [draftFilters, setDraftFilters] = useState<TourSearchFilterValues>(appliedFilters)
 
   useEffect(() => {
     setDraftFilters(appliedFilters)
-  }, [
-    appliedFilters.destination,
-    appliedFilters.duration,
-    appliedFilters.groupSize,
-    appliedFilters.priceRange,
-  ])
+  }, [appliedFilters])
 
   const queryParams = buildTourSearchParams(appliedFilters)
   const hasActiveFilters = hasActiveTourSearchParams(queryParams)

@@ -70,6 +70,8 @@ export interface DestinationQueryParams {
   limit?: number
 }
 
+export type GetDestinationsOptions = DestinationQueryParams
+
 export const destinationRegionOptions = [
   'all',
   'mediterranean',
