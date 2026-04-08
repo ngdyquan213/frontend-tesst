@@ -6,6 +6,7 @@ import { Card } from '@/shared/ui/Card'
 import { Skeleton } from '@/shared/ui/Skeleton'
 
 interface TourScheduleSectionProps {
+  tourId: string
   schedules: TourSchedule[]
   isLoading?: boolean
   isError?: boolean
@@ -38,6 +39,7 @@ function SchedulesLoadingState() {
 }
 
 export function TourScheduleSection({
+  tourId,
   schedules,
   isLoading = false,
   isError = false,
@@ -56,8 +58,8 @@ export function TourScheduleSection({
             {isSchedulesRoute ? 'Published Schedules' : 'Choose Your Departure'}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
-            Capacity, traveler pricing, and departure ids are already prepared so the bookings flow can
-            attach to the chosen schedule without reshaping the UI later.
+            Compare live capacity, trip dates, and traveler pricing, then move straight into checkout
+            with the departure you choose.
           </p>
         </div>
       </div>
@@ -91,13 +93,14 @@ export function TourScheduleSection({
             No departures published yet
           </h3>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
-            This itinerary is still ready for the future bookings handoff, but operations has not published
-            departure dates or traveler pricing yet.
+            Operations has not published departure dates or traveler pricing for this itinerary yet.
           </p>
         </Card>
       ) : null}
 
-      {!isLoading && !isError && schedules.length > 0 ? <TourScheduleList schedules={schedules} /> : null}
+      {!isLoading && !isError && schedules.length > 0 ? (
+        <TourScheduleList schedules={schedules} tourId={tourId} />
+      ) : null}
     </section>
   )
 }

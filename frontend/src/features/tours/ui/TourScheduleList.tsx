@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import { CalendarRange, Clock3, Users } from 'lucide-react'
+import { buildCheckoutPath } from '@/app/router/routePaths'
 import type { TourSchedule } from '@/features/tours/queries/useTourDetailQuery'
 import {
   formatDateLabel,
@@ -9,6 +11,7 @@ import { Card } from '@/shared/ui/Card'
 
 interface TourScheduleListProps {
   schedules: TourSchedule[]
+  tourId: string
 }
 
 function formatDurationLabel(departureDate: string, returnDate: string) {
@@ -45,7 +48,7 @@ function getScheduleTone(schedule: TourSchedule) {
   return 'bg-[color:var(--color-secondary-container)] text-[color:var(--color-secondary-strong)]'
 }
 
-export function TourScheduleList({ schedules }: TourScheduleListProps) {
+export function TourScheduleList({ schedules, tourId }: TourScheduleListProps) {
   return (
     <div className="space-y-5">
       {schedules.map((schedule) => (
@@ -107,16 +110,23 @@ export function TourScheduleList({ schedules }: TourScheduleListProps) {
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--color-outline-variant)] pt-5">
             <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--color-on-surface-variant)]">
               <Users className="h-4 w-4" />
-              Departure id ready for booking handoff: {schedule.id}
+              {schedule.available_slots > 0
+                ? `${schedule.available_slots} seats still available`
+                : 'This departure is currently sold out'}
             </p>
 
-            <button
-              type="button"
-              disabled
-              className="rounded-2xl border border-[color:var(--color-outline-variant)] bg-white px-4 py-3 text-sm font-semibold text-[color:var(--color-primary)]"
-            >
-              Select Departure Soon
-            </button>
+            {schedule.available_slots > 0 ? (
+              <Link
+                to={buildCheckoutPath({ tourId, scheduleId: schedule.id })}
+                className="rounded-2xl bg-[color:var(--color-primary)] px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(0,17,58,0.18)] transition-all hover:-translate-y-0.5 hover:bg-[color:var(--color-primary-strong)]"
+              >
+                Continue with this departure
+              </Link>
+            ) : (
+              <span className="rounded-2xl border border-[color:var(--color-outline-variant)] bg-white px-4 py-3 text-sm font-semibold text-[color:var(--color-on-surface-variant)]">
+                Sold out
+              </span>
+            )}
           </div>
         </Card>
       ))}

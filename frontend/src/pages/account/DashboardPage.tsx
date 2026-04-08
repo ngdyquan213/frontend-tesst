@@ -6,7 +6,10 @@ import { ProfileOverviewSection } from '@/widgets/account/ProfileOverviewSection
 
 const DashboardPage = () => (
   <div className="space-y-10">
-    <PageHeader title="Dashboard" description="Your account modules now share one connected data backbone." />
+    <PageHeader
+      title="Dashboard"
+      description="Track upcoming trips, traveler documents, and account updates from one clear overview."
+    />
     <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
       <ProfileOverviewSection />
       <BookingHistorySection />
@@ -19,4 +22,3 @@ const DashboardPage = () => (
 )
 
 export default DashboardPage
-

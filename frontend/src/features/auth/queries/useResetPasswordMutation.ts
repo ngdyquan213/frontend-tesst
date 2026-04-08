@@ -3,6 +3,6 @@ import { authApi } from '@/features/auth/api/auth.api'
 
 export const useResetPasswordMutation = () =>
   useMutation({
-    mutationFn: async () => authApi.resetPassword(),
+    mutationFn: async ({ password, token }: { password: string; token: string }) =>
+      authApi.resetPassword(token, password),
   })
-

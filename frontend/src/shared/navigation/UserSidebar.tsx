@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 
-const items = [
+export const userSidebarItems = [
   { to: '/account', label: 'Dashboard', icon: 'dashboard' },
   { to: '/account/profile', label: 'Profile', icon: 'person' },
   { to: '/account/change-password', label: 'Password', icon: 'lock' },
@@ -17,7 +17,7 @@ export const UserSidebar = () => (
   <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-outline-variant/10 bg-slate-50 px-4 py-8 lg:flex">
     <div className="mb-10 px-4 text-2xl font-bold tracking-tight text-primary">TravelBook</div>
     <nav className="space-y-1">
-      {items.map((item) => (
+      {userSidebarItems.map((item) => (
         <NavLink
           key={item.to}
           className={({ isActive }) =>
@@ -35,4 +35,3 @@ export const UserSidebar = () => (
     </nav>
   </aside>
 )
-

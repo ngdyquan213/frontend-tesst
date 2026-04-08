@@ -5,10 +5,86 @@ export const resolveAfter = async <T>(data: T, delay = 120) => {
 
 import axios from 'axios'
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
+import { env } from '@/app/config/env'
 import { useAuthStore } from '@/features/auth/model/auth.store'
+import { getDefaultPaymentMethods, mapApiPaymentMethod } from '@/shared/lib/appMappers'
+import { users as mockUsers } from '@/shared/api/mockData'
+import type { PaymentMethod } from '@/shared/types/common'
 import type * as types from '@/shared/types/api'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
+const API_BASE_URL = env.apiBaseUrl
+const MOCK_ACCESS_TOKEN_PREFIX = 'mock-access-token:'
+const MOCK_REFRESH_TOKEN_PREFIX = 'mock-refresh-token:'
+
+function createMockApiUser(name: string, email: string, role: string, id: string): types.User {
+  const now = new Date().toISOString()
+
+  return {
+    id,
+    email,
+    name,
+    role,
+    roles: [role],
+    permissions: role === 'admin' ? ['admin:*'] : [],
+    created_at: now,
+    updated_at: now,
+  }
+}
+
+const mockAuthUsersById = new Map<string, types.User>()
+const mockAuthUsersByEmail = new Map<string, types.User>()
+
+function seedMockAuthUsers() {
+  const seededUsers = [
+    createMockApiUser(
+      mockUsers.traveler.name,
+      mockUsers.traveler.email,
+      mockUsers.traveler.role,
+      mockUsers.traveler.id
+    ),
+    createMockApiUser(mockUsers.admin.name, mockUsers.admin.email, mockUsers.admin.role, mockUsers.admin.id),
+  ]
+
+  for (const user of seededUsers) {
+    mockAuthUsersById.set(user.id, user)
+    mockAuthUsersByEmail.set(user.email.toLowerCase(), user)
+  }
+}
+
+seedMockAuthUsers()
+
+function buildMockAuthResponse(user: types.User): types.AuthResponse {
+  return {
+    user,
+    access_token: `${MOCK_ACCESS_TOKEN_PREFIX}${user.id}`,
+    refresh_token: `${MOCK_REFRESH_TOKEN_PREFIX}${user.id}`,
+    token_type: 'Bearer',
+    expires_in: 60 * 60,
+  }
+}
+
+function getMockUserIdFromToken(token: string | null | undefined, prefix: string) {
+  if (!token || !token.startsWith(prefix)) {
+    return null
+  }
+
+  return token.slice(prefix.length)
+}
+
+function getMockUserFromToken(token: string | null | undefined, prefix: string) {
+  const userId = getMockUserIdFromToken(token, prefix)
+  return userId ? mockAuthUsersById.get(userId) ?? null : null
+}
+
+function requireMockUser(token: string | null | undefined, prefix: string) {
+  const user = getMockUserFromToken(token, prefix)
+
+  if (!user) {
+    throw new Error('Mock session is invalid or has expired.')
+  }
+
+  return user
+}
 
 function toUpperStatus(value?: string | null) {
   return value ? value.toUpperCase() : undefined
@@ -132,6 +208,42 @@ function normalizePayment(raw: Record<string, unknown>): types.Payment {
   }
 }
 
+function normalizeRefund(raw: Record<string, unknown>): types.Refund {
+  const createdAt = String(raw.created_at ?? raw.createdAt ?? new Date().toISOString())
+  const updatedAt = String(raw.updated_at ?? raw.updatedAt ?? createdAt)
+
+  return {
+    id: String(raw.id ?? ''),
+    booking_id:
+      typeof raw.booking_id === 'string'
+        ? raw.booking_id
+        : typeof raw.bookingId === 'string'
+          ? raw.bookingId
+          : undefined,
+    amount: toNumber(raw.amount),
+    status:
+      toUpperStatus(
+        typeof raw.status === 'string'
+          ? raw.status
+          : typeof raw.refund_status === 'string'
+            ? raw.refund_status
+            : 'pending'
+      ) ?? 'PENDING',
+    reason: typeof raw.reason === 'string' ? raw.reason : undefined,
+    created_at: createdAt,
+    updated_at: updatedAt,
+    timeline: Array.isArray(raw.timeline)
+      ? raw.timeline
+          .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+          .map((item) => ({
+            label: String(item.label ?? 'Status update'),
+            date: String(item.date ?? createdAt),
+            status: String(item.status ?? 'current'),
+          }))
+      : undefined,
+  }
+}
+
 function normalizeTour(raw: Record<string, unknown>): types.Tour {
   const schedules = Array.isArray(raw.schedules)
     ? raw.schedules
@@ -214,6 +326,24 @@ function normalizePaginatedItems<T>(
     .map(mapper)
 }
 
+function normalizeRecordArray<T>(
+  data: unknown,
+  key: string,
+  mapper: (item: Record<string, unknown>) => T
+) {
+  const source = Array.isArray(data)
+    ? data
+    : data && typeof data === 'object'
+      ? normalizePaginatedItems(data as Record<string, unknown>, key, mapper)
+      : []
+
+  return Array.isArray(data)
+    ? data
+        .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+        .map(mapper)
+    : source
+}
+
 class ApiClient {
   private client: AxiosInstance
 
@@ -238,17 +368,25 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response) => response,
       async (error) => {
-        const originalRequest = error.config
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        const originalRequest = error.config as (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined
+
+        if (
+          error.response?.status === 401 &&
+          originalRequest &&
+          !originalRequest._retry &&
+          !originalRequest.url?.includes('/auth/refresh')
+        ) {
           originalRequest._retry = true
           try {
             await this.refreshToken()
             const token = useAuthStore.getState().token
-            originalRequest.headers.Authorization = `Bearer ${token}`
+            if (token) {
+              originalRequest.headers.Authorization = `Bearer ${token}`
+            }
             return this.client(originalRequest)
           } catch (refreshError) {
             useAuthStore.getState().logout()
-            window.location.href = '/login'
+            window.location.href = '/auth/login'
             return Promise.reject(refreshError)
           }
         }
@@ -259,11 +397,42 @@ class ApiClient {
 
   // Auth endpoints
   async login(email: string, password: string): Promise<types.AuthResponse> {
+    if (env.enableMocks) {
+      if (!password.trim()) {
+        throw new Error('Password is required.')
+      }
+
+      const user = mockAuthUsersByEmail.get(email.trim().toLowerCase())
+
+      if (!user) {
+        throw new Error('Invalid email or password.')
+      }
+
+      return resolveAfter(buildMockAuthResponse(user))
+    }
+
     const response = await this.client.post('/auth/login', { email, password })
     return response.data
   }
 
   async register(email: string, password: string, name: string): Promise<types.User> {
+    if (env.enableMocks) {
+      if (!password.trim()) {
+        throw new Error('Password is required.')
+      }
+
+      const normalizedEmail = email.trim().toLowerCase()
+
+      if (mockAuthUsersByEmail.has(normalizedEmail)) {
+        throw new Error('An account with this email already exists.')
+      }
+
+      const user = createMockApiUser(name.trim() || normalizedEmail, normalizedEmail, 'traveler', `user-${Date.now()}`)
+      mockAuthUsersById.set(user.id, user)
+      mockAuthUsersByEmail.set(normalizedEmail, user)
+      return resolveAfter(user)
+    }
+
     const username = email.split('@')[0]
     const response = await this.client.post('/auth/register', {
       email,
@@ -276,6 +445,21 @@ class ApiClient {
 
   async refreshToken(): Promise<types.TokenRefreshResponse> {
     const refreshToken = localStorage.getItem('refresh_token')
+
+    if (env.enableMocks) {
+      const user = requireMockUser(refreshToken, MOCK_REFRESH_TOKEN_PREFIX)
+      const response = buildMockAuthResponse(user)
+      localStorage.setItem('access_token', response.access_token)
+      localStorage.setItem('refresh_token', response.refresh_token ?? '')
+      localStorage.setItem('token_type', response.token_type)
+      useAuthStore.setState({
+        token: response.access_token,
+        refreshToken: response.refresh_token ?? null,
+        isAuthenticated: true,
+      })
+      return resolveAfter(response)
+    }
+
     const response = await this.client.post('/auth/refresh', {
       refresh_token: refreshToken,
     })
@@ -293,18 +477,53 @@ class ApiClient {
   }
 
   async getMe(): Promise<types.User> {
+    if (env.enableMocks) {
+      const token = localStorage.getItem('access_token') ?? useAuthStore.getState().token
+      const user = requireMockUser(token, MOCK_ACCESS_TOKEN_PREFIX)
+      return resolveAfter(user)
+    }
+
     const response = await this.client.get('/users/me')
     return normalizeUser(response.data)
   }
 
   async logout(): Promise<void> {
+    if (env.enableMocks) {
+      return
+    }
+
     const refreshToken = localStorage.getItem('refresh_token')
     if (!refreshToken) return
     await this.client.post('/auth/logout', { refresh_token: refreshToken })
   }
 
   async logoutAll(): Promise<void> {
+    if (env.enableMocks) {
+      return
+    }
+
     await this.client.post('/auth/logout-all')
+  }
+
+  async forgotPassword(email: string): Promise<{ email: string }> {
+    if (env.enableMocks) {
+      return resolveAfter({ email })
+    }
+
+    await this.client.post('/auth/forgot-password', { email })
+    return { email }
+  }
+
+  async resetPassword(password: string, token?: string): Promise<boolean> {
+    if (env.enableMocks) {
+      return resolveAfter(true)
+    }
+
+    await this.client.post('/auth/reset-password', {
+      password,
+      token,
+    })
+    return true
   }
 
   // Flight endpoints
@@ -355,8 +574,14 @@ class ApiClient {
   // Booking endpoints
   async createBooking(data: types.CreateBookingRequest): Promise<types.BookingResponse> {
     const response = await this.client.post('/bookings', {
+      booking_type: data.booking_type,
       flight_id: data.flight_id,
-      quantity: data.number_of_travelers,
+      hotel_id: data.hotel_id,
+      tour_id: data.tour_id,
+      schedule_id: data.schedule_id,
+      number_of_travelers: data.number_of_travelers,
+      travel_date: data.travel_date,
+      special_requests: data.special_requests,
     })
     return { booking: normalizeBooking(response.data) }
   }
@@ -381,6 +606,17 @@ class ApiClient {
 
   async cancelBooking(id: string): Promise<void> {
     await this.client.post(`/bookings/${id}/cancel`, {})
+  }
+
+  async getAvailablePaymentMethods(): Promise<PaymentMethod[]> {
+    if (env.enableMocks) {
+      return resolveAfter(getDefaultPaymentMethods())
+    }
+
+    const response = await this.client.get('/payments/methods')
+    const methods = normalizeRecordArray(response.data, 'payment_methods', mapApiPaymentMethod)
+
+    return methods.length > 0 ? methods : getDefaultPaymentMethods()
   }
 
   // Payment endpoints
@@ -417,7 +653,31 @@ class ApiClient {
 
   async confirmPayment(paymentId: string): Promise<types.Payment> {
     const response = await this.client.post(`/payments/${paymentId}/confirm`)
-    return response.data.payment
+    return normalizePayment(response.data.payment)
+  }
+
+  async getUserRefunds(limit = 20, offset = 0): Promise<{ refunds: types.Refund[]; total: number }> {
+    const response = await this.client.get('/refunds', {
+      params: { page: Math.floor(offset / limit) + 1, page_size: limit },
+    })
+
+    return {
+      refunds: normalizeRecordArray(response.data, 'refunds', normalizeRefund),
+      total:
+        response.data && typeof response.data === 'object' && 'total' in response.data
+          ? toNumber((response.data as Record<string, unknown>).total)
+          : 0,
+    }
+  }
+
+  async getRefund(id: string): Promise<types.Refund> {
+    const response = await this.client.get(`/refunds/${id}`)
+    return normalizeRefund(response.data)
+  }
+
+  async createRefundRequest(payload: { reason: string; booking_id?: string }): Promise<types.Refund> {
+    const response = await this.client.post('/refunds', payload)
+    return normalizeRefund(response.data)
   }
 
   // Document endpoints
@@ -479,10 +739,17 @@ class ApiClient {
       pending_approvals: Array.isArray(response.data.refund_status_counts)
         ? response.data.refund_status_counts.reduce(
             (sum: number, item: { status?: string; count?: number | string }) =>
-              item.status === 'pending' ? sum + toNumber(item.count) : sum,
+              item.status?.toLowerCase() === 'pending' ? sum + toNumber(item.count) : sum,
             0
           )
         : 0,
+      document_queue: Array.isArray(response.data.document_status_counts)
+        ? response.data.document_status_counts.reduce(
+            (sum: number, item: { status?: string; count?: number | string }) =>
+              item.status?.toLowerCase() === 'pending' ? sum + toNumber(item.count) : sum,
+            0
+          )
+        : toNumber(response.data.pending_document_count),
     }
   }
 
@@ -509,10 +776,28 @@ class ApiClient {
     }
   }
 
+  async getAdminRefunds(limit = 20, offset = 0): Promise<{ refunds: types.Refund[]; total: number }> {
+    const response = await this.client.get('/admin/refunds', {
+      params: { page: Math.floor(offset / limit) + 1, page_size: limit },
+    })
+
+    return {
+      refunds: normalizeRecordArray(response.data, 'refunds', normalizeRefund),
+      total:
+        response.data && typeof response.data === 'object' && 'total' in response.data
+          ? toNumber((response.data as Record<string, unknown>).total)
+          : 0,
+    }
+  }
+
+  async approveRefund(id: string): Promise<types.Refund> {
+    const response = await this.client.post(`/admin/refunds/${id}/approve`)
+    return normalizeRefund(response.data)
+  }
+
   async approvePendingDocuments(): Promise<void> {
     await this.client.post('/admin/approve-documents')
   }
 }
 
 export const apiClient = new ApiClient()
-

@@ -1,0 +1,52 @@
+groups:
+  - name: secure-travel-platform
+    rules:
+      - alert: SecureTravelRedisDown
+        expr: secure_travel_dependency_ready{job="secure-travel-app",dependency="redis"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: secure-travel-app
+        annotations:
+          summary: Redis dependency is failing readiness checks
+          description: Redis is unhealthy from the application point of view for more than 2 minutes.
+
+      - alert: SecureTravelOutboxBacklogHigh
+        expr: secure_travel_outbox_backlog{job="secure-travel-app"} > 25
+        for: 5m
+        labels:
+          severity: warning
+          service: secure-travel-app
+        annotations:
+          summary: Outbox backlog is growing
+          description: Pending outbox events stayed above 25 for more than 5 minutes.
+
+      - alert: SecureTravelOutboxRuntimeTaskFailed
+        expr: secure_travel_runtime_task_healthy{job="secure-travel-app",task="process_outbox_events"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: secure-travel-app
+        annotations:
+          summary: Outbox runtime task is unhealthy
+          description: The process_outbox_events maintenance task is not reporting healthy status.
+
+      - alert: SecureTravelPaymentCallbackFailuresSpike
+        expr: increase(secure_travel_payment_callback_failures_total{job="secure-travel-app"}[10m]) >= 3
+        for: 0m
+        labels:
+          severity: warning
+          service: secure-travel-app
+        annotations:
+          summary: Payment callback failures spiked
+          description: At least 3 payment callback failures were observed within 10 minutes.
+
+      - alert: SecureTravelRateLimitBackendFailures
+        expr: increase(secure_travel_rate_limit_backend_failures_total{job="secure-travel-app"}[10m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+          service: secure-travel-app
+        annotations:
+          summary: Rate limit backend failures detected
+          description: The application reported at least one rate limit backend failure in the last 10 minutes.

@@ -6,7 +6,7 @@ import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
 
 export const ForgotPasswordForm = () => {
-  const [email, setEmail] = useState('alex@travelbook.com')
+  const [email, setEmail] = useState('')
   const mutation = useForgotPasswordMutation()
   const { pushToast } = useToast()
 
@@ -32,4 +32,3 @@ export const ForgotPasswordForm = () => {
     </form>
   )
 }
-

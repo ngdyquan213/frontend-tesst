@@ -1,19 +1,24 @@
 import type { RouteObject } from 'react-router-dom'
 import { AccountLayout } from '@/app/layouts/AccountLayout'
 import { AuthGuard } from '@/app/router/guards/AuthGuard'
-import BookingDetailPage from '@/pages/account/BookingDetailPage'
-import BookingsPage from '@/pages/account/BookingsPage'
-import ChangePasswordPage from '@/pages/account/ChangePasswordPage'
-import DashboardPage from '@/pages/account/DashboardPage'
-import DocumentDetailPage from '@/pages/account/DocumentDetailPage'
-import DocumentsPage from '@/pages/account/DocumentsPage'
-import NotificationsPage from '@/pages/account/NotificationsPage'
-import ProfilePage from '@/pages/account/ProfilePage'
-import RefundDetailPage from '@/pages/account/RefundDetailPage'
-import RefundsPage from '@/pages/account/RefundsPage'
-import SupportPage from '@/pages/account/SupportPage'
-import TravelersPage from '@/pages/account/TravelersPage'
-import VouchersPage from '@/pages/account/VouchersPage'
+import {
+  lazyDefaultPage,
+  renderLazyPage,
+} from '@/app/router/renderLazyPage'
+
+const DashboardPage = lazyDefaultPage(() => import('@/pages/account/DashboardPage'))
+const ProfilePage = lazyDefaultPage(() => import('@/pages/account/ProfilePage'))
+const ChangePasswordPage = lazyDefaultPage(() => import('@/pages/account/ChangePasswordPage'))
+const TravelersPage = lazyDefaultPage(() => import('@/pages/account/TravelersPage'))
+const BookingsPage = lazyDefaultPage(() => import('@/pages/account/BookingsPage'))
+const BookingDetailPage = lazyDefaultPage(() => import('@/pages/account/BookingDetailPage'))
+const VouchersPage = lazyDefaultPage(() => import('@/pages/account/VouchersPage'))
+const DocumentsPage = lazyDefaultPage(() => import('@/pages/account/DocumentsPage'))
+const DocumentDetailPage = lazyDefaultPage(() => import('@/pages/account/DocumentDetailPage'))
+const RefundsPage = lazyDefaultPage(() => import('@/pages/account/RefundsPage'))
+const RefundDetailPage = lazyDefaultPage(() => import('@/pages/account/RefundDetailPage'))
+const NotificationsPage = lazyDefaultPage(() => import('@/pages/account/NotificationsPage'))
+const SupportPage = lazyDefaultPage(() => import('@/pages/account/SupportPage'))
 
 export const accountRoutes: RouteObject[] = [
   {
@@ -23,22 +28,21 @@ export const accountRoutes: RouteObject[] = [
       {
         element: <AccountLayout />,
         children: [
-          { index: true, element: <DashboardPage /> },
-          { path: 'profile', element: <ProfilePage /> },
-          { path: 'change-password', element: <ChangePasswordPage /> },
-          { path: 'travelers', element: <TravelersPage /> },
-          { path: 'bookings', element: <BookingsPage /> },
-          { path: 'bookings/:bookingId', element: <BookingDetailPage /> },
-          { path: 'vouchers', element: <VouchersPage /> },
-          { path: 'documents', element: <DocumentsPage /> },
-          { path: 'documents/:documentId', element: <DocumentDetailPage /> },
-          { path: 'refunds', element: <RefundsPage /> },
-          { path: 'refunds/:refundId', element: <RefundDetailPage /> },
-          { path: 'notifications', element: <NotificationsPage /> },
-          { path: 'support', element: <SupportPage /> },
+          { index: true, element: renderLazyPage(DashboardPage) },
+          { path: 'profile', element: renderLazyPage(ProfilePage) },
+          { path: 'change-password', element: renderLazyPage(ChangePasswordPage) },
+          { path: 'travelers', element: renderLazyPage(TravelersPage) },
+          { path: 'bookings', element: renderLazyPage(BookingsPage) },
+          { path: 'bookings/:bookingId', element: renderLazyPage(BookingDetailPage) },
+          { path: 'vouchers', element: renderLazyPage(VouchersPage) },
+          { path: 'documents', element: renderLazyPage(DocumentsPage) },
+          { path: 'documents/:documentId', element: renderLazyPage(DocumentDetailPage) },
+          { path: 'refunds', element: renderLazyPage(RefundsPage) },
+          { path: 'refunds/:refundId', element: renderLazyPage(RefundDetailPage) },
+          { path: 'notifications', element: renderLazyPage(NotificationsPage) },
+          { path: 'support', element: renderLazyPage(SupportPage) },
         ],
       },
     ],
   },
 ]
-

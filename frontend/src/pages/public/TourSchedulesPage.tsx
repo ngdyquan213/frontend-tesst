@@ -71,6 +71,7 @@ const TourSchedulesPage = () => {
         title="Tour schedules"
       />
       <TourScheduleSection
+        tourId={id}
         schedules={data?.schedules ?? []}
         isLoading={detailQuery.isPending}
         isError={detailQuery.isError}

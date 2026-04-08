@@ -11,6 +11,7 @@ const ScheduleManagementPage = () => {
     <div className="space-y-10">
       <PageHeader title="Schedule Management" description="Schedule review is now routed inside the admin area." />
       <TourScheduleSection
+        tourId={DEFAULT_ADMIN_TOUR_ID}
         schedules={schedulesQuery.data?.schedules ?? []}
         isLoading={schedulesQuery.isPending}
         isError={schedulesQuery.isError}

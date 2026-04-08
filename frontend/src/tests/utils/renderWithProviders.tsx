@@ -7,11 +7,15 @@ import { ThemeProvider } from '@/app/providers/ThemeProvider'
 import { ToastProvider } from '@/app/providers/ToastProvider'
 import { createTestQueryClient } from '@/tests/utils/createTestQueryClient'
 
-export const renderWithProviders = (ui: ReactElement) => {
+interface RenderWithProvidersOptions {
+  initialEntries?: string[]
+}
+
+export const renderWithProviders = (ui: ReactElement, options: RenderWithProvidersOptions = {}) => {
   const queryClient = createTestQueryClient()
 
   const Wrapper = ({ children }: PropsWithChildren) => (
-    <MemoryRouter>
+    <MemoryRouter initialEntries={options.initialEntries}>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
@@ -24,4 +28,3 @@ export const renderWithProviders = (ui: ReactElement) => {
 
   return render(ui, { wrapper: Wrapper })
 }
-

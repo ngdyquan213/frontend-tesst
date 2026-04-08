@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 
-const items = [
+export const adminSidebarItems = [
   { to: '/admin', label: 'Dashboard', icon: 'dashboard' },
   { to: '/admin/tours', label: 'Tours', icon: 'explore' },
   { to: '/admin/schedules', label: 'Schedules', icon: 'calendar_today' },
@@ -15,7 +15,7 @@ export const AdminSidebar = () => (
   <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-outline-variant/10 bg-slate-50 px-4 py-6 lg:flex">
     <div className="mb-8 px-4 text-2xl font-extrabold tracking-tight text-primary">TravelBook</div>
     <nav className="space-y-1">
-      {items.map((item) => (
+      {adminSidebarItems.map((item) => (
         <NavLink
           key={item.to}
           className={({ isActive }) =>
@@ -33,4 +33,3 @@ export const AdminSidebar = () => (
     </nav>
   </aside>
 )
-

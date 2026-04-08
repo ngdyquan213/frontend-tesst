@@ -1,10 +1,15 @@
 import type { RouteObject } from 'react-router-dom'
 import { AuthLayout } from '@/app/layouts/AuthLayout'
 import { GuestGuard } from '@/app/router/guards/GuestGuard'
-import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage'
-import LoginPage from '@/pages/auth/LoginPage'
-import RegisterPage from '@/pages/auth/RegisterPage'
-import ResetPasswordPage from '@/pages/auth/ResetPasswordPage'
+import {
+  lazyDefaultPage,
+  renderLazyPage,
+} from '@/app/router/renderLazyPage'
+
+const LoginPage = lazyDefaultPage(() => import('@/pages/auth/LoginPage'))
+const RegisterPage = lazyDefaultPage(() => import('@/pages/auth/RegisterPage'))
+const ForgotPasswordPage = lazyDefaultPage(() => import('@/pages/auth/ForgotPasswordPage'))
+const ResetPasswordPage = lazyDefaultPage(() => import('@/pages/auth/ResetPasswordPage'))
 
 export const authRoutes: RouteObject[] = [
   {
@@ -14,13 +19,13 @@ export const authRoutes: RouteObject[] = [
       {
         element: <AuthLayout />,
         children: [
-          { path: 'login', element: <LoginPage /> },
-          { path: 'register', element: <RegisterPage /> },
-          { path: 'forgot-password', element: <ForgotPasswordPage /> },
-          { path: 'reset-password', element: <ResetPasswordPage /> },
+          { path: 'login', element: renderLazyPage(LoginPage) },
+          { path: 'register', element: renderLazyPage(RegisterPage) },
+          { path: 'forgot-password', element: renderLazyPage(ForgotPasswordPage) },
+          { path: 'reset-password', element: renderLazyPage(ResetPasswordPage) },
+          { path: 'reset-password/:token', element: renderLazyPage(ResetPasswordPage) },
         ],
       },
     ],
   },
 ]
-

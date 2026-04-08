@@ -173,7 +173,7 @@ export function SupportContactSection() {
           <Button variant="hero" size="xl" onClick={() => navigate(routePaths.public.tours)}>
             Browse Tours
           </Button>
-          <Button variant="secondary" size="xl" onClick={() => navigate('/login')}>
+          <Button variant="secondary" size="xl" onClick={() => navigate(routePaths.login)}>
             Sign In
           </Button>
         </div>

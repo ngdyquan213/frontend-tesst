@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools==82.0.1", "wheel==0.46.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secure-travel-booking-platform"
+version = "0.1.0"
+description = "Security-focused travel booking platform built with FastAPI"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.135.1",
+  "uvicorn==0.41.0",
+  "sqlalchemy==2.0.48",
+  "alembic==1.18.4",
+  "alembic-postgresql-enum==1.10.0",
+  "psycopg2-binary==2.9.11",
+  "PyJWT==2.12.1",
+  "passlib[bcrypt]==1.7.4",
+  "pydantic-settings==2.13.1",
+  "email-validator==2.3.0",
+  "python-multipart==0.0.22",
+  "httpx==0.28.1",
+  "reportlab==4.4.10",
+  "redis==7.3.0",
+  "boto3==1.42.68",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==9.0.2",
+  "pytest-cov==7.0.0",
+  "ruff==0.15.6",
+  "bandit==1.9.4",
+  "pip-audit==2.10.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+  "postgres: tests that require a real PostgreSQL database"
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 85
+

@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query'
-import { authApi } from '@/features/auth/api/auth.api'
+import { useAuth } from '@/app/providers/AuthProvider'
 
-export const useRegisterMutation = () =>
-  useMutation({
-    mutationFn: async ({ email }: { email: string; name: string; password: string }) => authApi.register(email),
+export const useRegisterMutation = () => {
+  const { register } = useAuth()
+  return useMutation({
+    mutationFn: register,
   })
-
+}

@@ -1,0 +1,79 @@
+services:
+  migrate:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+    container_name: secure_travel_migrate_production
+    restart: "no"
+    env_file:
+      - ../../.env.production
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS}
+      ALLOW_PAYMENT_SIMULATION: "false"
+    command: ["alembic", "upgrade", "head"]
+
+  app:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+    container_name: secure_travel_app_production
+    restart: unless-stopped
+    env_file:
+      - ../../.env.production
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS}
+      ALLOW_PAYMENT_SIMULATION: "false"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    command:
+      - sh
+      - -c
+      - uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips="$$FORWARDED_ALLOW_IPS"
+    expose:
+      - "8000"
+    volumes:
+      - uploads_production_data:/app/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health/live || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: secure_travel_nginx_production
+    restart: unless-stopped
+    environment:
+      NGINX_TLS_ENABLED: ${NGINX_TLS_ENABLED:-false}
+      NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
+      NGINX_SSL_CERT_PATH: ${NGINX_SSL_CERT_PATH:-/etc/nginx/certs/tls.crt}
+      NGINX_SSL_KEY_PATH: ${NGINX_SSL_KEY_PATH:-/etc/nginx/certs/tls.key}
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "${HOST_HTTP_PORT:-8081}:80"
+      - "${HOST_HTTPS_PORT:-8443}:443"
+    volumes:
+      - ../nginx/run-nginx.sh:/docker-entrypoint.d/99-run-nginx.sh:ro
+      - ${NGINX_CERTS_DIR:-../../infra/nginx/certs}:/etc/nginx/certs:ro
+    command:
+      - sh
+      - /docker-entrypoint.d/99-run-nginx.sh
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "if [ \"$${NGINX_TLS_ENABLED:-false}\" = \"true\" ]; then wget --no-check-certificate -q -O - https://localhost/health/live >/dev/null 2>&1; else wget -q -O - http://localhost/health/live >/dev/null 2>&1; fi || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  uploads_production_data:

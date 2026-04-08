@@ -211,6 +211,7 @@ export interface CreateBookingRequest {
   flight_id?: string
   hotel_id?: string
   tour_id?: string
+  schedule_id?: string
   number_of_travelers: number
   travel_date: string
   special_requests?: string
@@ -252,6 +253,23 @@ export interface InitiatePaymentResponse {
   created_at: string
 }
 
+export interface RefundTimelineEntry {
+  label: string
+  date: string
+  status: string
+}
+
+export interface Refund {
+  id: string
+  booking_id?: string
+  amount: number
+  status: string
+  reason?: string
+  created_at: string
+  updated_at?: string
+  timeline?: RefundTimelineEntry[]
+}
+
 // Document Types
 export interface Document {
   id: string
@@ -291,6 +309,7 @@ export interface AdminStats {
   total_bookings: number
   total_revenue: number
   pending_approvals: number
+  document_queue?: number
 }
 
 export interface AdminUser {

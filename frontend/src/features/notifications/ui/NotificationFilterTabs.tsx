@@ -6,5 +6,14 @@ export const NotificationFilterTabs = ({
 }: {
   value: 'all' | 'unread'
   onChange: (value: 'all' | 'unread') => void
-}) => <Tabs items={[{ key: 'all', label: 'All' }, { key: 'unread', label: 'Unread' }]} onChange={onChange} value={value} />
-
+}) => (
+  <Tabs
+    items={[
+      { key: 'all', label: 'All' },
+      { key: 'unread', label: 'Unread' },
+    ]}
+    onChange={onChange}
+    value={value}
+    ariaLabel="Notification filters"
+  />
+)

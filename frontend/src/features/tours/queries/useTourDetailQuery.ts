@@ -9,6 +9,7 @@
 //   })
 
 import { useQuery } from '@tanstack/react-query'
+import { env } from '@/app/config/env'
 import { getTourDetailById as getMockTourDetailById } from '@/features/tours/api/tours.api'
 import type { DestinationHighlight } from '@/features/tours/model/tour.types'
 import { apiClient } from '@/shared/api/apiClient'
@@ -496,10 +497,12 @@ export function buildTourDetail(rawTour: ApiTour): TourDetail {
 }
 
 async function fetchTourDetail(id: string, signal?: AbortSignal) {
-  const mockTour = await getMockTourDetailById(id, signal)
+  if (env.enableMocks) {
+    const mockTour = await getMockTourDetailById(id, signal)
 
-  if (mockTour) {
-    return buildTourDetail(mockTour)
+    if (mockTour) {
+      return buildTourDetail(mockTour)
+    }
   }
 
   const rawTour = await apiClient.getTourById(id)

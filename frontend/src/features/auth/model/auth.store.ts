@@ -1,8 +1,3 @@
-export const sampleCredentials = {
-  traveler: 'alex@travelbook.com',
-  admin: 'admin@travelbook.com',
-}
-
 import { create } from 'zustand'
 import { apiClient } from '@/shared/api/apiClient'
 import type { AuthResponse, User } from '@/shared/types/api'

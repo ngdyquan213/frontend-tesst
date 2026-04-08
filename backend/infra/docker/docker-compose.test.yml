@@ -1,0 +1,16 @@
+services:
+  postgres_test:
+    image: postgres:16
+    container_name: secure_travel_postgres_test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: secure_travel_booking_test
+    ports:
+      - "${HOST_TEST_POSTGRES_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d secure_travel_booking_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 20

@@ -3,11 +3,42 @@ import { useRefundDetailQuery } from '@/features/refunds/queries/useRefundDetail
 import { RefundTimeline } from '@/features/refunds/ui/RefundTimeline'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { Card } from '@/shared/ui/Card'
+import { EmptyState } from '@/shared/ui/EmptyState'
+import { Skeleton } from '@/shared/ui/Skeleton'
 
 const RefundDetailPage = () => {
-  const { refundId = 'refund-1' } = useParams()
-  const { data } = useRefundDetailQuery(refundId)
-  if (!data) return null
+  const { refundId } = useParams()
+  const { data, isPending, isError, error } = useRefundDetailQuery(refundId)
+
+  if (!refundId) {
+    return (
+      <EmptyState
+        title="Refund unavailable"
+        description="We could not determine which refund request you wanted to open."
+      />
+    )
+  }
+
+  if (isPending) {
+    return (
+      <div className="space-y-10">
+        <div className="space-y-3">
+          <Skeleton className="h-10 w-56" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+        <Skeleton className="h-80 w-full" />
+      </div>
+    )
+  }
+
+  if (isError || !data) {
+    return (
+      <EmptyState
+        title="Refund unavailable"
+        description={error?.message || 'We could not load this refund right now.'}
+      />
+    )
+  }
 
   return (
     <div className="space-y-10">
@@ -20,4 +51,3 @@ const RefundDetailPage = () => {
 }
 
 export default RefundDetailPage
-

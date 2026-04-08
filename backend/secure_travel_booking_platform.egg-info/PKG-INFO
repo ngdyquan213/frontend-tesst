@@ -1,0 +1,24 @@
+Metadata-Version: 2.4
+Name: secure-travel-booking-platform
+Version: 0.1.0
+Summary: Security-focused travel booking platform built with FastAPI
+Requires-Python: >=3.11
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: sqlalchemy
+Requires-Dist: alembic
+Requires-Dist: alembic-postgresql-enum
+Requires-Dist: psycopg2-binary
+Requires-Dist: PyJWT>=2.10.0
+Requires-Dist: passlib[bcrypt]
+Requires-Dist: pydantic-settings
+Requires-Dist: email-validator
+Requires-Dist: python-multipart
+Requires-Dist: httpx
+Requires-Dist: reportlab
+Requires-Dist: redis
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: bandit; extra == "dev"
+Requires-Dist: pip-audit; extra == "dev"

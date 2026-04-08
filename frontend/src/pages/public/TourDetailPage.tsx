@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { Headphones, MapPinned, Plus, ShieldCheck } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ChevronDown, Headphones, MapPinned, ShieldCheck } from 'lucide-react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import {
   buildTourDetailPath,
@@ -20,6 +20,7 @@ export function TourDetailPage() {
   const { id } = useParams<{ id: string }>()
   const location = useLocation()
   const schedulesSectionRef = useRef<HTMLElement | null>(null)
+  const [openFaqIndex, setOpenFaqIndex] = useState(0)
   const isSchedulesRoute = location.pathname.endsWith('/schedules')
   const detailQuery = useTourDetailQuery(id)
   const schedulesQuery = useTourSchedulesQuery(id)
@@ -122,6 +123,9 @@ export function TourDetailPage() {
 
   const detailHref = buildTourDetailPath(tour.id)
   const schedulesHref = buildTourSchedulesPath(tour.id)
+  const primaryScheduleId =
+    schedulesQuery.data?.schedules.find((schedule) => schedule.available_slots > 0)?.id ??
+    schedulesQuery.data?.schedules[0]?.id
 
   return (
     <div className="mx-auto max-w-7xl px-6 pb-20 pt-8 lg:px-8">
@@ -202,6 +206,7 @@ export function TourDetailPage() {
 
           <section ref={schedulesSectionRef}>
             <TourScheduleSection
+              tourId={tour.id}
               schedules={schedulesQuery.data?.schedules ?? []}
               isLoading={schedulesQuery.isPending}
               isError={schedulesQuery.isError}
@@ -223,13 +228,26 @@ export function TourDetailPage() {
                   key={`${faq.question}-${index}`}
                   className="border-b border-[color:var(--color-outline-variant)] pb-5 last:border-b-0 last:pb-0"
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <button
+                    type="button"
+                    className="flex w-full items-start justify-between gap-4 text-left"
+                    aria-expanded={openFaqIndex === index}
+                    onClick={() =>
+                      setOpenFaqIndex((currentIndex) => (currentIndex === index ? -1 : index))
+                    }
+                  >
                     <h3 className="font-semibold text-[color:var(--color-primary)]">{faq.question}</h3>
-                    <Plus className="mt-1 h-4 w-4 shrink-0 text-[color:var(--color-on-surface-variant)]" />
-                  </div>
-                  <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
-                    {faq.answer}
-                  </p>
+                    <ChevronDown
+                      className={`mt-1 h-4 w-4 shrink-0 text-[color:var(--color-on-surface-variant)] transition-transform ${
+                        openFaqIndex === index ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {openFaqIndex === index ? (
+                    <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
+                      {faq.answer}
+                    </p>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -242,6 +260,7 @@ export function TourDetailPage() {
             schedulesHref={schedulesHref}
             detailHref={detailHref}
             isSchedulesRoute={isSchedulesRoute}
+            primaryScheduleId={primaryScheduleId}
           />
 
           <Card className="p-6">
@@ -289,8 +308,8 @@ export function TourDetailPage() {
                   Need help planning?
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-white/78">
-                  The page is already structured for secure handoff into bookings, and our concierge-ready
-                  support layer can wrap around that flow next.
+                  Need a second set of eyes on departures, pricing, or joining instructions? Our support
+                  team can help you choose the right next step.
                 </p>
               </div>
             </div>

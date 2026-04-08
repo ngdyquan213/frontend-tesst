@@ -1,5 +1,6 @@
 import { CalendarDays, Lock, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { buildCheckoutPath } from '@/app/router/routePaths'
 import type { TourDetail } from '@/features/tours/queries/useTourDetailQuery'
 import { Card } from '@/shared/ui/Card'
 
@@ -8,6 +9,7 @@ interface TourPriceBoxProps {
   schedulesHref: string
   detailHref: string
   isSchedulesRoute?: boolean
+  primaryScheduleId?: string
 }
 
 export function TourPriceBox({
@@ -15,7 +17,12 @@ export function TourPriceBox({
   schedulesHref,
   detailHref,
   isSchedulesRoute = false,
+  primaryScheduleId,
 }: TourPriceBoxProps) {
+  const checkoutHref = primaryScheduleId
+    ? buildCheckoutPath({ tourId: tour.id, scheduleId: primaryScheduleId })
+    : null
+
   return (
     <Card className="overflow-hidden p-0">
       <div className="hero-gradient px-6 py-7 text-white">
@@ -24,8 +31,7 @@ export function TourPriceBox({
           {tour.priceSummary.displayPrice}
         </p>
         <p className="mt-2 text-sm leading-6 text-white/75">
-          Per traveler pricing with secure departure comparison already wired for the future bookings
-          handoff.
+          Per traveler pricing based on the next available departure, ready to move into checkout.
         </p>
       </div>
 
@@ -76,20 +82,20 @@ export function TourPriceBox({
             {isSchedulesRoute ? 'Back to Overview' : 'View Schedules'}
           </Link>
 
-          <button
-            type="button"
-            disabled
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[color:var(--color-outline-variant)] bg-[color:var(--color-surface-low)] px-5 py-4 text-sm font-semibold text-[color:var(--color-primary)]"
-          >
-            <Sparkles className="h-4 w-4" />
-            Booking Flow Coming Soon
-          </button>
+          {checkoutHref ? (
+            <Link
+              to={checkoutHref}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[color:var(--color-outline-variant)] bg-[color:var(--color-surface-low)] px-5 py-4 text-sm font-semibold text-[color:var(--color-primary)] transition-all hover:bg-white"
+            >
+              <Sparkles className="h-4 w-4" />
+              Start checkout
+            </Link>
+          ) : null}
         </div>
 
         <p className="flex items-start gap-2 text-xs leading-5 text-[color:var(--color-on-surface-variant)]">
           <Lock className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--color-primary)]" />
-          Secure departure selection and traveler-price mapping are ready to connect once the bookings
-          feature is turned on.
+          Your departure selection stays attached as you move into the next step.
         </p>
       </div>
     </Card>
