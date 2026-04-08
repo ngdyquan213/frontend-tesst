@@ -151,6 +151,25 @@ class EmailWorker:
             )
         )
 
+    def send_password_reset_email(
+        self,
+        *,
+        to_email: str,
+        full_name: str,
+        reset_url: str,
+    ) -> None:
+        self.send(
+            EmailMessage(
+                to_email=to_email,
+                subject="Reset your TravelBook password",
+                template_name="password_reset",
+                context={
+                    "full_name": full_name,
+                    "reset_url": reset_url,
+                },
+            )
+        )
+
 
 class MockEmailWorker(EmailWorker):
     pass

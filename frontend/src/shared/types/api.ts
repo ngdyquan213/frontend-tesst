@@ -55,6 +55,19 @@ export interface TokenRefreshResponse {
   expires_in?: number
 }
 
+export interface NotificationItemResponse {
+  id: string
+  title: string
+  body: string
+  type: 'booking' | 'document' | 'refund' | 'support'
+  created_at: string
+  read: boolean
+}
+
+export interface NotificationListResponse {
+  items: NotificationItemResponse[]
+}
+
 // Flight Types
 export interface Flight {
   id: string
@@ -191,6 +204,7 @@ export interface Booking {
   flight_id?: string
   hotel_id?: string
   tour_id?: string
+  schedule_id?: string
   booking_status: BookingStatus
   total_base_amount?: number
   total_discount_amount?: number
@@ -222,7 +236,14 @@ export interface BookingResponse {
 }
 
 // Payment Types
-export type PaymentStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED'
+export type PaymentStatus =
+  | 'PENDING'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'AUTHORIZED'
+  | 'PAID'
+  | 'REFUNDED'
 
 export interface Payment {
   id: string
@@ -263,11 +284,57 @@ export interface Refund {
   id: string
   booking_id?: string
   amount: number
+  currency?: string
   status: string
   reason?: string
   created_at: string
   updated_at?: string
   timeline?: RefundTimelineEntry[]
+}
+
+export interface SupportTicketReply {
+  id: string
+  author_name: string
+  author_role: string
+  message: string
+  created_at: string
+}
+
+export interface SupportTicket {
+  id: string
+  reference: string
+  topic_id: string
+  subject: string
+  requester_name: string
+  requester_email: string
+  booking_reference?: string
+  status: string
+  message_preview: string
+  created_at: string
+  updated_at: string
+}
+
+export interface SupportTicketDetail extends SupportTicket {
+  message: string
+  replies: SupportTicketReply[]
+}
+
+export interface SupportTicketReplyCreateRequest {
+  message: string
+  status?: string
+}
+
+export interface AdminSupportTicketUpdateRequest {
+  status: string
+}
+
+export interface CreateSupportTicketRequest {
+  full_name: string
+  email: string
+  topic_id: string
+  subject: string
+  message: string
+  booking_reference?: string
 }
 
 // Document Types

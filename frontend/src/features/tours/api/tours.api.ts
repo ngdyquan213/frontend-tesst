@@ -14,8 +14,10 @@
 //   getDestinations: async () => resolveAfter(destinations),
 // }
 
+import { env } from '@/app/config/env'
 import type { Tour, TourSearchParams } from '@/features/tours/model/tour.types'
 import { normalizeTourSearchParams } from '@/features/tours/model/tour.schema'
+import { apiClient } from '@/shared/api/apiClient'
 import type { Tour as ApiTour } from '@/shared/types/api'
 
 const FEATURED_TOURS: Tour[] = [
@@ -583,7 +585,125 @@ function matchesPriceRange(tour: Tour, priceRange?: TourSearchParams['priceRange
   }
 }
 
+function normalizeKeyword(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+}
+
+function findMatchingVisualTour(apiTour: ApiTour) {
+  const tourKeyword = normalizeKeyword(`${apiTour.name} ${apiTour.destination}`)
+
+  return (
+    ALL_TOURS.find((candidate) => {
+      const candidateKeyword = normalizeKeyword(
+        `${candidate.name} ${candidate.destination} ${candidate.slug}`
+      )
+
+      return (
+        candidateKeyword === tourKeyword ||
+        candidateKeyword.includes(tourKeyword) ||
+        tourKeyword.includes(candidateKeyword) ||
+        normalizeKeyword(candidate.destination) === normalizeKeyword(apiTour.destination) ||
+        normalizeKeyword(candidate.name) === normalizeKeyword(apiTour.name)
+      )
+    }) ?? FEATURED_TOURS[0]
+  )
+}
+
+function buildTourSummary(apiTour: ApiTour) {
+  const firstParagraph = apiTour.description
+    .split(/\n+/)
+    .map((segment) => segment.trim())
+    .find(Boolean)
+
+  if (firstParagraph) {
+    return firstParagraph
+  }
+
+  return `Explore ${apiTour.destination} with a curated itinerary and verified departure planning.`
+}
+
+function getLowestLivePrice(apiTour: ApiTour) {
+  const priceRules = (apiTour.schedules ?? []).flatMap((schedule) => schedule.price_rules ?? [])
+  const lowestRule = priceRules.reduce<typeof priceRules[number] | null>((lowest, rule) => {
+    if (!lowest || rule.price < lowest.price) {
+      return rule
+    }
+
+    return lowest
+  }, null)
+
+  return {
+    amount: lowestRule?.price ?? apiTour.price ?? 0,
+    currency: lowestRule?.currency ?? 'USD',
+  }
+}
+
+function getMaxGroupSize(apiTour: ApiTour) {
+  return (apiTour.schedules ?? []).reduce((largest, schedule) => {
+    return Math.max(largest, schedule.capacity)
+  }, 0)
+}
+
+function getAvailability(apiTour: ApiTour): Tour['availability'] {
+  const totalAvailableSlots = (apiTour.schedules ?? []).reduce((total, schedule) => {
+    return total + Math.max(schedule.available_slots, 0)
+  }, 0)
+
+  if (totalAvailableSlots === 0) {
+    return 'sold_out'
+  }
+
+  if (totalAvailableSlots <= 8) {
+    return 'limited'
+  }
+
+  return 'available'
+}
+
+function mapApiTourToCardModel(apiTour: ApiTour): Tour {
+  const visualTour = findMatchingVisualTour(apiTour)
+  const lowestPrice = getLowestLivePrice(apiTour)
+
+  return {
+    id: apiTour.id,
+    slug: apiTour.id,
+    destination: apiTour.destination,
+    name: apiTour.name,
+    summary: buildTourSummary(apiTour),
+    durationDays: apiTour.duration_days,
+    maxGroupSize: getMaxGroupSize(apiTour) || visualTour.maxGroupSize,
+    price: lowestPrice.amount,
+    currency: lowestPrice.currency,
+    imageUrl: visualTour.imageUrl,
+    imageAlt: visualTour.imageAlt,
+    availability: getAvailability(apiTour),
+    featuredLabel: 'Instant Confirmation',
+  }
+}
+
+function applyClientFilters(tours: Tour[], params: TourSearchParams) {
+  const filteredTours = tours.filter((tour) => {
+    return (
+      matchesDestination(tour, params.destination) &&
+      matchesDuration(tour, params.duration) &&
+      matchesGroupSize(tour, params.groupSize) &&
+      matchesPriceRange(tour, params.priceRange)
+    )
+  })
+
+  return typeof params.limit === 'number' ? filteredTours.slice(0, params.limit) : filteredTours
+}
+
 export async function getFeaturedTours(signal?: AbortSignal): Promise<Tour[]> {
+  if (!env.enableMocks) {
+    const response = await apiClient.searchTours({ limit: 12, offset: 0 })
+    return cloneTours(response.tours.map(mapApiTourToCardModel).slice(0, 3))
+  }
+
   await wait(380, signal)
   return cloneTours(FEATURED_TOURS)
 }
@@ -593,23 +713,20 @@ export function getTourCatalogSnapshot(): Tour[] {
 }
 
 export async function searchTours(params: TourSearchParams = {}, signal?: AbortSignal): Promise<Tour[]> {
-  await wait(520, signal)
   const normalizedParams = normalizeTourSearchParams(params)
 
-  const filteredTours = TOUR_CATALOG.filter((tour) => {
-    return (
-      matchesDestination(tour, normalizedParams.destination) &&
-      matchesDuration(tour, normalizedParams.duration) &&
-      matchesGroupSize(tour, normalizedParams.groupSize) &&
-      matchesPriceRange(tour, normalizedParams.priceRange)
-    )
-  })
+  if (!env.enableMocks) {
+    const response = await apiClient.searchTours({
+      destination: normalizedParams.destination,
+      limit: 100,
+      offset: 0,
+    })
+    return cloneTours(applyClientFilters(response.tours.map(mapApiTourToCardModel), normalizedParams))
+  }
 
-  return cloneTours(
-    typeof normalizedParams.limit === 'number'
-      ? filteredTours.slice(0, normalizedParams.limit)
-      : filteredTours
-  )
+  await wait(520, signal)
+
+  return cloneTours(applyClientFilters(TOUR_CATALOG, normalizedParams))
 }
 
 export async function getTourDetailById(id: string, signal?: AbortSignal): Promise<ApiTour | null> {

@@ -12,6 +12,11 @@ TEST_DATABASE_URL = os.getenv(
     f"postgresql+psycopg2://postgres:postgres@localhost:5432/secure_travel_booking_test_{os.getpid()}",
 )
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
+os.environ.setdefault("SECRET_KEY", "test-secret-key-abcdefghijklmnopqrstuvwxyz-123456")
+os.environ.setdefault(
+    "PAYMENT_CALLBACK_SECRET",
+    "test-payment-callback-secret-abcdefghijklmnopqrstuvwxyz",
+)
 
 database_module = import_module("app.core.database")
 main_module = import_module("app.main")

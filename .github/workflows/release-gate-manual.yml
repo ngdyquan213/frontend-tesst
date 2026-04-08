@@ -1,0 +1,116 @@
+name: Release Gate Manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_environment:
+        description: Target environment reported by the app health endpoints
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      base_url:
+        description: App base URL, for example https://staging.example.com
+        required: true
+        type: string
+      api_base_url:
+        description: Optional API base URL override, for example https://staging.example.com/api/v1
+        required: false
+        type: string
+      prometheus_url:
+        description: Optional Prometheus URL for staging checks
+        required: false
+        type: string
+      env_file:
+        description: Optional env file path in the repository for release_preflight
+        required: false
+        type: string
+      seed_command:
+        description: Optional shell command to seed deterministic QA data before demo verification
+        required: false
+        type: string
+      skip_preflight:
+        description: Skip release_preflight even if env_file is provided
+        required: true
+        default: false
+        type: boolean
+      skip_seed:
+        description: Skip deterministic seed command
+        required: true
+        default: true
+        type: boolean
+      skip_demo:
+        description: Skip seeded QA journey verification
+        required: true
+        default: false
+        type: boolean
+      skip_load:
+        description: Skip lightweight API load smoke
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.lock
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip==25.2
+          pip install -r requirements-dev.lock
+          pip install --no-deps -e .
+
+      - name: Run release gate
+        env:
+          EXPECTED_ENVIRONMENT: ${{ inputs.expected_environment }}
+          BASE_URL: ${{ inputs.base_url }}
+          API_BASE_URL: ${{ inputs.api_base_url }}
+          PROMETHEUS_URL: ${{ inputs.prometheus_url }}
+          ENV_FILE: ${{ inputs.env_file }}
+          SEED_COMMAND: ${{ inputs.seed_command }}
+          SKIP_PREFLIGHT: ${{ inputs.skip_preflight }}
+          SKIP_SEED: ${{ inputs.skip_seed }}
+          SKIP_DEMO: ${{ inputs.skip_demo }}
+          SKIP_LOAD: ${{ inputs.skip_load }}
+        run: |
+          set -euo pipefail
+          CMD=(python scripts/release_gate.py --base-url "$BASE_URL" --expected-environment "$EXPECTED_ENVIRONMENT")
+          if [ -n "${API_BASE_URL}" ]; then
+            CMD+=(--api-base-url "$API_BASE_URL")
+          fi
+          if [ -n "${PROMETHEUS_URL}" ]; then
+            CMD+=(--prometheus-url "$PROMETHEUS_URL")
+          fi
+          if [ -n "${ENV_FILE}" ]; then
+            CMD+=(--env-file "$ENV_FILE")
+          fi
+          if [ -n "${SEED_COMMAND}" ]; then
+            CMD+=(--seed-command "$SEED_COMMAND")
+          fi
+          if [ "${SKIP_PREFLIGHT}" = "true" ]; then
+            CMD+=(--skip-preflight)
+          fi
+          if [ "${SKIP_SEED}" = "true" ]; then
+            CMD+=(--skip-seed)
+          fi
+          if [ "${SKIP_DEMO}" = "true" ]; then
+            CMD+=(--skip-demo)
+          fi
+          if [ "${SKIP_LOAD}" = "true" ]; then
+            CMD+=(--skip-load)
+          fi
+          printf 'Running: %q ' "${CMD[@]}"
+          printf '\n'
+          "${CMD[@]}"

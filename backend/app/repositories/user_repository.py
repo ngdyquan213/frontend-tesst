@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from app.models.user import LoginAttempt, RefreshToken, User
+from app.models.user import LoginAttempt, PasswordResetToken, RefreshToken, User
 
 
 class UserRepository:
@@ -43,6 +43,14 @@ class UserRepository:
         self.db.add(login_attempt)
         self.db.flush()
         return login_attempt
+
+    def add_password_reset_token(
+        self,
+        password_reset_token: PasswordResetToken,
+    ) -> PasswordResetToken:
+        self.db.add(password_reset_token)
+        self.db.flush()
+        return password_reset_token
 
     def get_refresh_token_by_hash(self, token_hash: str) -> RefreshToken | None:
         return self.db.query(RefreshToken).filter(RefreshToken.token_hash == token_hash).first()
@@ -104,3 +112,28 @@ class UserRepository:
             self.db.delete(token)
         self.db.flush()
         return count
+
+    def get_password_reset_token_by_hash(self, token_hash: str) -> PasswordResetToken | None:
+        return (
+            self.db.query(PasswordResetToken)
+            .filter(PasswordResetToken.token_hash == token_hash)
+            .first()
+        )
+
+    def list_active_password_reset_tokens_for_user(self, user_id: str) -> list[PasswordResetToken]:
+        return (
+            self.db.query(PasswordResetToken)
+            .filter(
+                PasswordResetToken.user_id == user_id,
+                PasswordResetToken.used_at.is_(None),
+            )
+            .all()
+        )
+
+    def save_password_reset_token(
+        self,
+        password_reset_token: PasswordResetToken,
+    ) -> PasswordResetToken:
+        self.db.add(password_reset_token)
+        self.db.flush()
+        return password_reset_token

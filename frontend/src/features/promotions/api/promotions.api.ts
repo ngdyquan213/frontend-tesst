@@ -24,8 +24,8 @@ const PROMOTIONS: Promotion[] = [
       kind: 'tours',
     },
     secondaryCta: {
-      label: 'Book Amalfi Dates',
-      href: '/tours/amalfi-coast-sailing/schedules',
+      label: 'Browse Eligible Tours',
+      href: '/tours',
       kind: 'booking',
     },
     banner: {
@@ -52,8 +52,8 @@ const PROMOTIONS: Promotion[] = [
         kind: 'tours',
       },
       secondaryCta: {
-        label: 'Secure Summer Dates',
-        href: '/tours/amalfi-coast-sailing/schedules',
+        label: 'Browse Eligible Tours',
+        href: '/tours',
         kind: 'booking',
       },
     },
@@ -81,8 +81,8 @@ const PROMOTIONS: Promotion[] = [
       kind: 'tours',
     },
     secondaryCta: {
-      label: 'Reserve a Departure',
-      href: '/tours/switzerland-alpine-luxury/schedules',
+      label: 'Browse Eligible Tours',
+      href: '/tours',
       kind: 'booking',
     },
     banner: {
@@ -109,8 +109,8 @@ const PROMOTIONS: Promotion[] = [
         kind: 'tours',
       },
       secondaryCta: {
-        label: 'Book Switzerland',
-        href: '/tours/switzerland-alpine-luxury/schedules',
+        label: 'Browse Eligible Tours',
+        href: '/tours',
         kind: 'booking',
       },
     },
@@ -138,8 +138,8 @@ const PROMOTIONS: Promotion[] = [
       kind: 'tours',
     },
     secondaryCta: {
-      label: 'Plan Private Dates',
-      href: '/tours/bali-zen-expedition/schedules',
+      label: 'Browse Eligible Tours',
+      href: '/tours',
       kind: 'booking',
     },
   },
@@ -166,8 +166,8 @@ const PROMOTIONS: Promotion[] = [
       kind: 'tours',
     },
     secondaryCta: {
-      label: 'Start Group Booking',
-      href: '/tours/maldives-azure-serenity/schedules',
+      label: 'Browse Eligible Tours',
+      href: '/tours',
       kind: 'booking',
     },
   },

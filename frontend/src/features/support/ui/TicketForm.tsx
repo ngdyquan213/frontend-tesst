@@ -1,5 +1,7 @@
 import type { FormEvent } from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useAuth } from '@/app/providers/AuthProvider'
+import { useBookingsQuery } from '@/features/bookings/queries/useBookingsQuery'
 import { useCreateSupportTicketMutation } from '@/features/support/queries/useCreateSupportTicketMutation'
 import { useHelpTopicsQuery } from '@/features/support/queries/useHelpTopicsQuery'
 import {
@@ -47,6 +49,8 @@ function buildInitialState(initialTopicId?: string): CreateSupportTicketPayload 
 }
 
 export function TicketForm({ className, initialTopicId }: TicketFormProps) {
+  const { user } = useAuth()
+  const bookingsQuery = useBookingsQuery()
   const topicsQuery = useHelpTopicsQuery()
   const createTicketMutation = useCreateSupportTicketMutation()
   const [formState, setFormState] = useState<CreateSupportTicketPayload>(() => buildInitialState(initialTopicId))
@@ -61,6 +65,18 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
       })) ?? [],
     [topicsQuery.data]
   )
+
+  useEffect(() => {
+    if (!user) {
+      return
+    }
+
+    setFormState((currentState) => ({
+      ...currentState,
+      fullName: currentState.fullName || user.name,
+      email: currentState.email || user.email,
+    }))
+  }, [user])
 
   function updateField<K extends SupportTicketFormField>(field: K, value: CreateSupportTicketPayload[K]) {
     setFormState((currentState) => ({
@@ -98,7 +114,11 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
     try {
       const createdTicket = await createTicketMutation.mutateAsync(validation.normalizedPayload)
       setSubmittedReference(createdTicket.reference ?? null)
-      setFormState(buildInitialState(initialTopicId))
+      setFormState({
+        ...buildInitialState(initialTopicId),
+        fullName: user?.name ?? '',
+        email: user?.email ?? '',
+      })
     } catch {
       return
     }
@@ -178,12 +198,18 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
 
         <label className="space-y-2">
           <span className="text-sm font-semibold text-[color:var(--color-primary)]">Booking reference</span>
-          <input
+          <select
             value={formState.bookingReference ?? ''}
             onChange={(event) => updateField('bookingReference', event.target.value)}
-            placeholder="Optional"
             className={getFieldClassName(Boolean(errors.bookingReference))}
-          />
+          >
+            <option value="">Not tied to a booking</option>
+            {(bookingsQuery.data ?? []).map((booking) => (
+              <option key={booking.id} value={booking.reference}>
+                {booking.reference}
+              </option>
+            ))}
+          </select>
           {errors.bookingReference ? (
             <span className="text-sm text-red-600">{errors.bookingReference}</span>
           ) : (
@@ -193,6 +219,12 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
           )}
         </label>
       </div>
+
+      {bookingsQuery.isPending ? (
+        <span className="block text-sm text-[color:var(--color-on-surface-variant)]">
+          Loading your recent bookings...
+        </span>
+      ) : null}
 
       <label className="space-y-2">
         <span className="text-sm font-semibold text-[color:var(--color-primary)]">Subject</span>

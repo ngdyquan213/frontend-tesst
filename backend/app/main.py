@@ -37,6 +37,7 @@ from app.core.startup import (
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.middleware.rate_limit_middleware import RateLimitMiddleware
 from app.middleware.request_id_middleware import RequestIDMiddleware
+from app.middleware.security_headers_middleware import SecurityHeadersMiddleware
 from app.services.outbox_service import OutboxService
 from app.utils.ip_utils import ip_in_allowlist
 from app.utils.request_context import get_client_ip
@@ -167,7 +168,10 @@ app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=settings.trusted_hosts_list,
 )
-
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(LoggingMiddleware)
+app.add_middleware(RequestIDMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -175,10 +179,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.add_middleware(LoggingMiddleware)
-app.add_middleware(RequestIDMiddleware)
-app.add_middleware(RateLimitMiddleware)
 
 
 @app.get("/health")

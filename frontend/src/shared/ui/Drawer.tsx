@@ -20,7 +20,12 @@ export const Drawer = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex bg-primary/20">
-      <div className={cn('surface-card h-full w-full max-w-lg p-6', side === 'right' ? 'ml-auto' : 'mr-auto')}>
+      <div
+        className={cn(
+          'surface-card h-full w-full max-w-lg overflow-y-auto p-6',
+          side === 'right' ? 'ml-auto' : 'mr-auto',
+        )}
+      >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-xl font-bold text-primary">{title}</h3>
           <Button variant="ghost" onClick={onClose}>
@@ -32,4 +37,3 @@ export const Drawer = ({
     </div>
   )
 }
-

@@ -12,9 +12,8 @@ export const BookingSummary = ({ booking }: { booking: Booking }) => (
     <div className="flex items-center justify-between">
       <span className="text-on-surface-variant">Total</span>
       <span className="font-extrabold text-primary">
-        <CurrencyText value={booking.total} />
+        <CurrencyText value={booking.total} currency={booking.currency} />
       </span>
     </div>
   </Card>
 )
-

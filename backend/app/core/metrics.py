@@ -10,6 +10,7 @@ class OperationalMetrics:
         self._lock = Lock()
         self._http_requests_total = 0
         self._http_error_responses_total = 0
+        self._http_server_error_responses_total = 0
         self._payment_callback_failures_total = 0
         self._payment_callback_failures_by_reason: dict[str, int] = {}
         self._outbox_backlog = 0
@@ -30,11 +31,14 @@ class OperationalMetrics:
             self._http_requests_total += 1
             if status_code >= 400:
                 self._http_error_responses_total += 1
+            if status_code >= 500:
+                self._http_server_error_responses_total += 1
 
     def record_request_failure(self) -> None:
         with self._lock:
             self._http_requests_total += 1
             self._http_error_responses_total += 1
+            self._http_server_error_responses_total += 1
 
     def record_payment_callback_failure(self, *, reason: str) -> None:
         with self._lock:
@@ -69,6 +73,7 @@ class OperationalMetrics:
         with self._lock:
             self._http_requests_total = 0
             self._http_error_responses_total = 0
+            self._http_server_error_responses_total = 0
             self._payment_callback_failures_total = 0
             self._payment_callback_failures_by_reason = {}
             self._outbox_backlog = 0
@@ -85,6 +90,7 @@ class OperationalMetrics:
             return {
                 "http_requests_total": self._http_requests_total,
                 "http_error_responses_total": self._http_error_responses_total,
+                "http_server_error_responses_total": self._http_server_error_responses_total,
                 "payment_callback_failures_total": self._payment_callback_failures_total,
                 "payment_callback_failures_by_reason": dict(
                     sorted(self._payment_callback_failures_by_reason.items())
@@ -181,6 +187,12 @@ def render_prometheus_metrics(
         "counter",
         "Total HTTP responses with status code >= 400 or failed request handling.",
         int(metrics_snapshot.get("http_error_responses_total", 0)),
+    )
+    add_metric(
+        "secure_travel_http_server_error_responses_total",
+        "counter",
+        "Total HTTP responses with status code >= 500 or failed request handling.",
+        int(metrics_snapshot.get("http_server_error_responses_total", 0)),
     )
     add_metric(
         "secure_travel_payment_callback_failures_total",

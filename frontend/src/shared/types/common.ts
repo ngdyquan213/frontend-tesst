@@ -4,8 +4,8 @@ export type TourScheduleStatus = 'available' | 'almost-full' | 'sold-out'
 export type BookingStatus = 'confirmed' | 'pending' | 'processing' | 'cancelled'
 export type PaymentStatus = 'pending' | 'processing' | 'success' | 'failed'
 export type DocumentStatus = 'verified' | 'pending' | 'rejected'
-export type RefundStatus = 'draft' | 'review' | 'approved' | 'paid'
-export type TicketStatus = 'open' | 'waiting' | 'resolved'
+export type RefundStatus = 'draft' | 'review' | 'approved' | 'paid' | 'failed' | 'cancelled'
+export type TicketStatus = 'open' | 'waiting' | 'waiting_for_traveler' | 'in_review' | 'resolved'
 export type NotificationType = 'booking' | 'document' | 'refund' | 'support'
 
 export interface AppUser {
@@ -94,7 +94,9 @@ export interface Booking {
   scheduleId: string
   travelerIds: string[]
   status: BookingStatus
+  paymentStatus?: string
   total: number
+  currency?: string
   createdAt: string
   notes: string
 }
@@ -129,6 +131,7 @@ export interface RefundRecord {
   id: string
   bookingId: string
   amount: number
+  currency?: string
   status: RefundStatus
   reason: string
   createdAt: string
@@ -171,6 +174,11 @@ export interface PricingRule {
   name: string
   value: string
   scope: string
+  code?: string
+  couponType?: string
+  applicableProductType?: string
+  discountValue?: number
+  isActive?: boolean
 }
 
 export interface AdminTask {

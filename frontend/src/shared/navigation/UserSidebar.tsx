@@ -4,7 +4,6 @@ export const userSidebarItems = [
   { to: '/account', label: 'Dashboard', icon: 'dashboard' },
   { to: '/account/profile', label: 'Profile', icon: 'person' },
   { to: '/account/change-password', label: 'Password', icon: 'lock' },
-  { to: '/account/travelers', label: 'Travelers', icon: 'group' },
   { to: '/account/bookings', label: 'Bookings', icon: 'event_available' },
   { to: '/account/vouchers', label: 'Vouchers', icon: 'local_activity' },
   { to: '/account/documents', label: 'Documents', icon: 'description' },

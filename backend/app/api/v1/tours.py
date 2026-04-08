@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
 
@@ -53,13 +55,13 @@ def list_tours(
 
 @router.get("/{tour_id}", response_model=TourResponse)
 def get_tour(
-    tour_id: str,
+    tour_id: UUID,
     request: Request,
     db: Session = Depends(get_db),
 ) -> TourResponse:
     service = build_tour_service(db)
     tour = service.get_tour_with_audit(
-        tour_id=tour_id,
+        tour_id=str(tour_id),
         ip_address=get_client_ip(request),
         user_agent=get_user_agent(request),
     )

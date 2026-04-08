@@ -1,4 +1,5 @@
 import { useAdminRefundsQuery } from '@/features/admin/refunds/queries/useAdminRefundsQuery'
+import { CurrencyText } from '@/shared/components/CurrencyText'
 import { Table } from '@/shared/ui/Table'
 
 export const RefundManagementTable = () => {
@@ -9,11 +10,12 @@ export const RefundManagementTable = () => {
         <tr key={refund.id}>
           <td className="px-6 py-4 font-semibold text-primary">{refund.id}</td>
           <td className="px-6 py-4 text-on-surface-variant">{refund.status}</td>
-          <td className="px-6 py-4 text-on-surface-variant">${refund.amount}</td>
+          <td className="px-6 py-4 text-on-surface-variant">
+            <CurrencyText value={refund.amount} currency={refund.currency} />
+          </td>
           <td className="px-6 py-4 text-right text-sm font-semibold text-secondary">Review</td>
         </tr>
       ))}
     </Table>
   )
 }
-

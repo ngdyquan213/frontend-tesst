@@ -1,8 +1,9 @@
 import { env } from '@/app/config/env'
-import { getDefaultPaymentMethods, mapApiPaymentToPaymentRecord } from '@/shared/lib/appMappers'
+import { mapApiPaymentToPaymentRecord } from '@/shared/lib/appMappers'
 import { resolveAfter } from '@/shared/api/apiClient'
 import { apiClient } from '@/shared/api/apiClient'
 import { paymentMethods, payments } from '@/shared/api/mockData'
+import { authStorage } from '@/shared/storage/auth.storage'
 import type { PaymentMethod } from '@/shared/types/common'
 
 interface CreatePaymentIntentInput {
@@ -13,12 +14,43 @@ interface CreatePaymentIntentInput {
   travelDate: string
 }
 
-function buildIdempotencyKey(tourId: string, scheduleId: string, travelerCount: number) {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID()
+function buildCheckoutAttemptFingerprint({
+  methodId,
+  tourId,
+  scheduleId,
+  travelerCount,
+  travelDate,
+}: CreatePaymentIntentInput) {
+  const accessTokenFragment = (authStorage.getAccessToken() ?? 'guest')
+    .slice(0, 24)
+    .replace(/[^a-zA-Z0-9_-]/g, '')
+
+  return [accessTokenFragment, methodId, tourId, scheduleId, String(travelerCount), travelDate].join(':')
+}
+
+function getCheckoutIdempotencyStorageKey(input: CreatePaymentIntentInput) {
+  return `travelbook:checkout-idempotency:${buildCheckoutAttemptFingerprint(input)}`
+}
+
+function getOrCreateIdempotencyKey(input: CreatePaymentIntentInput) {
+  const storageKey = getCheckoutIdempotencyStorageKey(input)
+  const existingKey = sessionStorage.getItem(storageKey)
+
+  if (existingKey) {
+    return { storageKey, idempotencyKey: existingKey }
   }
 
-  return `payment-${tourId}-${scheduleId}-${travelerCount}-${Date.now()}`
+  const idempotencyKey =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? `checkout-${crypto.randomUUID()}`
+      : `payment-${input.tourId}-${input.scheduleId}-${input.travelerCount}-${Date.now()}`
+
+  sessionStorage.setItem(storageKey, idempotencyKey)
+  return { storageKey, idempotencyKey }
+}
+
+function clearIdempotencyKey(storageKey: string) {
+  sessionStorage.removeItem(storageKey)
 }
 
 export const paymentsApi = {
@@ -42,33 +74,45 @@ export const paymentsApi = {
       return resolveAfter(payment)
     }
 
-    const bookingResponse = await apiClient.createBooking({
-      booking_type: 'TOUR',
-      tour_id: tourId,
-      schedule_id: scheduleId,
-      number_of_travelers: travelerCount,
-      travel_date: travelDate,
-    })
-    const paymentIntent = await apiClient.initiatePayment({
-      booking_id: bookingResponse.booking.id,
-      payment_method: methodId,
-      idempotency_key: buildIdempotencyKey(tourId, scheduleId, travelerCount),
-    })
-
-    const payment = await apiClient
-      .getPayment(paymentIntent.payment_id)
-      .catch(() => ({
-        id: paymentIntent.payment_id,
-        booking_id: paymentIntent.booking_id,
-        amount: paymentIntent.amount,
-        currency: 'USD',
-        payment_status: paymentIntent.payment_status,
-        created_at: paymentIntent.created_at,
-        updated_at: paymentIntent.created_at,
+    const input = {
+      methodId,
+      tourId,
+      scheduleId,
+      travelerCount,
+      travelDate,
+    }
+    const { storageKey, idempotencyKey } = getOrCreateIdempotencyKey(input)
+    let checkoutResponse
+    try {
+      checkoutResponse = await apiClient.createTourCheckout({
+        schedule_id: scheduleId,
+        number_of_travelers: travelerCount,
         payment_method: methodId,
-      }))
+        idempotency_key: idempotencyKey,
+      })
+    } catch (error) {
+      if (
+        methodId === 'stripe' &&
+        typeof error === 'object' &&
+        error !== null &&
+        'response' in error &&
+        typeof (error as { response?: { status?: unknown } }).response?.status === 'number'
+      ) {
+        throw new Error('Card payments are not available in this environment right now.')
+      }
 
-    return mapApiPaymentToPaymentRecord(payment, getDefaultPaymentMethods())
+      throw error
+    }
+    clearIdempotencyKey(storageKey)
+    const payment = checkoutResponse.payment
+
+    return mapApiPaymentToPaymentRecord(
+      {
+        ...payment,
+        booking_id: checkoutResponse.booking.id,
+      },
+      await apiClient.getAvailablePaymentMethods(),
+    )
   },
   getPaymentStatus: async (paymentId?: string) => {
     if (env.enableMocks) {
@@ -80,6 +124,6 @@ export const paymentsApi = {
     }
 
     const payment = await apiClient.getPayment(paymentId)
-    return mapApiPaymentToPaymentRecord(payment, getDefaultPaymentMethods())
+    return mapApiPaymentToPaymentRecord(payment, await apiClient.getAvailablePaymentMethods())
   },
 }

@@ -1,4 +1,5 @@
 from datetime import date
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
@@ -71,7 +72,7 @@ def list_hotels(
 
 @router.get("/{hotel_id}", response_model=HotelResponse)
 def get_hotel(
-    hotel_id: str,
+    hotel_id: UUID,
     check_in_date: date | None = Query(default=None),
     check_out_date: date | None = Query(default=None),
     db: Session = Depends(get_db),
@@ -81,7 +82,7 @@ def get_hotel(
     service = build_hotel_service(db)
 
     hotel, availability_map = service.get_hotel(
-        hotel_id,
+        str(hotel_id),
         check_in_date=check_in_date,
         check_out_date=check_out_date,
     )

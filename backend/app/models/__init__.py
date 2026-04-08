@@ -23,7 +23,9 @@ from app.models.hotel import Hotel, HotelRoom, HotelRoomInventory
 from app.models.payment import Payment, PaymentCallback, PaymentTransaction
 from app.models.refund import Refund
 from app.models.role import Permission, Role, RolePermission, UserRole
-from app.models.system import AppSetting, OutboxEvent
+from app.models.support import SupportTicket
+from app.models.support_reply import SupportTicketReply
+from app.models.system import AppSetting, NotificationReadState, OutboxEvent
 from app.models.tour import Tour, TourItinerary, TourPolicy, TourPriceRule, TourSchedule
 from app.models.user import LoginAttempt, PasswordResetToken, RefreshToken, User
 
@@ -71,9 +73,12 @@ __all__ = [
     "PaymentTransaction",
     "PaymentCallback",
     "Refund",
+    "SupportTicket",
+    "SupportTicketReply",
     "UploadedDocument",
     "AuditLog",
     "SecurityEvent",
     "AppSetting",
+    "NotificationReadState",
     "OutboxEvent",
 ]

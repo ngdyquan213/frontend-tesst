@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import time
 from typing import Callable
 
@@ -33,7 +34,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if self.max_requests is not None:
             return self.max_requests
         if path == "/api/v1/auth/login":
-            return settings.RATE_LIMIT_LOGIN_PER_MINUTE
+            # Preserve the auth lockout contract even when environments set a
+            # tighter login rate limit than the failed-attempt threshold.
+            return max(
+                settings.RATE_LIMIT_LOGIN_PER_MINUTE,
+                settings.AUTH_MAX_FAILED_LOGINS + 2,
+            )
         if path == "/api/v1/auth/register":
             return settings.RATE_LIMIT_REGISTER_PER_MINUTE
         if path == "/api/v1/auth/refresh":
@@ -44,12 +50,47 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return settings.RATE_LIMIT_PAYMENT_CALLBACK_PER_MINUTE
         return settings.RATE_LIMIT_DEFAULT_PER_MINUTE
 
-    def _build_key(self, request: Request) -> str:
+    async def _build_key(self, request: Request) -> str:
         client_ip = get_client_ip(request, default="unknown")
         method = request.method.upper()
         path = request.url.path
+        key_segments = [f"rl:{method}:{path}:{client_ip}"]
 
-        return f"rl:{method}:{path}:{client_ip}"
+        if method == "POST" and path == "/api/v1/auth/login":
+            login_identifier = await self._extract_login_identifier(request)
+            if login_identifier:
+                key_segments.append(login_identifier)
+
+        return ":".join(key_segments)
+
+    @staticmethod
+    async def _extract_login_identifier(request: Request) -> str | None:
+        content_type = request.headers.get("content-type", "")
+        if "application/json" not in content_type.lower():
+            return None
+
+        try:
+            body = await request.body()
+        except Exception:
+            return None
+
+        if not body:
+            return None
+
+        try:
+            payload = json.loads(body)
+        except (TypeError, ValueError):
+            return None
+
+        if not isinstance(payload, dict):
+            return None
+
+        email = payload.get("email")
+        if not isinstance(email, str):
+            return None
+
+        normalized_email = email.strip().lower()
+        return normalized_email or None
 
     def _should_fail_closed(self, path: str) -> bool:
         return (
@@ -62,7 +103,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if not settings.RATE_LIMIT_ENABLED:
             return await call_next(request)
 
-        key = self._build_key(request)
+        key = await self._build_key(request)
         limit = self._resolve_limit(request.url.path)
         window_seconds = self.window_seconds
 

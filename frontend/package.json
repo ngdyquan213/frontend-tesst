@@ -8,9 +8,11 @@
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "lint": "eslint . --ext ts,tsx",
     "preview": "vite preview",
-    "test": "VITE_ENABLE_MOCKS=true vitest run",
-    "test:watch": "VITE_ENABLE_MOCKS=true vitest",
-    "test:e2e": "VITE_ENABLE_MOCKS=true playwright test"
+    "test": "VITE_ENABLE_MOCKS=${VITE_ENABLE_MOCKS:-true} vitest run",
+    "test:live": "VITE_ENABLE_MOCKS=false vitest run",
+    "test:watch": "VITE_ENABLE_MOCKS=${VITE_ENABLE_MOCKS:-true} vitest",
+    "test:e2e": "VITE_ENABLE_MOCKS=${VITE_ENABLE_MOCKS:-true} playwright test",
+    "test:e2e:live": "VITE_ENABLE_MOCKS=false playwright test"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.6",
@@ -42,7 +44,7 @@
     "jsdom": "^27.0.1",
     "msw": "^2.11.6",
     "typescript": "~5.9.3",
-    "vite": "^8.0.1",
+    "vite": "^8.0.7",
     "vitest": "^4.0.8"
   }
 }

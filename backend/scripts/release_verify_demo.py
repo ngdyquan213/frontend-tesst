@@ -48,6 +48,23 @@ def http_json(
         return response.getcode(), json.loads(response.read().decode("utf-8"))
 
 
+def login_and_build_headers(
+    *,
+    base_url: str,
+    email: str,
+    password: str,
+    timeout: float,
+) -> dict[str, str]:
+    login_status, login_payload = http_json(
+        f"{base_url}/auth/login",
+        method="POST",
+        payload={"email": email, "password": password},
+        timeout=timeout,
+    )
+    assert login_status == 200, f"login failed with status {login_status}"
+    return {"Authorization": f"Bearer {login_payload['access_token']}"}
+
+
 def fetch_booking_id(bookings_payload: dict, booking_code: str) -> str:
     for item in bookings_payload.get("items", []):
         if item.get("booking_code") == booking_code:
@@ -75,18 +92,15 @@ def verify_demo_journey(
     password: str,
     booking_code: str,
     timeout: float,
+    auth_headers: dict[str, str] | None = None,
 ) -> dict[str, float | str]:
     start = time.perf_counter()
-    login_status, login_payload = http_json(
-        f"{base_url}/auth/login",
-        method="POST",
-        payload={"email": email, "password": password},
+    auth_headers = auth_headers or login_and_build_headers(
+        base_url=base_url,
+        email=email,
+        password=password,
         timeout=timeout,
     )
-    assert login_status == 200, f"login failed with status {login_status}"
-
-    access_token = login_payload["access_token"]
-    auth_headers = {"Authorization": f"Bearer {access_token}"}
 
     me_status, me_payload = http_json(
         f"{base_url}/users/me",
@@ -134,20 +148,31 @@ def run_concurrent_verification(args: argparse.Namespace) -> tuple[list[dict], l
     lock = threading.Lock()
 
     def worker(worker_index: int) -> None:
+        auth_headers: dict[str, str] | None = None
         for iteration in range(args.iterations):
             try:
+                if auth_headers is None:
+                    auth_headers = login_and_build_headers(
+                        base_url=args.base_url.rstrip("/"),
+                        email=args.email,
+                        password=args.password,
+                        timeout=args.timeout,
+                    )
                 result = verify_demo_journey(
                     base_url=args.base_url.rstrip("/"),
                     email=args.email,
                     password=args.password,
                     booking_code=args.booking_code,
                     timeout=args.timeout,
+                    auth_headers=auth_headers,
                 )
                 result["worker"] = worker_index
                 result["iteration"] = iteration
                 with lock:
                     successes.append(result)
             except (AssertionError, KeyError, urllib.error.URLError) as exc:
+                if "401" in str(exc):
+                    auth_headers = None
                 with lock:
                     failures.append(f"worker={worker_index} iteration={iteration}: {exc}")
 

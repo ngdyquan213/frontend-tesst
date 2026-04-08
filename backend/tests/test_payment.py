@@ -8,9 +8,13 @@ from app.models.enums import (
     BookingItemType,
     BookingStatus,
     PaymentStatus,
+    TourScheduleStatus,
+    TourStatus,
+    TravelerType,
     UserStatus,
 )
 from app.models.flight import Airline, Airport, Flight
+from app.models.tour import Tour, TourPriceRule, TourSchedule
 from app.models.user import User
 
 
@@ -91,6 +95,58 @@ def seed_booking_for_user(db_session, user_id: str):
     return booking
 
 
+def seed_tour_schedule(db_session):
+    tour = Tour(
+        code="TEST-CHECKOUT-001",
+        name="Checkout Tour",
+        destination="Hoi An",
+        description="Checkout Tour Description",
+        duration_days=4,
+        duration_nights=3,
+        meeting_point="Old Town",
+        tour_type="curated",
+        status=TourStatus.active,
+    )
+    db_session.add(tour)
+    db_session.flush()
+
+    schedule = TourSchedule(
+        tour_id=tour.id,
+        departure_date=datetime.now(timezone.utc).date() + timedelta(days=7),
+        return_date=datetime.now(timezone.utc).date() + timedelta(days=10),
+        capacity=12,
+        available_slots=12,
+        status=TourScheduleStatus.scheduled,
+    )
+    db_session.add(schedule)
+    db_session.flush()
+
+    db_session.add_all(
+        [
+            TourPriceRule(
+                tour_schedule_id=schedule.id,
+                traveler_type=TravelerType.adult,
+                price="3000000.00",
+                currency="VND",
+            ),
+            TourPriceRule(
+                tour_schedule_id=schedule.id,
+                traveler_type=TravelerType.child,
+                price="1500000.00",
+                currency="VND",
+            ),
+            TourPriceRule(
+                tour_schedule_id=schedule.id,
+                traveler_type=TravelerType.infant,
+                price="500000.00",
+                currency="VND",
+            ),
+        ]
+    )
+    db_session.commit()
+    return schedule
+
+
 def test_initiate_payment_success(client, db_session):
     user, token = create_user_and_login(
         client,
@@ -118,6 +174,26 @@ def test_initiate_payment_success(client, db_session):
     assert body["payment_method"] == "vnpay"
     assert body["status"] == "pending"
     assert body["amount"] == "1500000.00"
+
+
+def test_list_payment_methods_hides_stripe_when_gateway_is_not_configured(client, monkeypatch):
+    monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "")
+
+    resp = client.get("/api/v1/payments/methods")
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert [item["id"] for item in body] == ["manual", "vnpay", "momo"]
+
+
+def test_list_payment_methods_includes_stripe_when_gateway_is_configured(client, monkeypatch):
+    monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "sk_test_configured")
+
+    resp = client.get("/api/v1/payments/methods")
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert [item["id"] for item in body] == ["manual", "vnpay", "momo", "stripe"]
 
 
 def test_payment_idempotency_returns_same_payment(client, db_session):
@@ -187,6 +263,120 @@ def test_payment_idempotency_rejects_different_payment_method(client, db_session
     assert second_resp.status_code == 409
     assert second_resp.json()["message"] == (
         "Idempotency key was already used with a different payment method"
+    )
+
+
+def test_tour_checkout_creates_booking_and_payment_atomically(client, db_session):
+    user, token = create_user_and_login(
+        client,
+        db_session,
+        "tour-checkout@example.com",
+        "tour_checkout_user",
+    )
+    schedule = seed_tour_schedule(db_session)
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Idempotency-Key": "tour-checkout-001",
+    }
+    payload = {
+        "tour_schedule_id": str(schedule.id),
+        "adult_count": 2,
+        "child_count": 1,
+        "infant_count": 0,
+        "payment_method": "vnpay",
+    }
+
+    response = client.post("/api/v1/payments/checkout/tours", json=payload, headers=headers)
+
+    assert response.status_code == 201
+    body = response.json()
+    assert body["booking"]["user_id"] == str(user.id)
+    assert body["booking"]["schedule_id"] == str(schedule.id)
+    assert body["booking"]["total_final_amount"] == "7500000.00"
+    assert body["payment"]["booking_id"] == body["booking"]["id"]
+    assert body["payment"]["payment_method"] == "vnpay"
+    assert body["payment"]["status"] == "pending"
+
+    db_session.refresh(schedule)
+    assert schedule.available_slots == 9
+
+
+def test_tour_checkout_reuses_existing_booking_and_payment_for_same_idempotency_key(
+    client, db_session
+):
+    _, token = create_user_and_login(
+        client,
+        db_session,
+        "tour-checkout-reuse@example.com",
+        "tour_checkout_reuse_user",
+    )
+    schedule = seed_tour_schedule(db_session)
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Idempotency-Key": "tour-checkout-reuse-001",
+    }
+    payload = {
+        "tour_schedule_id": str(schedule.id),
+        "adult_count": 1,
+        "child_count": 1,
+        "infant_count": 0,
+        "payment_method": "vnpay",
+    }
+
+    first_response = client.post("/api/v1/payments/checkout/tours", json=payload, headers=headers)
+    second_response = client.post("/api/v1/payments/checkout/tours", json=payload, headers=headers)
+
+    assert first_response.status_code == 201
+    assert second_response.status_code == 201
+    assert first_response.json()["booking"]["id"] == second_response.json()["booking"]["id"]
+    assert first_response.json()["payment"]["id"] == second_response.json()["payment"]["id"]
+
+    db_session.refresh(schedule)
+    assert schedule.available_slots == 10
+
+
+def test_tour_checkout_rejects_changed_payload_for_same_idempotency_key(client, db_session):
+    _, token = create_user_and_login(
+        client,
+        db_session,
+        "tour-checkout-conflict@example.com",
+        "tour_checkout_conflict_user",
+    )
+    schedule = seed_tour_schedule(db_session)
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Idempotency-Key": "tour-checkout-conflict-001",
+    }
+    first_response = client.post(
+        "/api/v1/payments/checkout/tours",
+        json={
+            "tour_schedule_id": str(schedule.id),
+            "adult_count": 1,
+            "child_count": 0,
+            "infant_count": 0,
+            "payment_method": "vnpay",
+        },
+        headers=headers,
+    )
+    second_response = client.post(
+        "/api/v1/payments/checkout/tours",
+        json={
+            "tour_schedule_id": str(schedule.id),
+            "adult_count": 2,
+            "child_count": 0,
+            "infant_count": 0,
+            "payment_method": "vnpay",
+        },
+        headers=headers,
+    )
+
+    assert first_response.status_code == 201
+    assert second_response.status_code == 409
+    assert second_response.json()["message"] == (
+        "Idempotency key was already used with different traveler counts"
     )
 
 

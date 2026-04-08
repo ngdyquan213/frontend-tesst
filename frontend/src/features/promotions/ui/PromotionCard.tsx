@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Card } from '@/shared/ui/Card'
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/Badge'
+import { resolvePromotionCta } from '@/features/promotions/lib/resolvePromotionCta'
 import {
   promotionCategoryLabels,
   promotionStatusLabels,
@@ -29,21 +30,26 @@ function formatPromotionDate(date: string) {
 }
 
 function PromotionCtas({ promotion }: { promotion: Promotion }) {
+  const primaryCta = resolvePromotionCta(promotion.primaryCta)
+  const secondaryCta = promotion.secondaryCta
+    ? resolvePromotionCta(promotion.secondaryCta)
+    : null
+
   return (
     <div className="flex flex-wrap gap-3">
       <Link
-        to={promotion.primaryCta.href}
+        to={primaryCta.href}
         className="inline-flex items-center justify-center gap-2 rounded-xl bg-[color:var(--color-primary)] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(0,17,58,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[color:var(--color-primary-strong)]"
       >
-        {promotion.primaryCta.label}
+        {primaryCta.label}
         <ArrowRight className="h-4 w-4" />
       </Link>
-      {promotion.secondaryCta ? (
+      {secondaryCta ? (
         <Link
-          to={promotion.secondaryCta.href}
+          to={secondaryCta.href}
           className="inline-flex items-center justify-center rounded-xl border border-[color:var(--color-outline-variant)] px-5 py-3 text-sm font-semibold text-[color:var(--color-primary)] transition-colors hover:bg-[color:var(--color-surface-low)]"
         >
-          {promotion.secondaryCta.label}
+          {secondaryCta.label}
         </Link>
       ) : null}
     </div>

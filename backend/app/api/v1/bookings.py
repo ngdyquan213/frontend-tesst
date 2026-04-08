@@ -120,3 +120,14 @@ def list_my_bookings(
         page_size=pagination.page_size,
         total=total,
     )
+
+
+@router.get("/{booking_id}", response_model=BookingResponse)
+def get_my_booking(
+    booking_id: str,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> BookingResponse:
+    service = build_booking_service(db)
+    booking = service.get_my_booking(str(current_user.id), booking_id)
+    return BookingResponse(**booking_to_dict(booking))

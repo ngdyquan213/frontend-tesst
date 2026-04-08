@@ -58,5 +58,14 @@ export interface CreateSupportTicketPayload {
   bookingReference?: string
 }
 
+export interface CreateSupportReplyPayload {
+  message: string
+  status?: SupportTicketStatus
+}
+
+export interface UpdateSupportTicketStatusPayload {
+  status: SupportTicketStatus
+}
+
 export type SupportTicketFormField = keyof CreateSupportTicketPayload
 export type SupportTicketFormErrors = Partial<Record<SupportTicketFormField, string>>

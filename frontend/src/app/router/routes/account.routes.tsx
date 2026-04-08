@@ -9,7 +9,6 @@ import {
 const DashboardPage = lazyDefaultPage(() => import('@/pages/account/DashboardPage'))
 const ProfilePage = lazyDefaultPage(() => import('@/pages/account/ProfilePage'))
 const ChangePasswordPage = lazyDefaultPage(() => import('@/pages/account/ChangePasswordPage'))
-const TravelersPage = lazyDefaultPage(() => import('@/pages/account/TravelersPage'))
 const BookingsPage = lazyDefaultPage(() => import('@/pages/account/BookingsPage'))
 const BookingDetailPage = lazyDefaultPage(() => import('@/pages/account/BookingDetailPage'))
 const VouchersPage = lazyDefaultPage(() => import('@/pages/account/VouchersPage'))
@@ -31,7 +30,6 @@ export const accountRoutes: RouteObject[] = [
           { index: true, element: renderLazyPage(DashboardPage) },
           { path: 'profile', element: renderLazyPage(ProfilePage) },
           { path: 'change-password', element: renderLazyPage(ChangePasswordPage) },
-          { path: 'travelers', element: renderLazyPage(TravelersPage) },
           { path: 'bookings', element: renderLazyPage(BookingsPage) },
           { path: 'bookings/:bookingId', element: renderLazyPage(BookingDetailPage) },
           { path: 'vouchers', element: renderLazyPage(VouchersPage) },

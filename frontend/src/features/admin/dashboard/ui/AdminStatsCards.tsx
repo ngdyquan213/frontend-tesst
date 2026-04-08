@@ -17,9 +17,8 @@ export const AdminStatsCards = () => {
       </Card>
       <Card>
         <div className="text-4xl font-extrabold text-secondary">{data.documentQueue}</div>
-        <div className="mt-2 text-sm text-on-surface-variant">Document queue</div>
+        <div className="mt-2 text-sm text-on-surface-variant">Recent activities</div>
       </Card>
     </div>
   )
 }
-

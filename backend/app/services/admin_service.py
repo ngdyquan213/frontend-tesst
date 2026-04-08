@@ -403,6 +403,13 @@ class AdminService:
 
         if refund.status == RefundStatus.processed:
             refund.processed_at = datetime.now(timezone.utc)
+            payment = self.payment_repo.get_by_id(str(refund.payment_id))
+            if payment:
+                payment.status = PaymentStatus.refunded
+                if payment.booking:
+                    payment.booking.payment_status = PaymentStatus.refunded
+                    self.db.add(payment.booking)
+                self.payment_repo.save(payment)
 
         if reason is not None:
             refund.reason = reason

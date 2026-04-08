@@ -4,6 +4,38 @@ from app.utils.enums import enum_to_str
 
 
 def booking_to_dict(booking) -> dict:
+    primary_item = booking.items[0] if getattr(booking, "items", None) else None
+    booking_type = enum_to_str(primary_item.item_type).upper() if primary_item else None
+    flight_id = str(primary_item.flight_id) if primary_item and primary_item.flight_id else None
+    hotel_room_id = (
+        str(primary_item.hotel_room_id) if primary_item and primary_item.hotel_room_id else None
+    )
+    hotel_id = None
+    if (
+        primary_item
+        and getattr(primary_item, "hotel_room", None)
+        and primary_item.hotel_room.hotel_id
+    ):
+        hotel_id = str(primary_item.hotel_room.hotel_id)
+
+    schedule_id = (
+        str(primary_item.tour_schedule_id)
+        if primary_item and primary_item.tour_schedule_id
+        else None
+    )
+    tour_id = None
+    travel_date = None
+    if primary_item and getattr(primary_item, "tour_schedule", None):
+        if primary_item.tour_schedule.tour_id:
+            tour_id = str(primary_item.tour_schedule.tour_id)
+        travel_date = primary_item.tour_schedule.departure_date
+    elif primary_item and getattr(primary_item, "metadata_json", None):
+        metadata = primary_item.metadata_json or {}
+        raw_tour_id = metadata.get("tour_id")
+        raw_travel_date = metadata.get("departure_date")
+        tour_id = str(raw_tour_id) if raw_tour_id else None
+        travel_date = raw_travel_date
+
     return {
         "id": str(booking.id),
         "booking_code": booking.booking_code,
@@ -15,6 +47,16 @@ def booking_to_dict(booking) -> dict:
         "currency": booking.currency,
         "payment_status": enum_to_str(booking.payment_status),
         "booked_at": booking.booked_at,
+        "booking_type": booking_type,
+        "flight_id": flight_id,
+        "hotel_id": hotel_id,
+        "hotel_room_id": hotel_room_id,
+        "tour_id": tour_id,
+        "schedule_id": schedule_id,
+        "travel_date": travel_date,
+        "number_of_travelers": primary_item.quantity if primary_item else None,
+        "created_at": getattr(booking, "created_at", None),
+        "updated_at": getattr(booking, "updated_at", None),
     }
 
 
@@ -46,13 +88,19 @@ def payment_to_dict(payment) -> dict:
         "gateway_payload": getattr(payment, "gateway_payload", None),
         "paid_at": payment.paid_at,
         "created_at": payment.created_at,
+        "updated_at": payment.updated_at,
     }
 
 
 def refund_to_dict(refund) -> dict:
+    booking_id = None
+    if getattr(refund, "payment", None) and getattr(refund.payment, "booking_id", None):
+        booking_id = str(refund.payment.booking_id)
+
     return {
         "id": str(refund.id),
         "payment_id": str(refund.payment_id),
+        "booking_id": booking_id,
         "amount": refund.amount,
         "currency": refund.currency,
         "status": enum_to_str(refund.status),
@@ -60,6 +108,46 @@ def refund_to_dict(refund) -> dict:
         "processed_at": refund.processed_at,
         "created_at": refund.created_at,
     }
+
+
+def support_ticket_to_dict(ticket) -> dict:
+    booking_reference = None
+    if getattr(ticket, "booking", None) and getattr(ticket.booking, "booking_code", None):
+        booking_reference = ticket.booking.booking_code
+
+    message_preview = ticket.message[:140].strip()
+    if len(ticket.message) > 140:
+        message_preview = f"{message_preview}..."
+
+    return {
+        "id": str(ticket.id),
+        "reference": ticket.reference,
+        "topic_id": ticket.topic_id,
+        "subject": ticket.subject,
+        "requester_name": ticket.requester_name,
+        "requester_email": ticket.requester_email,
+        "booking_reference": booking_reference,
+        "status": ticket.status,
+        "message_preview": message_preview,
+        "created_at": ticket.created_at,
+        "updated_at": ticket.updated_at,
+    }
+
+
+def support_ticket_to_detail_dict(ticket) -> dict:
+    data = support_ticket_to_dict(ticket)
+    data["message"] = ticket.message
+    data["replies"] = [
+        {
+            "id": str(reply.id),
+            "author_name": reply.author_name,
+            "author_role": reply.author_role,
+            "message": reply.message,
+            "created_at": reply.created_at,
+        }
+        for reply in getattr(ticket, "replies", [])
+    ]
+    return data
 
 
 def document_to_dict(document) -> dict:
@@ -75,6 +163,11 @@ def document_to_dict(document) -> dict:
         "storage_bucket": document.storage_bucket,
         "is_private": document.is_private,
         "uploaded_at": document.uploaded_at,
+        "status": getattr(document, "status", "pending"),
+        "reviewed_at": getattr(document, "reviewed_at", None),
+        "reviewed_by_user_id": str(document.reviewed_by_user_id)
+        if getattr(document, "reviewed_by_user_id", None)
+        else None,
     }
 
 
@@ -150,12 +243,36 @@ def admin_user_to_dict(user) -> dict:
 
 
 def user_to_dict(user) -> dict:
+    role_names = [
+        user_role.role.name
+        for user_role in getattr(user, "roles", [])
+        if getattr(user_role, "role", None) and getattr(user_role.role, "name", None)
+    ]
+    permissions = sorted(
+        {
+            role_permission.permission.name
+            for user_role in getattr(user, "roles", [])
+            if getattr(user_role, "role", None)
+            for role_permission in getattr(user_role.role, "role_permissions", [])
+            if getattr(role_permission, "permission", None)
+            and getattr(role_permission.permission, "name", None)
+        }
+    )
+    normalized_roles = role_names or ["traveler"]
+    primary_role = "admin" if "admin" in normalized_roles else normalized_roles[0]
+
     return {
         "id": str(user.id),
         "email": user.email,
         "username": user.username,
         "full_name": user.full_name,
         "status": enum_to_str(user.status),
+        "role": primary_role,
+        "roles": normalized_roles,
+        "permissions": permissions,
+        "email_verified": user.email_verified,
+        "created_at": user.created_at,
+        "updated_at": user.updated_at,
     }
 
 

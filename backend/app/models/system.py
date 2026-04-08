@@ -4,7 +4,17 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import JSON, DateTime, ForeignKey, Index, Integer, String, Text, func
+from sqlalchemy import (
+    JSON,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -78,3 +88,31 @@ class OutboxEvent(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
+
+
+class NotificationReadState(Base):
+    __tablename__ = "notification_read_states"
+    __table_args__ = (
+        Index("idx_notification_read_states_user_id_read_at", "user_id", "read_at"),
+        UniqueConstraint(
+            "user_id",
+            "notification_id",
+            name="uq_notification_read_states_user_notification",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    notification_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    read_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+    user: Mapped[User] = relationship("User", back_populates="notification_read_states")

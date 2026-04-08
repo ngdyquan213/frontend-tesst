@@ -4,6 +4,7 @@ from app.api.dependencies.service_registry import ServiceRegistry
 from app.services.admin_bulk_service import AdminBulkService
 from app.services.admin_coupon_service import AdminCouponService
 from app.services.admin_dashboard_service import AdminDashboardService
+from app.services.admin_document_service import AdminDocumentService
 from app.services.admin_export_service import AdminExportService
 from app.services.admin_service import AdminService
 from app.services.admin_tour_service import AdminTourService
@@ -11,12 +12,15 @@ from app.services.audit_service import AuditService
 from app.services.auth_service import AuthService
 from app.services.booking_cancellation_service import BookingCancellationService
 from app.services.booking_service import BookingService
+from app.services.checkout_service import CheckoutService
 from app.services.coupon_service import CouponService
 from app.services.flight_service import FlightService
 from app.services.hotel_booking_service import HotelBookingService
 from app.services.hotel_service import HotelService
+from app.services.notification_service import NotificationService
 from app.services.payment_callback_service import PaymentCallbackService
 from app.services.payment_service import PaymentService
+from app.services.support_service import SupportService
 from app.services.tour_booking_service import TourBookingService
 from app.services.tour_service import TourService
 from app.services.traveler_service import TravelerService
@@ -57,6 +61,10 @@ def build_admin_coupon_service(db: Session) -> AdminCouponService:
     return ServiceRegistry(db).build_admin_coupon_service()
 
 
+def build_admin_document_service(db: Session) -> AdminDocumentService:
+    return ServiceRegistry(db).build_admin_document_service()
+
+
 def build_auth_service(db: Session) -> AuthService:
     return ServiceRegistry(db).build_auth_service()
 
@@ -77,8 +85,20 @@ def build_coupon_service(db: Session) -> CouponService:
     return ServiceRegistry(db).build_coupon_service()
 
 
+def build_checkout_service(db: Session) -> CheckoutService:
+    return ServiceRegistry(db).build_checkout_service()
+
+
 def build_payment_service(db: Session) -> PaymentService:
     return ServiceRegistry(db).build_payment_service()
+
+
+def build_notification_service(db: Session) -> NotificationService:
+    return ServiceRegistry(db).build_notification_service()
+
+
+def build_support_service(db: Session) -> SupportService:
+    return ServiceRegistry(db).build_support_service()
 
 
 def build_payment_callback_service(db: Session) -> PaymentCallbackService:

@@ -7,14 +7,16 @@ import axios from 'axios'
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
 import { env } from '@/app/config/env'
 import { useAuthStore } from '@/features/auth/model/auth.store'
-import { getDefaultPaymentMethods, mapApiPaymentMethod } from '@/shared/lib/appMappers'
+import { getLivePaymentMethods, mapApiPaymentMethod } from '@/shared/lib/appMappers'
 import { users as mockUsers } from '@/shared/api/mockData'
+import { authStorage } from '@/shared/storage/auth.storage'
 import type { PaymentMethod } from '@/shared/types/common'
 import type * as types from '@/shared/types/api'
 
 const API_BASE_URL = env.apiBaseUrl
 const MOCK_ACCESS_TOKEN_PREFIX = 'mock-access-token:'
 const MOCK_REFRESH_TOKEN_PREFIX = 'mock-refresh-token:'
+const SKIP_AUTH_REDIRECT_HEADER = 'X-Skip-Auth-Redirect'
 
 function createMockApiUser(name: string, email: string, role: string, id: string): types.User {
   const now = new Date().toISOString()
@@ -95,6 +97,66 @@ function toNumber(value: unknown, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
+function normalizeFlight(raw: Record<string, unknown>): types.Flight {
+  const departureTime = String(raw.departure_time ?? new Date().toISOString())
+  const arrivalTime = String(raw.arrival_time ?? departureTime)
+
+  return {
+    id: String(raw.id ?? ''),
+    airline:
+      typeof raw.airline === 'string'
+        ? raw.airline
+        : typeof raw.airline_name === 'string'
+          ? raw.airline_name
+          : typeof raw.airline_id === 'string'
+            ? raw.airline_id
+            : 'Unknown airline',
+    flight_number: String(raw.flight_number ?? ''),
+    departure_airport: String(raw.departure_airport ?? raw.departure_airport_id ?? ''),
+    arrival_airport: String(raw.arrival_airport ?? raw.arrival_airport_id ?? ''),
+    departure_time: departureTime,
+    arrival_time: arrivalTime,
+    duration: Math.max(
+      0,
+      Math.round((new Date(arrivalTime).getTime() - new Date(departureTime).getTime()) / (1000 * 60)),
+    ),
+    available_seats: toNumber(raw.available_seats),
+    price: toNumber(raw.price ?? raw.base_price),
+    aircraft_type:
+      typeof raw.aircraft_type === 'string'
+        ? raw.aircraft_type
+        : typeof raw.status === 'string'
+          ? raw.status.toUpperCase()
+          : 'N/A',
+    created_at: String(raw.created_at ?? departureTime),
+  }
+}
+
+function normalizeHotel(raw: Record<string, unknown>): types.Hotel {
+  const rooms = Array.isArray(raw.rooms)
+    ? raw.rooms.filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+    : []
+  const firstRoom = rooms[0]
+
+  return {
+    id: String(raw.id ?? ''),
+    name: String(raw.name ?? ''),
+    location: [raw.city, raw.country].filter((value) => typeof value === 'string' && value.length > 0).join(', '),
+    city: String(raw.city ?? ''),
+    country: String(raw.country ?? ''),
+    rating: toNumber(raw.rating ?? raw.star_rating),
+    price_per_night: toNumber(firstRoom?.base_price_per_night),
+    available_rooms: rooms.reduce((total, room) => total + toNumber(room.available_rooms ?? room.total_rooms), 0),
+    amenities: Array.isArray(raw.amenities)
+      ? raw.amenities.filter((item): item is string => typeof item === 'string')
+      : rooms
+          .map((room) => (typeof room.room_type === 'string' ? room.room_type : ''))
+          .filter((value) => value.length > 0),
+    description: String(raw.description ?? ''),
+    created_at: String(raw.created_at ?? new Date().toISOString()),
+  }
+}
+
 function normalizeUser(raw: Record<string, unknown>): types.User {
   const role = typeof raw.role === 'string' ? raw.role : undefined
   const roles = Array.isArray(raw.roles)
@@ -135,13 +197,14 @@ function normalizeBooking(raw: Record<string, unknown>): types.Booking {
 
   return {
     id: String(raw.id ?? ''),
-    user_id: String(raw.user_id ?? ''),
+    user_id: String(raw.user_id ?? useAuthStore.getState().user?.id ?? ''),
     booking_code: typeof raw.booking_code === 'string' ? raw.booking_code : undefined,
-    booking_type: String(raw.booking_type ?? 'TRAVEL'),
+    booking_type: String(raw.booking_type ?? 'TRAVEL').toUpperCase(),
     status: bookingStatus,
     flight_id: typeof raw.flight_id === 'string' ? raw.flight_id : undefined,
     hotel_id: typeof raw.hotel_id === 'string' ? raw.hotel_id : undefined,
     tour_id: typeof raw.tour_id === 'string' ? raw.tour_id : undefined,
+    schedule_id: typeof raw.schedule_id === 'string' ? raw.schedule_id : undefined,
     booking_status: bookingStatus,
     total_base_amount: toNumber(raw.total_base_amount),
     total_discount_amount: toNumber(raw.total_discount_amount),
@@ -221,6 +284,7 @@ function normalizeRefund(raw: Record<string, unknown>): types.Refund {
           ? raw.bookingId
           : undefined,
     amount: toNumber(raw.amount),
+    currency: typeof raw.currency === 'string' ? raw.currency : undefined,
     status:
       toUpperStatus(
         typeof raw.status === 'string'
@@ -241,6 +305,44 @@ function normalizeRefund(raw: Record<string, unknown>): types.Refund {
             status: String(item.status ?? 'current'),
           }))
       : undefined,
+  }
+}
+
+function normalizeSupportTicket(raw: Record<string, unknown>): types.SupportTicket {
+  const createdAt = String(raw.created_at ?? new Date().toISOString())
+  const updatedAt = String(raw.updated_at ?? createdAt)
+
+  return {
+    id: String(raw.id ?? ''),
+    reference: String(raw.reference ?? ''),
+    topic_id: String(raw.topic_id ?? ''),
+    subject: String(raw.subject ?? ''),
+    requester_name: String(raw.requester_name ?? ''),
+    requester_email: String(raw.requester_email ?? ''),
+    booking_reference:
+      typeof raw.booking_reference === 'string' ? raw.booking_reference : undefined,
+    status: String(raw.status ?? 'open'),
+    message_preview: String(raw.message_preview ?? ''),
+    created_at: createdAt,
+    updated_at: updatedAt,
+  }
+}
+
+function normalizeSupportTicketDetail(raw: Record<string, unknown>): types.SupportTicketDetail {
+  return {
+    ...normalizeSupportTicket(raw),
+    message: String(raw.message ?? ''),
+    replies: Array.isArray(raw.replies)
+      ? raw.replies
+          .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+          .map((item) => ({
+            id: String(item.id ?? ''),
+            author_name: String(item.author_name ?? ''),
+            author_role: String(item.author_role ?? 'support'),
+            message: String(item.message ?? ''),
+            created_at: String(item.created_at ?? new Date().toISOString()),
+          }))
+      : [],
   }
 }
 
@@ -350,6 +452,7 @@ class ApiClient {
   constructor() {
     this.client = axios.create({
       baseURL: API_BASE_URL,
+      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -357,7 +460,11 @@ class ApiClient {
 
     // Request interceptor
     this.client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-      const token = useAuthStore.getState().token
+      if (!env.enableMocks) {
+        return config
+      }
+
+      const token = useAuthStore.getState().token ?? authStorage.getAccessToken()
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }
@@ -369,18 +476,22 @@ class ApiClient {
       (response) => response,
       async (error) => {
         const originalRequest = error.config as (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined
+        const isAuthRoute = originalRequest?.url?.startsWith('/auth/')
+        const skipAuthRedirect = originalRequest?.headers?.[SKIP_AUTH_REDIRECT_HEADER] === 'true'
 
         if (
           error.response?.status === 401 &&
           originalRequest &&
           !originalRequest._retry &&
-          !originalRequest.url?.includes('/auth/refresh')
+          !originalRequest.url?.includes('/auth/refresh') &&
+          !isAuthRoute &&
+          !skipAuthRedirect
         ) {
           originalRequest._retry = true
           try {
             await this.refreshToken()
             const token = useAuthStore.getState().token
-            if (token) {
+            if (env.enableMocks && token) {
               originalRequest.headers.Authorization = `Bearer ${token}`
             }
             return this.client(originalRequest)
@@ -444,14 +555,13 @@ class ApiClient {
   }
 
   async refreshToken(): Promise<types.TokenRefreshResponse> {
-    const refreshToken = localStorage.getItem('refresh_token')
-
     if (env.enableMocks) {
+      const refreshToken = authStorage.getRefreshToken()
       const user = requireMockUser(refreshToken, MOCK_REFRESH_TOKEN_PREFIX)
       const response = buildMockAuthResponse(user)
-      localStorage.setItem('access_token', response.access_token)
-      localStorage.setItem('refresh_token', response.refresh_token ?? '')
-      localStorage.setItem('token_type', response.token_type)
+      authStorage.setAccessToken(response.access_token)
+      authStorage.setRefreshToken(response.refresh_token ?? '')
+      authStorage.setTokenType(response.token_type)
       useAuthStore.setState({
         token: response.access_token,
         refreshToken: response.refresh_token ?? null,
@@ -460,30 +570,44 @@ class ApiClient {
       return resolveAfter(response)
     }
 
-    const response = await this.client.post('/auth/refresh', {
-      refresh_token: refreshToken,
-    })
-    localStorage.setItem('access_token', response.data.access_token)
-    if (response.data.refresh_token) {
-      localStorage.setItem('refresh_token', response.data.refresh_token)
-    }
-    localStorage.setItem('token_type', response.data.token_type)
+    const response = await this.client.post('/auth/refresh', {})
     useAuthStore.setState({
-      token: response.data.access_token,
-      refreshToken: response.data.refresh_token ?? localStorage.getItem('refresh_token'),
+      token: null,
+      refreshToken: null,
       isAuthenticated: true,
     })
     return response.data
   }
 
-  async getMe(): Promise<types.User> {
+  async getMe(options?: { skipAuthRedirect?: boolean }): Promise<types.User> {
     if (env.enableMocks) {
-      const token = localStorage.getItem('access_token') ?? useAuthStore.getState().token
+      const token = authStorage.getAccessToken() ?? useAuthStore.getState().token
       const user = requireMockUser(token, MOCK_ACCESS_TOKEN_PREFIX)
       return resolveAfter(user)
     }
 
-    const response = await this.client.get('/users/me')
+    const response = await this.client.get('/users/me', {
+      headers: options?.skipAuthRedirect ? { [SKIP_AUTH_REDIRECT_HEADER]: 'true' } : undefined,
+    })
+    return normalizeUser(response.data)
+  }
+
+  async updateMe(payload: { full_name: string }): Promise<types.User> {
+    if (env.enableMocks) {
+      const token = authStorage.getAccessToken() ?? useAuthStore.getState().token
+      const user = requireMockUser(token, MOCK_ACCESS_TOKEN_PREFIX)
+      const nextUser = {
+        ...user,
+        name: payload.full_name.trim(),
+        full_name: payload.full_name.trim(),
+        updated_at: new Date().toISOString(),
+      }
+      mockAuthUsersById.set(nextUser.id, nextUser)
+      mockAuthUsersByEmail.set(nextUser.email.toLowerCase(), nextUser)
+      return resolveAfter(nextUser)
+    }
+
+    const response = await this.client.put('/users/me', payload)
     return normalizeUser(response.data)
   }
 
@@ -492,9 +616,7 @@ class ApiClient {
       return
     }
 
-    const refreshToken = localStorage.getItem('refresh_token')
-    if (!refreshToken) return
-    await this.client.post('/auth/logout', { refresh_token: refreshToken })
+    await this.client.post('/auth/logout', {})
   }
 
   async logoutAll(): Promise<void> {
@@ -503,6 +625,14 @@ class ApiClient {
     }
 
     await this.client.post('/auth/logout-all')
+  }
+
+  async changeMyPassword(payload: { current_password: string; new_password: string }): Promise<void> {
+    if (env.enableMocks) {
+      return
+    }
+
+    await this.client.post('/users/me/change-password', payload)
   }
 
   async forgotPassword(email: string): Promise<{ email: string }> {
@@ -519,33 +649,63 @@ class ApiClient {
       return resolveAfter(true)
     }
 
-    await this.client.post('/auth/reset-password', {
-      password,
-      token,
-    })
+    if (!token?.trim()) {
+      throw new Error('Password reset token is required.')
+    }
+
+    await this.client.post('/auth/reset-password', { token: token.trim(), password })
     return true
   }
 
   // Flight endpoints
   async searchFlights(params: types.FlightSearchParams): Promise<types.FlightSearchResponse> {
-    const response = await this.client.get('/flights/search', { params })
-    return response.data
+    const pageSize = params.limit ?? 20
+    const response = await this.client.get('/flights', {
+      params: {
+        departure_airport_code: params.departure_airport,
+        arrival_airport_code: params.arrival_airport,
+        page: Math.floor((params.offset ?? 0) / pageSize) + 1,
+        page_size: pageSize,
+      },
+    })
+
+    return {
+      flights: normalizePaginatedItems(response.data, 'flights', normalizeFlight),
+      total: toNumber(response.data.total),
+      limit: pageSize,
+      offset: params.offset ?? 0,
+    }
   }
 
   async getFlightById(id: string): Promise<types.Flight> {
     const response = await this.client.get(`/flights/${id}`)
-    return response.data.flight
+    return normalizeFlight(response.data)
   }
 
   // Hotel endpoints
   async searchHotels(params: types.HotelSearchParams): Promise<types.HotelSearchResponse> {
-    const response = await this.client.get('/hotels/search', { params })
-    return response.data
+    const pageSize = params.limit ?? 20
+    const response = await this.client.get('/hotels', {
+      params: {
+        city: params.city,
+        check_in_date: params.check_in_date,
+        check_out_date: params.check_out_date,
+        page: Math.floor((params.offset ?? 0) / pageSize) + 1,
+        page_size: pageSize,
+      },
+    })
+
+    return {
+      hotels: normalizePaginatedItems(response.data, 'hotels', normalizeHotel),
+      total: toNumber(response.data.total),
+      limit: pageSize,
+      offset: params.offset ?? 0,
+    }
   }
 
   async getHotelById(id: string): Promise<types.Hotel> {
     const response = await this.client.get(`/hotels/${id}`)
-    return response.data.hotel
+    return normalizeHotel(response.data)
   }
 
   // Tour endpoints
@@ -573,22 +733,69 @@ class ApiClient {
 
   // Booking endpoints
   async createBooking(data: types.CreateBookingRequest): Promise<types.BookingResponse> {
-    const response = await this.client.post('/bookings', {
-      booking_type: data.booking_type,
-      flight_id: data.flight_id,
-      hotel_id: data.hotel_id,
-      tour_id: data.tour_id,
-      schedule_id: data.schedule_id,
-      number_of_travelers: data.number_of_travelers,
-      travel_date: data.travel_date,
-      special_requests: data.special_requests,
-    })
+    const bookingType = data.booking_type.toUpperCase()
+    let response
+
+    if (bookingType === 'TOUR') {
+      response = await this.client.post('/bookings/tours', {
+        tour_schedule_id: data.schedule_id,
+        adult_count: Math.max(data.number_of_travelers, 1),
+        child_count: 0,
+        infant_count: 0,
+      })
+    } else if (bookingType === 'HOTEL') {
+      const checkInDate = new Date(data.travel_date)
+      const checkOutDate = new Date(checkInDate)
+      checkOutDate.setDate(checkOutDate.getDate() + 1)
+      response = await this.client.post('/bookings/hotels', {
+        hotel_room_id: data.hotel_id,
+        check_in_date: data.travel_date,
+        check_out_date: checkOutDate.toISOString().slice(0, 10),
+        quantity: Math.max(data.number_of_travelers, 1),
+      })
+    } else {
+      response = await this.client.post('/bookings', {
+        flight_id: data.flight_id,
+        quantity: Math.max(data.number_of_travelers, 1),
+      })
+    }
+
     return { booking: normalizeBooking(response.data) }
   }
 
   async getBooking(id: string): Promise<types.BookingResponse> {
     const response = await this.client.get(`/bookings/${id}`)
     return { booking: normalizeBooking(response.data) }
+  }
+
+  async getBookingTravelers(bookingId: string): Promise<
+    Array<{
+      id: string
+      booking_id: string
+      full_name: string
+      traveler_type: string
+      date_of_birth?: string
+      passport_number?: string
+      nationality?: string
+      document_type?: string
+    }>
+  > {
+    const response = await this.client.get(`/bookings/${bookingId}/travelers`)
+
+    return Array.isArray(response.data)
+      ? response.data
+          .filter((item: unknown): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+          .map((item) => ({
+            id: String(item.id ?? ''),
+            booking_id: String(item.booking_id ?? bookingId),
+            full_name: String(item.full_name ?? item.fullName ?? 'Traveler'),
+            traveler_type: String(item.traveler_type ?? 'adult').toUpperCase(),
+            date_of_birth: typeof item.date_of_birth === 'string' ? item.date_of_birth : undefined,
+            passport_number: typeof item.passport_number === 'string' ? item.passport_number : undefined,
+            nationality: typeof item.nationality === 'string' ? item.nationality : undefined,
+            document_type: typeof item.document_type === 'string' ? item.document_type : undefined,
+          }))
+      : []
   }
 
   async getUserBookings(limit = 10, offset = 0): Promise<{
@@ -610,13 +817,57 @@ class ApiClient {
 
   async getAvailablePaymentMethods(): Promise<PaymentMethod[]> {
     if (env.enableMocks) {
-      return resolveAfter(getDefaultPaymentMethods())
+      return resolveAfter(getLivePaymentMethods())
     }
 
-    const response = await this.client.get('/payments/methods')
-    const methods = normalizeRecordArray(response.data, 'payment_methods', mapApiPaymentMethod)
+    let payload: unknown[] = []
 
-    return methods.length > 0 ? methods : getDefaultPaymentMethods()
+    try {
+      const response = await this.client.get('/payments/methods')
+      payload = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.items)
+          ? response.data.items
+          : []
+    } catch {
+      return getLivePaymentMethods()
+    }
+
+    if (payload.length === 0) {
+      return getLivePaymentMethods()
+    }
+
+    return payload
+      .filter((item: unknown): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+      .map(mapApiPaymentMethod)
+  }
+
+  async createTourCheckout(data: {
+    schedule_id: string
+    number_of_travelers: number
+    payment_method: string
+    idempotency_key: string
+  }): Promise<{ booking: types.Booking; payment: types.Payment }> {
+    const response = await this.client.post(
+      '/payments/checkout/tours',
+      {
+        tour_schedule_id: data.schedule_id,
+        adult_count: Math.max(data.number_of_travelers, 1),
+        child_count: 0,
+        infant_count: 0,
+        payment_method: data.payment_method,
+      },
+      {
+        headers: {
+          'Idempotency-Key': data.idempotency_key,
+        },
+      },
+    )
+
+    return {
+      booking: normalizeBooking(response.data.booking),
+      payment: normalizePayment(response.data.payment),
+    }
   }
 
   // Payment endpoints
@@ -648,12 +899,11 @@ class ApiClient {
 
   async getPayment(id: string): Promise<types.Payment> {
     const response = await this.client.get(`/payments/${id}`)
-    return normalizePayment(response.data.payment)
+    return normalizePayment(response.data)
   }
 
   async confirmPayment(paymentId: string): Promise<types.Payment> {
-    const response = await this.client.post(`/payments/${paymentId}/confirm`)
-    return normalizePayment(response.data.payment)
+    throw new Error(`Direct payment confirmation is not supported by the live API: ${paymentId}`)
   }
 
   async getUserRefunds(limit = 20, offset = 0): Promise<{ refunds: types.Refund[]; total: number }> {
@@ -676,14 +926,92 @@ class ApiClient {
   }
 
   async createRefundRequest(payload: { reason: string; booking_id?: string }): Promise<types.Refund> {
-    const response = await this.client.post('/refunds', payload)
+    const response = await this.client.post('/refunds', {
+      booking_id: payload.booking_id,
+      reason: payload.reason,
+    })
     return normalizeRefund(response.data)
+  }
+
+  async getSupportTickets(limit = 20, offset = 0): Promise<{ tickets: types.SupportTicket[]; total: number }> {
+    const response = await this.client.get('/support/tickets', {
+      params: { page: Math.floor(offset / limit) + 1, page_size: limit },
+    })
+
+    return {
+      tickets: normalizeRecordArray(response.data, 'tickets', normalizeSupportTicket),
+      total:
+        response.data && typeof response.data === 'object' && 'total' in response.data
+          ? toNumber((response.data as Record<string, unknown>).total)
+          : 0,
+    }
+  }
+
+  async getSupportTicket(id: string): Promise<types.SupportTicketDetail> {
+    const response = await this.client.get(`/support/tickets/${id}`)
+    return normalizeSupportTicketDetail(response.data)
+  }
+
+  async replyToSupportTicket(
+    id: string,
+    payload: types.SupportTicketReplyCreateRequest,
+  ): Promise<types.SupportTicketDetail> {
+    const response = await this.client.post(`/support/tickets/${id}/replies`, payload)
+    return normalizeSupportTicketDetail(response.data)
+  }
+
+  async createSupportTicket(payload: types.CreateSupportTicketRequest): Promise<types.SupportTicket> {
+    const response = await this.client.post('/support/tickets', payload)
+    return normalizeSupportTicket(response.data)
+  }
+
+  async getAdminSupportTickets(
+    limit = 20,
+    offset = 0,
+    status?: string,
+  ): Promise<{ tickets: types.SupportTicket[]; total: number }> {
+    const response = await this.client.get('/support/admin/tickets', {
+      params: {
+        page: Math.floor(offset / limit) + 1,
+        page_size: limit,
+        status,
+      },
+    })
+
+    return {
+      tickets: normalizeRecordArray(response.data, 'tickets', normalizeSupportTicket),
+      total:
+        response.data && typeof response.data === 'object' && 'total' in response.data
+          ? toNumber((response.data as Record<string, unknown>).total)
+          : 0,
+    }
+  }
+
+  async getAdminSupportTicket(id: string): Promise<types.SupportTicketDetail> {
+    const response = await this.client.get(`/support/admin/tickets/${id}`)
+    return normalizeSupportTicketDetail(response.data)
+  }
+
+  async replyToAdminSupportTicket(
+    id: string,
+    payload: types.SupportTicketReplyCreateRequest,
+  ): Promise<types.SupportTicketDetail> {
+    const response = await this.client.post(`/support/admin/tickets/${id}/replies`, payload)
+    return normalizeSupportTicketDetail(response.data)
+  }
+
+  async updateAdminSupportTicket(
+    id: string,
+    payload: types.AdminSupportTicketUpdateRequest,
+  ): Promise<types.SupportTicketDetail> {
+    const response = await this.client.put(`/support/admin/tickets/${id}`, payload)
+    return normalizeSupportTicketDetail(response.data)
   }
 
   // Document endpoints
   async uploadDocument(documentType: string, file: File): Promise<types.Document> {
     const formData = new FormData()
-    formData.append('document_type', documentType.toUpperCase())
+    formData.append('document_type', documentType.trim().toLowerCase())
     formData.append('file', file)
 
     const response = await this.client.post('/uploads/documents', formData, {
@@ -701,10 +1029,6 @@ class ApiClient {
           .filter((item: unknown): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
           .map(normalizeDocument)
       : []
-  }
-
-  async deleteDocument(id: string): Promise<void> {
-    throw new Error(`Deleting documents is not supported by the current API: ${id}`)
   }
 
   async downloadDocument(id: string): Promise<Blob> {
@@ -735,7 +1059,7 @@ class ApiClient {
             0
           )
         : 0,
-      total_revenue: toNumber(response.data.revenue?.total_revenue),
+      total_revenue: toNumber(response.data.revenue?.net_revenue_amount ?? response.data.revenue?.total_paid_amount),
       pending_approvals: Array.isArray(response.data.refund_status_counts)
         ? response.data.refund_status_counts.reduce(
             (sum: number, item: { status?: string; count?: number | string }) =>
@@ -743,14 +1067,16 @@ class ApiClient {
             0
           )
         : 0,
-      document_queue: Array.isArray(response.data.document_status_counts)
-        ? response.data.document_status_counts.reduce(
-            (sum: number, item: { status?: string; count?: number | string }) =>
-              item.status?.toLowerCase() === 'pending' ? sum + toNumber(item.count) : sum,
-            0
-          )
-        : toNumber(response.data.pending_document_count),
+      document_queue: Array.isArray(response.data.recent_activities) ? response.data.recent_activities.length : 0,
     }
+  }
+
+  async getAdminDashboardSummary(recentLimit = 10): Promise<Record<string, unknown>> {
+    const response = await this.client.get('/admin/dashboard/summary', {
+      params: { recent_limit: recentLimit },
+    })
+
+    return response.data as Record<string, unknown>
   }
 
   async getAllUsers(limit = 10, offset = 0): Promise<{
@@ -791,12 +1117,110 @@ class ApiClient {
   }
 
   async approveRefund(id: string): Promise<types.Refund> {
-    const response = await this.client.post(`/admin/refunds/${id}/approve`)
+    const response = await this.client.put(`/admin/refunds/${id}`, {
+      status: 'processed',
+      reason: 'Approved from admin dashboard',
+    })
     return normalizeRefund(response.data)
   }
 
+  async getAdminTours(limit = 50, offset = 0): Promise<{ tours: types.Tour[]; total: number }> {
+    const response = await this.client.get('/admin/tours', {
+      params: { page: Math.floor(offset / limit) + 1, page_size: limit },
+    })
+
+    return {
+      tours: normalizePaginatedItems(response.data, 'tours', normalizeTour),
+      total: toNumber(response.data.total),
+    }
+  }
+
+  async createAdminTour(payload: {
+    code: string
+    name: string
+    destination: string
+    description?: string
+    duration_days: number
+    duration_nights: number
+    meeting_point?: string
+    tour_type?: string
+    status: 'active' | 'inactive'
+  }): Promise<types.Tour> {
+    const response = await this.client.post('/admin/tours', payload)
+    return normalizeTour(response.data)
+  }
+
+  async updateAdminTour(
+    tourId: string,
+    payload: {
+      name?: string
+      destination?: string
+      description?: string
+      duration_days?: number
+      duration_nights?: number
+      meeting_point?: string
+      tour_type?: string
+      status?: 'active' | 'inactive'
+    },
+  ): Promise<types.Tour> {
+    const response = await this.client.put(`/admin/tours/${tourId}`, payload)
+    return normalizeTour(response.data)
+  }
+
+  async getAdminCoupons(limit = 50, offset = 0): Promise<{ coupons: Record<string, unknown>[]; total: number }> {
+    const response = await this.client.get('/admin/coupons', {
+      params: { page: Math.floor(offset / limit) + 1, page_size: limit },
+    })
+
+    return {
+      coupons: normalizePaginatedItems(response.data, 'coupons', (item) => item),
+      total: toNumber(response.data.total),
+    }
+  }
+
+  async updateAdminCoupon(
+    couponId: string,
+    payload: {
+      name?: string
+      discount_value?: number
+      is_active?: boolean
+    },
+  ): Promise<Record<string, unknown>> {
+    const response = await this.client.put(`/admin/coupons/${couponId}`, payload)
+    return response.data as Record<string, unknown>
+  }
+
+  async getAdminDocuments(): Promise<types.Document[]> {
+    const response = await this.client.get('/admin/documents')
+    return Array.isArray(response.data)
+      ? response.data
+          .filter((item: unknown): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+          .map(normalizeDocument)
+      : []
+  }
+
+  async reviewAdminDocument(documentId: string, status: 'approved' | 'rejected' = 'approved'): Promise<types.Document> {
+    const response = await this.client.post(`/admin/documents/${documentId}/review`, { status })
+    return normalizeDocument(response.data)
+  }
+
   async approvePendingDocuments(): Promise<void> {
-    await this.client.post('/admin/approve-documents')
+    throw new Error('Admin document approval is not supported by the current API.')
+  }
+
+  async getNotifications(): Promise<types.NotificationListResponse> {
+    const response = await this.client.get('/notifications')
+    return response.data
+  }
+
+  async markNotificationRead(notificationId: string): Promise<types.NotificationItemResponse> {
+    const response = await this.client.post(`/notifications/${notificationId}/read`)
+    return response.data
+  }
+
+  async markAllNotificationsRead(): Promise<types.NotificationListResponse> {
+    const response = await this.client.post('/notifications/read-all')
+    return response.data
   }
 }
 

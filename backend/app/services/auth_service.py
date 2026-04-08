@@ -1,14 +1,20 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.exceptions import AuthenticationAppException, ConflictAppException
-from app.core.security import get_password_hash, verify_password
+from app.core.security import (
+    create_password_reset_token_value,
+    get_password_hash,
+    hash_password_reset_token,
+    verify_password,
+)
 from app.models.enums import LogActorType, SecurityEventType
-from app.models.user import LoginAttempt, User
+from app.models.user import LoginAttempt, PasswordResetToken, User
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import LoginRequest, RegisterRequest
 from app.services.audit_service import AuditService
@@ -368,6 +374,108 @@ class AuthService:
             self.db.commit()
             return count
 
+        except Exception:
+            self.db.rollback()
+            raise
+
+    def forgot_password(
+        self,
+        *,
+        email: str,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+    ) -> None:
+        normalized_ip = normalize_ip(ip_address)
+        user = self.user_repo.get_by_email(email)
+
+        try:
+            if user:
+                for existing_token in self.user_repo.list_active_password_reset_tokens_for_user(
+                    str(user.id)
+                ):
+                    existing_token.used_at = datetime.now(timezone.utc)
+                    self.user_repo.save_password_reset_token(existing_token)
+
+                raw_token = create_password_reset_token_value()
+                reset_token = PasswordResetToken(
+                    user_id=user.id,
+                    token_hash=hash_password_reset_token(raw_token),
+                    expires_at=datetime.now(timezone.utc)
+                    + timedelta(minutes=settings.PASSWORD_RESET_TOKEN_EXPIRE_MINUTES),
+                )
+                self.user_repo.add_password_reset_token(reset_token)
+
+                reset_base_url = settings.FRONTEND_BASE_URL.rstrip("/")
+                reset_url = f"{reset_base_url}/auth/reset-password?token={raw_token}"
+                self.outbox_service.enqueue_email(
+                    handler="send_password_reset_email",
+                    kwargs={
+                        "to_email": user.email,
+                        "full_name": user.full_name,
+                        "reset_url": reset_url,
+                    },
+                )
+
+                self.audit_service.log_action(
+                    actor_type=LogActorType.user,
+                    actor_user_id=user.id,
+                    action="user_password_reset_requested",
+                    resource_type="user",
+                    resource_id=user.id,
+                    ip_address=normalized_ip,
+                    user_agent=user_agent,
+                    metadata={"email": user.email},
+                )
+
+            self.db.commit()
+        except Exception:
+            self.db.rollback()
+            raise
+
+    def reset_password(
+        self,
+        *,
+        token: str,
+        new_password: str,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+    ) -> None:
+        normalized_ip = normalize_ip(ip_address)
+        stored_token = self.user_repo.get_password_reset_token_by_hash(
+            hash_password_reset_token(token)
+        )
+        now = datetime.now(timezone.utc)
+
+        if (
+            stored_token is None
+            or stored_token.used_at is not None
+            or stored_token.expires_at <= now
+        ):
+            raise AuthenticationAppException("Password reset token is invalid or expired")
+
+        user = self.user_repo.get_by_id(str(stored_token.user_id))
+        self.domain_service.assert_user_is_active(user)
+
+        try:
+            user.password_hash = get_password_hash(new_password)
+            self.user_repo.save_user(user)
+            stored_token.used_at = now
+            self.user_repo.save_password_reset_token(stored_token)
+            revoked_count = self.user_repo.revoke_all_refresh_tokens_for_user(
+                user_id=str(user.id),
+                revoked_at=now,
+            )
+            self.audit_service.log_action(
+                actor_type=LogActorType.user,
+                actor_user_id=user.id,
+                action="user_password_reset_completed",
+                resource_type="user",
+                resource_id=user.id,
+                ip_address=normalized_ip,
+                user_agent=user_agent,
+                metadata={"revoked_count": revoked_count},
+            )
+            self.db.commit()
         except Exception:
             self.db.rollback()
             raise

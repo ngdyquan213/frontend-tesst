@@ -13,7 +13,7 @@ export const BookingCard = ({ booking }: { booking: Booking }) => (
       <div className="text-right">
         <div className="text-xs uppercase tracking-widest text-on-surface-variant">Total</div>
         <div className="text-xl font-extrabold text-primary">
-          <CurrencyText value={booking.total} />
+          <CurrencyText value={booking.total} currency={booking.currency} />
         </div>
       </div>
     </div>

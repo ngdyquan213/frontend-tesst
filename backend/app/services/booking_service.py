@@ -142,3 +142,9 @@ class BookingService(ApplicationService):
 
     def count_my_bookings(self, user_id: str) -> int:
         return self.booking_repo.count_by_user_id(user_id)
+
+    def get_my_booking(self, user_id: str, booking_id: str) -> Booking:
+        booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)
+        if not booking:
+            raise NotFoundAppException("Booking not found")
+        return booking

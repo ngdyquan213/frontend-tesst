@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
 
@@ -49,11 +51,11 @@ def list_flights(
 
 @router.get("/{flight_id}", response_model=FlightResponse)
 def get_flight(
-    flight_id: str,
+    flight_id: UUID,
     db: Session = Depends(get_db),
 ) -> FlightResponse:
     service = build_flight_service(db)
 
-    flight = service.get_flight(flight_id)
+    flight = service.get_flight(str(flight_id))
 
     return FlightResponse(**flight_to_dict(flight))

@@ -15,7 +15,7 @@ dependencies = [
   "alembic-postgresql-enum==1.10.0",
   "psycopg2-binary==2.9.11",
   "PyJWT==2.12.1",
-  "passlib[bcrypt]==1.7.4",
+  "bcrypt==4.0.1",
   "pydantic-settings==2.13.1",
   "email-validator==2.3.0",
   "python-multipart==0.0.22",
@@ -60,4 +60,3 @@ source = ["app"]
 show_missing = true
 skip_covered = false
 fail_under = 85
-

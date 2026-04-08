@@ -17,3 +17,10 @@ class DocumentResponse(BaseModel):
     storage_bucket: str
     is_private: bool
     uploaded_at: datetime
+    status: str
+    reviewed_at: datetime | None = None
+    reviewed_by_user_id: str | None = None
+
+
+class AdminDocumentReviewRequest(BaseModel):
+    status: str = "approved"

@@ -4,13 +4,19 @@ import { adminRoutes } from '@/app/router/routes/admin.routes'
 import { authRoutes } from '@/app/router/routes/auth.routes'
 import { checkoutRoutes } from '@/app/router/routes/checkout.routes'
 import { errorRoutes } from '@/app/router/routes/error.routes'
+import { RouteErrorBoundary } from '@/app/router/RouteErrorBoundary'
 import { publicRoutes } from '@/app/router/routes/public.routes'
 
 export const router = createBrowserRouter([
-  ...publicRoutes,
-  ...authRoutes,
-  ...checkoutRoutes,
-  ...accountRoutes,
-  ...adminRoutes,
-  ...errorRoutes,
+  {
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      ...publicRoutes,
+      ...authRoutes,
+      ...checkoutRoutes,
+      ...accountRoutes,
+      ...adminRoutes,
+      ...errorRoutes,
+    ],
+  },
 ])

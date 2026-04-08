@@ -1,4 +1,4 @@
-.PHONY: install dev migrate makemigrations seed seed-coupons seed-demo create-admin test test-cov lint security up down logs restart up-test-db down-test-db test-postgres runtime-check smoke-local up-staging down-staging logs-staging smoke-staging up-production down-production logs-production smoke-production release-preflight release-verify-demo
+.PHONY: install dev migrate makemigrations seed seed-coupons seed-demo create-admin test test-cov lint security up down logs restart up-test-db down-test-db test-postgres runtime-check smoke-local load-smoke up-staging down-staging logs-staging smoke-staging up-production down-production logs-production smoke-production release-preflight release-verify-demo release-gate-staging release-gate-production
 
 install:
 	pip install --upgrade pip==25.2
@@ -69,6 +69,9 @@ runtime-check:
 smoke-local:
 	python scripts/smoke_local_stack.py --expected-environment development
 
+load-smoke:
+	./.venv/bin/python scripts/load_smoke.py --base-url $${LOAD_SMOKE_BASE_URL:-http://127.0.0.1:8000/api/v1}
+
 up-staging:
 	docker compose --env-file .env.staging -f infra/docker/docker-compose.staging.yml up -d --build
 
@@ -98,3 +101,21 @@ release-preflight:
 
 release-verify-demo:
 	python scripts/release_verify_demo.py --base-url $${RELEASE_BASE_URL:-http://localhost:8081/api/v1}
+
+release-gate-staging:
+	python scripts/release_gate.py \
+		--base-url $${RELEASE_GATE_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8080}} \
+		--api-base-url $${RELEASE_GATE_API_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8080}/api/v1} \
+		--expected-environment staging \
+		--prometheus-url $${RELEASE_GATE_PROMETHEUS_URL:-http://localhost:$${HOST_PROMETHEUS_PORT:-9090}} \
+		--seed-command "docker compose --env-file .env.staging -f infra/docker/docker-compose.staging.yml exec -T app python -m scripts.seed_demo_environment"
+
+release-gate-production:
+	python scripts/release_gate.py \
+		--env-file $${APP_ENV_FILE:-.env.production} \
+		--check-local-files \
+		--base-url $${RELEASE_GATE_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8081}} \
+		--api-base-url $${RELEASE_GATE_API_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8081}/api/v1} \
+		--expected-environment production \
+		--skip-seed \
+		--skip-demo

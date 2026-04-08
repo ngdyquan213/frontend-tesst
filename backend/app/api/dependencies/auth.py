@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -9,16 +9,22 @@ from app.core.exceptions import AuthenticationAppException, AuthorizationAppExce
 from app.core.security import decode_access_token
 from app.models.enums import UserStatus
 from app.models.user import User
+from app.utils.auth_cookies import get_access_token_from_request
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
 
 
 def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
+    request: Request,
+    token: Annotated[str | None, Depends(oauth2_scheme)],
     db: Session = Depends(get_db),
 ) -> User:
+    resolved_token = token or get_access_token_from_request(request)
+    if not resolved_token:
+        raise AuthenticationAppException("Invalid authentication credentials")
+
     try:
-        payload = decode_access_token(token)
+        payload = decode_access_token(resolved_token)
     except ValueError as exc:
         raise AuthenticationAppException("Invalid authentication credentials") from exc
 

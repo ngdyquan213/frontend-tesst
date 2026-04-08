@@ -7,6 +7,37 @@ const PAYMENT_METHOD_ICON_BY_TYPE: Record<string, PaymentMethod['icon']> = {
   wallet: 'account_balance_wallet',
 }
 
+const LIVE_PAYMENT_METHOD_PRESETS: Record<string, PaymentMethod> = {
+  stripe: {
+    id: 'stripe',
+    type: 'card',
+    title: 'Card via Stripe',
+    description: 'Visa, Mastercard, and other supported cards through Stripe.',
+    icon: 'credit_card',
+  },
+  vnpay: {
+    id: 'vnpay',
+    type: 'wallet',
+    title: 'VNPay',
+    description: 'Redirect checkout through the VNPay gateway.',
+    icon: 'account_balance_wallet',
+  },
+  momo: {
+    id: 'momo',
+    type: 'wallet',
+    title: 'MoMo',
+    description: 'Use your MoMo wallet for supported payments.',
+    icon: 'account_balance_wallet',
+  },
+  manual: {
+    id: 'manual',
+    type: 'bank',
+    title: 'Manual Settlement',
+    description: 'Reserved for assisted or offline payment handling.',
+    icon: 'account_balance',
+  },
+}
+
 function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1)
 }
@@ -23,12 +54,13 @@ function formatReference(id: string, fallbackPrefix: string) {
 export function mapApiBookingToBooking(apiBooking: ApiBooking): Booking {
   const bookingStatus = normalizeStatus(apiBooking.booking_status || apiBooking.status)
   const paymentStatus = normalizeStatus(apiBooking.payment_status)
+  const travelDateLabel = apiBooking.travel_date || apiBooking.booking_date || apiBooking.created_at
 
   return {
     id: apiBooking.id,
     reference: apiBooking.booking_code || formatReference(apiBooking.id, 'BK'),
     tourId: apiBooking.tour_id ?? '',
-    scheduleId: '',
+    scheduleId: apiBooking.schedule_id ?? '',
     travelerIds: [],
     status:
       bookingStatus === 'confirmed'
@@ -37,13 +69,17 @@ export function mapApiBookingToBooking(apiBooking: ApiBooking): Booking {
           ? 'cancelled'
           : bookingStatus === 'completed'
             ? 'confirmed'
-            : 'processing',
+            : bookingStatus === 'pending'
+              ? 'pending'
+              : 'processing',
+    paymentStatus,
     total: apiBooking.total_final_amount ?? apiBooking.total_price,
+    currency: apiBooking.currency,
     createdAt: apiBooking.created_at,
     notes:
       paymentStatus.length > 0
-        ? `Travel date ${apiBooking.travel_date}. Payment status: ${capitalize(paymentStatus)}.`
-        : `Travel date ${apiBooking.travel_date}.`,
+        ? `Travel date ${travelDateLabel}. Payment status: ${capitalize(paymentStatus)}.`
+        : `Travel date ${travelDateLabel}.`,
   }
 }
 
@@ -73,17 +109,52 @@ export function getDefaultPaymentMethods(): PaymentMethod[] {
   ]
 }
 
+export function getLivePaymentMethods(options?: { includeStripe?: boolean }): PaymentMethod[] {
+  const includeStripe = options?.includeStripe ?? false
+
+  return Object.values(LIVE_PAYMENT_METHOD_PRESETS).filter(
+    (method) => includeStripe || method.id !== 'stripe'
+  )
+}
+
 export function mapApiPaymentMethod(raw: Record<string, unknown>): PaymentMethod {
+  const normalizedId = normalizeStatus(
+    typeof raw.id === 'string'
+      ? raw.id
+      : typeof raw.code === 'string'
+        ? raw.code
+        : typeof raw.payment_method === 'string'
+          ? raw.payment_method
+          : typeof raw.type === 'string'
+            ? raw.type
+            : ''
+  )
+
+  if (normalizedId && LIVE_PAYMENT_METHOD_PRESETS[normalizedId]) {
+    const preset = LIVE_PAYMENT_METHOD_PRESETS[normalizedId]
+
+    return {
+      ...preset,
+      title: String(raw.title ?? raw.name ?? preset.title),
+      description: String(raw.description ?? raw.summary ?? preset.description),
+    }
+  }
+
   const normalizedType =
     typeof raw.type === 'string'
       ? raw.type
       : typeof raw.payment_method_type === 'string'
         ? raw.payment_method_type
         : 'card'
-  const type = (normalizeStatus(normalizedType) || 'card') as PaymentMethod['type']
+  const normalizedUiType = normalizeStatus(normalizedType)
+  const type = (
+    normalizedUiType === 'bank' || normalizedUiType === 'wallet' || normalizedUiType === 'card'
+      ? normalizedUiType
+      : 'card'
+  ) as PaymentMethod['type']
 
   return {
-    id: String(raw.id ?? raw.code ?? type),
+    id: String(raw.id ?? raw.code ?? normalizedId ?? type),
     type,
     title: String(raw.title ?? raw.name ?? capitalize(type)),
     description: String(raw.description ?? raw.summary ?? `${capitalize(type)} payments are supported.`),
@@ -101,13 +172,16 @@ export function mapApiPaymentToPaymentRecord(apiPayment: ApiPayment, methods = g
     methodId: matchedMethod?.id ?? apiPayment.payment_method ?? methods[0]?.id ?? 'card',
     amount: apiPayment.amount,
     status:
-      paymentStatus === 'completed' || paymentStatus === 'success'
+      paymentStatus === 'completed' ||
+      paymentStatus === 'success' ||
+      paymentStatus === 'paid' ||
+      paymentStatus === 'refunded'
         ? 'success'
+        : paymentStatus === 'authorized' || paymentStatus === 'processing'
+          ? 'processing'
         : paymentStatus === 'failed' || paymentStatus === 'cancelled'
           ? 'failed'
-          : paymentStatus === 'processing'
-            ? 'processing'
-            : 'pending',
+          : 'pending',
   }
 }
 
@@ -141,14 +215,19 @@ export function mapApiRefundToRefundRecord(apiRefund: ApiRefund): RefundRecord {
     id: apiRefund.id,
     bookingId: apiRefund.booking_id ?? '',
     amount: apiRefund.amount,
+    currency: apiRefund.currency,
     status:
       refundStatus === 'paid'
         ? 'paid'
-        : refundStatus === 'approved'
+        : refundStatus === 'approved' || refundStatus === 'processed'
           ? 'approved'
-          : refundStatus === 'pending' || refundStatus === 'review'
-            ? 'review'
-            : 'draft',
+        : refundStatus === 'failed'
+          ? 'failed'
+        : refundStatus === 'cancelled'
+          ? 'cancelled'
+        : refundStatus === 'pending' || refundStatus === 'review'
+          ? 'review'
+          : 'draft',
     reason: apiRefund.reason || 'Refund request submitted.',
     createdAt: apiRefund.created_at,
     timeline: buildRefundTimeline(apiRefund),

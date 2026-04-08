@@ -152,7 +152,22 @@ Expected result:
 - `/health/ready` returns `200`
 - readiness reports database, Redis, email worker, notification backend, malware scan, and outbox as `true`
 - Prometheus reports the `secure-travel-app` target as `up`
-- baseline alert rules for Redis, outbox, payment callbacks, and rate-limit backend failures are loaded
+- baseline alert rules for app target health, readiness degradation, Redis, outbox, payment callbacks, HTTP 5xx spikes, and rate-limit backend failures are loaded
+
+### Fast Gate
+
+Once the stack is up, run the full pilot gate in one command:
+
+```powershell
+make release-gate-staging
+```
+
+This sequence runs:
+
+- health and Prometheus smoke checks
+- deterministic demo seed inside the staging app container
+- seeded traveler journey verification
+- lightweight API load smoke
 
 ### Tear Down
 
@@ -229,6 +244,26 @@ Expected result:
 - `/health/ready` returns `200`
 - readiness reports database, Redis, storage, email worker, notification backend, malware scan, and outbox as healthy against the configured external services
 
+### Fast Gate
+
+After the production stack is up, run the consolidated release gate:
+
+```powershell
+make release-gate-production
+```
+
+This runs:
+
+- `release_preflight`
+- HTTP smoke verification
+- lightweight API load smoke
+
+If the target also contains the deterministic QA seed, rerun with the demo verification enabled:
+
+```powershell
+python scripts/release_gate.py --env-file .env.production --check-local-files --base-url http://localhost:8081 --api-base-url http://localhost:8081/api/v1 --expected-environment production
+```
+
 ### Tear Down
 
 ```powershell
@@ -244,10 +279,12 @@ make test-postgres
 make smoke-local
 make up-staging
 make smoke-staging
+make release-gate-staging
 make logs-staging
 make down-staging
 make up-production
 make smoke-production
+make release-gate-production
 make logs-production
 make down-production
 make release-preflight
@@ -255,6 +292,17 @@ make release-verify-demo
 ```
 
 If `make` is unavailable on Windows, run the underlying Docker and Python commands directly.
+
+## Manual GitHub Gate
+
+For shared staging or production rehearsal against an already-running deployment, use
+[release-gate-manual.yml](/Users/quan.nguyen/Desktop/stitch_travelbook_public_shell_guide/.github/workflows/release-gate-manual.yml).
+
+Recommended usage:
+
+- use `expected_environment=staging` plus `prometheus_url` for staging rehearsal
+- provide `env_file` only when the runner can access the real env material needed for `release_preflight`
+- keep `skip_load=false` unless the target should avoid even lightweight smoke traffic
 
 ## Demo Seed For Frontend and QA
 
@@ -310,5 +358,5 @@ Two repo-local helpers are now available for release-grade verification:
 
 See also:
 
-- [release-checklist.md](/E:/secure-travel-booking-platform-test/docs/release-checklist.md)
-- [backup-restore-runbook.md](/E:/secure-travel-booking-platform-test/docs/backup-restore-runbook.md)
+- [release-checklist.md](/Users/quan.nguyen/Desktop/stitch_travelbook_public_shell_guide/backend/docs/release-checklist.md)
+- [backup-restore-runbook.md](/Users/quan.nguyen/Desktop/stitch_travelbook_public_shell_guide/backend/docs/backup-restore-runbook.md)

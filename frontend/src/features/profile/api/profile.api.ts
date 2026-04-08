@@ -1,13 +1,19 @@
-import { resolveAfter } from '@/shared/api/apiClient'
-import { users } from '@/shared/api/mockData'
+import { mapApiUserToAppUser } from '@/shared/lib/auth'
+import { apiClient } from '@/shared/api/apiClient'
 
 export const profileApi = {
-  getProfile: () => resolveAfter(users.traveler),
-  updateProfile: async (payload: { name: string; location: string }) => {
-    users.traveler.name = payload.name
-    users.traveler.location = payload.location
-    return resolveAfter(users.traveler)
+  getProfile: async () => {
+    const user = await apiClient.getMe()
+    return mapApiUserToAppUser(user)
   },
-  changePassword: () => resolveAfter(true),
+  updateProfile: async (payload: { name: string }) => {
+    const user = await apiClient.updateMe({ full_name: payload.name })
+    return mapApiUserToAppUser(user)
+  },
+  changePassword: async (payload: { currentPassword: string; newPassword: string }) => {
+    await apiClient.changeMyPassword({
+      current_password: payload.currentPassword,
+      new_password: payload.newPassword,
+    })
+  },
 }
-

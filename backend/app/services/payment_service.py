@@ -10,8 +10,9 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import ConflictAppException, NotFoundAppException, ValidationAppException
 from app.core.logging import build_log_extra
-from app.models.enums import LogActorType, PaymentMethod, PaymentStatus
+from app.models.enums import LogActorType, PaymentMethod, PaymentStatus, RefundStatus
 from app.models.payment import Payment
+from app.models.refund import Refund
 from app.repositories.booking_repository import BookingRepository
 from app.repositories.payment_repository import PaymentRepository
 from app.services.application_service import ApplicationService
@@ -258,6 +259,84 @@ class PaymentService(ApplicationService):
         )
         self.commit_and_refresh(payment)
         return payment
+
+    def get_payment(self, *, payment_id: str, user_id: str) -> Payment:
+        payment = self.payment_repo.get_by_id(payment_id)
+        if not payment or not payment.booking_id:
+            raise NotFoundAppException("Payment not found")
+
+        booking = self.booking_repo.get_by_id_and_user_id(str(payment.booking_id), user_id)
+        if not booking:
+            raise NotFoundAppException("Payment not found")
+
+        return payment
+
+    def create_refund_request(
+        self,
+        *,
+        booking_id: str,
+        user_id: str,
+        reason: str,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+    ) -> Refund:
+        booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)
+        if not booking:
+            raise ValidationAppException("Booking not found")
+
+        normalized_reason = reason.strip()
+        if not normalized_reason:
+            raise ValidationAppException("Refund reason is required")
+
+        payment = self.payment_repo.get_latest_by_booking_id_for_update(booking_id)
+        if not payment:
+            raise ConflictAppException("This booking does not have a paid charge to refund")
+
+        payment_status = enum_to_str(payment.status)
+        if payment_status != PaymentStatus.paid.value:
+            raise ConflictAppException("Only paid bookings can be submitted for refund review")
+
+        existing_refund = self.payment_repo.get_latest_refund_for_payment_for_update(
+            str(payment.id)
+        )
+        if existing_refund:
+            existing_status = enum_to_str(existing_refund.status)
+            if existing_status in {RefundStatus.pending.value, RefundStatus.processed.value}:
+                raise ConflictAppException("A refund request already exists for this booking")
+
+        refund_amount = Decimal(payment.amount)
+        if refund_amount <= Decimal("0.00"):
+            raise ValidationAppException("Invalid refund amount")
+
+        refund = Refund(
+            payment_id=payment.id,
+            amount=refund_amount,
+            currency=payment.currency,
+            status=RefundStatus.pending,
+            reason=normalized_reason,
+            processed_at=None,
+        )
+        normalized_ip = normalize_ip(ip_address)
+
+        self.payment_repo.add_refund(refund)
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=booking.user_id,
+            action="refund_requested",
+            resource_type="refund",
+            resource_id=refund.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={
+                "booking_id": str(booking.id),
+                "booking_code": booking.booking_code,
+                "payment_id": str(payment.id),
+                "amount": str(refund.amount),
+                "currency": refund.currency,
+            },
+        )
+        self.commit_and_refresh(refund)
+        return refund
 
     def get_booking_payment_status(self, *, booking_id: str, user_id: str):
         booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)

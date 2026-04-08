@@ -11,11 +11,13 @@ function buildCheckoutQueryString(params?: {
   tourId?: string
   scheduleId?: string
   paymentId?: string
+  bookingId?: string
 }) {
   return buildQueryString({
     tourId: params?.tourId,
     scheduleId: params?.scheduleId,
     paymentId: params?.paymentId,
+    bookingId: params?.bookingId,
   })
 }
 
@@ -35,13 +37,23 @@ export function buildTourSchedulesPath(id?: string) {
   return ROUTES.public.tourSchedules.replace(':id', encodeURIComponent(id))
 }
 
-export function buildCheckoutPath(params?: { tourId?: string; scheduleId?: string; paymentId?: string }) {
+export function buildCheckoutPath(params?: {
+  tourId?: string
+  scheduleId?: string
+  paymentId?: string
+  bookingId?: string
+}) {
   const queryString = buildCheckoutQueryString(params)
 
   return queryString ? `${ROUTES.checkout}?${queryString}` : ROUTES.checkout
 }
 
-export function buildPaymentPath(params?: { tourId?: string; scheduleId?: string; paymentId?: string }) {
+export function buildPaymentPath(params?: {
+  tourId?: string
+  scheduleId?: string
+  paymentId?: string
+  bookingId?: string
+}) {
   const queryString = buildCheckoutQueryString(params)
 
   return queryString ? `${ROUTES.payment}?${queryString}` : ROUTES.payment
@@ -49,7 +61,7 @@ export function buildPaymentPath(params?: { tourId?: string; scheduleId?: string
 
 export function buildPaymentResultPath(
   result: 'success' | 'failed',
-  params?: { tourId?: string; scheduleId?: string; paymentId?: string },
+  params?: { tourId?: string; scheduleId?: string; paymentId?: string; bookingId?: string },
 ) {
   const basePath = result === 'success' ? ROUTES.paymentSuccess : ROUTES.paymentFailed
   const queryString = buildCheckoutQueryString(params)

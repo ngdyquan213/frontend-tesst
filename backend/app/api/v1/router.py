@@ -4,6 +4,7 @@ from app.api.v1 import (
     admin_bookings,
     admin_coupons,
     admin_dashboard,
+    admin_documents,
     admin_exports,
     admin_payments,
     admin_refunds,
@@ -17,7 +18,10 @@ from app.api.v1 import (
     coupons,
     flights,
     hotels,
+    notifications,
     payments,
+    refunds,
+    support,
     tours,
     uploads,
     users,
@@ -29,6 +33,7 @@ api_router.include_router(auth.router)
 api_router.include_router(users.router)
 api_router.include_router(flights.router)
 api_router.include_router(hotels.router)
+api_router.include_router(notifications.router)
 api_router.include_router(tours.router)
 api_router.include_router(bookings.router)
 api_router.include_router(booking_travelers.router)
@@ -36,12 +41,15 @@ api_router.include_router(booking_vouchers.router)
 api_router.include_router(booking_cancellations.router)
 api_router.include_router(coupons.router)
 api_router.include_router(payments.router)
+api_router.include_router(refunds.router)
+api_router.include_router(support.router)
 api_router.include_router(uploads.router)
 
 api_router.include_router(admin_users.router)
 api_router.include_router(admin_bookings.router)
 api_router.include_router(admin_payments.router)
 api_router.include_router(admin_coupons.router)
+api_router.include_router(admin_documents.router)
 api_router.include_router(admin_tours.router)
 api_router.include_router(admin_refunds.router)
 api_router.include_router(admin_exports.router)

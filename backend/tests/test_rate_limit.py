@@ -1,9 +1,12 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.testclient import TestClient
 
 from app.core.metrics import operational_metrics
 from app.middleware import rate_limit_middleware
 from app.middleware.rate_limit_middleware import RateLimitMiddleware
+from app.middleware.request_id_middleware import RequestIDMiddleware
+from app.middleware.security_headers_middleware import SecurityHeadersMiddleware
 
 
 def raise_redis_down(_key):
@@ -109,3 +112,72 @@ def test_rate_limit_fails_open_for_non_sensitive_path_when_redis_is_unavailable(
 
     assert resp.status_code == 200
     assert operational_metrics.snapshot()["rate_limit_backend_failures_total"] == 1
+
+
+def test_login_rate_limit_is_scoped_per_email_address():
+    app = create_test_app(max_requests=1, window_seconds=60)
+
+    @app.post("/api/v1/auth/login")
+    def login():
+        return {"status": "ok"}
+
+    with TestClient(app) as client:
+        first_user_resp = client.post(
+            "/api/v1/auth/login",
+            json={"email": "traveler.one@example.com", "password": "wrong-password"},
+        )
+        second_user_resp = client.post(
+            "/api/v1/auth/login",
+            json={"email": "traveler.two@example.com", "password": "wrong-password"},
+        )
+        repeated_user_resp = client.post(
+            "/api/v1/auth/login",
+            json={"email": "traveler.one@example.com", "password": "wrong-password"},
+        )
+
+    assert first_user_resp.status_code == 200
+    assert second_user_resp.status_code == 200
+    assert repeated_user_resp.status_code == 429
+    assert repeated_user_resp.json()["detail"] == "Rate limit exceeded"
+
+
+def test_rate_limited_login_response_keeps_cors_and_outer_headers():
+    app = FastAPI()
+    app.add_middleware(
+        RateLimitMiddleware,
+        max_requests=1,
+        window_seconds=60,
+    )
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(RequestIDMiddleware)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://127.0.0.1:4173"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    @app.post("/api/v1/auth/login")
+    def login():
+        return {"status": "ok"}
+
+    with TestClient(app) as client:
+        client.post(
+            "/api/v1/auth/login",
+            json={"email": "traveler.one@example.com", "password": "wrong-password"},
+            headers={"Origin": "http://127.0.0.1:4173"},
+        )
+        blocked_response = client.post(
+            "/api/v1/auth/login",
+            json={"email": "traveler.one@example.com", "password": "wrong-password"},
+            headers={"Origin": "http://127.0.0.1:4173"},
+        )
+
+    assert blocked_response.status_code == 429
+    assert blocked_response.headers["access-control-allow-origin"] == "http://127.0.0.1:4173"
+    assert blocked_response.headers["access-control-allow-credentials"] == "true"
+    assert blocked_response.headers["x-frame-options"] == "DENY"
+    assert blocked_response.headers["x-content-type-options"] == "nosniff"
+    assert blocked_response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert blocked_response.headers["x-request-id"]

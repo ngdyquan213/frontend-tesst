@@ -63,6 +63,13 @@ class UploadedDocument(Base):
     storage_bucket: Mapped[str] = mapped_column(String(255), nullable=False)
     storage_key: Mapped[str] = mapped_column(Text, nullable=False)
     checksum_sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    status: Mapped[str] = mapped_column(String(30), nullable=False, default="pending")
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reviewed_by_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     is_private: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -71,7 +78,11 @@ class UploadedDocument(Base):
     )
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    user: Mapped[User] = relationship("User", back_populates="uploaded_documents")
+    user: Mapped[User] = relationship(
+        "User",
+        back_populates="uploaded_documents",
+        foreign_keys=[user_id],
+    )
     booking: Mapped[Booking | None] = relationship("Booking", back_populates="uploaded_documents")
     traveler: Mapped[Traveler | None] = relationship(
         "Traveler", back_populates="uploaded_documents"

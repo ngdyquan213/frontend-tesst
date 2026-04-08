@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import (
+    build_checkout_service,
     build_payment_callback_service,
     build_payment_service,
     get_current_user,
@@ -9,18 +10,94 @@ from app.api.deps import (
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.exceptions import AppException, NotFoundAppException
+from app.models.enums import PaymentMethod
+from app.schemas.booking import BookingResponse
 from app.schemas.payment import (
     PaymentCallbackRequest,
     PaymentCallbackResponse,
+    PaymentCheckoutResponse,
     PaymentInitiateRequest,
+    PaymentMethodOptionResponse,
     PaymentResponse,
     PaymentStatusResponse,
+    TourCheckoutRequest,
 )
 from app.utils.enums import enum_to_str
 from app.utils.request_context import get_client_ip, get_user_agent
-from app.utils.response_mappers import payment_to_dict
+from app.utils.response_mappers import booking_to_dict, payment_to_dict
 
 router = APIRouter(prefix="/payments", tags=["payments"])
+
+
+def _build_available_payment_methods() -> list[PaymentMethodOptionResponse]:
+    methods = [
+        PaymentMethodOptionResponse(
+            id=PaymentMethod.manual.value,
+            type="bank",
+            title="Manual Settlement",
+            description="Create the booking now and settle payment with the operations team.",
+        ),
+        PaymentMethodOptionResponse(
+            id=PaymentMethod.vnpay.value,
+            type="wallet",
+            title="VNPay",
+            description="Redirect checkout through the VNPay gateway.",
+        ),
+        PaymentMethodOptionResponse(
+            id=PaymentMethod.momo.value,
+            type="wallet",
+            title="MoMo",
+            description="Use your MoMo wallet for supported payments.",
+        ),
+    ]
+
+    if settings.STRIPE_SECRET_KEY.strip():
+        methods.append(
+            PaymentMethodOptionResponse(
+                id=PaymentMethod.stripe.value,
+                type="card",
+                title="Card via Stripe",
+                description="Visa, Mastercard, and other supported cards through Stripe.",
+            )
+        )
+
+    return methods
+
+
+@router.get("/methods", response_model=list[PaymentMethodOptionResponse])
+def list_payment_methods() -> list[PaymentMethodOptionResponse]:
+    return _build_available_payment_methods()
+
+
+@router.post(
+    "/checkout/tours",
+    response_model=PaymentCheckoutResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_tour_checkout(
+    payload: TourCheckoutRequest,
+    request: Request,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+) -> PaymentCheckoutResponse:
+    service = build_checkout_service(db)
+
+    booking, payment = service.create_tour_checkout(
+        user_id=str(current_user.id),
+        user_email=current_user.email,
+        user_full_name=current_user.full_name,
+        payload=payload,
+        payment_method=payload.payment_method,
+        idempotency_key=idempotency_key,
+        ip_address=get_client_ip(request),
+        user_agent=get_user_agent(request),
+    )
+
+    return PaymentCheckoutResponse(
+        booking=BookingResponse(**booking_to_dict(booking)),
+        payment=PaymentResponse(**payment_to_dict(payment)),
+    )
 
 
 @router.post("/initiate", response_model=PaymentResponse, status_code=status.HTTP_201_CREATED)
@@ -129,6 +206,20 @@ def simulate_payment_success(
     except Exception as exc:
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
+    return PaymentResponse(**payment_to_dict(payment))
+
+
+@router.get("/{payment_id}", response_model=PaymentResponse)
+def get_payment(
+    payment_id: str,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PaymentResponse:
+    service = build_payment_service(db)
+    payment = service.get_payment(
+        payment_id=payment_id,
+        user_id=str(current_user.id),
+    )
     return PaymentResponse(**payment_to_dict(payment))
 
 

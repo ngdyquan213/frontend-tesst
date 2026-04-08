@@ -11,6 +11,26 @@ groups:
           summary: Redis dependency is failing readiness checks
           description: Redis is unhealthy from the application point of view for more than 2 minutes.
 
+      - alert: SecureTravelAppTargetDown
+        expr: up{job="secure-travel-app"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: secure-travel-app
+        annotations:
+          summary: Application scrape target is down
+          description: Prometheus has been unable to scrape the secure-travel-app target for more than 2 minutes.
+
+      - alert: SecureTravelReadinessDegraded
+        expr: min by (job) (secure_travel_dependency_ready{job="secure-travel-app"}) == 0
+        for: 3m
+        labels:
+          severity: critical
+          service: secure-travel-app
+        annotations:
+          summary: Application readiness is degraded
+          description: At least one readiness dependency has been failing for more than 3 minutes.
+
       - alert: SecureTravelOutboxBacklogHigh
         expr: secure_travel_outbox_backlog{job="secure-travel-app"} > 25
         for: 5m
@@ -40,6 +60,16 @@ groups:
         annotations:
           summary: Payment callback failures spiked
           description: At least 3 payment callback failures were observed within 10 minutes.
+
+      - alert: SecureTravelHttp5xxSpike
+        expr: increase(secure_travel_http_server_error_responses_total{job="secure-travel-app"}[10m]) >= 3
+        for: 0m
+        labels:
+          severity: warning
+          service: secure-travel-app
+        annotations:
+          summary: HTTP 5xx responses spiked
+          description: At least 3 server-side HTTP failures were observed within 10 minutes.
 
       - alert: SecureTravelRateLimitBackendFailures
         expr: increase(secure_travel_rate_limit_backend_failures_total{job="secure-travel-app"}[10m]) > 0

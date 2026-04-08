@@ -21,6 +21,11 @@ TEST_DATABASE_URL = os.getenv(
     f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{TEST_DB_NAME}",
 )
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
+os.environ.setdefault("SECRET_KEY", "test-secret-key-abcdefghijklmnopqrstuvwxyz-123456")
+os.environ.setdefault(
+    "PAYMENT_CALLBACK_SECRET",
+    "test-payment-callback-secret-abcdefghijklmnopqrstuvwxyz",
+)
 
 database_module = import_module("app.core.database")
 redis_module = import_module("app.core.redis")
@@ -32,7 +37,6 @@ run_migrations = import_module("tests.alembic_utils").run_migrations
 
 os.environ.pop("DATABASE_URL", None)
 
-pytest_plugins = ("tests.conftest_postgres",)
 get_db = database_module.get_db
 app = main_module.app
 

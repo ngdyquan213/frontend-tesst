@@ -238,6 +238,7 @@ def test_metrics_endpoint_returns_operational_snapshot(monkeypatch):
     assert response.status_code == 200
     assert response.json()["http_requests_total"] == 2
     assert response.json()["http_error_responses_total"] == 1
+    assert response.json()["http_server_error_responses_total"] == 1
     assert response.json()["payment_callback_failures_total"] == 1
     assert response.json()["payment_callback_failures_by_reason"] == {
         "invalid_signature": 1
@@ -303,6 +304,7 @@ def test_prometheus_metrics_endpoint_returns_text_snapshot(monkeypatch):
         'Platform"} 1' in body
     )
     assert "secure_travel_dependency_ready" in body
+    assert "secure_travel_http_server_error_responses_total" in body
     assert 'dependency="redis"' in body
     assert "secure_travel_outbox_backlog" in body
     assert (
@@ -453,3 +455,19 @@ def test_prometheus_metrics_allow_proxy_forwarded_ip_in_observability_allowlist(
 
     assert response.status_code == 200
     assert "secure_travel_app_info" in response.text
+
+
+def test_live_endpoint_sets_security_headers(monkeypatch):
+    from app import main as main_module
+
+    monkeypatch.setattr(main_module, "start_runtime_maintenance_loop", lambda: (None, None))
+    monkeypatch.setattr(main_module, "run_startup_checks", lambda: None)
+    monkeypatch.setattr(main_module, "run_noncritical_maintenance", lambda: None)
+
+    with TestClient(main_module.app) as client:
+        response = client.get("/health/live")
+
+    assert response.status_code == 200
+    assert response.headers["x-frame-options"] == "DENY"
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"

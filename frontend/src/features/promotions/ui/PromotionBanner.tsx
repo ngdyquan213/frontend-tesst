@@ -2,6 +2,7 @@ import { ArrowRight, CalendarDays, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/shared/ui/Badge'
 import { cn } from '@/shared/lib/cn'
+import { resolvePromotionCta } from '@/features/promotions/lib/resolvePromotionCta'
 import {
   promotionStatusLabels,
   type PromotionBannerData,
@@ -32,6 +33,9 @@ function formatPromotionWindow(validFrom: string, validUntil?: string) {
 }
 
 export function PromotionBanner({ banner }: PromotionBannerProps) {
+  const primaryCta = resolvePromotionCta(banner.primaryCta)
+  const secondaryCta = banner.secondaryCta ? resolvePromotionCta(banner.secondaryCta) : null
+
   return (
     <div className="relative overflow-hidden rounded-[2rem] border border-[color:var(--color-outline-variant)] bg-[color:var(--color-primary)] shadow-[0_32px_80px_rgba(0,17,58,0.22)]">
       <div className="absolute inset-0">
@@ -68,18 +72,18 @@ export function PromotionBanner({ banner }: PromotionBannerProps) {
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              to={banner.primaryCta.href}
+              to={primaryCta.href}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[color:var(--color-primary)] transition-all hover:-translate-y-0.5"
             >
-              {banner.primaryCta.label}
+              {primaryCta.label}
               <ArrowRight className="h-4 w-4" />
             </Link>
-            {banner.secondaryCta ? (
+            {secondaryCta ? (
               <Link
-                to={banner.secondaryCta.href}
+                to={secondaryCta.href}
                 className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/16"
               >
-                {banner.secondaryCta.label}
+                {secondaryCta.label}
               </Link>
             ) : null}
           </div>

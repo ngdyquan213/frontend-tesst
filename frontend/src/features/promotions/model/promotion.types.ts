@@ -7,6 +7,8 @@ export interface PromotionCta {
   label: string
   href: string
   kind: PromotionActionKind
+  liveHref?: string
+  liveLabel?: string
 }
 
 export interface PromotionBannerData {

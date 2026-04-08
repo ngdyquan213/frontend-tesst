@@ -64,3 +64,13 @@ class BookingResponse(BaseModel):
     currency: str
     payment_status: PaymentStatus
     booked_at: datetime
+    booking_type: str | None = None
+    flight_id: str | None = None
+    hotel_id: str | None = None
+    hotel_room_id: str | None = None
+    tour_id: str | None = None
+    schedule_id: str | None = None
+    travel_date: date | None = None
+    number_of_travelers: int | None = None
+    created_at: datetime | None = None
+    updated_at: datetime | None = None

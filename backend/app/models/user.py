@@ -18,7 +18,8 @@ if TYPE_CHECKING:
     from app.models.document import UploadedDocument
     from app.models.payment import Payment
     from app.models.role import UserRole
-    from app.models.system import AppSetting
+    from app.models.support import SupportTicket
+    from app.models.system import AppSetting, NotificationReadState
 
 
 class User(Base, TimestampMixin):
@@ -68,7 +69,9 @@ class User(Base, TimestampMixin):
     bookings: Mapped[list[Booking]] = relationship("Booking", back_populates="user")
     coupon_usages: Mapped[list[CouponUsage]] = relationship("CouponUsage", back_populates="user")
     uploaded_documents: Mapped[list[UploadedDocument]] = relationship(
-        "UploadedDocument", back_populates="user"
+        "UploadedDocument",
+        back_populates="user",
+        foreign_keys="UploadedDocument.user_id",
     )
     audit_logs: Mapped[list[AuditLog]] = relationship("AuditLog", back_populates="actor_user")
     security_events: Mapped[list[SecurityEvent]] = relationship(
@@ -79,9 +82,18 @@ class User(Base, TimestampMixin):
         back_populates="initiated_by_user",
         foreign_keys="Payment.initiated_by",
     )
+    support_tickets: Mapped[list["SupportTicket"]] = relationship(
+        "SupportTicket",
+        back_populates="user",
+    )
     created_coupons: Mapped[list[Coupon]] = relationship("Coupon", back_populates="creator")
     updated_app_settings: Mapped[list[AppSetting]] = relationship(
         "AppSetting", back_populates="updated_by_user"
+    )
+    notification_read_states: Mapped[list["NotificationReadState"]] = relationship(
+        "NotificationReadState",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
 
 

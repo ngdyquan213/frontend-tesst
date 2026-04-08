@@ -31,6 +31,19 @@ class DocumentRepository:
     def count_by_user_id(self, user_id: str) -> int:
         return self.db.query(UploadedDocument).filter(UploadedDocument.user_id == user_id).count()
 
+    def list_for_admin(self, skip: int = 0, limit: int = 50) -> list[UploadedDocument]:
+        return (
+            self.db.query(UploadedDocument)
+            .filter(UploadedDocument.deleted_at.is_(None))
+            .order_by(
+                UploadedDocument.status.asc(),
+                UploadedDocument.uploaded_at.desc(),
+            )
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
     def get_by_id(self, document_id: str) -> UploadedDocument | None:
         return self.db.query(UploadedDocument).filter(UploadedDocument.id == document_id).first()
 
@@ -40,6 +53,16 @@ class DocumentRepository:
             .filter(
                 UploadedDocument.id == document_id,
                 UploadedDocument.user_id == user_id,
+                UploadedDocument.deleted_at.is_(None),
+            )
+            .first()
+        )
+
+    def get_by_id_for_admin(self, document_id: str) -> UploadedDocument | None:
+        return (
+            self.db.query(UploadedDocument)
+            .filter(
+                UploadedDocument.id == document_id,
                 UploadedDocument.deleted_at.is_(None),
             )
             .first()

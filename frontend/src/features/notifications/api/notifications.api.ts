@@ -1,18 +1,50 @@
-import { resolveAfter } from '@/shared/api/apiClient'
+import { env } from '@/app/config/env'
+import { apiClient, resolveAfter } from '@/shared/api/apiClient'
 import { notifications } from '@/shared/api/mockData'
+import type { NotificationItemResponse } from '@/shared/types/api'
 
-export const notificationsApi = {
-  getNotifications: () => resolveAfter(notifications),
-  markNotificationRead: async (id: string) => {
-    const notification = notifications.find((item) => item.id === id)
-    if (notification) notification.read = true
-    return resolveAfter(notification)
-  },
-  markAllNotificationsRead: async () => {
-    notifications.forEach((notification) => {
-      notification.read = true
-    })
-    return resolveAfter(notifications)
-  },
+function sortNewestFirst<T extends { createdAt: string }>(items: T[]) {
+  return [...items].sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime())
 }
 
+function mapApiNotification(notification: NotificationItemResponse) {
+  return {
+    id: notification.id,
+    title: notification.title,
+    body: notification.body,
+    type: notification.type,
+    createdAt: notification.created_at,
+    read: notification.read,
+  }
+}
+
+export const notificationsApi = {
+  getNotifications: async () => {
+    if (env.enableMocks) {
+      return resolveAfter(notifications)
+    }
+
+    const response = await apiClient.getNotifications()
+    return sortNewestFirst(response.items.map(mapApiNotification))
+  },
+  markNotificationRead: async (id: string) => {
+    if (env.enableMocks) {
+      const notification = notifications.find((item) => item.id === id)
+      if (notification) notification.read = true
+      return resolveAfter(notification)
+    }
+
+    return mapApiNotification(await apiClient.markNotificationRead(id))
+  },
+  markAllNotificationsRead: async () => {
+    if (env.enableMocks) {
+      notifications.forEach((notification) => {
+        notification.read = true
+      })
+      return resolveAfter(notifications)
+    }
+
+    const response = await apiClient.markAllNotificationsRead()
+    return sortNewestFirst(response.items.map(mapApiNotification))
+  },
+}

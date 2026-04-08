@@ -9,9 +9,9 @@ import urllib.error
 import urllib.request
 
 REQUIRED_HEADERS = {
-    "X-Frame-Options": "DENY",
-    "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "x-frame-options": "DENY",
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "strict-origin-when-cross-origin",
 }
 
 
@@ -39,7 +39,7 @@ def fetch(base_url: str, path: str) -> tuple[int, dict[str, str], bytes]:
     request = urllib.request.Request(f"{base_url}{path}")
     with urllib.request.urlopen(request, timeout=10) as response:
         status = response.getcode()
-        headers = dict(response.headers.items())
+        headers = {key.lower(): value for key, value in response.headers.items()}
         body = response.read()
     return status, headers, body
 
@@ -126,7 +126,7 @@ def main() -> int:
         "Prometheus metrics payload is missing secure_travel_app_info",
     )
     assert_true(
-        metrics_prom_headers.get("Content-Type", "").startswith("text/plain"),
+        metrics_prom_headers.get("content-type", "").startswith("text/plain"),
         "Prometheus metrics content type should be text/plain",
     )
 
@@ -177,9 +177,12 @@ def main() -> int:
             if rule.get("type") == "alerting"
         }
         expected_alerts = {
+            "SecureTravelAppTargetDown",
             "SecureTravelRedisDown",
+            "SecureTravelReadinessDegraded",
             "SecureTravelOutboxBacklogHigh",
             "SecureTravelPaymentCallbackFailuresSpike",
+            "SecureTravelHttp5xxSpike",
             "SecureTravelRateLimitBackendFailures",
         }
         missing_alerts = sorted(expected_alerts - alert_names)

@@ -14,11 +14,13 @@ from app.repositories.document_repository import DocumentRepository
 from app.repositories.flight_repository import FlightRepository
 from app.repositories.hotel_repository import HotelRepository
 from app.repositories.payment_repository import PaymentRepository
+from app.repositories.support_repository import SupportRepository
 from app.repositories.tour_repository import TourRepository
 from app.repositories.user_repository import UserRepository
 from app.services.admin_bulk_service import AdminBulkService
 from app.services.admin_coupon_service import AdminCouponService
 from app.services.admin_dashboard_service import AdminDashboardService
+from app.services.admin_document_service import AdminDocumentService
 from app.services.admin_export_service import AdminExportService
 from app.services.admin_service import AdminService
 from app.services.admin_tour_service import AdminTourService
@@ -30,16 +32,19 @@ from app.services.booking_cancellation_domain_service import BookingCancellation
 from app.services.booking_cancellation_service import BookingCancellationService
 from app.services.booking_inventory_service import BookingInventoryService
 from app.services.booking_service import BookingService
+from app.services.checkout_service import CheckoutService
 from app.services.coupon_service import CouponService
 from app.services.flight_service import FlightService
 from app.services.hotel_booking_service import HotelBookingService
 from app.services.hotel_service import HotelService
 from app.services.malware_scan_service import MalwareScanService
+from app.services.notification_service import NotificationService
 from app.services.payment_callback_domain_service import PaymentCallbackDomainService
 from app.services.payment_callback_service import PaymentCallbackService
 from app.services.payment_service import PaymentService
 from app.services.pdf_voucher_service import PDFVoucherService
 from app.services.storage_service import StorageService
+from app.services.support_service import SupportService
 from app.services.tour_booking_service import TourBookingService
 from app.services.tour_service import TourService
 from app.services.traveler_service import TravelerService
@@ -96,6 +101,10 @@ class ServiceRegistry:
     @cached_property
     def payment_repo(self) -> PaymentRepository:
         return PaymentRepository(self.db)
+
+    @cached_property
+    def support_repo(self) -> SupportRepository:
+        return SupportRepository(self.db)
 
     @cached_property
     def tour_repo(self) -> TourRepository:
@@ -216,6 +225,13 @@ class ServiceRegistry:
             admin_bulk_service=self.build_admin_bulk_service(),
         )
 
+    def build_admin_document_service(self) -> AdminDocumentService:
+        return AdminDocumentService(
+            db=self.db,
+            document_repo=self.document_repo,
+            audit_service=self.audit_service,
+        )
+
     def build_auth_service(self) -> AuthService:
         return AuthService(
             db=self.db,
@@ -263,6 +279,18 @@ class ServiceRegistry:
             audit_service=self.audit_service,
         )
 
+    def build_checkout_service(self) -> CheckoutService:
+        return CheckoutService(
+            db=self.db,
+            booking_repo=self.booking_repo,
+            tour_repo=self.tour_repo,
+            payment_repo=self.payment_repo,
+            audit_service=self.audit_service,
+            email_worker=self.email_worker,
+            notification_worker=self.notification_worker,
+            gateway_service=self.build_payment_service().gateway_service,
+        )
+
     def build_payment_service(self) -> PaymentService:
         return PaymentService(
             db=self.db,
@@ -270,6 +298,17 @@ class ServiceRegistry:
             payment_repo=self.payment_repo,
             audit_service=self.audit_service,
             email_worker=self.email_worker,
+        )
+
+    def build_notification_service(self) -> NotificationService:
+        return NotificationService(db=self.db)
+
+    def build_support_service(self) -> SupportService:
+        return SupportService(
+            db=self.db,
+            support_repo=self.support_repo,
+            booking_repo=self.booking_repo,
+            audit_service=self.audit_service,
         )
 
     def build_payment_callback_service(self) -> PaymentCallbackService:
@@ -354,4 +393,5 @@ class ServiceRegistry:
         return UserService(
             db=self.db,
             audit_service=self.audit_service,
+            user_repo=self.user_repo,
         )

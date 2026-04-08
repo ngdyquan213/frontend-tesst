@@ -1,5 +1,7 @@
 import { create } from 'zustand'
+import { env } from '@/app/config/env'
 import { apiClient } from '@/shared/api/apiClient'
+import { authStorage } from '@/shared/storage/auth.storage'
 import type { AuthResponse, User } from '@/shared/types/api'
 
 interface AuthState {
@@ -35,37 +37,35 @@ function getErrorMessage(error: unknown, fallback: string) {
 }
 
 function persistAuth(response: AuthResponse) {
-  localStorage.setItem('access_token', response.access_token)
-  if (response.refresh_token) {
-    localStorage.setItem('refresh_token', response.refresh_token)
+  if (!env.enableMocks) {
+    return
   }
-  localStorage.setItem('token_type', response.token_type)
-  localStorage.setItem(
-    'token_expires_at',
-    String(Date.now() + (response.expires_in ?? 60 * 60) * 1000)
-  )
+
+  authStorage.setAccessToken(response.access_token)
+  if (response.refresh_token) {
+    authStorage.setRefreshToken(response.refresh_token)
+  }
+  authStorage.setTokenType(response.token_type)
+  authStorage.setTokenExpiresAt(String(Date.now() + (response.expires_in ?? 60 * 60) * 1000))
 }
 
 function clearPersistedAuth() {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-  localStorage.removeItem('token_type')
-  localStorage.removeItem('token_expires_at')
+  authStorage.clearAuth()
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  token: localStorage.getItem('access_token'),
-  refreshToken: localStorage.getItem('refresh_token'),
-  isAuthenticated: Boolean(localStorage.getItem('access_token')),
+  token: env.enableMocks ? authStorage.getAccessToken() : null,
+  refreshToken: env.enableMocks ? authStorage.getRefreshToken() : null,
+  isAuthenticated: env.enableMocks ? Boolean(authStorage.getAccessToken()) : false,
   isInitializing: true,
   isLoading: false,
   error: null,
 
   initializeAuth: async () => {
-    const token = localStorage.getItem('access_token')
+    const token = env.enableMocks ? authStorage.getAccessToken() : null
 
-    if (!token) {
+    if (env.enableMocks && !token) {
       set({
         user: null,
         token: null,
@@ -77,11 +77,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     try {
-      const user = await apiClient.getMe()
+      const user = await apiClient.getMe({ skipAuthRedirect: true })
       set({
         user,
         token,
-        refreshToken: localStorage.getItem('refresh_token'),
+        refreshToken: env.enableMocks ? authStorage.getRefreshToken() : null,
         isAuthenticated: true,
         isInitializing: false,
       })
@@ -103,12 +103,17 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const response = await apiClient.login(email, password)
       persistAuth(response)
+      set({
+        token: env.enableMocks ? response.access_token : null,
+        refreshToken: env.enableMocks ? response.refresh_token ?? authStorage.getRefreshToken() : null,
+        isAuthenticated: true,
+      })
       const user = response.user ?? await apiClient.getMe()
 
       set({
         user,
-        token: response.access_token,
-        refreshToken: response.refresh_token ?? localStorage.getItem('refresh_token'),
+        token: env.enableMocks ? response.access_token : null,
+        refreshToken: env.enableMocks ? response.refresh_token ?? authStorage.getRefreshToken() : null,
         isAuthenticated: true,
         isLoading: false,
       })
@@ -126,12 +131,17 @@ export const useAuthStore = create<AuthState>((set) => ({
       await apiClient.register(email, password, name)
       const response = await apiClient.login(email, password)
       persistAuth(response)
+      set({
+        token: env.enableMocks ? response.access_token : null,
+        refreshToken: env.enableMocks ? response.refresh_token ?? authStorage.getRefreshToken() : null,
+        isAuthenticated: true,
+      })
       const user = response.user ?? await apiClient.getMe()
 
       set({
         user,
-        token: response.access_token,
-        refreshToken: response.refresh_token ?? localStorage.getItem('refresh_token'),
+        token: env.enableMocks ? response.access_token : null,
+        refreshToken: env.enableMocks ? response.refresh_token ?? authStorage.getRefreshToken() : null,
         isAuthenticated: true,
         isLoading: false,
       })

@@ -4,7 +4,7 @@ import { ProfileForm } from '@/features/profile/ui/ProfileForm'
 
 const ProfilePage = () => (
   <div className="space-y-10">
-    <PageHeader title="Profile" description="Update your main traveler profile and contact details." />
+    <PageHeader title="Profile" description="Review the account profile now loading from the backend." />
     <div className="grid gap-6 lg:grid-cols-[0.7fr_1.3fr]">
       <ProfileCard />
       <ProfileForm />
@@ -13,4 +13,3 @@ const ProfilePage = () => (
 )
 
 export default ProfilePage
-

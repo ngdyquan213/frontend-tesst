@@ -74,6 +74,24 @@ def seed_demo_booking(
 ) -> Booking:
     booking = db.query(Booking).filter(Booking.booking_code == DEMO_BOOKING_CODE).first()
     if booking:
+        booking.status = BookingStatus.confirmed
+        booking.payment_status = PaymentStatus.paid
+        booking.cancelled_at = None
+        booking.cancellation_reason = None
+        booking.notes = "Deterministic demo booking for frontend and QA handoff."
+
+        for payment in booking.payments:
+            payment.status = PaymentStatus.paid
+            payment.failure_reason = None
+            payment.failed_at = None
+            payment.paid_at = payment.paid_at or (
+                DEMO_ANCHOR_DATETIME + timedelta(hours=1, minutes=5)
+            )
+
+        for payment in booking.payments:
+            for refund in list(payment.refunds):
+                db.delete(refund)
+
         return booking
 
     total_base_amount = Decimal(flight.base_price)

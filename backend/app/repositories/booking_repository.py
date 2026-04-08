@@ -10,6 +10,25 @@ class BookingRepository:
     def __init__(self, db: Session) -> None:
         self.db = db
 
+    @staticmethod
+    def _with_relations(query):
+        return query.options(
+            joinedload(Booking.items)
+            .joinedload(BookingItem.flight)
+            .joinedload(Flight.departure_airport),
+            joinedload(Booking.items)
+            .joinedload(BookingItem.flight)
+            .joinedload(Flight.arrival_airport),
+            joinedload(Booking.items)
+            .joinedload(BookingItem.hotel_room)
+            .joinedload(HotelRoom.hotel),
+            joinedload(Booking.items)
+            .joinedload(BookingItem.tour_schedule)
+            .joinedload(TourSchedule.tour),
+            joinedload(Booking.travelers),
+            joinedload(Booking.user),
+        )
+
     def add_booking(self, booking: Booking) -> Booking:
         self.db.add(booking)
         self.db.flush()
@@ -39,48 +58,19 @@ class BookingRepository:
         return self.db.query(Booking).filter(Booking.user_id == user_id).count()
 
     def get_by_id(self, booking_id: str) -> Booking | None:
-        return (
-            self.db.query(Booking)
-            .options(
-                joinedload(Booking.items)
-                .joinedload(BookingItem.flight)
-                .joinedload(Flight.departure_airport),
-                joinedload(Booking.items)
-                .joinedload(BookingItem.flight)
-                .joinedload(Flight.arrival_airport),
-                joinedload(Booking.items)
-                .joinedload(BookingItem.hotel_room)
-                .joinedload(HotelRoom.hotel),
-                joinedload(Booking.items)
-                .joinedload(BookingItem.tour_schedule)
-                .joinedload(TourSchedule.tour),
-                joinedload(Booking.travelers),
-                joinedload(Booking.user),
-            )
-            .filter(Booking.id == booking_id)
-            .first()
-        )
+        return self._with_relations(self.db.query(Booking)).filter(Booking.id == booking_id).first()
 
     def get_by_id_and_user_id(self, booking_id: str, user_id: str) -> Booking | None:
         return (
-            self.db.query(Booking)
-            .options(
-                joinedload(Booking.items)
-                .joinedload(BookingItem.flight)
-                .joinedload(Flight.departure_airport),
-                joinedload(Booking.items)
-                .joinedload(BookingItem.flight)
-                .joinedload(Flight.arrival_airport),
-                joinedload(Booking.items)
-                .joinedload(BookingItem.hotel_room)
-                .joinedload(HotelRoom.hotel),
-                joinedload(Booking.items)
-                .joinedload(BookingItem.tour_schedule)
-                .joinedload(TourSchedule.tour),
-                joinedload(Booking.travelers),
-                joinedload(Booking.user),
-            )
+            self._with_relations(self.db.query(Booking))
             .filter(Booking.id == booking_id, Booking.user_id == user_id)
+            .first()
+        )
+
+    def get_by_booking_code_and_user_id(self, booking_code: str, user_id: str) -> Booking | None:
+        return (
+            self._with_relations(self.db.query(Booking))
+            .filter(Booking.booking_code == booking_code, Booking.user_id == user_id)
             .first()
         )
 

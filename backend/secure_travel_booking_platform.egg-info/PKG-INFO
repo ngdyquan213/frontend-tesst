@@ -10,7 +10,7 @@ Requires-Dist: alembic
 Requires-Dist: alembic-postgresql-enum
 Requires-Dist: psycopg2-binary
 Requires-Dist: PyJWT>=2.10.0
-Requires-Dist: passlib[bcrypt]
+Requires-Dist: bcrypt==4.0.1
 Requires-Dist: pydantic-settings
 Requires-Dist: email-validator
 Requires-Dist: python-multipart

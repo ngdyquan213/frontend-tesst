@@ -1,8 +1,19 @@
 import { useTravelersQuery } from '@/features/travelers/queries/useTravelersQuery'
 import { Card } from '@/shared/ui/Card'
+import { EmptyState } from '@/shared/ui/EmptyState'
 
 export const TravelerList = () => {
   const { data } = useTravelersQuery()
+
+  if (!data || data.length === 0) {
+    return (
+      <EmptyState
+        title="No travelers added yet"
+        description="Traveler records will show up here when they are attached to live bookings."
+      />
+    )
+  }
+
   return (
     <div className="grid gap-4">
       {data?.map((traveler) => (
@@ -17,4 +28,3 @@ export const TravelerList = () => {
     </div>
   )
 }
-

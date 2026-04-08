@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useToast } from '@/app/providers/ToastProvider'
 import { useResetPasswordMutation } from '@/features/auth/queries/useResetPasswordMutation'
 import { FormField } from '@/shared/forms/FormField'
@@ -43,8 +43,11 @@ export const ResetPasswordForm = () => {
         <Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
       </FormField>
       <Button className="w-full" type="submit" disabled={!resetToken || password.trim().length === 0}>
-        Update password
+        {mutation.isPending ? 'Updating...' : 'Update password'}
       </Button>
+      <Link className="inline-flex text-sm font-semibold text-secondary" to="/auth/login">
+        Back to login
+      </Link>
     </form>
   )
 }

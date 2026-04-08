@@ -24,7 +24,7 @@ def test_get_my_profile_logs_audit_and_commits():
 
     db = FakeDB()
     audit_service = FakeAuditService()
-    service = UserService(db=db, audit_service=audit_service)
+    service = UserService(db=db, audit_service=audit_service, user_repo=SimpleNamespace())
     current_user = SimpleNamespace(id="user-1")
 
     result = service.get_my_profile(
@@ -57,7 +57,7 @@ def test_get_my_profile_rolls_back_when_audit_fails():
             raise RuntimeError("audit failed")
 
     db = FakeDB()
-    service = UserService(db=db, audit_service=FakeAuditService())
+    service = UserService(db=db, audit_service=FakeAuditService(), user_repo=SimpleNamespace())
 
     try:
         service.get_my_profile(current_user=SimpleNamespace(id="user-1"))

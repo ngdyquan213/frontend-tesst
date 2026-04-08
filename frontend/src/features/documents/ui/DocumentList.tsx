@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useDocumentsQuery } from '@/features/documents/queries/useDocumentsQuery'
+import { VerificationStatus } from '@/features/documents/ui/VerificationStatus'
 import { Card } from '@/shared/ui/Card'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { Skeleton } from '@/shared/ui/Skeleton'
@@ -34,7 +35,10 @@ export const DocumentList = () => {
       {data.map((document) => (
         <Card key={document.id} className="flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-primary">{document.title}</h3>
+            <div className="flex items-center gap-3">
+              <h3 className="font-bold text-primary">{document.title}</h3>
+              <VerificationStatus status={document.status} />
+            </div>
             <p className="text-sm text-on-surface-variant">{document.notes}</p>
           </div>
           <Link className="text-sm font-semibold text-secondary" to={`/account/documents/${document.id}`}>

@@ -1,5 +1,6 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
+from app.models.booking import Booking
 from app.models.payment import Payment, PaymentCallback
 from app.models.refund import Refund
 
@@ -99,7 +100,56 @@ class PaymentRepository:
     def get_refund_by_id(self, refund_id: str) -> Refund | None:
         return self.db.query(Refund).filter(Refund.id == refund_id).first()
 
+    def get_latest_refund_for_payment(self, payment_id: str) -> Refund | None:
+        return (
+            self.db.query(Refund)
+            .filter(Refund.payment_id == payment_id)
+            .order_by(Refund.created_at.desc())
+            .first()
+        )
+
+    def get_latest_refund_for_payment_for_update(self, payment_id: str) -> Refund | None:
+        return (
+            self.db.query(Refund)
+            .filter(Refund.payment_id == payment_id)
+            .order_by(Refund.created_at.desc())
+            .with_for_update()
+            .first()
+        )
+
     def save_refund(self, refund: Refund) -> Refund:
         self.db.add(refund)
         self.db.flush()
         return refund
+
+    def list_refunds_for_user(self, *, user_id: str, skip: int, limit: int) -> list[Refund]:
+        return (
+            self.db.query(Refund)
+            .options(joinedload(Refund.payment))
+            .join(Payment, Refund.payment_id == Payment.id)
+            .join(Booking, Payment.booking_id == Booking.id)
+            .filter(Booking.user_id == user_id)
+            .order_by(Refund.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
+    def count_refunds_for_user(self, *, user_id: str) -> int:
+        return (
+            self.db.query(Refund)
+            .join(Payment, Refund.payment_id == Payment.id)
+            .join(Booking, Payment.booking_id == Booking.id)
+            .filter(Booking.user_id == user_id)
+            .count()
+        )
+
+    def get_refund_by_id_for_user(self, *, refund_id: str, user_id: str) -> Refund | None:
+        return (
+            self.db.query(Refund)
+            .options(joinedload(Refund.payment))
+            .join(Payment, Refund.payment_id == Payment.id)
+            .join(Booking, Payment.booking_id == Booking.id)
+            .filter(Refund.id == refund_id, Booking.user_id == user_id)
+            .first()
+        )

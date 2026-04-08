@@ -27,11 +27,11 @@ export const refundsApi = {
     const response = await apiClient.getRefund(id)
     return mapApiRefundToRefundRecord(response)
   },
-  createRefundRequest: async ({ reason }: { reason: string }) => {
+  createRefundRequest: async ({ bookingId, reason }: { bookingId: string; reason: string }) => {
     if (env.enableMocks) {
       refunds.unshift({
         id: `refund-${refunds.length + 1}`,
-        bookingId: 'booking-1',
+        bookingId,
         amount: 320,
         status: 'draft',
         reason,
@@ -41,7 +41,7 @@ export const refundsApi = {
       return resolveAfter(refunds[0])
     }
 
-    const response = await apiClient.createRefundRequest({ reason })
+    const response = await apiClient.createRefundRequest({ booking_id: bookingId, reason })
     return mapApiRefundToRefundRecord(response)
   },
 }

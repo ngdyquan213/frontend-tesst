@@ -37,6 +37,7 @@ if TYPE_CHECKING:
     from app.models.flight import Flight
     from app.models.hotel import HotelRoom
     from app.models.payment import Payment
+    from app.models.support import SupportTicket
     from app.models.tour import TourSchedule
     from app.models.user import User
 
@@ -112,6 +113,10 @@ class Booking(Base, TimestampMixin):
         "Payment",
         back_populates="booking",
         cascade="all, delete-orphan",
+    )
+    support_tickets: Mapped[list["SupportTicket"]] = relationship(
+        "SupportTicket",
+        back_populates="booking",
     )
     uploaded_documents: Mapped[list[UploadedDocument]] = relationship(
         "UploadedDocument", back_populates="booking"
