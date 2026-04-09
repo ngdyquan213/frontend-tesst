@@ -38,8 +38,6 @@ const PaymentPage = () => {
   const createPaymentIntentMutation = useCreatePaymentIntentMutation()
   const paymentMethodsQuery = useAvailablePaymentMethodsQuery()
   const availablePaymentMethods = filterSupportedCheckoutPaymentMethods(paymentMethodsQuery.data ?? [])
-  const hasHiddenUnsupportedPaymentMethods =
-    (paymentMethodsQuery.data?.length ?? 0) > availablePaymentMethods.length
   const [selectedMethodId, setSelectedMethodId] = useState<string>('')
   const primaryActionLabel = getPrimaryActionLabel(selectedMethodId)
 
@@ -95,8 +93,8 @@ const PaymentPage = () => {
         !paymentMethodsQuery.isError &&
         availablePaymentMethods.length === 0 ? (
           <Alert tone="info">
-            Self-service gateway payments are temporarily unavailable for checkout. Please contact
-            support or try again later.
+            No payment methods are available for this checkout right now. Please contact support or
+            try again later.
           </Alert>
         ) : null}
 
@@ -114,14 +112,8 @@ const PaymentPage = () => {
 
         {selectedMethodId === 'manual' ? (
           <Alert tone="info">
-            Manual settlement is the only production-supported checkout method right now. The booking
-            stays pending until the offline payment is reviewed.
-          </Alert>
-        ) : null}
-
-        {hasHiddenUnsupportedPaymentMethods ? (
-          <Alert tone="info">
-            Online gateway methods are hidden until the end-to-end payment flow is production-ready.
+            Manual settlement creates the booking now and keeps payment pending until your offline
+            transfer is reviewed.
           </Alert>
         ) : null}
 

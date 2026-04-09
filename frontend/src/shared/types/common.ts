@@ -12,7 +12,10 @@ export interface AppUser {
   id: string
   name: string
   email: string
+  emailVerified: boolean
   role: Exclude<AppRole, 'guest'>
+  roles: string[]
+  permissions: string[]
   avatar: string
   title: string
   initials: string

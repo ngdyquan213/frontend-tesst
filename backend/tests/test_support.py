@@ -9,14 +9,21 @@ from app.models.role import Permission, Role, RolePermission, UserRole
 from app.models.user import User
 
 
-def create_user_and_login(client, db_session, email: str, username: str):
+def create_user_and_login(
+    client,
+    db_session,
+    email: str,
+    username: str,
+    *,
+    email_verified: bool = True,
+):
     user = User(
         email=email,
         username=username,
         full_name=username,
         password_hash=get_password_hash("Password123"),
         status=UserStatus.active,
-        email_verified=True,
+        email_verified=email_verified,
         phone_verified=False,
         failed_login_count=0,
     )
@@ -126,6 +133,35 @@ def test_create_support_ticket_uses_authenticated_account_identity(client, db_se
     body = response.json()
     assert body["requester_name"] == "Verified Traveler"
     assert body["requester_email"] == "support-identity@example.com"
+
+
+def test_create_support_ticket_requires_verified_email(client, db_session):
+    _user, token = create_user_and_login(
+        client,
+        db_session,
+        "support-unverified@example.com",
+        "support_unverified",
+        email_verified=False,
+    )
+
+    response = client.post(
+        "/api/v1/support/tickets",
+        json={
+            "full_name": "Traveler Unverified",
+            "email": "support-unverified@example.com",
+            "topic_id": "payments",
+            "subject": "Need help with account-linked payment follow-up",
+            "message": (
+                "Please help with this payment follow-up because I still need the "
+                "request attached to the right account."
+            ),
+            "booking_reference": None,
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 403
+    assert "verify your email" in response.json()["message"].lower()
 
 
 def test_support_ticket_detail_is_scoped_to_owner(client, db_session):

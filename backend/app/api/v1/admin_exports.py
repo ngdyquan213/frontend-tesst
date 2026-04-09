@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, Query, Request
-from fastapi.responses import Response
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.api.deps import build_admin_export_service, require_permission
@@ -27,7 +27,7 @@ def export_bookings_csv(
     db: Session = Depends(get_db),
 ):
     export_service = build_admin_export_service(db)
-    csv_bytes = export_service.export_bookings_csv(
+    csv_stream = export_service.stream_bookings_csv(
         status=status,
         payment_status=payment_status,
         booking_code=booking_code,
@@ -39,8 +39,8 @@ def export_bookings_csv(
     )
 
     filename = f"bookings_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.csv"
-    return Response(
-        content=csv_bytes,
+    return StreamingResponse(
+        csv_stream,
         media_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
@@ -57,7 +57,7 @@ def export_refunds_csv(
     db: Session = Depends(get_db),
 ):
     export_service = build_admin_export_service(db)
-    csv_bytes = export_service.export_refunds_csv(
+    csv_stream = export_service.stream_refunds_csv(
         status=status,
         payment_id=payment_id,
         sort_by=sort_by,
@@ -68,8 +68,8 @@ def export_refunds_csv(
     )
 
     filename = f"refunds_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.csv"
-    return Response(
-        content=csv_bytes,
+    return StreamingResponse(
+        csv_stream,
         media_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
@@ -82,15 +82,15 @@ def export_audit_logs_csv(
     db: Session = Depends(get_db),
 ):
     export_service = build_admin_export_service(db)
-    csv_bytes = export_service.export_audit_logs_csv(
+    csv_stream = export_service.stream_audit_logs_csv(
         actor_user_id=current_user.id,
         ip_address=get_client_ip(request),
         user_agent=get_user_agent(request),
     )
 
     filename = f"audit_logs_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.csv"
-    return Response(
-        content=csv_bytes,
+    return StreamingResponse(
+        csv_stream,
         media_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ROUTES } from '@/shared/constants/routes'
+import { getDefaultSignedInPath, hasAdminAccess } from '@/shared/lib/auth'
 import { Button } from '@/shared/ui/Button'
 import { useAuth } from '@/app/providers/AuthProvider'
 
@@ -17,6 +18,8 @@ export const MainHeader = () => {
   const location = useLocation()
   const { user, logout } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const userHomePath = user ? getDefaultSignedInPath(user) : ROUTES.accountDashboard
+  const showsAdminLink = hasAdminAccess(user)
 
   useEffect(() => {
     setIsMobileMenuOpen(false)
@@ -50,9 +53,9 @@ export const MainHeader = () => {
               <>
                 <Link
                   className="rounded-full border border-outline-variant/30 px-4 py-2 text-sm font-semibold text-primary"
-                  to={user.role === 'admin' ? '/admin' : '/account'}
+                  to={userHomePath}
                 >
-                  {user.role === 'admin' ? 'Admin' : 'My Account'}
+                  {showsAdminLink ? 'Admin' : 'My Account'}
                 </Link>
                 <Button onClick={logout} variant="ghost">
                   Sign out
@@ -76,9 +79,9 @@ export const MainHeader = () => {
           {user ? (
             <Link
               className="rounded-full border border-outline-variant/30 px-3 py-2 text-sm font-semibold text-primary md:hidden"
-              to={user.role === 'admin' ? '/admin' : '/account'}
+              to={userHomePath}
             >
-              {user.role === 'admin' ? 'Admin' : 'Account'}
+              {showsAdminLink ? 'Admin' : 'Account'}
             </Link>
           ) : (
             <Link

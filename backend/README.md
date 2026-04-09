@@ -21,10 +21,11 @@ This project is positioned as a backend security lab: it implements core booking
 - JWT authentication, RBAC, ownership checks, refresh-token rotation
 - Server-side booking amount calculation and transactional inventory updates
 - Payment idempotency, callback signature verification, replay detection, amount/currency validation
-- Live-ready Stripe payment initiation and webhook verification path alongside legacy mock callbacks
+- Stripe payment initiation and webhook verification code paths exist, but the tracked production scope keeps self-service gateway checkout disabled until an explicit rollout is completed
 - Callback source allowlist based on IP/CIDR ranges
 - Upload extension, MIME, and file-signature validation
-- Optional malware scan hook for uploads with `mock` and `clamav` backends
+- Malware scan hooks for uploads with `mock` and `clamav` backends, with `clamav` enforced in staging/production
+- Admin CSV exports stream in batches so large exports do not need to be materialized fully in memory
 - Structured logging for HTTP requests, payment flows, outbox processing, and startup checks
 - Basic operational metrics at `GET /metrics`:
   - `http_requests_total`
@@ -72,7 +73,7 @@ This project is positioned as a backend security lab: it implements core booking
 - `TRUSTED_HOSTS` must be explicitly configured and cannot fall back to a wildcard.
 - Bundled Nginx now overwrites inbound `X-Forwarded-For` and clears `Forwarded` before proxying so observability allowlists, rate limiting, and audit logs are not influenced by client-supplied proxy headers.
 - `OBSERVABILITY_PROTECTION_MODE=allowlist` is required in staging/production, and `OBSERVABILITY_ALLOWLIST` should contain only the monitoring/private networks that may reach readiness and metrics endpoints.
-- Upload malware scanning is optional and controlled through:
+- Upload malware scanning is required in staging/production and controlled through:
   - `UPLOAD_MALWARE_SCAN_ENABLED`
   - `UPLOAD_MALWARE_SCAN_BACKEND`
   - `CLAMAV_HOST`
@@ -83,7 +84,7 @@ This project is positioned as a backend security lab: it implements core booking
   - `SECRET_MANAGER_PROVIDER`
   - `SECRET_MANAGER_SECRET_ID`
   - `SECRET_MANAGER_AWS_REGION`
-- Stripe integration is controlled through:
+- Stripe integration settings remain available for a future rollout, but the tracked production checkout scope defaults to manual settlement:
   - `STRIPE_SECRET_KEY`
   - `STRIPE_PUBLISHABLE_KEY`
   - `STRIPE_WEBHOOK_SECRET`

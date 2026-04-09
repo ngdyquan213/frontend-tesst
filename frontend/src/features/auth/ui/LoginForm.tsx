@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useToast } from '@/app/providers/ToastProvider'
 import { validateLoginPayload } from '@/features/auth/model/auth.schema'
 import { useLoginMutation } from '@/features/auth/queries/useLoginMutation'
+import { getDefaultSignedInPath } from '@/shared/lib/auth'
 import { FormField } from '@/shared/forms/FormField'
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
@@ -33,8 +34,7 @@ export const LoginForm = () => {
         try {
           const user = await mutation.mutateAsync(validation.data)
           pushToast(`Welcome back, ${user.name}`, 'success')
-          const redirectTo =
-            location.state?.from?.pathname ?? (user.role === 'admin' ? '/admin' : '/account')
+          const redirectTo = location.state?.from?.pathname ?? getDefaultSignedInPath(user)
           navigate(redirectTo)
         } catch {
           return

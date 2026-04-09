@@ -11,7 +11,9 @@ def test_staging_env_example_exists_and_exposes_expected_profile():
     assert env["EMAIL_WORKER_BACKEND"] == "smtp"
     assert env["NOTIFICATION_WORKER_BACKEND"] == "redis"
     assert env["OBSERVABILITY_PROTECTION_MODE"] == "allowlist"
+    assert env["API_DOCS_ENABLED"] == "false"
     assert env["OUTBOX_HEALTH_MODE"] == "required"
+    assert env["ENABLED_PAYMENT_METHODS"] == "manual"
 
 
 def test_production_env_example_exists_and_exposes_expected_profile():
@@ -24,4 +26,6 @@ def test_production_env_example_exists_and_exposes_expected_profile():
     assert env["EMAIL_WORKER_BACKEND"] == "smtp"
     assert env["NOTIFICATION_WORKER_BACKEND"] == "redis"
     assert env["OBSERVABILITY_PROTECTION_MODE"] == "allowlist"
+    assert env["API_DOCS_ENABLED"] == "false"
     assert env["OUTBOX_HEALTH_MODE"] == "required"
+    assert env["ENABLED_PAYMENT_METHODS"] == "manual"

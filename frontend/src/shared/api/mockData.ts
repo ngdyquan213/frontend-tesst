@@ -22,7 +22,10 @@ export const users: Record<'traveler' | 'admin', AppUser> = {
     id: 'user-1',
     name: 'Alexander Sterling',
     email: 'alex@travelbook.com',
+    emailVerified: true,
     role: 'traveler',
+    roles: ['traveler'],
+    permissions: [],
     avatar:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuC8NctUnY51kyN15zd5djtZ1KbskbbSpYDwO9NVMY5f6UO5k9h2WR5pCw2xPaWtt4lJlgDjAXRl9tnAaq8Dk3wdPkv1lTy2GU7M2KGeyUVjAkcBvyP2VLLldI9O243UkqEzaZt3SgIvyA3R0-Fq6cReIlH-Z6wr5fjtw_6JG-YkTcVUl9tbHjJYGrEUF1rMMYK6IOlBpMPXtsHMtSYIbuR-JgHFpAbiRrFSb-lul7G4Coe2JazW_HdpnAymQZCHa-kGq8FNSO4SgO3f',
     title: 'Account Holder',
@@ -34,7 +37,10 @@ export const users: Record<'traveler' | 'admin', AppUser> = {
     id: 'admin-1',
     name: 'Alex Rivera',
     email: 'admin@travelbook.com',
+    emailVerified: true,
     role: 'admin',
+    roles: ['admin'],
+    permissions: ['admin:*'],
     avatar:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuAUswMTQ-AcgjhZRKwshF60h_-Gr_WnxoySPbhOGNjFuFBVSzP1g0KOIrencena0sXy5W6QIQnOhrF87Q4yVTI9FwP7-r7B0PmF6w0mxxgZVKSPXEnoa3KquyjzKAdA9-pLlbw47P42A52kuuXHhISXyWt43Bfi1v7vYklvpJEiPx1vbltxEtT85KrObjgzkvsXARkEy3bOqu-z3O8jWD_U0q9SziYYliAg6i7A0TFgVXEUmuxJoBSc0THQIquc6fOImu6VE-zQZw8m',
     title: 'Senior Operator',

@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { screen, waitFor } from '@testing-library/react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useRoutes } from 'react-router-dom'
 import { AuthGuard } from '@/app/router/guards/AuthGuard'
+import { authRoutes } from '@/app/router/routes/auth.routes'
 import { env } from '@/app/config/env'
 import { authApi } from '@/features/auth/api/auth.api'
 import { useAuthStore } from '@/features/auth/model/auth.store'
@@ -74,6 +75,70 @@ describe('auth flow', () => {
       expect(verifyEmailSpy).toHaveBeenCalledWith('test-verify-token')
     })
     expect(await screen.findByText(/your email is now verified/i)).toBeInTheDocument()
+  })
+
+  it('allows signed-in users to complete the verification link flow', async () => {
+    const verifyEmailSpy = vi.spyOn(authApi, 'verifyEmail').mockResolvedValue(true)
+    const getMeSpy = vi.spyOn(apiClient, 'getMe').mockResolvedValue({
+      id: 'traveler-verify-1',
+      email: 'traveler@example.com',
+      name: 'Traveler One',
+      full_name: 'Traveler One',
+      email_verified: true,
+      role: 'traveler',
+      roles: ['traveler'],
+      permissions: [],
+      created_at: '2026-04-09T00:00:00.000Z',
+      updated_at: '2026-04-09T00:00:00.000Z',
+    })
+    const initializeAuthSpy = vi.spyOn(useAuthStore.getState(), 'initializeAuth').mockResolvedValue()
+
+    useAuthStore.setState({
+      user: {
+        id: 'traveler-verify-1',
+        email: 'traveler@example.com',
+        name: 'Traveler One',
+        full_name: 'Traveler One',
+        email_verified: false,
+        role: 'traveler',
+        roles: ['traveler'],
+        permissions: [],
+        created_at: '2026-04-09T00:00:00.000Z',
+        updated_at: '2026-04-09T00:00:00.000Z',
+      },
+      token: 'session-token',
+      refreshToken: null,
+      isAuthenticated: true,
+      isInitializing: false,
+      isLoading: false,
+      error: null,
+    })
+
+    const AuthRoutesHarness = () => useRoutes(authRoutes)
+
+    try {
+      renderWithProviders(<AuthRoutesHarness />, {
+        initialEntries: ['/auth/verify-email?token=signed-in-verify-token'],
+      })
+
+      await waitFor(() => {
+        expect(verifyEmailSpy).toHaveBeenCalledWith('signed-in-verify-token')
+      })
+      expect(await screen.findByText(/your email is now verified/i)).toBeInTheDocument()
+      expect(screen.queryByText(/welcome back/i)).not.toBeInTheDocument()
+    } finally {
+      getMeSpy.mockRestore()
+      initializeAuthSpy.mockRestore()
+      useAuthStore.setState({
+        user: null,
+        token: null,
+        refreshToken: null,
+        isAuthenticated: false,
+        isInitializing: true,
+        isLoading: false,
+        error: null,
+      })
+    }
   })
 
   it('blocks login submission when credentials do not meet live validation rules', async () => {

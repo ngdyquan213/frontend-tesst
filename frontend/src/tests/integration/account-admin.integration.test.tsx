@@ -6,10 +6,32 @@ import { profileApi } from '@/features/profile/api/profile.api'
 import { PricingRuleForm } from '@/features/admin/pricing/ui/PricingRuleForm'
 import { adminPricingApi } from '@/features/admin/pricing/api/adminPricing.api'
 import { adminToursApi } from '@/features/admin/tours/api/adminTours.api'
+import { useAuthStore } from '@/features/auth/model/auth.store'
 import TourManagementPage from '@/pages/admin/TourManagementPage'
 import { DocumentReviewTable } from '@/features/admin/documents/ui/DocumentReviewTable'
 import { adminDocumentsApi } from '@/features/admin/documents/api/adminDocuments.api'
 import { renderWithProviders } from '@/tests/utils/renderWithProviders'
+
+function seedAdminSession() {
+  useAuthStore.setState({
+    user: {
+      id: 'admin-1',
+      email: 'admin@travelbook.com',
+      name: 'Alex Rivera',
+      role: 'admin',
+      roles: ['admin'],
+      permissions: ['admin.tours.read', 'admin.tours.write'],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    token: 'mock-access-token:admin-1',
+    refreshToken: 'mock-refresh-token:admin-1',
+    isAuthenticated: true,
+    isInitializing: false,
+    isLoading: false,
+    error: null,
+  })
+}
 
 describe('account and admin live forms', () => {
   it('submits profile updates through the live profile mutation', async () => {
@@ -18,7 +40,10 @@ describe('account and admin live forms', () => {
       id: 'user-1',
       name: 'Traveler One',
       email: 'traveler@example.com',
+      emailVerified: true,
       role: 'traveler',
+      roles: ['traveler'],
+      permissions: [],
       avatar: '',
       title: 'Account Holder',
       initials: 'TO',
@@ -29,7 +54,10 @@ describe('account and admin live forms', () => {
       id: 'user-1',
       name: 'Traveler Prime',
       email: 'traveler@example.com',
+      emailVerified: true,
       role: 'traveler',
+      roles: ['traveler'],
+      permissions: [],
       avatar: '',
       title: 'Account Holder',
       initials: 'TP',
@@ -149,6 +177,7 @@ describe('account and admin live forms', () => {
 
   it('creates a new admin tour from the management drawer', async () => {
     const user = userEvent.setup()
+    seedAdminSession()
     vi.spyOn(adminToursApi, 'getTours').mockResolvedValue([])
     const createTourSpy = vi.spyOn(adminToursApi, 'createTour').mockResolvedValue({
       id: 'tour-1',
@@ -198,6 +227,7 @@ describe('account and admin live forms', () => {
 
   it('updates an existing admin tour from the management drawer', async () => {
     const user = userEvent.setup()
+    seedAdminSession()
     vi.spyOn(adminToursApi, 'getTours').mockResolvedValue([
       {
         id: 'tour-1',

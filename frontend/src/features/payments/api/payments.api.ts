@@ -28,9 +28,7 @@ export const paymentsApi = {
     travelDate,
   }: CreatePaymentIntentInput) => {
     if (!isSupportedCheckoutPaymentMethod(methodId)) {
-      throw new Error(
-        'Online self-service payments are temporarily unavailable. Please use manual settlement.',
-      )
+      throw new Error('A valid payment method is required before checkout can continue.')
     }
 
     const input = {

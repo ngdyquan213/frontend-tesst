@@ -1,7 +1,15 @@
 from datetime import date, timedelta
 
 from app.core.security import get_password_hash
-from app.models.enums import TourScheduleStatus, TourStatus, TravelerType, UserStatus
+from app.models.booking import Booking
+from app.models.enums import (
+    BookingStatus,
+    PaymentStatus,
+    TourScheduleStatus,
+    TourStatus,
+    TravelerType,
+    UserStatus,
+)
 from app.models.tour import Tour, TourPriceRule, TourSchedule
 from app.models.user import User
 
@@ -74,6 +82,17 @@ def seed_tour_schedule(db_session):
     return schedule
 
 
+def mark_booking_as_paid_and_confirmed(db_session, booking_id: str) -> Booking:
+    booking = db_session.get(Booking, booking_id)
+    assert booking is not None
+    booking.status = BookingStatus.confirmed
+    booking.payment_status = PaymentStatus.paid
+    db_session.add(booking)
+    db_session.commit()
+    db_session.refresh(booking)
+    return booking
+
+
 def test_get_tour_booking_voucher(client, db_session):
     _, token = create_user_and_login(client, db_session, "voucher@example.com", "voucher_user")
     schedule = seed_tour_schedule(db_session)
@@ -102,6 +121,7 @@ def test_get_tour_booking_voucher(client, db_session):
         },
         headers={"Authorization": f"Bearer {token}"},
     )
+    mark_booking_as_paid_and_confirmed(db_session, booking["id"])
 
     voucher_resp = client.get(
         f"/api/v1/bookings/{booking['id']}/voucher",
@@ -115,6 +135,43 @@ def test_get_tour_booking_voucher(client, db_session):
     assert body["customer_email"] == "voucher@example.com"
     assert len(body["items"]) == 1
     assert len(body["travelers"]) == 1
+
+
+def test_pending_booking_voucher_is_not_available(client, db_session):
+    _, token = create_user_and_login(
+        client,
+        db_session,
+        "voucher-pending@example.com",
+        "voucher_pending",
+    )
+    schedule = seed_tour_schedule(db_session)
+
+    booking_resp = client.post(
+        "/api/v1/bookings/tours",
+        json={
+            "tour_schedule_id": str(schedule.id),
+            "adult_count": 1,
+            "child_count": 0,
+            "infant_count": 0,
+        },
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "voucher-booking-003"},
+    )
+    assert booking_resp.status_code == 201
+    booking = booking_resp.json()
+
+    voucher_resp = client.get(
+        f"/api/v1/bookings/{booking['id']}/voucher",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert voucher_resp.status_code == 403
+    assert "confirmed and fully paid" in voucher_resp.json()["message"].lower()
+
+    summary_resp = client.get(
+        "/api/v1/users/me/vouchers",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert summary_resp.status_code == 200
+    assert summary_resp.json() == []
 
 
 def test_cannot_get_foreign_booking_voucher(client, db_session):

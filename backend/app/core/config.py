@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app.models.enums import PaymentMethod
 from app.core.secret_manager import load_secret_manager_environment
 
 load_secret_manager_environment()
@@ -48,6 +49,7 @@ class Settings(BaseSettings):
     TRUSTED_HOSTS: str = "localhost,127.0.0.1,testserver"
     OBSERVABILITY_PROTECTION_MODE: Literal["disabled", "allowlist"] = "disabled"
     OBSERVABILITY_ALLOWLIST: str = ""
+    API_DOCS_ENABLED: bool = True
 
     STORAGE_BACKEND: Literal["local", "s3"] = "local"
     LOCAL_UPLOAD_DIR: str = "uploads"
@@ -77,6 +79,7 @@ class Settings(BaseSettings):
     PAYMENT_CALLBACK_SOURCE_ALLOWLIST: str = ""
     PAYMENT_CALLBACK_TOLERANCE_SECONDS: int = 300
     ALLOW_PAYMENT_SIMULATION: bool = False
+    ENABLED_PAYMENT_METHODS: str = "manual,vnpay,momo"
     UPLOAD_MALWARE_SCAN_ENABLED: bool = False
     UPLOAD_MALWARE_SCAN_BACKEND: Literal["mock", "clamav"] = "mock"
     CLAMAV_HOST: str = "localhost"
@@ -116,6 +119,15 @@ class Settings(BaseSettings):
                 f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
                 f"@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
             )
+
+        if self.ENVIRONMENT in {"staging", "production"} and "API_DOCS_ENABLED" not in self.model_fields_set:
+            self.API_DOCS_ENABLED = False
+
+        if (
+            self.ENVIRONMENT in {"staging", "production"}
+            and "ENABLED_PAYMENT_METHODS" not in self.model_fields_set
+        ):
+            self.ENABLED_PAYMENT_METHODS = PaymentMethod.manual.value
 
         return self
 
@@ -171,6 +183,35 @@ class Settings(BaseSettings):
         if not any(item.strip() for item in value.split(",")):
             raise ValueError("TRUSTED_HOSTS must not be empty")
         return value
+
+    @field_validator("ENABLED_PAYMENT_METHODS")
+    @classmethod
+    def validate_enabled_payment_methods(cls, value: str) -> str:
+        normalized_values: list[str] = []
+        seen: set[str] = set()
+        invalid: list[str] = []
+
+        for raw_value in value.split(","):
+            normalized = raw_value.strip().lower()
+            if not normalized:
+                continue
+            if normalized not in PaymentMethod._value2member_map_:
+                invalid.append(normalized)
+                continue
+            if normalized in seen:
+                continue
+            seen.add(normalized)
+            normalized_values.append(normalized)
+
+        if invalid:
+            raise ValueError(
+                "ENABLED_PAYMENT_METHODS contains unsupported values: " + ", ".join(invalid)
+            )
+
+        if not normalized_values:
+            raise ValueError("ENABLED_PAYMENT_METHODS must contain at least one payment method")
+
+        return ",".join(normalized_values)
 
     @field_validator("ACCESS_TOKEN_EXPIRE_MINUTES")
     @classmethod
@@ -307,6 +348,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_environment_rules(self) -> Settings:
+        enabled_payment_methods = self.enabled_payment_methods_list
+
         if self.STORAGE_BACKEND == "s3":
             required_fields = (
                 ("S3_BUCKET_NAME", self.S3_BUCKET_NAME),
@@ -369,6 +412,16 @@ class Settings(BaseSettings):
                 "SECRET_MANAGER_SECRET_ID is required when SECRET_SOURCE=secret_manager"
             )
 
+        if PaymentMethod.stripe in enabled_payment_methods and not self.STRIPE_SECRET_KEY.strip():
+            raise ValueError(
+                "STRIPE_SECRET_KEY is required when ENABLED_PAYMENT_METHODS includes stripe"
+            )
+
+        if PaymentMethod.stripe in enabled_payment_methods and not self.STRIPE_PUBLISHABLE_KEY.strip():
+            raise ValueError(
+                "STRIPE_PUBLISHABLE_KEY is required when ENABLED_PAYMENT_METHODS includes stripe"
+            )
+
         if self.STRIPE_SECRET_KEY and not self.STRIPE_WEBHOOK_SECRET.strip():
             raise ValueError(
                 "STRIPE_WEBHOOK_SECRET is required when STRIPE_SECRET_KEY is configured"
@@ -390,6 +443,9 @@ class Settings(BaseSettings):
 
             if self.DEBUG:
                 raise ValueError("DEBUG must be false in staging/production")
+
+            if self.API_DOCS_ENABLED:
+                raise ValueError("API_DOCS_ENABLED must be false in staging/production")
 
             if self.SECRET_KEY in weak_secret_values:
                 raise ValueError(
@@ -413,6 +469,15 @@ class Settings(BaseSettings):
 
             if self.ALLOW_PAYMENT_SIMULATION:
                 raise ValueError("ALLOW_PAYMENT_SIMULATION must be false in staging/production")
+
+            if any(
+                method in {PaymentMethod.vnpay, PaymentMethod.momo}
+                for method in enabled_payment_methods
+            ):
+                raise ValueError(
+                    "ENABLED_PAYMENT_METHODS must not include simulated gateways "
+                    "in staging/production"
+                )
 
             if self.EMAIL_WORKER_BACKEND == "mock":
                 raise ValueError(
@@ -486,6 +551,26 @@ class Settings(BaseSettings):
     @property
     def observability_allowlist_list(self) -> list[str]:
         return [item.strip() for item in self.OBSERVABILITY_ALLOWLIST.split(",") if item.strip()]
+
+    @property
+    def enabled_payment_methods_list(self) -> list[PaymentMethod]:
+        return [
+            PaymentMethod(item.strip().lower())
+            for item in self.ENABLED_PAYMENT_METHODS.split(",")
+            if item.strip()
+        ]
+
+    @property
+    def api_docs_url(self) -> str | None:
+        return "/docs" if self.API_DOCS_ENABLED else None
+
+    @property
+    def api_redoc_url(self) -> str | None:
+        return "/redoc" if self.API_DOCS_ENABLED else None
+
+    @property
+    def api_openapi_url(self) -> str | None:
+        return "/openapi.json" if self.API_DOCS_ENABLED else None
 
 
 settings = Settings()

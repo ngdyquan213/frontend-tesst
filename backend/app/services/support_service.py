@@ -5,7 +5,11 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import NotFoundAppException, ValidationAppException
+from app.core.exceptions import (
+    AuthorizationAppException,
+    NotFoundAppException,
+    ValidationAppException,
+)
 from app.models.enums import LogActorType
 from app.models.support import SupportTicket
 from app.models.support_reply import SupportTicketReply
@@ -54,10 +58,16 @@ class SupportService(ApplicationService):
         user_id: str,
         authenticated_email: str | None,
         authenticated_full_name: str | None,
+        authenticated_email_verified: bool,
         payload: CreateSupportTicketRequest,
         ip_address: str | None = None,
         user_agent: str | None = None,
     ) -> SupportTicket:
+        if not authenticated_email_verified:
+            raise AuthorizationAppException(
+                "Verify your email before opening an account-linked support ticket"
+            )
+
         fallback_full_name = payload.full_name.strip()
         fallback_email = payload.email.strip()
         full_name = (authenticated_full_name or fallback_full_name).strip()

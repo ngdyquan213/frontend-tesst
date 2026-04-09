@@ -85,6 +85,7 @@ def evaluate_release_preflight(
         "FRONTEND_BASE_URL",
         "SECRET_KEY",
         "PAYMENT_CALLBACK_SECRET",
+        "ENABLED_PAYMENT_METHODS",
         "CORS_ORIGINS",
         "TRUSTED_HOSTS",
         "OBSERVABILITY_ALLOWLIST",
@@ -131,6 +132,9 @@ def evaluate_release_preflight(
 
     if env.get("OBSERVABILITY_PROTECTION_MODE", "").strip() != "allowlist":
         errors.append("OBSERVABILITY_PROTECTION_MODE must be allowlist")
+
+    if _is_truthy(env.get("API_DOCS_ENABLED")):
+        errors.append("API_DOCS_ENABLED must be false for release")
 
     if env.get("OUTBOX_HEALTH_MODE", "").strip() != "required":
         errors.append("OUTBOX_HEALTH_MODE should be required for release")
@@ -205,7 +209,13 @@ def evaluate_release_preflight(
     stripe_secret = env.get("STRIPE_SECRET_KEY", "").strip()
     stripe_publishable = env.get("STRIPE_PUBLISHABLE_KEY", "").strip()
     stripe_webhook = env.get("STRIPE_WEBHOOK_SECRET", "").strip()
+    enabled_payment_methods = set(_split_csv(env.get("ENABLED_PAYMENT_METHODS")))
     stripe_values = [bool(stripe_secret), bool(stripe_publishable), bool(stripe_webhook)]
+    if "stripe" in enabled_payment_methods and not all(stripe_values):
+        errors.append(
+            "ENABLED_PAYMENT_METHODS includes stripe, but Stripe rollout is incomplete: "
+            "configure STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, and STRIPE_WEBHOOK_SECRET"
+        )
     if any(stripe_values) and not all(stripe_values):
         errors.append(
             "Stripe production rollout must configure STRIPE_SECRET_KEY, "

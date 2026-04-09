@@ -8,10 +8,16 @@ import { Table } from '@/shared/ui/Table'
 interface TourManagementTableProps {
   tours?: AdminTourRecord[]
   isPending?: boolean
+  canEdit?: boolean
   onEditTour: (tour: AdminTourRecord) => void
 }
 
-export const TourManagementTable = ({ tours, isPending = false, onEditTour }: TourManagementTableProps) => {
+export const TourManagementTable = ({
+  tours,
+  isPending = false,
+  canEdit = true,
+  onEditTour,
+}: TourManagementTableProps) => {
   if (isPending) {
     return (
       <div className="grid gap-4">
@@ -52,9 +58,13 @@ export const TourManagementTable = ({ tours, isPending = false, onEditTour }: To
           </td>
           <td className="px-6 py-4 text-on-surface-variant">${tour.priceFrom}</td>
           <td className="px-6 py-4 text-right">
-            <Button variant="ghost" size="sm" onClick={() => onEditTour(tour)}>
-              Edit
-            </Button>
+            {canEdit ? (
+              <Button variant="ghost" size="sm" onClick={() => onEditTour(tour)}>
+                Edit
+              </Button>
+            ) : (
+              <span className="text-sm font-semibold text-on-surface-variant">Read only</span>
+            )}
           </td>
         </tr>
       ))}

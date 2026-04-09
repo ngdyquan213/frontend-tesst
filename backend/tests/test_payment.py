@@ -178,6 +178,7 @@ def test_initiate_payment_success(client, db_session):
 
 def test_list_payment_methods_hides_stripe_when_gateway_is_not_configured(client, monkeypatch):
     monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "")
+    monkeypatch.setattr(settings, "ENABLED_PAYMENT_METHODS", "manual,vnpay,momo,stripe")
 
     resp = client.get("/api/v1/payments/methods")
 
@@ -188,6 +189,7 @@ def test_list_payment_methods_hides_stripe_when_gateway_is_not_configured(client
 
 def test_list_payment_methods_includes_stripe_when_gateway_is_configured(client, monkeypatch):
     monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "sk_test_configured")
+    monkeypatch.setattr(settings, "ENABLED_PAYMENT_METHODS", "manual,vnpay,momo,stripe")
 
     resp = client.get("/api/v1/payments/methods")
 
@@ -196,16 +198,17 @@ def test_list_payment_methods_includes_stripe_when_gateway_is_configured(client,
     assert [item["id"] for item in body] == ["manual", "vnpay", "momo", "stripe"]
 
 
-def test_list_payment_methods_hides_simulated_gateways_in_production_mode(client, monkeypatch):
+def test_list_payment_methods_uses_configured_production_safe_gateways(client, monkeypatch):
     monkeypatch.setattr(settings, "ENVIRONMENT", "production")
     monkeypatch.setattr(settings, "ALLOW_PAYMENT_SIMULATION", False)
     monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "sk_live_configured")
+    monkeypatch.setattr(settings, "ENABLED_PAYMENT_METHODS", "manual,stripe,vnpay,momo")
 
     resp = client.get("/api/v1/payments/methods")
 
     assert resp.status_code == 200
     body = resp.json()
-    assert [item["id"] for item in body] == ["manual"]
+    assert [item["id"] for item in body] == ["manual", "stripe"]
 
 
 def test_initiate_payment_rejects_simulated_gateway_in_production_mode(
@@ -215,6 +218,7 @@ def test_initiate_payment_rejects_simulated_gateway_in_production_mode(
 ):
     monkeypatch.setattr(settings, "ENVIRONMENT", "production")
     monkeypatch.setattr(settings, "ALLOW_PAYMENT_SIMULATION", False)
+    monkeypatch.setattr(settings, "ENABLED_PAYMENT_METHODS", "manual,stripe")
 
     user, token = create_user_and_login(
         client,

@@ -5,6 +5,7 @@ import { useAdminSupportTicketDetailQuery } from '@/features/admin/operations/qu
 import { useAdminSupportTicketsQuery } from '@/features/admin/operations/queries/useAdminSupportTicketsQuery'
 import { useAdminUpdateSupportTicketStatusMutation } from '@/features/admin/operations/queries/useAdminUpdateSupportTicketStatusMutation'
 import { TicketReplyBox } from '@/features/support/ui/TicketReplyBox'
+import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
 import { Card } from '@/shared/ui/Card'
 import { EmptyState } from '@/shared/ui/EmptyState'
@@ -36,8 +37,10 @@ function getStatusLabel(status: string) {
 
 function SupportThreadPanel({
   ticketId,
+  canManageTickets,
 }: {
   ticketId: string
+  canManageTickets: boolean
 }) {
   const detailQuery = useAdminSupportTicketDetailQuery(ticketId)
   const replyMutation = useAdminReplyToSupportTicketMutation()
@@ -67,6 +70,11 @@ function SupportThreadPanel({
 
   async function handleReplySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    if (!canManageTickets) {
+      return
+    }
+
     const normalizedMessage = replyMessage.trim()
 
     if (!normalizedMessage) {
@@ -99,6 +107,10 @@ function SupportThreadPanel({
   }
 
   async function handleStatusUpdate() {
+    if (!canManageTickets) {
+      return
+    }
+
     try {
       const selectedStatus = (statusFieldRef.current?.value as
         | 'open'
@@ -184,13 +196,15 @@ function SupportThreadPanel({
             key={`${ticket.id}:${ticket.updatedAt}`}
             ref={statusFieldRef}
             aria-label="Ticket status"
+            disabled={!canManageTickets}
             value={status}
             onChange={(event) => {
-              const nextStatus = event.target.value as
+              const nextStatus = event.target.value as (
                 | 'open'
                 | 'in_review'
                 | 'waiting_for_traveler'
                 | 'resolved'
+              )
               hasPendingStatusSelectionRef.current = true
               statusRef.current = nextStatus
               setStatus(nextStatus)
@@ -207,6 +221,7 @@ function SupportThreadPanel({
           variant="secondary"
           onClick={handleStatusUpdate}
           loading={updateStatusMutation.isPending}
+          disabled={!canManageTickets}
         >
           Apply status
         </Button>
@@ -219,10 +234,16 @@ function SupportThreadPanel({
       ) : null}
 
       <form className="space-y-3" onSubmit={handleReplySubmit}>
+        {!canManageTickets ? (
+          <Alert tone="info">
+            This account can review support threads but cannot change ticket status or send admin replies.
+          </Alert>
+        ) : null}
         <label className="block space-y-2">
           <span className="text-sm font-semibold text-primary">Admin reply</span>
           <Textarea
             aria-label="Admin reply"
+            disabled={!canManageTickets}
             value={replyMessage}
             onChange={(event) => setReplyMessage(event.target.value)}
             placeholder="Share the next action, booking update, or traveler-facing guidance."
@@ -241,7 +262,7 @@ function SupportThreadPanel({
             type="submit"
             variant="hero"
             loading={replyMutation.isPending}
-            disabled={replyMessage.trim().length < 4}
+            disabled={!canManageTickets || replyMessage.trim().length < 4}
           >
             Send admin reply
           </Button>
@@ -251,7 +272,7 @@ function SupportThreadPanel({
   )
 }
 
-export const OperationsBoard = () => {
+export const OperationsBoard = ({ canManageTickets = true }: { canManageTickets?: boolean }) => {
   const recentActivityQuery = useAdminOperationsQuery()
   const [statusFilter, setStatusFilter] = useState<
     'all' | 'open' | 'in_review' | 'waiting_for_traveler' | 'resolved'
@@ -380,7 +401,7 @@ export const OperationsBoard = () => {
               })}
             </div>
 
-            <SupportThreadPanel ticketId={selectedTicketId} />
+            <SupportThreadPanel ticketId={selectedTicketId} canManageTickets={canManageTickets} />
           </div>
         )}
       </Card>

@@ -1,7 +1,15 @@
 from datetime import date, timedelta
 
 from app.core.security import get_password_hash
-from app.models.enums import TourScheduleStatus, TourStatus, TravelerType, UserStatus
+from app.models.booking import Booking
+from app.models.enums import (
+    BookingStatus,
+    PaymentStatus,
+    TourScheduleStatus,
+    TourStatus,
+    TravelerType,
+    UserStatus,
+)
 from app.models.tour import Tour, TourPriceRule, TourSchedule
 from app.models.user import User
 
@@ -74,6 +82,17 @@ def seed_tour_schedule(db_session):
     return schedule
 
 
+def mark_booking_as_paid_and_confirmed(db_session, booking_id: str) -> Booking:
+    booking = db_session.get(Booking, booking_id)
+    assert booking is not None
+    booking.status = BookingStatus.confirmed
+    booking.payment_status = PaymentStatus.paid
+    db_session.add(booking)
+    db_session.commit()
+    db_session.refresh(booking)
+    return booking
+
+
 def test_export_booking_voucher_pdf(client, db_session):
     _, token = create_user_and_login(client, db_session, "pdfvoucher@example.com", "pdfvoucher")
     schedule = seed_tour_schedule(db_session)
@@ -90,6 +109,7 @@ def test_export_booking_voucher_pdf(client, db_session):
     )
     assert booking_resp.status_code == 201
     booking = booking_resp.json()
+    mark_booking_as_paid_and_confirmed(db_session, booking["id"])
 
     pdf_resp = client.get(
         f"/api/v1/bookings/{booking['id']}/voucher.pdf",

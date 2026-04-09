@@ -162,6 +162,9 @@ app = FastAPI(
     title=settings.APP_NAME,
     debug=settings.DEBUG,
     lifespan=lifespan,
+    docs_url=settings.api_docs_url,
+    redoc_url=settings.api_redoc_url,
+    openapi_url=settings.api_openapi_url,
 )
 
 app.add_exception_handler(AppException, app_exception_handler)

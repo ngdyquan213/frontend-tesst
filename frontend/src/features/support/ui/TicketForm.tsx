@@ -57,6 +57,7 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
   const [errors, setErrors] = useState<SupportTicketFormErrors>({})
   const [submittedReference, setSubmittedReference] = useState<string | null>(null)
   const isAuthenticatedContactLocked = Boolean(user)
+  const requiresVerifiedEmail = Boolean(user && !user.emailVerified)
 
   const topicOptions = useMemo(
     () =>
@@ -104,6 +105,10 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
+    if (requiresVerifiedEmail) {
+      return
+    }
+
     const validation = validateCreateSupportTicketPayload(formState)
     if (!validation.isValid) {
       setErrors(validation.errors)
@@ -145,6 +150,18 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
       {createTicketMutation.isError ? (
         <div className="rounded-[1.5rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {createTicketMutation.error.message || 'We could not submit your request just now. Please try again.'}
+        </div>
+      ) : null}
+
+      {requiresVerifiedEmail ? (
+        <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
+          <p className="font-semibold">Verify your email before opening an account-linked support request.</p>
+          <p className="mt-2 leading-6">
+            Use the verification link we sent to your inbox, then return here to attach the request to your bookings and payment history.
+          </p>
+          <p className="mt-3 leading-6">
+            If you cannot access that inbox yet, use the email concierge or traveler hotline on this page for immediate help.
+          </p>
         </div>
       ) : null}
 
@@ -274,7 +291,13 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
         <p className="text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
           Average first reply time: within 12 hours for standard inquiries.
         </p>
-        <Button type="submit" variant="hero" size="lg" loading={createTicketMutation.isPending}>
+        <Button
+          type="submit"
+          variant="hero"
+          size="lg"
+          loading={createTicketMutation.isPending}
+          disabled={requiresVerifiedEmail}
+        >
           Send request
         </Button>
       </div>

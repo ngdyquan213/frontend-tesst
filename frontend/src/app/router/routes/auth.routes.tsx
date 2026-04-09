@@ -25,9 +25,13 @@ export const authRoutes: RouteObject[] = [
           { path: 'forgot-password', element: renderLazyPage(ForgotPasswordPage) },
           { path: 'reset-password', element: renderLazyPage(ResetPasswordPage) },
           { path: 'reset-password/:token', element: renderLazyPage(ResetPasswordPage) },
-          { path: 'verify-email', element: renderLazyPage(VerifyEmailPage) },
         ],
       },
     ],
+  },
+  {
+    path: '/auth',
+    element: <AuthLayout />,
+    children: [{ path: 'verify-email', element: renderLazyPage(VerifyEmailPage) }],
   },
 ]

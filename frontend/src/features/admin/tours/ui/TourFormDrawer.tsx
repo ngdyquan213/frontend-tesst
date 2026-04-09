@@ -19,6 +19,7 @@ interface TourFormDrawerProps {
   open: boolean
   mode: 'create' | 'edit'
   tour?: AdminTourRecord | null
+  canWrite?: boolean
   onClose: () => void
 }
 
@@ -76,7 +77,13 @@ function toPayload(state: TourFormState): AdminTourCreatePayload {
   }
 }
 
-export const TourFormDrawer = ({ open, mode, tour, onClose }: TourFormDrawerProps) => {
+export const TourFormDrawer = ({
+  open,
+  mode,
+  tour,
+  canWrite = true,
+  onClose,
+}: TourFormDrawerProps) => {
   const { pushToast } = useToast()
   const createMutation = useCreateTourMutation()
   const updateMutation = useUpdateTourMutation()
@@ -119,6 +126,10 @@ export const TourFormDrawer = ({ open, mode, tour, onClose }: TourFormDrawerProp
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (!canWrite) {
+      return
+    }
 
     const payload = toPayload(state)
 

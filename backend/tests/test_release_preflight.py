@@ -38,10 +38,12 @@ def test_release_preflight_accepts_valid_production_config(tmp_path: Path):
         "FRONTEND_BASE_URL": "https://app.example.com",
         "SECRET_KEY": "prod-real-secret-key-abcdefghijklmnopqrstuvwxyz",
         "PAYMENT_CALLBACK_SECRET": "prod-payment-secret-abcdefghijklmnopqrstuvwxyz",
+        "ENABLED_PAYMENT_METHODS": "manual",
         "CORS_ORIGINS": "https://app.example.com",
         "TRUSTED_HOSTS": "api.internal.example,app,app:8000",
         "OBSERVABILITY_PROTECTION_MODE": "allowlist",
         "OBSERVABILITY_ALLOWLIST": "10.40.0.0/16",
+        "API_DOCS_ENABLED": "false",
         "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "10.30.0.0/16",
         "FORWARDED_ALLOW_IPS": "10.20.0.0/16",
         "EMAIL_WORKER_BACKEND": "smtp",
@@ -84,10 +86,12 @@ def test_release_preflight_accepts_valid_staging_config(tmp_path: Path):
         "FRONTEND_BASE_URL": "https://staging.travelbook.internal",
         "SECRET_KEY": "staging-real-secret-key-abcdefghijklmnopqrstuvwxyz",
         "PAYMENT_CALLBACK_SECRET": "staging-payment-secret-abcdefghijklmnopqrstuvwxyz",
+        "ENABLED_PAYMENT_METHODS": "manual",
         "CORS_ORIGINS": "https://staging.travelbook.internal",
         "TRUSTED_HOSTS": "staging.travelbook.internal,app,app:8000",
         "OBSERVABILITY_PROTECTION_MODE": "allowlist",
         "OBSERVABILITY_ALLOWLIST": "10.40.0.0/16",
+        "API_DOCS_ENABLED": "false",
         "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "10.30.0.0/16",
         "FORWARDED_ALLOW_IPS": "10.20.0.0/16",
         "EMAIL_WORKER_BACKEND": "smtp",
@@ -127,10 +131,12 @@ def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
         "FRONTEND_BASE_URL": "http://localhost:8080",
         "SECRET_KEY": "production-secret-key-12345678901234567890",
         "PAYMENT_CALLBACK_SECRET": "production-payment-secret-123456",
+        "ENABLED_PAYMENT_METHODS": "manual",
         "CORS_ORIGINS": "http://localhost:8080",
         "TRUSTED_HOSTS": "localhost,testserver",
         "OBSERVABILITY_PROTECTION_MODE": "disabled",
         "OBSERVABILITY_ALLOWLIST": "",
+        "API_DOCS_ENABLED": "true",
         "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "",
         "FORWARDED_ALLOW_IPS": "*",
         "EMAIL_WORKER_BACKEND": "mock",
@@ -149,6 +155,7 @@ def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
     assert "DATABASE_URL must not point to localhost/127.0.0.1" in errors
     assert "REDIS_URL must not point to localhost/127.0.0.1" in errors
     assert "FRONTEND_BASE_URL must not point to localhost/127.0.0.1" in errors
+    assert "API_DOCS_ENABLED must be false for release" in errors
     assert "CORS_ORIGINS must not contain localhost/127.0.0.1 origins" in errors
     assert "TRUSTED_HOSTS must not contain localhost/127.0.0.1/testserver" in errors
     assert "FORWARDED_ALLOW_IPS must not contain '*'" in errors
@@ -172,9 +179,11 @@ def test_release_preflight_requires_complete_stripe_configuration(tmp_path: Path
         "REDIS_URL": "redis://redis.internal:6379/0",
         "SECRET_KEY": "prod-real-secret-key-abcdefghijklmnopqrstuvwxyz",
         "PAYMENT_CALLBACK_SECRET": "prod-payment-secret-abcdefghijklmnopqrstuvwxyz",
+        "ENABLED_PAYMENT_METHODS": "manual,stripe",
         "TRUSTED_HOSTS": "api.internal.example",
         "OBSERVABILITY_PROTECTION_MODE": "allowlist",
         "OBSERVABILITY_ALLOWLIST": "10.40.0.0/16",
+        "API_DOCS_ENABLED": "false",
         "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "10.30.0.0/16",
         "FORWARDED_ALLOW_IPS": "10.20.0.0/16",
         "EMAIL_WORKER_BACKEND": "smtp",
@@ -197,6 +206,10 @@ def test_release_preflight_requires_complete_stripe_configuration(tmp_path: Path
     errors = evaluate_release_preflight(env, repo_root=tmp_path)
 
     assert (
+        "ENABLED_PAYMENT_METHODS includes stripe, but Stripe rollout is incomplete: "
+        "configure STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, and STRIPE_WEBHOOK_SECRET"
+    ) in errors
+    assert (
         "Stripe production rollout must configure STRIPE_SECRET_KEY, "
         "STRIPE_PUBLISHABLE_KEY, and STRIPE_WEBHOOK_SECRET together"
     ) in errors
@@ -212,10 +225,12 @@ def test_release_preflight_rejects_wrong_environment_target(tmp_path: Path):
         "FRONTEND_BASE_URL": "https://staging.travelbook.internal",
         "SECRET_KEY": "staging-real-secret-key-abcdefghijklmnopqrstuvwxyz",
         "PAYMENT_CALLBACK_SECRET": "staging-payment-secret-abcdefghijklmnopqrstuvwxyz",
+        "ENABLED_PAYMENT_METHODS": "manual",
         "CORS_ORIGINS": "https://staging.travelbook.internal",
         "TRUSTED_HOSTS": "staging.travelbook.internal",
         "OBSERVABILITY_PROTECTION_MODE": "allowlist",
         "OBSERVABILITY_ALLOWLIST": "10.40.0.0/16",
+        "API_DOCS_ENABLED": "false",
         "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "10.30.0.0/16",
         "FORWARDED_ALLOW_IPS": "10.20.0.0/16",
         "EMAIL_WORKER_BACKEND": "smtp",

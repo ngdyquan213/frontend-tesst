@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { Menu } from 'lucide-react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/app/providers/AuthProvider'
-import { AdminSidebar, adminSidebarItems } from '@/shared/navigation/AdminSidebar'
+import { AdminSidebar, getVisibleAdminSidebarItems } from '@/shared/navigation/AdminSidebar'
 import { MobileShellNavDrawer } from '@/shared/navigation/MobileShellNavDrawer'
 
 export const AdminLayout = () => {
   const { user, logout } = useAuth()
   const location = useLocation()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const visibleAdminSidebarItems = getVisibleAdminSidebarItems(user)
 
   useEffect(() => {
     setIsMobileNavOpen(false)
@@ -21,7 +22,7 @@ export const AdminLayout = () => {
         open={isMobileNavOpen}
         title="Admin navigation"
         subtitle="Switch between tours, schedules, pricing, and operational queues from one mobile menu."
-        items={adminSidebarItems}
+        items={visibleAdminSidebarItems}
         tone="admin"
         onClose={() => setIsMobileNavOpen(false)}
         onSignOut={logout}

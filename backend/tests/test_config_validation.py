@@ -27,6 +27,7 @@ def test_settings_accept_valid_development_config():
         ALLOWED_UPLOAD_EXTENSIONS=".pdf,.png,.jpg,.jpeg",
         ALLOWED_UPLOAD_MIME_TYPES="application/pdf,image/png,image/jpeg",
         ALLOW_PAYMENT_SIMULATION=False,
+        ENABLED_PAYMENT_METHODS="manual,vnpay,momo",
     )
 
     assert settings.ENVIRONMENT == "development"
@@ -109,6 +110,23 @@ def test_settings_reject_empty_trusted_hosts():
             DATABASE_URL="sqlite:///./test.db",
             REDIS_URL="redis://localhost:6379/0",
             TRUSTED_HOSTS=" , ",
+            OUTBOX_LEASE_SECONDS=30,
+            RUNTIME_MAINTENANCE_INTERVAL_SECONDS=60,
+        )
+
+
+def test_settings_reject_invalid_enabled_payment_methods():
+    with pytest.raises(
+        ValueError,
+        match="ENABLED_PAYMENT_METHODS contains unsupported values: crypto",
+    ):
+        Settings(
+            SECRET_KEY="this-is-a-very-strong-secret-key-123456",
+            PAYMENT_CALLBACK_SECRET="very-strong-payment-secret",
+            DATABASE_URL="sqlite:///./test.db",
+            REDIS_URL="redis://localhost:6379/0",
+            TRUSTED_HOSTS="localhost",
+            ENABLED_PAYMENT_METHODS="manual,crypto",
             OUTBOX_LEASE_SECONDS=30,
             RUNTIME_MAINTENANCE_INTERVAL_SECONDS=60,
         )
@@ -201,8 +219,10 @@ def test_settings_accept_valid_staging_config():
         TRUSTED_HOSTS="staging.example.com",
         OBSERVABILITY_PROTECTION_MODE="allowlist",
         OBSERVABILITY_ALLOWLIST="10.10.0.0/16,203.0.113.0/24",
+        API_DOCS_ENABLED=False,
         UPLOAD_MALWARE_SCAN_ENABLED=True,
         UPLOAD_MALWARE_SCAN_BACKEND="clamav",
+        ENABLED_PAYMENT_METHODS="manual",
     )
 
     assert settings.ENVIRONMENT == "staging"
@@ -234,6 +254,7 @@ def test_settings_accept_valid_production_config():
         TRUSTED_HOSTS="api.example.com,app,app:8000",
         OBSERVABILITY_PROTECTION_MODE="allowlist",
         OBSERVABILITY_ALLOWLIST="10.40.0.0/16,10.41.0.0/16",
+        API_DOCS_ENABLED=False,
         STORAGE_BACKEND="s3",
         S3_BUCKET_NAME="secure-travel-booking-prod",
         S3_REGION="ap-southeast-1",
@@ -244,6 +265,7 @@ def test_settings_accept_valid_production_config():
         SECRET_MANAGER_SECRET_ID="secure-travel/prod",
         UPLOAD_MALWARE_SCAN_ENABLED=True,
         UPLOAD_MALWARE_SCAN_BACKEND="clamav",
+        ENABLED_PAYMENT_METHODS="manual",
     )
 
     assert settings.ENVIRONMENT == "production"
@@ -276,6 +298,35 @@ def test_settings_reject_staging_without_observability_allowlist_mode():
             OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
             UPLOAD_MALWARE_SCAN_ENABLED=True,
             UPLOAD_MALWARE_SCAN_BACKEND="clamav",
+        )
+
+
+def test_settings_reject_staging_when_api_docs_are_enabled():
+    with pytest.raises(
+        ValueError,
+        match="API_DOCS_ENABLED must be false in staging/production",
+    ):
+        Settings(
+            ENVIRONMENT="staging",
+            DEBUG=False,
+            SECRET_KEY="staging-secret-key-12345678901234567890",
+            PAYMENT_CALLBACK_SECRET="staging-payment-secret-123456",
+            DATABASE_URL="postgresql+psycopg2://db-user:db-pass@postgres:5432/secure_travel_booking",
+            REDIS_URL="redis://redis:6379/0",
+            TRUSTED_HOSTS="staging.example.com",
+            OBSERVABILITY_PROTECTION_MODE="allowlist",
+            OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
+            EMAIL_WORKER_BACKEND="smtp",
+            SMTP_HOST="smtp.internal",
+            SMTP_FROM_EMAIL="no-reply@example.com",
+            NOTIFICATION_WORKER_BACKEND="redis",
+            PAYMENT_CALLBACK_SOURCE_ALLOWLIST="10.10.0.0/16",
+            API_DOCS_ENABLED=True,
+            UPLOAD_MALWARE_SCAN_ENABLED=True,
+            UPLOAD_MALWARE_SCAN_BACKEND="clamav",
+            ENABLED_PAYMENT_METHODS="manual",
+            OUTBOX_LEASE_SECONDS=30,
+            RUNTIME_MAINTENANCE_INTERVAL_SECONDS=60,
         )
 
 
@@ -501,6 +552,35 @@ def test_settings_reject_staging_without_payment_callback_allowlist():
             OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
             UPLOAD_MALWARE_SCAN_ENABLED=True,
             UPLOAD_MALWARE_SCAN_BACKEND="clamav",
+        )
+
+
+def test_settings_reject_staging_with_simulated_payment_methods_enabled():
+    with pytest.raises(
+        ValueError,
+        match="ENABLED_PAYMENT_METHODS must not include simulated gateways in staging/production",
+    ):
+        Settings(
+            ENVIRONMENT="staging",
+            DEBUG=False,
+            SECRET_KEY="staging-secret-key-12345678901234567890",
+            PAYMENT_CALLBACK_SECRET="staging-payment-secret-123456",
+            DATABASE_URL="postgresql+psycopg2://db-user:db-pass@postgres:5432/secure_travel_booking",
+            REDIS_URL="redis://redis:6379/0",
+            OUTBOX_LEASE_SECONDS=30,
+            RUNTIME_MAINTENANCE_INTERVAL_SECONDS=60,
+            ALLOW_PAYMENT_SIMULATION=False,
+            EMAIL_WORKER_BACKEND="smtp",
+            SMTP_HOST="smtp.internal",
+            SMTP_FROM_EMAIL="no-reply@example.com",
+            NOTIFICATION_WORKER_BACKEND="redis",
+            PAYMENT_CALLBACK_SOURCE_ALLOWLIST="10.10.0.0/16",
+            OBSERVABILITY_PROTECTION_MODE="allowlist",
+            OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
+            UPLOAD_MALWARE_SCAN_ENABLED=True,
+            UPLOAD_MALWARE_SCAN_BACKEND="clamav",
+            API_DOCS_ENABLED=False,
+            ENABLED_PAYMENT_METHODS="manual,vnpay",
         )
 
 

@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '@/app/providers/AuthProvider'
 import { LoadingOverlay } from '@/shared/components/LoadingOverlay'
+import { getDefaultSignedInPath } from '@/shared/lib/auth'
 
 export const GuestGuard = () => {
   const { user, isInitializing } = useAuth()
@@ -14,5 +15,5 @@ export const GuestGuard = () => {
   }
 
   if (!user) return <Outlet />
-  return <Navigate replace to={user.role === 'admin' ? '/admin' : '/account'} />
+  return <Navigate replace to={getDefaultSignedInPath(user)} />
 }

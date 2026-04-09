@@ -471,3 +471,21 @@ def test_live_endpoint_sets_security_headers(monkeypatch):
     assert response.headers["x-frame-options"] == "DENY"
     assert response.headers["x-content-type-options"] == "nosniff"
     assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert "strict-transport-security" not in response.headers
+
+
+def test_live_endpoint_sets_hsts_for_https_requests(monkeypatch):
+    from app import main as main_module
+
+    monkeypatch.setattr(main_module, "start_runtime_maintenance_loop", lambda: (None, None))
+    monkeypatch.setattr(main_module, "run_startup_checks", lambda: None)
+    monkeypatch.setattr(main_module, "run_noncritical_maintenance", lambda: None)
+
+    with TestClient(main_module.app, base_url="https://testserver") as client:
+        response = client.get("/health/live")
+
+    assert response.status_code == 200
+    assert (
+        response.headers["strict-transport-security"]
+        == "max-age=63072000; includeSubDomains; preload"
+    )

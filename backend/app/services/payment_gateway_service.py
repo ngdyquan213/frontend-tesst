@@ -50,12 +50,18 @@ class PaymentGatewayInitiationResult:
 class PaymentGatewayService:
     @staticmethod
     def get_available_payment_methods() -> list[PaymentMethod]:
-        if settings.ENVIRONMENT in {"staging", "production"}:
-            return [PaymentMethod.manual]
+        methods = list(settings.enabled_payment_methods_list)
 
-        methods = [PaymentMethod.manual, PaymentMethod.vnpay, PaymentMethod.momo]
-        if settings.STRIPE_SECRET_KEY.strip():
-            methods.append(PaymentMethod.stripe)
+        if settings.ENVIRONMENT in {"staging", "production"}:
+            methods = [
+                method
+                for method in methods
+                if method not in {PaymentMethod.vnpay, PaymentMethod.momo}
+            ]
+
+        if not settings.STRIPE_SECRET_KEY.strip():
+            methods = [method for method in methods if method != PaymentMethod.stripe]
+
         return methods
 
     def assert_payment_method_is_available(self, *, payment_method: PaymentMethod) -> None:

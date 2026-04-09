@@ -113,10 +113,10 @@ Notes:
 - `OBSERVABILITY_PROTECTION_MODE=allowlist` is required in staging, and the tracked `OBSERVABILITY_ALLOWLIST` covers localhost plus RFC1918 networks so Prometheus and internal smoke checks can still reach `/health/ready` and `/metrics/prometheus`.
 - Email/notification delivery stays off the request path; pending outbox events are drained by the runtime maintenance loop only.
 - The staging compose profile now includes a local SMTP sink at service `mailhog`, so the default staging env can pass worker connectivity checks without pointing at a real mail server.
-- Malware scanning is disabled in the tracked staging example by default. If you enable ClamAV-backed scanning, provision a reachable `clamav` service first or `/health/ready` will fail.
+- The tracked staging compose profile now also includes a `clamav` service so the default staging env can satisfy malware-scan startup validation without depending on an external antivirus daemon.
 - `OUTBOX_HEALTH_MODE=required` makes `/health/ready` fail when outbox dispatch is unhealthy or the outbox schema is missing.
 - Staging migrations now run in a dedicated `migrate` service before the API starts.
-- Stripe callbacks inherit the same strict rate-limit and fail-closed behavior as the legacy payment callback route.
+- Stripe callbacks inherit the same strict rate-limit and fail-closed behavior as the legacy payment callback route, but public checkout still defaults to manual settlement until self-service rollout is explicitly re-enabled.
 
 ### Bring Up
 
@@ -149,7 +149,7 @@ python scripts/release_signoff.py --signoff-file ops/release_signoff.staging.jso
 
 Expected result:
 
-- `nginx`, `app`, `postgres`, `redis`, `mailhog`, and `prometheus` are up
+- `nginx`, `app`, `postgres`, `redis`, `mailhog`, `clamav`, and `prometheus` are up
 - `/health/live` reports `environment=staging`
 - `/health/ready` returns `200`
 - readiness reports database, Redis, email worker, notification backend, malware scan, and outbox as `true`
@@ -223,7 +223,7 @@ Notes:
 - `STORAGE_BACKEND=s3` is the default production template because the repository's local filesystem storage is mainly for development and test workflows.
 - The bundled Nginx production entrypoint also sanitizes forwarded identity headers before proxying so allowlist-based observability checks and audit logging use trusted proxy data only.
 - Set `NGINX_TLS_ENABLED=true` together with mounted cert/key files for direct internet-facing deployments, or terminate TLS and WAF policies upstream and keep `FORWARDED_ALLOW_IPS` aligned with that proxy layer.
-- Stripe can be enabled in production with `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, and `STRIPE_WEBHOOK_SECRET`.
+- Stripe settings can be provisioned for a future production rollout with `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, and `STRIPE_WEBHOOK_SECRET`, but the tracked release scope still keeps public checkout on manual settlement by default.
 - If you expose Prometheus in production, keep using `OBSERVABILITY_PROTECTION_MODE=allowlist` and smoke it separately with `--prometheus-url`.
 
 ### Bring Up
@@ -360,7 +360,7 @@ Two repo-local helpers are now available for release-grade verification:
 
 - `python scripts/release_preflight.py --env-file .env.production --check-local-files`
   - validates production env material before rollout
-  - rejects placeholder/demo values, localhost dependencies, mock workers, and incomplete Stripe configuration
+  - rejects placeholder/demo values, localhost dependencies, mock workers, disabled malware scanning, and incomplete Stripe configuration
 - `python scripts/release_verify_demo.py --base-url http://localhost:8081/api/v1`
   - logs in with the seeded QA account
   - verifies `/users/me`, catalog, booking list, and payment status for `BK-DEMO-FLIGHT-001`

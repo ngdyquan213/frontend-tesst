@@ -18,7 +18,7 @@ function getStatusBadgeVariant(status: 'pending' | 'verified' | 'rejected') {
   return 'warning'
 }
 
-export const DocumentReviewTable = () => {
+export const DocumentReviewTable = ({ canReview = true }: { canReview?: boolean }) => {
   const { data, isPending } = useAdminDocumentsQuery()
   const verifyMutation = useVerifyDocumentMutation()
 
@@ -37,6 +37,11 @@ export const DocumentReviewTable = () => {
 
   return (
     <div className="space-y-4">
+      {!canReview ? (
+        <Alert tone="info">
+          This account can view traveler uploads but cannot approve or reject documents.
+        </Alert>
+      ) : null}
       {verifyMutation.isError ? <Alert tone="danger">{verifyMutation.error.message}</Alert> : null}
       <Table columns={['Document', 'Booking', 'Status', 'Uploaded', 'Actions']}>
       {data?.map((document) => (
@@ -62,7 +67,7 @@ export const DocumentReviewTable = () => {
                 variant="secondary"
                 size="sm"
                 loading={verifyMutation.isPending}
-                disabled={document.status === 'verified'}
+                disabled={!canReview || document.status === 'verified'}
                 onClick={() => verifyMutation.mutate({ documentId: document.id, status: 'approved' })}
               >
                 {document.status === 'verified' ? 'Verified' : 'Approve'}
@@ -70,7 +75,7 @@ export const DocumentReviewTable = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                disabled={document.status === 'rejected' || verifyMutation.isPending}
+                disabled={!canReview || document.status === 'rejected' || verifyMutation.isPending}
                 onClick={() => verifyMutation.mutate({ documentId: document.id, status: 'rejected' })}
               >
                 {document.status === 'rejected' ? 'Rejected' : 'Reject'}

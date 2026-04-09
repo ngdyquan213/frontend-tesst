@@ -5,6 +5,7 @@ import {
   lazyDefaultPage,
   renderLazyPage,
 } from '@/app/router/renderLazyPage'
+import { ADMIN_NAV_ROUTE_PERMISSIONS } from '@/shared/constants/permissions'
 
 const DashboardPage = lazyDefaultPage(() => import('@/pages/admin/DashboardPage'))
 const TourManagementPage = lazyDefaultPage(() => import('@/pages/admin/TourManagementPage'))
@@ -34,15 +35,78 @@ export const adminRoutes: RouteObject[] = [
       {
         element: <AdminLayout />,
         children: [
-          { index: true, element: renderLazyPage(DashboardPage) },
-          { path: 'tours', element: renderLazyPage(TourManagementPage) },
-          { path: 'schedules', element: renderLazyPage(ScheduleManagementPage) },
-          { path: 'pricing', element: renderLazyPage(PricingManagementPage) },
-          { path: 'bookings', element: renderLazyPage(BookingManagementPage) },
-          { path: 'bookings/:bookingId', element: renderLazyPage(BookingDetailPage) },
-          { path: 'refunds', element: renderLazyPage(RefundManagementPage) },
-          { path: 'documents', element: renderLazyPage(DocumentManagementPage) },
-          { path: 'operations', element: renderLazyPage(OperationsPage) },
+          {
+            index: true,
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.dashboard}>
+                {renderLazyPage(DashboardPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'tours',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.tours}>
+                {renderLazyPage(TourManagementPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'schedules',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.schedules}>
+                {renderLazyPage(ScheduleManagementPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'pricing',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.pricing}>
+                {renderLazyPage(PricingManagementPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'bookings',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.bookings}>
+                {renderLazyPage(BookingManagementPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'bookings/:bookingId',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.bookingDetail}>
+                {renderLazyPage(BookingDetailPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'refunds',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.refunds}>
+                {renderLazyPage(RefundManagementPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'documents',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.documents}>
+                {renderLazyPage(DocumentManagementPage)}
+              </AdminGuard>
+            ),
+          },
+          {
+            path: 'operations',
+            element: (
+              <AdminGuard requiredPermissions={ADMIN_NAV_ROUTE_PERMISSIONS.operations}>
+                {renderLazyPage(OperationsPage)}
+              </AdminGuard>
+            ),
+          },
         ],
       },
     ],

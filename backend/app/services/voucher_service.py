@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import NotFoundAppException
-from app.models.enums import LogActorType
+from app.core.exceptions import AuthorizationAppException, NotFoundAppException
+from app.models.enums import BookingStatus, LogActorType, PaymentStatus
 from app.repositories.booking_repository import BookingRepository
 from app.repositories.document_repository import DocumentRepository
 from app.services.application_service import ApplicationService
@@ -46,12 +46,31 @@ class VoucherService(ApplicationService):
     def _build_item_title_and_description(self, item) -> tuple[str | None, str, str | None]:
         return self.voucher_render_service.build_item_title_and_description(item)
 
+    @staticmethod
+    def _booking_has_issued_voucher_access(booking) -> bool:
+        return (
+            booking.status == BookingStatus.confirmed
+            and booking.payment_status == PaymentStatus.paid
+        )
+
+    def _assert_booking_voucher_is_available(self, booking) -> None:
+        if self._booking_has_issued_voucher_access(booking):
+            return
+
+        raise AuthorizationAppException(
+            "Voucher is available only after the booking is confirmed and fully paid"
+        )
+
     def list_my_voucher_summaries(
         self,
         *,
         user_id: str,
     ) -> list[dict]:
-        bookings = self.booking_repo.list_all_by_user_id(user_id)
+        bookings = [
+            booking
+            for booking in self.booking_repo.list_all_by_user_id(user_id)
+            if self._booking_has_issued_voucher_access(booking)
+        ]
         return [
             {
                 "booking_id": str(booking.id),
@@ -72,6 +91,7 @@ class VoucherService(ApplicationService):
         booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)
         if not booking:
             raise NotFoundAppException("Booking not found")
+        self._assert_booking_voucher_is_available(booking)
 
         self.audit_service.log_action(
             actor_type=LogActorType.user,
@@ -131,6 +151,7 @@ class VoucherService(ApplicationService):
         booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)
         if not booking:
             raise NotFoundAppException("Booking not found")
+        self._assert_booking_voucher_is_available(booking)
 
         pdf_bytes, filename = self.voucher_document_service.export_pdf(
             booking=booking,
@@ -151,6 +172,7 @@ class VoucherService(ApplicationService):
         booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)
         if not booking:
             raise NotFoundAppException("Booking not found")
+        self._assert_booking_voucher_is_available(booking)
 
         return self.voucher_document_service.generate_and_store(
             booking=booking,

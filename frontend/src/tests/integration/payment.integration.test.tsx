@@ -32,7 +32,7 @@ describe('payment flow', () => {
     })
   })
 
-  it('shows production-safe payment methods on the payment step', async () => {
+  it('shows configured payment methods on the payment step', async () => {
     vi.spyOn(paymentsApi, 'getAvailablePaymentMethods').mockResolvedValue([
       {
         id: 'manual',
@@ -40,6 +40,13 @@ describe('payment flow', () => {
         title: 'Manual Settlement',
         description: 'Create the booking now and settle payment offline',
         icon: 'account_balance',
+      },
+      {
+        id: 'vnpay',
+        type: 'wallet',
+        title: 'VNPay',
+        description: 'Pay online with VNPay',
+        icon: 'account_balance_wallet',
       },
     ])
 
@@ -52,10 +59,10 @@ describe('payment flow', () => {
 
     expect(await screen.findByRole('heading', { name: 'Payment' })).toBeInTheDocument()
     expect(await screen.findByText('Manual Settlement')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Create booking request' })).toBeInTheDocument()
+    expect(await screen.findByText('VNPay')).toBeInTheDocument()
   })
 
-  it('hides unsupported self-service methods and falls back to manual settlement', async () => {
+  it('keeps self-service methods visible when the backend exposes them', async () => {
     vi.spyOn(paymentsApi, 'getAvailablePaymentMethods').mockResolvedValue([
       {
         id: 'manual',
@@ -81,12 +88,7 @@ describe('payment flow', () => {
     )
 
     expect(await screen.findByText('Manual confirmation')).toBeInTheDocument()
-    expect(screen.queryByRole('radio', { name: /vnpay/i })).not.toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: /manual confirmation/i })).toBeChecked()
-    expect(
-      screen.getByText(/online gateway methods are hidden until the end-to-end payment flow/i),
-    ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Create booking request' })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /vnpay/i })).toBeInTheDocument()
   })
 
   it('uses explicit manual-settlement copy when no self-service method is available', async () => {
@@ -145,7 +147,7 @@ describe('payment flow', () => {
 
     try {
       const payment = await paymentsApi.createPaymentIntent({
-        methodId: 'manual',
+        methodId: 'vnpay',
         tourId: 'amalfi-coast-sailing',
         scheduleId: 'schedule-1',
         travelerCounts: {
@@ -162,7 +164,7 @@ describe('payment flow', () => {
           adult_count: 1,
           child_count: 0,
           infant_count: 0,
-          payment_method: 'manual',
+          payment_method: 'vnpay',
         }),
       )
       expect(payment.bookingId).toBe('booking-123')
@@ -172,10 +174,10 @@ describe('payment flow', () => {
     }
   })
 
-  it('rejects unsupported self-service methods before creating a checkout request', async () => {
+  it('rejects empty payment method ids before creating a checkout request', async () => {
     await expect(
       paymentsApi.createPaymentIntent({
-        methodId: 'vnpay',
+        methodId: ' ',
         tourId: 'amalfi-coast-sailing',
         scheduleId: 'schedule-1',
         travelerCounts: {
@@ -185,6 +187,6 @@ describe('payment flow', () => {
         },
         travelDate: '2026-06-14',
       }),
-    ).rejects.toThrow('Online self-service payments are temporarily unavailable')
+    ).rejects.toThrow('A valid payment method is required before checkout can continue.')
   })
 })

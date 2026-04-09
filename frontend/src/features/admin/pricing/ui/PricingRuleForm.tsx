@@ -10,6 +10,7 @@ import { Input } from '@/shared/ui/Input'
 
 const PricingRuleCard = ({
   rule,
+  canEdit,
 }: {
   rule: {
     id: string
@@ -19,6 +20,7 @@ const PricingRuleCard = ({
     discountValue?: number
     isActive?: boolean
   }
+  canEdit: boolean
 }) => {
   const mutation = useUpdatePricingRuleMutation()
   const { pushToast } = useToast()
@@ -45,11 +47,16 @@ const PricingRuleCard = ({
         <div className="grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-primary/60">Rule name</span>
-            <Input value={displayName} onChange={(event) => setDisplayName(event.target.value)} />
+            <Input
+              disabled={!canEdit}
+              value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)}
+            />
           </label>
           <label className="space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-primary/60">Discount value</span>
             <Input
+              disabled={!canEdit}
               type="number"
               min="0"
               step="0.01"
@@ -66,7 +73,12 @@ const PricingRuleCard = ({
             </p>
           </div>
           <label className="inline-flex items-center gap-2 text-sm font-medium text-primary">
-            <input type="checkbox" checked={isActive} onChange={(event) => setIsActive(event.target.checked)} />
+            <input
+              type="checkbox"
+              checked={isActive}
+              disabled={!canEdit}
+              onChange={(event) => setIsActive(event.target.checked)}
+            />
             Active
           </label>
         </div>
@@ -74,7 +86,7 @@ const PricingRuleCard = ({
           <Button
             type="submit"
             loading={mutation.isPending}
-            disabled={displayName.trim().length === 0 || Number.isNaN(Number(discountValue))}
+            disabled={!canEdit || displayName.trim().length === 0 || Number.isNaN(Number(discountValue))}
           >
             Save rule
           </Button>
@@ -84,7 +96,7 @@ const PricingRuleCard = ({
   )
 }
 
-export const PricingRuleForm = () => {
+export const PricingRuleForm = ({ canEdit = true }: { canEdit?: boolean }) => {
   const { data } = useAdminPricingQuery()
 
   if (!data || data.length === 0) {
@@ -98,8 +110,13 @@ export const PricingRuleForm = () => {
 
   return (
     <div className="grid gap-4">
+      {!canEdit ? (
+        <Alert tone="info">
+          This account can review pricing rules but cannot update coupon configuration.
+        </Alert>
+      ) : null}
       {data?.map((rule) => (
-        <PricingRuleCard key={rule.id} rule={rule} />
+        <PricingRuleCard key={rule.id} rule={rule} canEdit={canEdit} />
       ))}
     </div>
   )

@@ -1,8 +1,14 @@
+import type { PropsWithChildren } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '@/app/providers/AuthProvider'
 import { LoadingOverlay } from '@/shared/components/LoadingOverlay'
+import { hasAdminAccess, hasAnyPermission } from '@/shared/lib/auth'
 
-export const AdminGuard = () => {
+interface AdminGuardProps extends PropsWithChildren {
+  requiredPermissions?: readonly string[]
+}
+
+export const AdminGuard = ({ children, requiredPermissions }: AdminGuardProps) => {
   const { user, isInitializing } = useAuth()
 
   if (isInitializing) {
@@ -14,6 +20,10 @@ export const AdminGuard = () => {
   }
 
   if (!user) return <Navigate replace to="/auth/login" />
-  if (user.role !== 'admin') return <Navigate replace to="/403" />
-  return <Outlet />
+  if (!hasAdminAccess(user)) return <Navigate replace to="/403" />
+  if (requiredPermissions?.length && !hasAnyPermission(user, requiredPermissions)) {
+    return <Navigate replace to="/403" />
+  }
+
+  return children ?? <Outlet />
 }

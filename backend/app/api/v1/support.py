@@ -39,6 +39,7 @@ def create_support_ticket(
         user_id=str(current_user.id),
         authenticated_email=current_user.email,
         authenticated_full_name=current_user.full_name,
+        authenticated_email_verified=current_user.email_verified,
         payload=payload,
         ip_address=get_client_ip(request),
         user_agent=get_user_agent(request),
