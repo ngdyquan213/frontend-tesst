@@ -41,6 +41,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional production env file to validate before smoke verification.",
     )
     parser.add_argument(
+        "--signoff-file",
+        help="Optional release signoff JSON file to validate before smoke verification.",
+    )
+    parser.add_argument(
         "--check-local-files",
         action="store_true",
         help="Pass --check-local-files through release_preflight when env-file is provided.",
@@ -74,10 +78,27 @@ def build_steps(args: argparse.Namespace, *, python_executable: str) -> list[Gat
             str(repo_root / "scripts" / "release_preflight.py"),
             "--env-file",
             args.env_file,
+            "--expected-environment",
+            args.expected_environment,
         ]
         if args.check_local_files:
             command.append("--check-local-files")
         steps.append(GateStep(name="release_preflight", command=command))
+
+    if args.signoff_file:
+        steps.append(
+            GateStep(
+                name="release_signoff",
+                command=[
+                    python_executable,
+                    str(repo_root / "scripts" / "release_signoff.py"),
+                    "--signoff-file",
+                    args.signoff_file,
+                    "--expected-environment",
+                    args.expected_environment,
+                ],
+            )
+        )
 
     smoke_command = [
         python_executable,

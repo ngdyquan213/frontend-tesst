@@ -142,7 +142,9 @@ The staging compose file differs from local compose in a few important ways:
 
 ```powershell
 docker compose --env-file .env.staging -f infra/docker/docker-compose.staging.yml ps
+python scripts/release_preflight.py --env-file .env.staging --expected-environment staging --check-local-files
 python scripts/smoke_local_stack.py --base-url http://localhost:8080 --prometheus-url http://localhost:9090 --expected-environment staging
+python scripts/release_signoff.py --signoff-file ops/release_signoff.staging.json --expected-environment staging
 ```
 
 Expected result:
@@ -164,10 +166,18 @@ make release-gate-staging
 
 This sequence runs:
 
+- release preflight against `.env.staging`
+- release signoff validation for monitoring, rollout, and rollback ownership
 - health and Prometheus smoke checks
 - deterministic demo seed inside the staging app container
 - seeded traveler journey verification
 - lightweight API load smoke
+
+If you want browser E2E to run against the already-running staging stack instead of a local preview build:
+
+```powershell
+make frontend-e2e-staging
+```
 
 ### Tear Down
 

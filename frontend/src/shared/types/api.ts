@@ -180,6 +180,9 @@ export interface Tour {
 
 export interface TourSearchParams {
   destination?: string
+  duration?: string
+  groupSize?: string
+  priceRange?: string
   limit?: number
   offset?: number
 }

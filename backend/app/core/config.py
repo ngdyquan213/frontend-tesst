@@ -59,6 +59,7 @@ class Settings(BaseSettings):
     OUTBOX_LEASE_SECONDS: int = 30
     OUTBOX_HEALTH_MODE: Literal["best_effort", "required"] = "best_effort"
     RUNTIME_MAINTENANCE_INTERVAL_SECONDS: int = 60
+    RUN_RUNTIME_MAINTENANCE_IN_APP: bool = True
     EMAIL_WORKER_BACKEND: Literal["mock", "smtp"] = "mock"
     SMTP_HOST: str = ""
     SMTP_PORT: int = 587
@@ -88,6 +89,10 @@ class Settings(BaseSettings):
     STRIPE_API_BASE_URL: str = "https://api.stripe.com/v1"
     STRIPE_REQUEST_TIMEOUT_SECONDS: int = 10
     STRIPE_WEBHOOK_TOLERANCE_SECONDS: int = 300
+    DATABASE_POOL_SIZE: int = 10
+    DATABASE_MAX_OVERFLOW: int = 20
+    DATABASE_POOL_TIMEOUT_SECONDS: int = 30
+    DATABASE_POOL_RECYCLE_SECONDS: int = 1800
 
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_PORT: int = 5432
@@ -204,6 +209,34 @@ class Settings(BaseSettings):
     def validate_outbox_lease_seconds(cls, value: int) -> int:
         if value <= 0:
             raise ValueError("OUTBOX_LEASE_SECONDS must be > 0")
+        return value
+
+    @field_validator("DATABASE_POOL_SIZE")
+    @classmethod
+    def validate_database_pool_size(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("DATABASE_POOL_SIZE must be > 0")
+        return value
+
+    @field_validator("DATABASE_MAX_OVERFLOW")
+    @classmethod
+    def validate_database_max_overflow(cls, value: int) -> int:
+        if value < 0:
+            raise ValueError("DATABASE_MAX_OVERFLOW must be >= 0")
+        return value
+
+    @field_validator("DATABASE_POOL_TIMEOUT_SECONDS")
+    @classmethod
+    def validate_database_pool_timeout_seconds(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("DATABASE_POOL_TIMEOUT_SECONDS must be > 0")
+        return value
+
+    @field_validator("DATABASE_POOL_RECYCLE_SECONDS")
+    @classmethod
+    def validate_database_pool_recycle_seconds(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("DATABASE_POOL_RECYCLE_SECONDS must be > 0")
         return value
 
     @field_validator("RUNTIME_MAINTENANCE_INTERVAL_SECONDS")

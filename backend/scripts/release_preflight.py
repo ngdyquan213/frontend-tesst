@@ -50,6 +50,7 @@ def evaluate_release_preflight(
     env: dict[str, str],
     *,
     repo_root: Path,
+    expected_environment: str | None = None,
     check_local_files: bool = False,
 ) -> list[str]:
     errors: list[str] = []
@@ -61,19 +62,24 @@ def evaluate_release_preflight(
         return value
 
     environment = require("ENVIRONMENT")
-    if environment != "production":
-        errors.append("ENVIRONMENT must be production")
+    target_environment = expected_environment or environment
+    if environment != target_environment:
+        errors.append(f"ENVIRONMENT must be {target_environment}")
+
+    if target_environment not in {"staging", "production"}:
+        errors.append("Expected environment must be staging or production")
 
     if _is_truthy(env.get("DEBUG")):
-        errors.append("DEBUG must be false for production rollout")
+        errors.append(f"DEBUG must be false for {target_environment} rollout")
 
-    if env.get("SECRET_SOURCE", "").strip() != "secret_manager":
-        errors.append("SECRET_SOURCE must be secret_manager for production rollout")
+    secret_source = env.get("SECRET_SOURCE", "").strip()
+    if target_environment == "production":
+        if secret_source != "secret_manager":
+            errors.append("SECRET_SOURCE must be secret_manager for production rollout")
+    elif secret_source not in {"env", "secret_manager"}:
+        errors.append("SECRET_SOURCE must be env or secret_manager for staging rollout")
 
     for key in (
-        "SECRET_MANAGER_PROVIDER",
-        "SECRET_MANAGER_SECRET_ID",
-        "SECRET_MANAGER_AWS_REGION",
         "DATABASE_URL",
         "REDIS_URL",
         "FRONTEND_BASE_URL",
@@ -87,12 +93,16 @@ def evaluate_release_preflight(
         "SMTP_HOST",
         "SMTP_FROM_EMAIL",
         "NOTIFICATION_REDIS_CHANNEL",
-        "S3_BUCKET_NAME",
-        "S3_REGION",
-        "S3_ACCESS_KEY_ID",
-        "S3_SECRET_ACCESS_KEY",
     ):
         require(key)
+
+    if secret_source == "secret_manager":
+        for key in (
+            "SECRET_MANAGER_PROVIDER",
+            "SECRET_MANAGER_SECRET_ID",
+            "SECRET_MANAGER_AWS_REGION",
+        ):
+            require(key)
 
     if env.get("EMAIL_WORKER_BACKEND", "").strip() != "smtp":
         errors.append("EMAIL_WORKER_BACKEND must be smtp")
@@ -100,8 +110,24 @@ def evaluate_release_preflight(
     if env.get("NOTIFICATION_WORKER_BACKEND", "").strip() != "redis":
         errors.append("NOTIFICATION_WORKER_BACKEND must be redis")
 
-    if env.get("STORAGE_BACKEND", "").strip() != "s3":
-        errors.append("STORAGE_BACKEND must be s3 for production")
+    storage_backend = env.get("STORAGE_BACKEND", "").strip()
+    if target_environment == "production":
+        if storage_backend != "s3":
+            errors.append("STORAGE_BACKEND must be s3 for production")
+    elif storage_backend not in {"local", "s3"}:
+        errors.append("STORAGE_BACKEND must be local or s3 for staging")
+
+    if storage_backend == "s3":
+        for key in (
+            "S3_BUCKET_NAME",
+            "S3_REGION",
+            "S3_ACCESS_KEY_ID",
+            "S3_SECRET_ACCESS_KEY",
+        ):
+            require(key)
+    elif storage_backend == "local":
+        for key in ("LOCAL_STORAGE_BUCKET", "LOCAL_UPLOAD_DIR"):
+            require(key)
 
     if env.get("OBSERVABILITY_PROTECTION_MODE", "").strip() != "allowlist":
         errors.append("OBSERVABILITY_PROTECTION_MODE must be allowlist")
@@ -150,19 +176,26 @@ def evaluate_release_preflight(
     ):
         errors.append("UPLOAD_MALWARE_SCAN_BACKEND must be clamav when malware scan is enabled")
 
-    critical_keys = (
+    critical_keys = [
         "SECRET_KEY",
         "PAYMENT_CALLBACK_SECRET",
         "DATABASE_URL",
         "REDIS_URL",
         "SMTP_HOST",
         "SMTP_FROM_EMAIL",
-        "S3_BUCKET_NAME",
-        "S3_ACCESS_KEY_ID",
-        "S3_SECRET_ACCESS_KEY",
-        "SECRET_MANAGER_SECRET_ID",
         "NGINX_SERVER_NAME",
-    )
+    ]
+    if storage_backend == "s3":
+        critical_keys.extend(
+            [
+                "S3_BUCKET_NAME",
+                "S3_ACCESS_KEY_ID",
+                "S3_SECRET_ACCESS_KEY",
+            ]
+        )
+    if secret_source == "secret_manager":
+        critical_keys.append("SECRET_MANAGER_SECRET_ID")
+
     for key in critical_keys:
         value = env.get(key, "").strip()
         if value and _contains_placeholder(value):
@@ -205,6 +238,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Also verify locally mounted TLS/cert paths when NGINX_TLS_ENABLED=true.",
     )
     parser.add_argument(
+        "--expected-environment",
+        choices=("staging", "production"),
+        help="Validate the env file against the requested release target.",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
         help="Emit machine-readable JSON output.",
@@ -227,6 +265,7 @@ def main() -> int:
     errors = evaluate_release_preflight(
         env,
         repo_root=repo_root,
+        expected_environment=args.expected_environment,
         check_local_files=args.check_local_files,
     )
 

@@ -8,6 +8,9 @@ import { useCheckoutContext } from '@/widgets/checkout/useCheckoutContext'
 const CheckoutPage = () => {
   const { isAuthenticated } = useAuth()
   const checkout = useCheckoutContext()
+  const exceedsAvailableSlots =
+    typeof checkout.availableSlots === 'number' &&
+    checkout.travelerCount > checkout.availableSlots
 
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.35fr)_22rem]">
@@ -23,7 +26,19 @@ const CheckoutPage = () => {
           scheduleId={checkout.scheduleId}
           isLoading={checkout.detailQuery.isPending}
         />
-        <TravelerInfoSection />
+        <TravelerInfoSection
+          adultCount={checkout.travelerCounts.adultCount}
+          childCount={checkout.travelerCounts.childCount}
+          infantCount={checkout.travelerCounts.infantCount}
+          availableSlots={checkout.availableSlots}
+          onTravelerCountChange={checkout.updateTravelerCounts}
+        />
+        {exceedsAvailableSlots ? (
+          <Alert tone="danger">
+            This traveler mix exceeds the remaining slots for the selected departure. Reduce the
+            traveler count before continuing to payment.
+          </Alert>
+        ) : null}
       </div>
       <CheckoutPanel
         ctaLabel="Continue to payment"
@@ -31,7 +46,7 @@ const CheckoutPage = () => {
         scheduleLabel={checkout.scheduleLabel}
         travelerLabel={checkout.travelerLabel}
         to={isAuthenticated ? checkout.paymentPath : '/auth/login'}
-        disabled={!checkout.scheduleId || !checkout.tourId}
+        disabled={!checkout.scheduleId || !checkout.tourId || exceedsAvailableSlots}
       />
     </div>
   )

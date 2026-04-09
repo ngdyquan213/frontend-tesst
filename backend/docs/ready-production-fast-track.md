@@ -54,16 +54,17 @@ CI gates:
 ## Phase 4: Staging-Like Verification
 
 - [ ] Prepare `.env.staging` with real secrets, hosts, storage, SMTP, Redis, and Postgres
-- [ ] Run `python scripts/release_preflight.py --env-file .env.staging --check-local-files`
+- [ ] Run `python scripts/release_preflight.py --env-file .env.staging --expected-environment staging --check-local-files`
 - [ ] Bring up staging stack: `make up-staging`
 - [ ] Verify staging stack: `make smoke-staging`
 - [ ] Prefer the consolidated gate once staging is up: `make release-gate-staging`
 - [x] Seed deterministic QA data if the local pilot flow depends on it
-- [ ] Run live frontend E2E against staging
+- [ ] Run live frontend E2E against staging: `make frontend-e2e-staging`
 - [ ] Verify auth, booking, payment, document upload, and admin tour flows manually once on staging
 
 ## Phase 5: Ops, Load, and Rollout
 
+- [x] Track monitoring, rollout, and rollback signoff metadata in `ops/release_signoff.*.json`
 - [ ] Confirm monitoring for app target health, readiness degradation, request failures, payment callback failures, HTTP 5xx spikes, and outbox backlog
 - [x] Run lightweight load smoke: `make load-smoke`
 - [x] Record latency and failure output for login, checkout, and upload paths
@@ -93,11 +94,12 @@ cd ../backend
 ./.venv/bin/ruff check app tests scripts
 ./.venv/bin/pytest -q
 ./.venv/bin/bandit -q -r app
-python scripts/release_preflight.py --env-file .env.staging --check-local-files
+python scripts/release_preflight.py --env-file .env.staging --expected-environment staging --check-local-files
 
 # staging-like stack
 make up-staging
 make smoke-staging
+make frontend-e2e-staging
 make release-gate-staging
 ```
 

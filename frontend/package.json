@@ -14,6 +14,7 @@
     "test:watch": "VITE_ENABLE_MOCKS=${VITE_ENABLE_MOCKS:-true} vitest",
     "test:e2e": "VITE_ENABLE_MOCKS=${VITE_ENABLE_MOCKS:-false} playwright test",
     "test:e2e:live": "VITE_ENABLE_MOCKS=false playwright test",
+    "test:e2e:staging": "PLAYWRIGHT_SKIP_WEBSERVER=true VITE_ENABLE_MOCKS=false playwright test",
     "test:e2e:mock": "VITE_ENABLE_MOCKS=true playwright test"
   },
   "dependencies": {

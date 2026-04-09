@@ -4,8 +4,12 @@ import hashlib
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
-from app.core.exceptions import ConflictAppException, NotFoundAppException, ValidationAppException
 from app.core.config import settings
+from app.core.exceptions import (
+    ConflictAppException,
+    NotFoundAppException,
+    ValidationAppException,
+)
 from app.models.booking import Booking, BookingItem
 from app.models.enums import (
     BookingItemType,
@@ -107,7 +111,10 @@ class CheckoutService(ApplicationService):
                 "Idempotency key was already used with different traveler counts"
             )
 
-        if booking.status != BookingStatus.pending or booking.payment_status != PaymentStatus.pending:
+        if (
+            booking.status != BookingStatus.pending
+            or booking.payment_status != PaymentStatus.pending
+        ):
             raise ConflictAppException("Idempotency key was already used for a closed booking")
 
     def _create_payment(

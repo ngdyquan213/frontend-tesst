@@ -46,15 +46,22 @@ describe('promotion ctas', () => {
   })
 
   it('serves safe booking links from the promotions catalog data', async () => {
-    const promotions = await getPromotions()
-    const bookingCtas = promotions.flatMap((promotion) =>
-      [promotion.primaryCta, promotion.secondaryCta, promotion.banner?.primaryCta, promotion.banner?.secondaryCta].filter(
-        (cta): cta is NonNullable<typeof cta> => Boolean(cta && cta.kind === 'booking'),
-      ),
-    )
+    const previousEnableMocks = env.enableMocks
+    env.enableMocks = true
 
-    expect(bookingCtas.length).toBeGreaterThan(0)
-    expect(bookingCtas.every((cta) => cta.href === '/tours')).toBe(true)
-    expect(bookingCtas.every((cta) => cta.label === 'Browse Eligible Tours')).toBe(true)
+    try {
+      const promotions = await getPromotions()
+      const bookingCtas = promotions.flatMap((promotion) =>
+        [promotion.primaryCta, promotion.secondaryCta, promotion.banner?.primaryCta, promotion.banner?.secondaryCta].filter(
+          (cta): cta is NonNullable<typeof cta> => Boolean(cta && cta.kind === 'booking'),
+        ),
+      )
+
+      expect(bookingCtas.length).toBeGreaterThan(0)
+      expect(bookingCtas.every((cta) => cta.href === '/tours')).toBe(true)
+      expect(bookingCtas.every((cta) => cta.label === 'Browse Eligible Tours')).toBe(true)
+    } finally {
+      env.enableMocks = previousEnableMocks
+    }
   })
 })

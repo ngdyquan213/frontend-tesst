@@ -70,6 +70,49 @@ def test_release_preflight_accepts_valid_production_config(tmp_path: Path):
     assert errors == []
 
 
+def test_release_preflight_accepts_valid_staging_config(tmp_path: Path):
+    certs_dir = tmp_path / "infra" / "nginx" / "certs"
+    certs_dir.mkdir(parents=True)
+    env = {
+        "ENVIRONMENT": "staging",
+        "DEBUG": "false",
+        "SECRET_SOURCE": "env",
+        "DATABASE_URL": "postgresql+psycopg2://user:staging-secret@postgres.internal:5432/app",
+        "REDIS_URL": "redis://redis.internal:6379/0",
+        "FRONTEND_BASE_URL": "https://staging.travelbook.internal",
+        "SECRET_KEY": "staging-real-secret-key-abcdefghijklmnopqrstuvwxyz",
+        "PAYMENT_CALLBACK_SECRET": "staging-payment-secret-abcdefghijklmnopqrstuvwxyz",
+        "CORS_ORIGINS": "https://staging.travelbook.internal",
+        "TRUSTED_HOSTS": "staging.travelbook.internal,app,app:8000",
+        "OBSERVABILITY_PROTECTION_MODE": "allowlist",
+        "OBSERVABILITY_ALLOWLIST": "10.40.0.0/16",
+        "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "10.30.0.0/16",
+        "FORWARDED_ALLOW_IPS": "10.20.0.0/16",
+        "EMAIL_WORKER_BACKEND": "smtp",
+        "SMTP_HOST": "mailhog.internal",
+        "SMTP_FROM_EMAIL": "no-reply@staging.travelbook.internal",
+        "NOTIFICATION_WORKER_BACKEND": "redis",
+        "NOTIFICATION_REDIS_CHANNEL": "secure_travel.notifications.staging",
+        "STORAGE_BACKEND": "local",
+        "LOCAL_STORAGE_BUCKET": "staging-local",
+        "LOCAL_UPLOAD_DIR": "uploads",
+        "ALLOW_PAYMENT_SIMULATION": "false",
+        "OUTBOX_HEALTH_MODE": "required",
+        "NGINX_TLS_ENABLED": "true",
+        "NGINX_CERTS_DIR": "infra/nginx/certs",
+        "NGINX_SERVER_NAME": "staging.travelbook.internal",
+    }
+
+    errors = evaluate_release_preflight(
+        env,
+        repo_root=tmp_path,
+        expected_environment="staging",
+        check_local_files=True,
+    )
+
+    assert errors == []
+
+
 def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
     env = {
         "ENVIRONMENT": "production",
@@ -150,3 +193,40 @@ def test_release_preflight_requires_complete_stripe_configuration(tmp_path: Path
         "Stripe production rollout must configure STRIPE_SECRET_KEY, "
         "STRIPE_PUBLISHABLE_KEY, and STRIPE_WEBHOOK_SECRET together"
     ) in errors
+
+
+def test_release_preflight_rejects_wrong_environment_target(tmp_path: Path):
+    env = {
+        "ENVIRONMENT": "staging",
+        "DEBUG": "false",
+        "SECRET_SOURCE": "env",
+        "DATABASE_URL": "postgresql+psycopg2://user:staging-secret@postgres.internal:5432/app",
+        "REDIS_URL": "redis://redis.internal:6379/0",
+        "FRONTEND_BASE_URL": "https://staging.travelbook.internal",
+        "SECRET_KEY": "staging-real-secret-key-abcdefghijklmnopqrstuvwxyz",
+        "PAYMENT_CALLBACK_SECRET": "staging-payment-secret-abcdefghijklmnopqrstuvwxyz",
+        "CORS_ORIGINS": "https://staging.travelbook.internal",
+        "TRUSTED_HOSTS": "staging.travelbook.internal",
+        "OBSERVABILITY_PROTECTION_MODE": "allowlist",
+        "OBSERVABILITY_ALLOWLIST": "10.40.0.0/16",
+        "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "10.30.0.0/16",
+        "FORWARDED_ALLOW_IPS": "10.20.0.0/16",
+        "EMAIL_WORKER_BACKEND": "smtp",
+        "SMTP_HOST": "smtp.internal",
+        "SMTP_FROM_EMAIL": "no-reply@staging.travelbook.internal",
+        "NOTIFICATION_WORKER_BACKEND": "redis",
+        "NOTIFICATION_REDIS_CHANNEL": "secure_travel.notifications.staging",
+        "STORAGE_BACKEND": "local",
+        "LOCAL_STORAGE_BUCKET": "staging-local",
+        "LOCAL_UPLOAD_DIR": "uploads",
+        "ALLOW_PAYMENT_SIMULATION": "false",
+        "OUTBOX_HEALTH_MODE": "required",
+    }
+
+    errors = evaluate_release_preflight(
+        env,
+        repo_root=tmp_path,
+        expected_environment="production",
+    )
+
+    assert "ENVIRONMENT must be production" in errors

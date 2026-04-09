@@ -1,4 +1,4 @@
-.PHONY: install dev migrate makemigrations seed seed-coupons seed-demo create-admin test test-cov lint security up down logs restart up-test-db down-test-db test-postgres runtime-check smoke-local load-smoke up-staging down-staging logs-staging smoke-staging up-production down-production logs-production smoke-production release-preflight release-verify-demo release-gate-staging release-gate-production
+.PHONY: install dev migrate makemigrations seed seed-coupons seed-demo create-admin test test-cov lint security up down logs restart up-test-db down-test-db test-postgres runtime-check smoke-local load-smoke up-staging down-staging logs-staging smoke-staging up-production down-production logs-production smoke-production release-preflight release-signoff-staging release-signoff-production release-verify-demo release-gate-staging release-gate-production frontend-e2e-staging
 
 install:
 	pip install --upgrade pip==25.2
@@ -97,13 +97,22 @@ smoke-production:
 	python scripts/smoke_local_stack.py --base-url $${SMOKE_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8081}} --expected-environment production
 
 release-preflight:
-	python scripts/release_preflight.py --env-file $${APP_ENV_FILE:-.env.production} --check-local-files
+	python scripts/release_preflight.py --env-file $${APP_ENV_FILE:-.env.production} --expected-environment $${EXPECTED_ENVIRONMENT:-production} --check-local-files
+
+release-signoff-staging:
+	python scripts/release_signoff.py --signoff-file ops/release_signoff.staging.json --expected-environment staging
+
+release-signoff-production:
+	python scripts/release_signoff.py --signoff-file ops/release_signoff.production.json --expected-environment production
 
 release-verify-demo:
 	python scripts/release_verify_demo.py --base-url $${RELEASE_BASE_URL:-http://localhost:8081/api/v1}
 
 release-gate-staging:
 	python scripts/release_gate.py \
+		--env-file .env.staging \
+		--check-local-files \
+		--signoff-file ops/release_signoff.staging.json \
 		--base-url $${RELEASE_GATE_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8080}} \
 		--api-base-url $${RELEASE_GATE_API_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8080}/api/v1} \
 		--expected-environment staging \
@@ -114,8 +123,12 @@ release-gate-production:
 	python scripts/release_gate.py \
 		--env-file $${APP_ENV_FILE:-.env.production} \
 		--check-local-files \
+		--signoff-file ops/release_signoff.production.json \
 		--base-url $${RELEASE_GATE_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8081}} \
 		--api-base-url $${RELEASE_GATE_API_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8081}/api/v1} \
 		--expected-environment production \
 		--skip-seed \
 		--skip-demo
+
+frontend-e2e-staging:
+	cd ../frontend && PLAYWRIGHT_SKIP_WEBSERVER=true VITE_ENABLE_MOCKS=false PLAYWRIGHT_BASE_URL=$${PLAYWRIGHT_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8080}} VITE_API_BASE_URL=$${VITE_API_BASE_URL:-http://localhost:$${HOST_HTTP_PORT:-8080}/api/v1} npm run test:e2e:staging

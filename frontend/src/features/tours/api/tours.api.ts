@@ -197,12 +197,8 @@ export async function searchTours(params: TourSearchParams = {}, signal?: AbortS
   const normalizedParams = normalizeTourSearchParams(params)
 
   if (!isMockApiEnabled()) {
-    const response = await apiClient.searchTours({
-      destination: normalizedParams.destination,
-      limit: 100,
-      offset: 0,
-    })
-    return cloneTours(applyClientFilters(response.tours.map(mapApiTourToCardModel), normalizedParams))
+    const response = await apiClient.searchTours(normalizedParams)
+    return cloneTours(response.tours.map(mapApiTourToCardModel))
   }
 
   await wait(520, signal)

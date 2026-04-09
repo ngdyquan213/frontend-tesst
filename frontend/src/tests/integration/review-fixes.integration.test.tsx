@@ -170,7 +170,11 @@ describe('review fixes', () => {
           methodId: 'manual',
           tourId: 'tour-1',
           scheduleId: 'schedule-1',
-          travelerCount: 1,
+          travelerCounts: {
+            adultCount: 1,
+            childCount: 0,
+            infantCount: 0,
+          },
           travelDate: '2026-06-14',
         }),
       ).rejects.toThrow('timeout')
@@ -179,7 +183,11 @@ describe('review fixes', () => {
         methodId: 'manual',
         tourId: 'tour-1',
         scheduleId: 'schedule-1',
-        travelerCount: 1,
+        travelerCounts: {
+          adultCount: 1,
+          childCount: 0,
+          infantCount: 0,
+        },
         travelDate: '2026-06-14',
       })
 
@@ -187,11 +195,20 @@ describe('review fixes', () => {
         methodId: 'manual',
         tourId: 'tour-1',
         scheduleId: 'schedule-1',
-        travelerCount: 1,
+        travelerCounts: {
+          adultCount: 1,
+          childCount: 0,
+          infantCount: 0,
+        },
         travelDate: '2026-06-14',
       })
 
       expect(createTourCheckoutSpy).toHaveBeenCalledTimes(3)
+      expect(createTourCheckoutSpy.mock.calls[0]?.[0]).toMatchObject({
+        adult_count: 1,
+        child_count: 0,
+        infant_count: 0,
+      })
       expect(createTourCheckoutSpy.mock.calls[0]?.[0].idempotency_key).toBe(
         createTourCheckoutSpy.mock.calls[1]?.[0].idempotency_key,
       )

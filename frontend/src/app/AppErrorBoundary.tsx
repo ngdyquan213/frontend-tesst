@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { reportRuntimeError } from '@/shared/monitoring/reportRuntimeError'
 import { Button } from '@/shared/ui/Button'
 import { EmptyState } from '@/shared/ui/EmptyState'
 
@@ -21,6 +22,11 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('app_runtime_error', error, errorInfo)
+    reportRuntimeError({
+      source: 'boundary',
+      message: error.message,
+      stack: `${error.stack ?? ''}\n${errorInfo.componentStack}`.trim(),
+    })
   }
 
   render() {

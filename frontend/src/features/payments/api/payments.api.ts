@@ -19,14 +19,14 @@ export const paymentsApi = {
     methodId,
     tourId,
     scheduleId,
-    travelerCount,
+    travelerCounts,
     travelDate,
   }: CreatePaymentIntentInput) => {
     const input = {
       methodId,
       tourId,
       scheduleId,
-      travelerCount,
+      travelerCounts,
       travelDate,
     }
 
@@ -41,7 +41,9 @@ export const paymentsApi = {
         try {
           checkoutResponse = await apiClient.createTourCheckout({
             schedule_id: scheduleId,
-            number_of_travelers: travelerCount,
+            adult_count: travelerCounts.adultCount,
+            child_count: travelerCounts.childCount,
+            infant_count: travelerCounts.infantCount,
             payment_method: methodId,
             idempotency_key: idempotencyKey,
           })

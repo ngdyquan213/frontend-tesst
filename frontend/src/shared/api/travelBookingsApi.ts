@@ -73,6 +73,9 @@ export function createTravelBookingsApi(client: AxiosInstance) {
       const response = await client.get('/tours', {
         params: {
           destination: params.destination,
+          duration: params.duration,
+          group_size: params.groupSize,
+          price_range: params.priceRange,
           page: 1,
           page_size: params.limit ?? 12,
         },

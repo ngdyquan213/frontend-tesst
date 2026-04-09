@@ -18,9 +18,13 @@ from app.core.security import verify_payment_callback_signature
 from app.models.enums import LogActorType, PaymentStatus, SecurityEventType
 from app.models.payment import PaymentCallback
 from app.repositories.booking_repository import BookingRepository
+from app.repositories.flight_repository import FlightRepository
+from app.repositories.hotel_repository import HotelRepository
 from app.repositories.payment_repository import PaymentRepository
+from app.repositories.tour_repository import TourRepository
 from app.services.application_service import ApplicationService
 from app.services.audit_service import AuditService
+from app.services.booking_inventory_service import BookingInventoryService
 from app.services.outbox_service import OutboxService
 from app.services.payment_callback_domain_service import PaymentCallbackDomainService
 from app.services.payment_gateway_service import PaymentGatewayService
@@ -40,7 +44,7 @@ class PaymentCallbackService(ApplicationService):
         audit_service: AuditService,
         email_worker: EmailWorker,
         domain_service: PaymentCallbackDomainService,
-        inventory_service,
+        inventory_service: BookingInventoryService | None = None,
         outbox_service: OutboxService | None = None,
         gateway_service: PaymentGatewayService | None = None,
     ) -> None:
@@ -50,7 +54,11 @@ class PaymentCallbackService(ApplicationService):
         self.audit_service = audit_service
         self.email_worker = email_worker
         self.domain_service = domain_service
-        self.inventory_service = inventory_service
+        self.inventory_service = inventory_service or BookingInventoryService(
+            flight_repo=FlightRepository(db),
+            hotel_repo=HotelRepository(db),
+            tour_repo=TourRepository(db),
+        )
         self.outbox_service = outbox_service or OutboxService(
             db=db,
             email_worker=email_worker,

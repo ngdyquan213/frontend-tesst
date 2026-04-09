@@ -1,4 +1,6 @@
 import type { Promotion, PromotionQueryParams, PromotionStatus } from '@/features/promotions/model/promotion.types'
+import { apiClient } from '@/shared/api/apiClient'
+import { isMockApiEnabled } from '@/shared/api/mockMode'
 
 const PROMOTIONS: Promotion[] = [
   {
@@ -233,6 +235,10 @@ export async function getPromotions(
   params: PromotionQueryParams = {},
   signal?: AbortSignal
 ): Promise<Promotion[]> {
+  if (!isMockApiEnabled()) {
+    return apiClient.getPromotions(params)
+  }
+
   await wait(420, signal)
 
   const filteredPromotions = PROMOTIONS.filter((promotion) => {

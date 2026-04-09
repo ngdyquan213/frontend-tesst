@@ -39,6 +39,7 @@ const PaymentPage = () => {
     !checkout.tourId ||
     !checkout.scheduleId ||
     !selectedMethodId ||
+    (typeof checkout.availableSlots === 'number' && checkout.travelerCount > checkout.availableSlots) ||
     paymentMethodsQuery.isLoading ||
     createPaymentIntentMutation.isPending
 
@@ -79,6 +80,12 @@ const PaymentPage = () => {
           </Alert>
         ) : null}
 
+        {typeof checkout.availableSlots === 'number' && checkout.travelerCount > checkout.availableSlots ? (
+          <Alert tone="danger">
+            The selected traveler mix is larger than the remaining slots for this departure.
+          </Alert>
+        ) : null}
+
         <section className="space-y-4">
           <h2 className="text-lg font-bold text-primary">Available methods</h2>
           {paymentMethodsQuery.isLoading ? (
@@ -115,7 +122,7 @@ const PaymentPage = () => {
                 methodId: selectedMethodId,
                 tourId: checkout.tourId,
                 scheduleId: checkout.scheduleId,
-                travelerCount: checkout.travelerCount,
+                travelerCounts: checkout.travelerCounts,
                 travelDate:
                   checkout.selectedSchedule?.departure_date ?? new Date().toISOString().slice(0, 10),
               })
@@ -126,6 +133,9 @@ const PaymentPage = () => {
                   scheduleId: checkout.scheduleId,
                   bookingId: payment.bookingId,
                   paymentId: payment.id,
+                  adultCount: checkout.travelerCounts.adultCount,
+                  childCount: checkout.travelerCounts.childCount,
+                  infantCount: checkout.travelerCounts.infantCount,
                 }),
               )
             }}

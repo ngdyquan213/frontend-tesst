@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
 from decimal import Decimal
 
+from app.core.constants import PERM_ADMIN_BOOKINGS_READ, PERM_ADMIN_SUPPORT_READ
 from app.core.security import get_password_hash
 from app.models.booking import Booking
 from app.models.enums import BookingStatus, PaymentStatus, UserStatus
-from app.core.constants import PERM_ADMIN_BOOKINGS_READ, PERM_ADMIN_SUPPORT_READ
 from app.models.role import Permission, Role, RolePermission, UserRole
 from app.models.user import User
 
@@ -113,7 +113,10 @@ def test_create_support_ticket_uses_authenticated_account_identity(client, db_se
             "email": "spoofed@example.com",
             "topic_id": "payments",
             "subject": "Need help with payment status",
-            "message": "Please confirm the payment state because the gateway callback looked delayed.",
+            "message": (
+                "Please confirm the payment state because the gateway callback "
+                "looked delayed."
+            ),
             "booking_reference": None,
         },
         headers={"Authorization": f"Bearer {token}"},
@@ -308,7 +311,10 @@ def test_admin_support_endpoints_work_with_admin_role(client, db_session):
     reply_response = client.post(
         f"/api/v1/support/admin/tickets/{ticket_id}/replies",
         json={
-            "message": "We have updated the handoff note and are waiting on your confirmation.",
+            "message": (
+                "We have updated the handoff note and are waiting on your "
+                "confirmation."
+            ),
             "status": "waiting_for_traveler",
         },
         headers={"Authorization": f"Bearer {admin_token}"},
@@ -326,7 +332,10 @@ def test_admin_support_endpoints_work_with_admin_role(client, db_session):
     assert update_response.json()["status"] == "resolved"
 
 
-def test_support_admin_endpoints_require_support_permission_when_permissions_exist(client, db_session):
+def test_support_admin_endpoints_require_support_permission_when_permissions_exist(
+    client,
+    db_session,
+):
     traveler, traveler_token = create_user_and_login(
         client,
         db_session,
@@ -342,7 +351,10 @@ def test_support_admin_endpoints_require_support_permission_when_permissions_exi
             "email": "support-perm-traveler@example.com",
             "topic_id": "bookings",
             "subject": "Need support permission review",
-            "message": "Please confirm who can view this support request in the admin workspace today.",
+            "message": (
+                "Please confirm who can view this support request in the admin "
+                "workspace today."
+            ),
             "booking_reference": booking.booking_code,
         },
         headers={"Authorization": f"Bearer {traveler_token}"},

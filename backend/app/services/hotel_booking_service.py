@@ -8,7 +8,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.exceptions import ConflictAppException, NotFoundAppException, ValidationAppException
+from app.core.exceptions import (
+    ConflictAppException,
+    NotFoundAppException,
+    ValidationAppException,
+)
 from app.models.booking import Booking, BookingItem
 from app.models.enums import BookingItemType, BookingStatus, LogActorType, PaymentStatus
 from app.repositories.booking_repository import BookingRepository
@@ -46,7 +50,11 @@ class HotelBookingService(ApplicationService):
         return booked_at + timedelta(minutes=settings.BOOKING_HOLD_EXPIRE_MINUTES)
 
     @staticmethod
-    def _assert_existing_booking_matches_request(*, booking: Booking, payload: HotelBookingCreateRequest) -> None:
+    def _assert_existing_booking_matches_request(
+        *,
+        booking: Booking,
+        payload: HotelBookingCreateRequest,
+    ) -> None:
         item = booking.items[0] if booking.items else None
         if item is None or item.item_type != BookingItemType.hotel:
             raise ConflictAppException("Idempotency key was already used for a different booking")
@@ -57,9 +65,14 @@ class HotelBookingService(ApplicationService):
             or item.check_out_date != payload.check_out_date
             or item.quantity != payload.quantity
         ):
-            raise ConflictAppException("Idempotency key was already used with different stay details")
+            raise ConflictAppException(
+                "Idempotency key was already used with different stay details"
+            )
 
-        if booking.status != BookingStatus.pending or booking.payment_status != PaymentStatus.pending:
+        if (
+            booking.status != BookingStatus.pending
+            or booking.payment_status != PaymentStatus.pending
+        ):
             raise ConflictAppException("Idempotency key was already used for a closed booking")
 
     def create_hotel_booking(
@@ -156,7 +169,10 @@ class HotelBookingService(ApplicationService):
                 )
         except IntegrityError:
             self.db.rollback()
-            existing_booking = self.booking_repo.get_by_booking_code_and_user_id(booking_code, user_id)
+            existing_booking = self.booking_repo.get_by_booking_code_and_user_id(
+                booking_code,
+                user_id,
+            )
             if existing_booking is None:
                 raise
             self._assert_existing_booking_matches_request(booking=existing_booking, payload=payload)

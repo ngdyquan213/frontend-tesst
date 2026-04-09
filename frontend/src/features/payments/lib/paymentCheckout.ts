@@ -6,7 +6,11 @@ interface CreatePaymentIntentInput {
   methodId: string
   tourId: string
   scheduleId: string
-  travelerCount: number
+  travelerCounts: {
+    adultCount: number
+    childCount: number
+    infantCount: number
+  }
   travelDate: string
 }
 
@@ -26,14 +30,23 @@ function buildCheckoutAttemptFingerprint({
   methodId,
   tourId,
   scheduleId,
-  travelerCount,
+  travelerCounts,
   travelDate,
 }: CreatePaymentIntentInput) {
   const accessTokenFragment = (authStorage.getAccessToken() ?? 'guest')
     .slice(0, 24)
     .replace(/[^a-zA-Z0-9_-]/g, '')
 
-  return [accessTokenFragment, methodId, tourId, scheduleId, String(travelerCount), travelDate].join(':')
+  return [
+    accessTokenFragment,
+    methodId,
+    tourId,
+    scheduleId,
+    String(travelerCounts.adultCount),
+    String(travelerCounts.childCount),
+    String(travelerCounts.infantCount),
+    travelDate,
+  ].join(':')
 }
 
 function getCheckoutIdempotencyStorageKey(input: CreatePaymentIntentInput) {
@@ -52,7 +65,7 @@ export function getOrCreateIdempotencyKey(input: CreatePaymentIntentInput) {
   const idempotencyKey =
     typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
       ? `checkout-${crypto.randomUUID()}`
-      : `payment-${input.tourId}-${input.scheduleId}-${input.travelerCount}-${Date.now()}`
+      : `payment-${input.tourId}-${input.scheduleId}-${input.travelerCounts.adultCount}-${input.travelerCounts.childCount}-${input.travelerCounts.infantCount}-${Date.now()}`
 
   sessionStorage?.setItem(storageKey, idempotencyKey)
   return { storageKey, idempotencyKey }

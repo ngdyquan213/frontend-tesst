@@ -36,7 +36,9 @@ export function createPaymentRefundsApi(client: AxiosInstance) {
 
     async createTourCheckout(data: {
       schedule_id: string
-      number_of_travelers: number
+      adult_count: number
+      child_count: number
+      infant_count: number
       payment_method: string
       idempotency_key: string
     }): Promise<{ booking: types.Booking; payment: types.Payment }> {
@@ -44,9 +46,9 @@ export function createPaymentRefundsApi(client: AxiosInstance) {
         '/payments/checkout/tours',
         {
           tour_schedule_id: data.schedule_id,
-          adult_count: Math.max(data.number_of_travelers, 1),
-          child_count: 0,
-          infant_count: 0,
+          adult_count: Math.max(data.adult_count, 0),
+          child_count: Math.max(data.child_count, 0),
+          infant_count: Math.max(data.infant_count, 0),
           payment_method: data.payment_method,
         },
         {

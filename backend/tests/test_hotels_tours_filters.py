@@ -1,5 +1,8 @@
+from datetime import date, timedelta
+
+from app.models.enums import TourScheduleStatus, TravelerType
 from app.models.hotel import Hotel
-from app.models.tour import Tour
+from app.models.tour import Tour, TourPriceRule, TourSchedule
 
 
 def seed_hotel(db_session, *, name: str, city: str, country: str, star_rating: int):
@@ -15,14 +18,23 @@ def seed_hotel(db_session, *, name: str, city: str, country: str, star_rating: i
     return hotel
 
 
-def seed_tour(db_session, *, code: str, name: str, destination: str, tour_type: str, status: str):
+def seed_tour(
+    db_session,
+    *,
+    code: str,
+    name: str,
+    destination: str,
+    tour_type: str,
+    status: str,
+    duration_days: int = 3,
+):
     tour = Tour(
         code=code,
         name=name,
         destination=destination,
         description=f"{name} description",
-        duration_days=3,
-        duration_nights=2,
+        duration_days=duration_days,
+        duration_nights=max(duration_days - 1, 1),
         meeting_point="City Center",
         tour_type=tour_type,
         status=status,
@@ -30,6 +42,29 @@ def seed_tour(db_session, *, code: str, name: str, destination: str, tour_type: 
     db_session.add(tour)
     db_session.commit()
     return tour
+
+
+def seed_tour_schedule(db_session, *, tour: Tour, capacity: int, adult_price: str):
+    schedule = TourSchedule(
+        tour_id=tour.id,
+        departure_date=date.today() + timedelta(days=7),
+        return_date=date.today() + timedelta(days=9),
+        capacity=capacity,
+        available_slots=capacity,
+        status=TourScheduleStatus.scheduled,
+    )
+    db_session.add(schedule)
+    db_session.flush()
+    db_session.add(
+        TourPriceRule(
+            tour_schedule_id=schedule.id,
+            traveler_type=TravelerType.adult,
+            price=adult_price,
+            currency="USD",
+        )
+    )
+    db_session.commit()
+    return schedule
 
 
 def test_list_hotels_filter_by_city_and_star_rating(client, db_session):
@@ -112,3 +147,41 @@ def test_list_tours_sort_by_duration_desc(client, db_session):
 
     durations = [item["duration_days"] for item in body["items"]]
     assert durations == sorted(durations, reverse=True)
+
+
+def test_list_tours_filter_by_duration_group_size_and_price_range(client, db_session):
+    intimate_tour = seed_tour(
+        db_session,
+        code="TOUR-SMALL-001",
+        name="Kyoto Calm",
+        destination="Kyoto",
+        tour_type="cultural",
+        status="active",
+        duration_days=4,
+    )
+    large_tour = seed_tour(
+        db_session,
+        code="TOUR-LARGE-001",
+        name="Kyoto Grand",
+        destination="Kyoto",
+        tour_type="cultural",
+        status="active",
+        duration_days=11,
+    )
+    seed_tour_schedule(db_session, tour=intimate_tour, capacity=8, adult_price="1200.00")
+    seed_tour_schedule(db_session, tour=large_tour, capacity=16, adult_price="3200.00")
+
+    resp = client.get(
+        "/api/v1/tours"
+        "?destination=Kyoto"
+        "&duration=short"
+        "&group_size=intimate"
+        "&price_range=under-1500"
+    )
+    assert resp.status_code == 200
+    body = resp.json()
+
+    assert body["total"] >= 1
+    returned_names = [item["name"] for item in body["items"]]
+    assert "Kyoto Calm" in returned_names
+    assert "Kyoto Grand" not in returned_names

@@ -122,13 +122,20 @@ describe('payment flow', () => {
         methodId: 'bank_transfer',
         tourId: 'amalfi-coast-sailing',
         scheduleId: 'schedule-1',
-        travelerCount: 1,
+        travelerCounts: {
+          adultCount: 1,
+          childCount: 0,
+          infantCount: 0,
+        },
         travelDate: '2026-06-14',
       })
 
       expect(createTourCheckoutSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           schedule_id: 'schedule-1',
+          adult_count: 1,
+          child_count: 0,
+          infant_count: 0,
           payment_method: 'bank_transfer',
         }),
       )

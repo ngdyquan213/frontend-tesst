@@ -214,12 +214,12 @@ def test_run_noncritical_maintenance_loop_can_skip_immediate_run():
 
 def test_cleanup_expired_booking_holds_restores_inventory(monkeypatch, db_session):
     from app.core import runtime_tasks as runtime_module
+    from app.core.security import get_password_hash
     from app.models.booking import Booking, BookingItem
     from app.models.enums import BookingItemType, BookingStatus, PaymentStatus, UserStatus
     from app.models.flight import Airline, Airport, Flight
     from app.models.payment import Payment
     from app.models.user import User
-    from app.core.security import get_password_hash
 
     user = User(
         email="expired-booking@example.com",

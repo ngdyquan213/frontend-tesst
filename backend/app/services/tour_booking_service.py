@@ -8,7 +8,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.exceptions import ConflictAppException, NotFoundAppException, ValidationAppException
+from app.core.exceptions import (
+    ConflictAppException,
+    NotFoundAppException,
+    ValidationAppException,
+)
 from app.models.booking import Booking, BookingItem
 from app.models.enums import (
     BookingItemType,
@@ -61,7 +65,11 @@ class TourBookingService(ApplicationService):
         return booked_at + timedelta(minutes=settings.BOOKING_HOLD_EXPIRE_MINUTES)
 
     @staticmethod
-    def _assert_existing_booking_matches_request(*, booking: Booking, payload: TourBookingCreateRequest) -> None:
+    def _assert_existing_booking_matches_request(
+        *,
+        booking: Booking,
+        payload: TourBookingCreateRequest,
+    ) -> None:
         item = booking.items[0] if booking.items else None
         metadata = item.metadata_json if item and item.metadata_json else {}
 
@@ -80,7 +88,10 @@ class TourBookingService(ApplicationService):
                 "Idempotency key was already used with different traveler details"
             )
 
-        if booking.status != BookingStatus.pending or booking.payment_status != PaymentStatus.pending:
+        if (
+            booking.status != BookingStatus.pending
+            or booking.payment_status != PaymentStatus.pending
+        ):
             raise ConflictAppException("Idempotency key was already used for a closed booking")
 
     def create_tour_booking(
@@ -118,7 +129,10 @@ class TourBookingService(ApplicationService):
                 if schedule.available_slots < total_travelers:
                     raise ValidationAppException("Not enough available slots")
 
-                price_map = {rule.traveler_type: Decimal(rule.price) for rule in schedule.price_rules}
+                price_map = {
+                    rule.traveler_type: Decimal(rule.price)
+                    for rule in schedule.price_rules
+                }
 
                 adult_price = price_map.get(TravelerType.adult)
                 if adult_price is None:
@@ -190,7 +204,10 @@ class TourBookingService(ApplicationService):
                 )
         except IntegrityError:
             self.db.rollback()
-            existing_booking = self.booking_repo.get_by_booking_code_and_user_id(booking_code, user_id)
+            existing_booking = self.booking_repo.get_by_booking_code_and_user_id(
+                booking_code,
+                user_id,
+            )
             if existing_booking is None:
                 raise
             self._assert_existing_booking_matches_request(booking=existing_booking, payload=payload)

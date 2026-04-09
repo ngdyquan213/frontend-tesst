@@ -11,6 +11,7 @@ def build_args(**overrides):
         "expected_environment": "staging",
         "prometheus_url": "http://localhost:9090",
         "env_file": None,
+        "signoff_file": None,
         "check_local_files": False,
         "seed_command": "docker compose exec -T app python -m scripts.seed_demo_environment",
         "skip_preflight": False,
@@ -48,6 +49,7 @@ def test_build_steps_for_production_includes_preflight_and_can_skip_optional_che
     args = build_args(
         expected_environment="production",
         env_file=".env.production",
+        signoff_file="ops/release_signoff.production.json",
         check_local_files=True,
         seed_command=None,
         skip_demo=True,
@@ -56,5 +58,10 @@ def test_build_steps_for_production_includes_preflight_and_can_skip_optional_che
 
     steps = build_steps(args, python_executable=sys.executable)
 
-    assert [step.name for step in steps] == ["release_preflight", "smoke_local_stack"]
+    assert [step.name for step in steps] == [
+        "release_preflight",
+        "release_signoff",
+        "smoke_local_stack",
+    ]
     assert "--check-local-files" in render_command(steps[0])
+    assert "release_signoff.py" in render_command(steps[1])

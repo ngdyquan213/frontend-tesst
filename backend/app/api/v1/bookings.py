@@ -9,7 +9,7 @@ from app.api.deps import (
     get_pagination_params,
 )
 from app.core.database import get_db
-from app.core.exceptions import AppException
+from app.core.exceptions import AppException, ValidationAppException
 from app.schemas.booking import (
     BookingCreateRequest,
     BookingResponse,
@@ -32,6 +32,9 @@ def create_booking(
     db: Session = Depends(get_db),
     idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ) -> BookingResponse:
+    if not idempotency_key:
+        raise ValidationAppException("Idempotency key is required")
+
     service = build_booking_service(db)
 
     try:

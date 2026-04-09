@@ -15,6 +15,8 @@ from app.api.v1 import (
     booking_travelers,
     booking_vouchers,
     bookings,
+    client_events,
+    content,
     coupons,
     flights,
     hotels,
@@ -33,6 +35,8 @@ api_router.include_router(auth.router)
 api_router.include_router(users.router)
 api_router.include_router(flights.router)
 api_router.include_router(hotels.router)
+api_router.include_router(content.router)
+api_router.include_router(client_events.router)
 api_router.include_router(notifications.router)
 api_router.include_router(tours.router)
 api_router.include_router(bookings.router)

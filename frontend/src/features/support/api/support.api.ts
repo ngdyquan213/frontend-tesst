@@ -152,6 +152,14 @@ export const supportApi = {
         return mapApiSupportTicketDetail(response)
       },
     }),
-  getFaqs: () => resolveAfter(supportFaqs),
-  getHelpTopics: () => resolveAfter(supportHelpTopics),
+  getFaqs: async () =>
+    resolveMockable({
+      mock: async () => resolveAfter(supportFaqs),
+      live: () => apiClient.getSupportFaqs(),
+    }),
+  getHelpTopics: async () =>
+    resolveMockable({
+      mock: async () => resolveAfter(supportHelpTopics),
+      live: () => apiClient.getSupportHelpTopics(),
+    }),
 }

@@ -46,6 +46,7 @@ services:
       DEBUG: "false"
       FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:-127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
       ALLOW_PAYMENT_SIMULATION: "false"
+      RUN_RUNTIME_MAINTENANCE_IN_APP: "false"
     depends_on:
       postgres:
         condition: service_healthy
@@ -84,6 +85,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 20
+
+  runtime_worker:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+    container_name: secure_travel_runtime_worker_staging
+    restart: unless-stopped
+    env_file:
+      - ${APP_ENV_FILE:-../../.env.staging}
+    environment:
+      ENVIRONMENT: staging
+      DEBUG: "false"
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:-127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      ALLOW_PAYMENT_SIMULATION: "false"
+      RUN_RUNTIME_MAINTENANCE_IN_APP: "false"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    command: ["python", "-m", "app.runtime_worker"]
 
   nginx:
     image: nginx:1.27-alpine

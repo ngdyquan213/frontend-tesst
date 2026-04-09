@@ -34,6 +34,7 @@ from app.core.startup import (
     is_storage_connection_ready,
     run_startup_checks,
 )
+from app.middleware.csrf_middleware import CSRFMiddleware
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.middleware.rate_limit_middleware import RateLimitMiddleware
 from app.middleware.request_id_middleware import RequestIDMiddleware
@@ -142,8 +143,12 @@ def _enforce_observability_access(request: Request) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     run_startup_checks()
-    run_noncritical_maintenance()
-    maintenance_stop_event, maintenance_task = start_runtime_maintenance_loop()
+    maintenance_stop_event = None
+    maintenance_task = None
+
+    if settings.RUN_RUNTIME_MAINTENANCE_IN_APP:
+        run_noncritical_maintenance()
+        maintenance_stop_event, maintenance_task = start_runtime_maintenance_loop()
     try:
         yield
     finally:
@@ -168,6 +173,7 @@ app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=settings.trusted_hosts_list,
 )
+app.add_middleware(CSRFMiddleware)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(LoggingMiddleware)

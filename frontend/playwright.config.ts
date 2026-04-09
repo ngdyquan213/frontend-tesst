@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test'
 
 const isMockMode = process.env.VITE_ENABLE_MOCKS === 'true'
+const skipWebServer = process.env.PLAYWRIGHT_SKIP_WEBSERVER === 'true'
 const previewBaseUrl = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:4173'
 const liveApiBaseUrl =
   process.env.VITE_API_BASE_URL ??
@@ -22,10 +23,12 @@ export default defineConfig({
     baseURL: previewBaseUrl,
     trace: 'on-first-retry',
   },
-  webServer: {
-    command: webServerCommand,
-    port: 4173,
-    // Reusing an existing preview server can leak the wrong mock/live build into E2E runs.
-    reuseExistingServer: false,
-  },
+  webServer: skipWebServer
+    ? undefined
+    : {
+        command: webServerCommand,
+        port: 4173,
+        // Reusing an existing preview server can leak the wrong mock/live build into E2E runs.
+        reuseExistingServer: false,
+      },
 })

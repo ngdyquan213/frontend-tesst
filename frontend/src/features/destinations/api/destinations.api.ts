@@ -1,5 +1,7 @@
 import { getTourCatalogSnapshotAsync } from '@/features/tours/api/tours.api'
 import { normalizeDestinationQueryParams } from '@/features/destinations/model/destination.schema'
+import { apiClient } from '@/shared/api/apiClient'
+import { isMockApiEnabled } from '@/shared/api/mockMode'
 import type {
   Destination,
   DestinationQueryParams,
@@ -238,8 +240,13 @@ export async function getDestinations(
   params: DestinationQueryParams = {},
   signal?: AbortSignal
 ): Promise<Destination[]> {
-  await wait(460, signal)
   const normalizedParams = normalizeDestinationQueryParams(params)
+
+  if (!isMockApiEnabled()) {
+    return apiClient.getDestinations(normalizedParams)
+  }
+
+  await wait(460, signal)
 
   const filteredDestinations = (await buildDestinationCatalog()).filter((destination) => {
     if (normalizedParams.region && destination.region !== normalizedParams.region) {

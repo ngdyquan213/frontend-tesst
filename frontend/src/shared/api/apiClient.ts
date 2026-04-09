@@ -7,6 +7,7 @@ import { createAuthUserApi } from '@/shared/api/authUserApi'
 import { isMockApiEnabled } from '@/shared/api/mockMode'
 import { getStoredMockAuthState } from '@/shared/api/mockSession'
 import { createPaymentRefundsApi } from '@/shared/api/paymentRefundsApi'
+import { createPublicContentApi } from '@/shared/api/publicContentApi'
 import { createSupportDocumentsApi } from '@/shared/api/supportDocumentsApi'
 import { createTravelBookingsApi } from '@/shared/api/travelBookingsApi'
 
@@ -80,6 +81,7 @@ export const apiClient = {
   ...authUserApi,
   ...createTravelBookingsApi(httpClient),
   ...createPaymentRefundsApi(httpClient),
+  ...createPublicContentApi(httpClient),
   ...createSupportDocumentsApi(httpClient),
   ...createAdminApi(httpClient),
 }

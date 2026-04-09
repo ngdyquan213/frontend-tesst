@@ -1,0 +1,46 @@
+{
+  "environment": "staging",
+  "owners": {
+    "release_owner": "platform-oncall",
+    "rollback_owner": "backend-oncall",
+    "monitoring_owner": "sre-oncall",
+    "approval_channel": "#release-war-room"
+  },
+  "rollout": {
+    "strategy": "pilot-soft-launch",
+    "initial_exposure": "internal-and-qa-only",
+    "widen_after": "24h-no-critical-alerts",
+    "watch_window": "72h"
+  },
+  "monitoring": {
+    "dashboard_url": "https://monitoring.example.com/d/secure-travel-app",
+    "metrics_url": "https://monitoring.example.com/prometheus/targets",
+    "alert_route": "pagerduty:secure-travel-primary",
+    "alerts": [
+      "SecureTravelAppTargetDown",
+      "SecureTravelReadinessDegraded",
+      "SecureTravelRedisDown",
+      "SecureTravelOutboxBacklogHigh",
+      "SecureTravelPaymentCallbackFailuresSpike",
+      "SecureTravelHttp5xxSpike",
+      "SecureTravelRateLimitBackendFailures"
+    ]
+  },
+  "verification": {
+    "preflight_command": "python scripts/release_preflight.py --env-file .env.staging --expected-environment staging --check-local-files",
+    "release_gate_command": "make release-gate-staging",
+    "staging_e2e_command": "make frontend-e2e-staging",
+    "manual_flows": [
+      { "name": "auth", "owner": "qa" },
+      { "name": "booking", "owner": "qa" },
+      { "name": "payment", "owner": "qa" },
+      { "name": "documents", "owner": "qa" },
+      { "name": "admin_tours", "owner": "qa" }
+    ]
+  },
+  "rollback": {
+    "trigger_summary": "Rollback on readiness degradation, payment regression, or repeated 5xx spikes.",
+    "runbook": "docs/migration-runbook.md + docs/backup-restore-runbook.md",
+    "artifact_reference": "previous-stable-image-tag"
+  }
+}

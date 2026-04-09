@@ -12,12 +12,18 @@ function buildCheckoutQueryString(params?: {
   scheduleId?: string
   paymentId?: string
   bookingId?: string
+  adultCount?: number
+  childCount?: number
+  infantCount?: number
 }) {
   return buildQueryString({
     tourId: params?.tourId,
     scheduleId: params?.scheduleId,
     paymentId: params?.paymentId,
     bookingId: params?.bookingId,
+    adultCount: params?.adultCount,
+    childCount: params?.childCount,
+    infantCount: params?.infantCount,
   })
 }
 
@@ -42,6 +48,9 @@ export function buildCheckoutPath(params?: {
   scheduleId?: string
   paymentId?: string
   bookingId?: string
+  adultCount?: number
+  childCount?: number
+  infantCount?: number
 }) {
   const queryString = buildCheckoutQueryString(params)
 
@@ -53,6 +62,9 @@ export function buildPaymentPath(params?: {
   scheduleId?: string
   paymentId?: string
   bookingId?: string
+  adultCount?: number
+  childCount?: number
+  infantCount?: number
 }) {
   const queryString = buildCheckoutQueryString(params)
 
@@ -61,7 +73,15 @@ export function buildPaymentPath(params?: {
 
 export function buildPaymentResultPath(
   result: 'success' | 'failed',
-  params?: { tourId?: string; scheduleId?: string; paymentId?: string; bookingId?: string },
+  params?: {
+    tourId?: string
+    scheduleId?: string
+    paymentId?: string
+    bookingId?: string
+    adultCount?: number
+    childCount?: number
+    infantCount?: number
+  },
 ) {
   const basePath = result === 'success' ? ROUTES.paymentSuccess : ROUTES.paymentFailed
   const queryString = buildCheckoutQueryString(params)

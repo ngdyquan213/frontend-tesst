@@ -17,7 +17,9 @@ alongside this document.
   - `bandit -r app -x tests`
   - `pip-audit`
 - Validate production env material:
-  - `python scripts/release_preflight.py --env-file .env.production --check-local-files`
+  - `python scripts/release_preflight.py --env-file .env.production --expected-environment production --check-local-files`
+- Validate release ownership, monitoring, rollout, and rollback signoff:
+  - `python scripts/release_signoff.py --signoff-file ops/release_signoff.production.json --expected-environment production`
 - Confirm release notes mention schema, config, operational risk, and rollback expectations.
 - Confirm a fresh database backup/snapshot exists and the previous stable artifact is still available.
 - Confirm the alerting surface is active for:
