@@ -45,11 +45,9 @@ export function createAuthUserApi(
         return mockAuthClient.register(email, password, name)
       }
 
-      const username = email.split('@')[0]
       const response = await client.post('/auth/register', {
         email,
         password,
-        username,
         full_name: name,
       })
       return normalizeUser(response.data)
@@ -79,7 +77,8 @@ export function createAuthUserApi(
       }
 
       try {
-        return await getMe({ skipAuthRedirect: true })
+        const cachedUser = useAuthStore.getState().user
+        return cachedUser ?? (await getMe({ skipAuthRedirect: true }))
       } catch (error) {
         if (!axios.isAxiosError(error) || error.response?.status !== 401) {
           throw error
@@ -165,6 +164,19 @@ export function createAuthUserApi(
       }
 
       await client.post('/auth/reset-password', { token: token.trim(), password })
+      return true
+    },
+
+    async verifyEmail(token?: string): Promise<boolean> {
+      if (isMockApiEnabled()) {
+        return true
+      }
+
+      if (!token?.trim()) {
+        throw new Error('Email verification token is required.')
+      }
+
+      await client.post('/auth/verify-email', { token: token.trim() })
       return true
     },
   }

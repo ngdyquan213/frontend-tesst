@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.core.security import get_password_hash
 from app.models.enums import UserStatus
-from app.models.user import LoginAttempt, RefreshToken, User
+from app.models.user import EmailVerificationToken, LoginAttempt, RefreshToken, User
 from app.services.auth_service import AuthService
 
 
@@ -24,6 +24,7 @@ def test_register_and_login(client):
 
     body = resp.json()
     assert body["email"] == "user1@example.com"
+    assert body["email_verified"] is False
 
     login_payload = {
         "email": "user1@example.com",
@@ -36,6 +37,101 @@ def test_register_and_login(client):
 
     token_body = resp.json()
     assert "access_token" in token_body
+
+
+def test_login_uses_cookie_only_contract_by_default(browser_client):
+    browser_client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "cookie-only@example.com",
+            "full_name": "Cookie Only",
+            "password": "Password123",
+        },
+    )
+
+    response = browser_client.post(
+        "/api/v1/auth/login",
+        json={"email": "cookie-only@example.com", "password": "Password123"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["access_token"] is None
+    assert body["refresh_token"] is None
+    assert response.cookies.get("travelbook_access_token")
+    assert response.cookies.get("travelbook_refresh_token")
+
+
+def test_register_generates_unique_username_when_not_provided(client):
+    first_response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "alex@example.com",
+            "full_name": "Alex Example",
+            "password": "Password123",
+        },
+    )
+    second_response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "alex@another-example.com",
+            "full_name": "Alex Another",
+            "password": "Password123",
+        },
+    )
+
+    assert first_response.status_code == 201
+    assert second_response.status_code == 201
+
+    first_username = first_response.json()["username"]
+    second_username = second_response.json()["username"]
+
+    assert first_username.startswith("alex_")
+    assert second_username.startswith("alex_")
+    assert first_username != second_username
+
+
+def test_verify_email_marks_user_as_verified(client, db_session, monkeypatch):
+    monkeypatch.setattr(
+        "app.services.auth_service.create_email_verification_token_value",
+        lambda: "verify-token-1234567890",
+    )
+
+    response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "verify-me@example.com",
+            "full_name": "Verify Me",
+            "password": "Password123",
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.json()["email_verified"] is False
+
+    user = db_session.query(User).filter(User.email == "verify-me@example.com").first()
+    assert user is not None
+
+    token_row = (
+        db_session.query(EmailVerificationToken)
+        .filter(EmailVerificationToken.user_id == user.id)
+        .first()
+    )
+    assert token_row is not None
+    assert token_row.used_at is None
+
+    verify_response = client.post(
+        "/api/v1/auth/verify-email",
+        json={"token": "verify-token-1234567890"},
+    )
+
+    assert verify_response.status_code == 200
+    assert verify_response.json()["message"] == "Email verified successfully"
+
+    db_session.refresh(user)
+    db_session.refresh(token_row)
+    assert user.email_verified is True
+    assert token_row.used_at is not None
 
 
 def test_failed_login_increments_counter_and_records_attempt(client, db_session):

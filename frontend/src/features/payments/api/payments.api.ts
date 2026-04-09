@@ -4,10 +4,15 @@ import {
   resolvePaymentMethodCatalog,
   type CreatePaymentIntentInput,
 } from '@/features/payments/lib/paymentCheckout'
+import { isSupportedCheckoutPaymentMethod } from '@/features/payments/lib/paymentMethodAvailability'
 import { mapApiPaymentToPaymentRecord } from '@/shared/lib/appMappers'
 import { apiClient } from '@/shared/api/apiClient'
 import { resolveMockable } from '@/shared/api/mockApi'
-import type { PaymentMethod } from '@/shared/types/common'
+import type { PaymentMethod, PaymentStatus } from '@/shared/types/common'
+
+function isTerminalPaymentStatus(status: PaymentStatus) {
+  return status === 'success' || status === 'failed'
+}
 
 export const paymentsApi = {
   getAvailablePaymentMethods: async (): Promise<PaymentMethod[]> =>
@@ -22,6 +27,12 @@ export const paymentsApi = {
     travelerCounts,
     travelDate,
   }: CreatePaymentIntentInput) => {
+    if (!isSupportedCheckoutPaymentMethod(methodId)) {
+      throw new Error(
+        'Online self-service payments are temporarily unavailable. Please use manual settlement.',
+      )
+    }
+
     const input = {
       methodId,
       tourId,
@@ -37,40 +48,29 @@ export const paymentsApi = {
       }),
       live: async () => {
         const { storageKey, idempotencyKey } = getOrCreateIdempotencyKey(input)
-        let checkoutResponse
-        try {
-          checkoutResponse = await apiClient.createTourCheckout({
-            schedule_id: scheduleId,
-            adult_count: travelerCounts.adultCount,
-            child_count: travelerCounts.childCount,
-            infant_count: travelerCounts.infantCount,
-            payment_method: methodId,
-            idempotency_key: idempotencyKey,
-          })
-        } catch (error) {
-          if (
-            methodId === 'stripe' &&
-            typeof error === 'object' &&
-            error !== null &&
-            'response' in error &&
-            typeof (error as { response?: { status?: unknown } }).response?.status === 'number'
-          ) {
-            throw new Error('Card payments are not available in this environment right now.')
-          }
-
-          throw error
-        }
-        clearIdempotencyKey(storageKey)
+        const checkoutResponse = await apiClient.createTourCheckout({
+          schedule_id: scheduleId,
+          adult_count: travelerCounts.adultCount,
+          child_count: travelerCounts.childCount,
+          infant_count: travelerCounts.infantCount,
+          payment_method: methodId,
+          idempotency_key: idempotencyKey,
+        })
         const payment = checkoutResponse.payment
         const paymentMethods = await resolvePaymentMethodCatalog(payment.payment_method ?? methodId)
-
-        return mapApiPaymentToPaymentRecord(
+        const paymentRecord = mapApiPaymentToPaymentRecord(
           {
             ...payment,
             booking_id: checkoutResponse.booking.id,
           },
           paymentMethods,
         )
+
+        if (isTerminalPaymentStatus(paymentRecord.status)) {
+          clearIdempotencyKey(storageKey)
+        }
+
+        return paymentRecord
       },
     })
   },

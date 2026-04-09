@@ -48,7 +48,7 @@ class AuthDomainService:
             full_name=full_name,
             password_hash=password_hash,
             status=UserStatus.active,
-            email_verified=True,
+            email_verified=False,
             phone_verified=False,
             failed_login_count=0,
         )

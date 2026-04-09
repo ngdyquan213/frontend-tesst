@@ -11,6 +11,12 @@ TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
     f"postgresql+psycopg2://postgres:postgres@localhost:5432/secure_travel_booking_test_{os.getpid()}",
 )
+REQUIRE_POSTGRES_TESTS = os.getenv("REQUIRE_POSTGRES_TESTS", "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
 os.environ.setdefault("SECRET_KEY", "test-secret-key-abcdefghijklmnopqrstuvwxyz-123456")
 os.environ.setdefault(
@@ -74,10 +80,13 @@ def setup_postgres_test_db():
         recreate_test_database()
         run_migrations(TEST_DATABASE_URL)
     except Exception:
-        pytest.skip(
+        message = (
             "PostgreSQL is not available for postgres-marked tests. "
             "Start infra/docker/docker-compose.test.yml and rerun pytest."
         )
+        if REQUIRE_POSTGRES_TESTS:
+            pytest.fail(message)
+        pytest.skip(message)
     yield
 
 
@@ -108,6 +117,7 @@ def client_pg(db_session_pg):
 
     try:
         with TestClient(app, client=("127.0.0.1", 50000)) as client:
+            client.headers["X-Token-Response-Mode"] = "body"
             yield client
     finally:
         app.dependency_overrides.clear()

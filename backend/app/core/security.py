@@ -75,6 +75,14 @@ def hash_password_reset_token(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
+def create_email_verification_token_value() -> str:
+    return secrets.token_urlsafe(48)
+
+
+def hash_email_verification_token(token: str) -> str:
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
 def get_refresh_token_expiry() -> datetime:
     return datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 

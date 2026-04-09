@@ -170,6 +170,25 @@ class EmailWorker:
             )
         )
 
+    def send_email_verification_email(
+        self,
+        *,
+        to_email: str,
+        full_name: str,
+        verification_url: str,
+    ) -> None:
+        self.send(
+            EmailMessage(
+                to_email=to_email,
+                subject="Verify your TravelBook email",
+                template_name="email_verification",
+                context={
+                    "full_name": full_name,
+                    "verification_url": verification_url,
+                },
+            )
+        )
+
 
 class MockEmailWorker(EmailWorker):
     pass

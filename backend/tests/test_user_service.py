@@ -1,70 +1,48 @@
 from types import SimpleNamespace
 
+import pytest
+
+from app.core.exceptions import ValidationAppException
+from app.core.security import get_password_hash
 from app.services.user_service import UserService
 
 
-def test_get_my_profile_logs_audit_and_commits():
-    class FakeDB:
-        def __init__(self):
-            self.committed = False
-            self.rolled_back = False
-
-        def commit(self):
-            self.committed = True
-
-        def rollback(self):
-            self.rolled_back = True
-
-    class FakeAuditService:
-        def __init__(self):
-            self.calls = []
-
-        def log_action(self, **kwargs):
-            self.calls.append(kwargs)
-
-    db = FakeDB()
-    audit_service = FakeAuditService()
+def test_get_my_profile_returns_current_user_without_committing():
+    db = SimpleNamespace()
+    audit_service = SimpleNamespace()
     service = UserService(db=db, audit_service=audit_service, user_repo=SimpleNamespace())
     current_user = SimpleNamespace(id="user-1")
 
-    result = service.get_my_profile(
-        current_user=current_user,
-        ip_address="203.0.113.1",
-        user_agent="pytest",
-    )
+    result = service.get_my_profile(current_user=current_user)
 
     assert result is current_user
-    assert db.committed is True
-    assert db.rolled_back is False
-    assert audit_service.calls[0]["action"] == "user_profile_viewed"
-    assert audit_service.calls[0]["metadata"] == {"endpoint": "/users/me"}
 
 
-def test_get_my_profile_rolls_back_when_audit_fails():
-    class FakeDB:
+def test_change_my_password_rejects_weak_password_before_writing():
+    class FakeUserRepo:
         def __init__(self):
-            self.committed = False
-            self.rolled_back = False
+            self.saved = False
 
-        def commit(self):
-            self.committed = True
+        def save_user(self, _user):
+            self.saved = True
 
-        def rollback(self):
-            self.rolled_back = True
+        def revoke_all_refresh_tokens_for_user(self, *, user_id, revoked_at):
+            return 0
 
-    class FakeAuditService:
-        def log_action(self, **kwargs):
-            raise RuntimeError("audit failed")
+    db = SimpleNamespace(commit=lambda: None, rollback=lambda: None)
+    audit_service = SimpleNamespace(log_action=lambda **kwargs: None)
+    user_repo = FakeUserRepo()
+    service = UserService(db=db, audit_service=audit_service, user_repo=user_repo)
+    current_user = SimpleNamespace(
+        id="user-1",
+        password_hash=get_password_hash("Password123"),
+    )
 
-    db = FakeDB()
-    service = UserService(db=db, audit_service=FakeAuditService(), user_repo=SimpleNamespace())
+    with pytest.raises(ValidationAppException, match="uppercase"):
+        service.change_my_password(
+            current_user=current_user,
+            current_password="Password123",
+            new_password="weakpassword1",
+        )
 
-    try:
-        service.get_my_profile(current_user=SimpleNamespace(id="user-1"))
-    except RuntimeError as exc:
-        assert str(exc) == "audit failed"
-    else:
-        raise AssertionError("expected RuntimeError")
-
-    assert db.committed is False
-    assert db.rolled_back is True
+    assert user_repo.saved is False

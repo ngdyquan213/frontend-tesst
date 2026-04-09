@@ -23,3 +23,8 @@ class TravelerResponse(BaseModel):
     passport_number: str | None = None
     nationality: str | None = None
     document_type: DocumentType | None = None
+
+
+class TravelerDirectoryResponse(TravelerResponse):
+    booking_code: str | None = None
+    is_primary: bool = False

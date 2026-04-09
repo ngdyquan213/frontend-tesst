@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/app/providers/ToastProvider'
+import { validateRegisterPayload } from '@/features/auth/model/auth.schema'
 import { useRegisterMutation } from '@/features/auth/queries/useRegisterMutation'
 import { FormField } from '@/shared/forms/FormField'
 import { Alert } from '@/shared/ui/Alert'
@@ -14,15 +15,28 @@ export const RegisterForm = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({})
 
   return (
     <form
       className="space-y-5"
       onSubmit={async (event) => {
         event.preventDefault()
-        await mutation.mutateAsync({ name, email, password })
-        pushToast('Account created and signed in.', 'success')
-        navigate('/account')
+        const validation = validateRegisterPayload({ name, email, password })
+        if (!validation.success) {
+          setErrors(validation.errors)
+          return
+        }
+
+        setErrors({})
+
+        try {
+          await mutation.mutateAsync(validation.data)
+          pushToast('Account created and signed in.', 'success')
+          navigate('/account')
+        } catch {
+          return
+        }
       }}
     >
       <div>
@@ -32,16 +46,48 @@ export const RegisterForm = () => {
         </p>
       </div>
       {mutation.isError ? <Alert tone="danger">{mutation.error.message}</Alert> : null}
-      <FormField label="Full name">
-        <Input value={name} onChange={(event) => setName(event.target.value)} />
+      <FormField label="Full name" error={errors.name}>
+        <Input
+          autoComplete="name"
+          value={name}
+          onChange={(event) => {
+            setName(event.target.value)
+            if (errors.name) {
+              setErrors((currentErrors) => ({ ...currentErrors, name: undefined }))
+            }
+          }}
+          aria-invalid={Boolean(errors.name)}
+        />
       </FormField>
-      <FormField label="Email">
-        <Input value={email} onChange={(event) => setEmail(event.target.value)} />
+      <FormField label="Email" error={errors.email}>
+        <Input
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value)
+            if (errors.email) {
+              setErrors((currentErrors) => ({ ...currentErrors, email: undefined }))
+            }
+          }}
+          aria-invalid={Boolean(errors.email)}
+        />
       </FormField>
-      <FormField label="Password">
-        <Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+      <FormField label="Password" error={errors.password}>
+        <Input
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(event) => {
+            setPassword(event.target.value)
+            if (errors.password) {
+              setErrors((currentErrors) => ({ ...currentErrors, password: undefined }))
+            }
+          }}
+          aria-invalid={Boolean(errors.password)}
+        />
       </FormField>
-      <Button className="w-full" type="submit">
+      <Button className="w-full" type="submit" loading={mutation.isPending}>
         Create account
       </Button>
     </form>

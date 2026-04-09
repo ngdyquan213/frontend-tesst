@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import NotFoundAppException
-from app.models.enums import LogActorType, TourStatus
+from app.models.enums import TourStatus
 from app.services.application_service import ApplicationService
 from app.services.audit_service import AuditService
 
@@ -50,28 +50,6 @@ class TourService(ApplicationService):
             tour_type=tour_type,
         )
 
-        self.audit_service.log_action(
-            actor_type=LogActorType.system,
-            action="tours_list_viewed",
-            resource_type="tour",
-            ip_address=ip_address,
-            user_agent=user_agent,
-            metadata={
-                "page": page,
-                "page_size": page_size,
-                "destination": destination,
-                "duration": duration,
-                "group_size": group_size,
-                "price_range": price_range,
-                "status": status,
-                "tour_type": tour_type,
-                "sort_by": sort_by,
-                "sort_order": sort_order,
-                "result_count": len(tours),
-            },
-        )
-        self.commit()
-
         return tours, total
 
     def get_tour(self, tour_id: str):
@@ -88,16 +66,5 @@ class TourService(ApplicationService):
         user_agent: str | None = None,
     ):
         tour = self.get_tour(tour_id)
-
-        self.audit_service.log_action(
-            actor_type=LogActorType.system,
-            action="tour_detail_viewed",
-            resource_type="tour",
-            resource_id=tour.id,
-            ip_address=ip_address,
-            user_agent=user_agent,
-            metadata={"tour_id": str(tour.id)},
-        )
-        self.commit()
 
         return tour

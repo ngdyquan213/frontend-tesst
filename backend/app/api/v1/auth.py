@@ -11,9 +11,11 @@ from app.schemas.auth import (
     MessageResponse,
     RefreshTokenRequest,
     RegisterRequest,
+    ResendVerificationEmailRequest,
     ResetPasswordRequest,
     TokenResponse,
     UserMeResponse,
+    VerifyEmailRequest,
 )
 from app.utils.auth_cookies import (
     clear_auth_cookies,
@@ -25,6 +27,14 @@ from app.utils.response_mappers import user_to_dict
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 TOKEN_TYPE_BEARER = "bearer"  # nosec B105
+TOKEN_RESPONSE_MODE_HEADER = "X-Token-Response-Mode"
+TOKEN_RESPONSE_MODE_BODY = "body"
+
+
+def _should_include_tokens_in_body(request: Request) -> bool:
+    return request.headers.get(TOKEN_RESPONSE_MODE_HEADER, "").strip().lower() == (
+        TOKEN_RESPONSE_MODE_BODY
+    )
 
 
 @router.post("/register", response_model=UserMeResponse, status_code=status.HTTP_201_CREATED)
@@ -61,9 +71,10 @@ def login(
 
     set_auth_cookies(response, access_token=access_token, refresh_token=refresh_token)
 
+    include_tokens_in_body = _should_include_tokens_in_body(request)
     return TokenResponse(
-        access_token=access_token,
-        refresh_token=refresh_token,
+        access_token=access_token if include_tokens_in_body else None,
+        refresh_token=refresh_token if include_tokens_in_body else None,
         token_type=TOKEN_TYPE_BEARER,
         user=UserMeResponse(**user_to_dict(user)),
     )
@@ -93,9 +104,10 @@ def refresh_access_token(
 
     set_auth_cookies(response, access_token=access_token, refresh_token=new_refresh_token)
 
+    include_tokens_in_body = _should_include_tokens_in_body(request)
     return TokenResponse(
-        access_token=access_token,
-        refresh_token=new_refresh_token,
+        access_token=access_token if include_tokens_in_body else None,
+        refresh_token=new_refresh_token if include_tokens_in_body else None,
         token_type=TOKEN_TYPE_BEARER,
         user=UserMeResponse(**user_to_dict(user)),
     )
@@ -176,3 +188,35 @@ def reset_password(
         user_agent=get_user_agent(request),
     )
     return MessageResponse(message="Password reset successfully")
+
+
+@router.post("/verify-email", response_model=MessageResponse)
+def verify_email(
+    payload: VerifyEmailRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+) -> MessageResponse:
+    service = build_auth_service(db)
+    service.verify_email(
+        token=payload.token,
+        ip_address=get_client_ip(request),
+        user_agent=get_user_agent(request),
+    )
+    return MessageResponse(message="Email verified successfully")
+
+
+@router.post("/verify-email/resend", response_model=MessageResponse)
+def resend_verification_email(
+    payload: ResendVerificationEmailRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+) -> MessageResponse:
+    service = build_auth_service(db)
+    service.resend_email_verification(
+        email=payload.email,
+        ip_address=get_client_ip(request),
+        user_agent=get_user_agent(request),
+    )
+    return MessageResponse(
+        message="If the account exists, verification instructions have been sent"
+    )

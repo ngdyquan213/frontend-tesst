@@ -7,6 +7,7 @@ import {
 
 const CheckoutPage = lazyDefaultPage(() => import('@/pages/checkout/CheckoutPage'))
 const PaymentPage = lazyDefaultPage(() => import('@/pages/checkout/PaymentPage'))
+const PaymentPendingPage = lazyDefaultPage(() => import('@/pages/checkout/PaymentPendingPage'))
 const PaymentSuccessPage = lazyDefaultPage(() => import('@/pages/checkout/PaymentSuccessPage'))
 const PaymentFailedPage = lazyDefaultPage(() => import('@/pages/checkout/PaymentFailedPage'))
 
@@ -17,6 +18,7 @@ export const checkoutRoutes: RouteObject[] = [
     children: [
       { index: true, element: renderLazyPage(CheckoutPage) },
       { path: 'payment', element: renderLazyPage(PaymentPage) },
+      { path: 'payment/pending', element: renderLazyPage(PaymentPendingPage) },
       { path: 'payment/success', element: renderLazyPage(PaymentSuccessPage) },
       { path: 'payment/failed', element: renderLazyPage(PaymentFailedPage) },
     ],

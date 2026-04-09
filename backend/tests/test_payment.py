@@ -199,7 +199,7 @@ def test_list_payment_methods_includes_stripe_when_gateway_is_configured(client,
 def test_list_payment_methods_hides_simulated_gateways_in_production_mode(client, monkeypatch):
     monkeypatch.setattr(settings, "ENVIRONMENT", "production")
     monkeypatch.setattr(settings, "ALLOW_PAYMENT_SIMULATION", False)
-    monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "")
+    monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "sk_live_configured")
 
     resp = client.get("/api/v1/payments/methods")
 

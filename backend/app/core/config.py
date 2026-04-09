@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 60
+    EMAIL_VERIFICATION_TOKEN_EXPIRE_MINUTES: int = 1440
     BOOKING_HOLD_EXPIRE_MINUTES: int = 30
 
     DATABASE_URL: str = (
@@ -35,6 +36,8 @@ class Settings(BaseSettings):
     RATE_LIMIT_LOGIN_PER_MINUTE: int = 10
     RATE_LIMIT_REGISTER_PER_MINUTE: int = 5
     RATE_LIMIT_REFRESH_PER_MINUTE: int = 20
+    RATE_LIMIT_FORGOT_PASSWORD_PER_MINUTE: int = 3
+    RATE_LIMIT_RESET_PASSWORD_PER_MINUTE: int = 5
     RATE_LIMIT_UPLOAD_PER_MINUTE: int = 20
     RATE_LIMIT_PAYMENT_CALLBACK_PER_MINUTE: int = 50
     RATE_LIMIT_DEFAULT_PER_MINUTE: int = 120
@@ -174,6 +177,13 @@ class Settings(BaseSettings):
     def validate_access_token_expire_minutes(cls, value: int) -> int:
         if value <= 0:
             raise ValueError("ACCESS_TOKEN_EXPIRE_MINUTES must be > 0")
+        return value
+
+    @field_validator("EMAIL_VERIFICATION_TOKEN_EXPIRE_MINUTES")
+    @classmethod
+    def validate_email_verification_token_expire_minutes(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("EMAIL_VERIFICATION_TOKEN_EXPIRE_MINUTES must be > 0")
         return value
 
     @field_validator("BOOKING_HOLD_EXPIRE_MINUTES")
@@ -414,10 +424,14 @@ class Settings(BaseSettings):
                     "NOTIFICATION_WORKER_BACKEND must not use 'mock' in staging/production"
                 )
 
-            if self.UPLOAD_MALWARE_SCAN_ENABLED and self.UPLOAD_MALWARE_SCAN_BACKEND == "mock":
+            if not self.UPLOAD_MALWARE_SCAN_ENABLED:
                 raise ValueError(
-                    "UPLOAD_MALWARE_SCAN_BACKEND must not use 'mock' when malware scan "
-                    "is enabled in staging/production"
+                    "UPLOAD_MALWARE_SCAN_ENABLED must be true in staging/production"
+                )
+
+            if self.UPLOAD_MALWARE_SCAN_BACKEND != "clamav":
+                raise ValueError(
+                    "UPLOAD_MALWARE_SCAN_BACKEND must be 'clamav' in staging/production"
                 )
 
             if not self.payment_callback_source_allowlist_list:

@@ -56,6 +56,14 @@ class BookingRepository:
             .all()
         )
 
+    def list_all_by_user_id(self, user_id: str) -> list[Booking]:
+        return (
+            self.db.query(Booking)
+            .filter(Booking.user_id == user_id)
+            .order_by(Booking.booked_at.desc(), Booking.created_at.desc())
+            .all()
+        )
+
     def count_by_user_id(self, user_id: str) -> int:
         return self.db.query(Booking).filter(Booking.user_id == user_id).count()
 
@@ -134,6 +142,16 @@ class BookingRepository:
                 Booking.user_id == user_id,
             )
             .first()
+        )
+
+    def list_travelers_by_user_id(self, user_id: str) -> list[Traveler]:
+        return (
+            self.db.query(Traveler)
+            .join(Booking, Traveler.booking_id == Booking.id)
+            .options(joinedload(Traveler.booking))
+            .filter(Booking.user_id == user_id)
+            .order_by(Booking.booked_at.desc(), Traveler.created_at.asc())
+            .all()
         )
 
     def save(self, booking: Booking) -> Booking:

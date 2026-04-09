@@ -10,8 +10,10 @@ export const ROUTES = {
   register: '/auth/register',
   forgotPassword: '/auth/forgot-password',
   resetPassword: '/auth/reset-password',
+  verifyEmail: '/auth/verify-email',
   checkout: '/checkout',
   payment: '/checkout/payment',
+  paymentPending: '/checkout/payment/pending',
   paymentSuccess: '/checkout/payment/success',
   paymentFailed: '/checkout/payment/failed',
   accountDashboard: '/account',
@@ -37,6 +39,4 @@ export const ROUTES = {
     finalCta: 'final-cta',
   },
 } as const
-
-
 

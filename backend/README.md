@@ -117,10 +117,11 @@ uvicorn app.main:app --reload --proxy-headers --forwarded-allow-ips="127.0.0.1,:
 ## Testing
 
 - Copy `.env.test.example` if you want a dedicated local test env file.
-- `python -m pytest -q` runs the full suite. Tests that require PostgreSQL now skip with a clear message if the database is unavailable.
+- `python -m pytest -q` runs the full suite. Tests that require PostgreSQL skip with a clear message if the database is unavailable.
 - `make test-cov` runs the suite with a coverage report and enforces the configured threshold.
 - `make test-fast` runs a portable subset that does not require external services.
 - `make up-test-db` starts the PostgreSQL container used by the postgres-marked tests.
+- `make test-release` is the release gate version of the suite and fails instead of silently skipping when PostgreSQL-backed tests cannot run.
 - `tests/test_migration_regressions.py` verifies the upgrade path from the pre-outbox schema revision to `head`, including the coupon-column repair migration.
 - CI installs Python dependencies from `requirements-dev.lock` and then runs `pip check` so dependency resolution matches local lockfile-based setup more closely.
 

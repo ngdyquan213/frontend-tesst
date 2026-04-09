@@ -42,14 +42,14 @@ export interface RegisterRequest {
 
 export interface AuthResponse {
   user?: User
-  access_token: string
+  access_token?: string
   refresh_token?: string
   token_type: string
   expires_in?: number
 }
 
 export interface TokenRefreshResponse {
-  access_token: string
+  access_token?: string
   refresh_token?: string
   token_type: string
   expires_in?: number

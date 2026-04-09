@@ -19,6 +19,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         "/api/v1/auth/login",
         "/api/v1/auth/register",
         "/api/v1/auth/refresh",
+        "/api/v1/auth/forgot-password",
+        "/api/v1/auth/reset-password",
+        "/api/v1/auth/verify-email",
+        "/api/v1/auth/verify-email/resend",
     }
 
     @staticmethod
@@ -44,6 +48,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return settings.RATE_LIMIT_REGISTER_PER_MINUTE
         if path == "/api/v1/auth/refresh":
             return settings.RATE_LIMIT_REFRESH_PER_MINUTE
+        if path == "/api/v1/auth/forgot-password":
+            return settings.RATE_LIMIT_FORGOT_PASSWORD_PER_MINUTE
+        if path == "/api/v1/auth/reset-password":
+            return settings.RATE_LIMIT_RESET_PASSWORD_PER_MINUTE
+        if path == "/api/v1/auth/verify-email":
+            return settings.RATE_LIMIT_RESET_PASSWORD_PER_MINUTE
+        if path == "/api/v1/auth/verify-email/resend":
+            return settings.RATE_LIMIT_FORGOT_PASSWORD_PER_MINUTE
         if path.startswith("/api/v1/uploads"):
             return settings.RATE_LIMIT_UPLOAD_PER_MINUTE
         if self._is_payment_callback_path(path):

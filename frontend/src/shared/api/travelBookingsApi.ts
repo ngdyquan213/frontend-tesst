@@ -185,6 +185,48 @@ export function createTravelBookingsApi(client: AxiosInstance) {
         : []
     },
 
+    async getMyTravelers(): Promise<
+      Array<{
+        id: string
+        booking_id: string
+        booking_code?: string
+        full_name: string
+        traveler_type: string
+        date_of_birth?: string
+        passport_number?: string
+        nationality?: string
+        document_type?: string
+        is_primary?: boolean
+      }>
+    > {
+      const response = await client.get('/users/me/travelers')
+
+      return Array.isArray(response.data)
+        ? response.data
+            .filter(
+              (item: unknown): item is Record<string, unknown> =>
+                Boolean(item) && typeof item === 'object',
+            )
+            .map((item) => ({
+              id: String(item.id ?? ''),
+              booking_id: String(item.booking_id ?? ''),
+              booking_code:
+                typeof item.booking_code === 'string' ? item.booking_code : undefined,
+              full_name: String(item.full_name ?? item.fullName ?? 'Traveler'),
+              traveler_type: String(item.traveler_type ?? 'adult').toUpperCase(),
+              date_of_birth:
+                typeof item.date_of_birth === 'string' ? item.date_of_birth : undefined,
+              passport_number:
+                typeof item.passport_number === 'string' ? item.passport_number : undefined,
+              nationality:
+                typeof item.nationality === 'string' ? item.nationality : undefined,
+              document_type:
+                typeof item.document_type === 'string' ? item.document_type : undefined,
+              is_primary: item.is_primary === true,
+            }))
+        : []
+    },
+
     async getUserBookings(limit = 10, offset = 0): Promise<{
       bookings: types.Booking[]
       total: number
@@ -196,6 +238,29 @@ export function createTravelBookingsApi(client: AxiosInstance) {
         bookings: normalizePaginatedItems(response.data, 'bookings', normalizeBooking),
         total: toNumber(response.data.total),
       }
+    },
+
+    async getMyVoucherSummaries(): Promise<
+      Array<{
+        booking_id: string
+        booking_code: string
+        issued_at: string
+      }>
+    > {
+      const response = await client.get('/users/me/vouchers')
+
+      return Array.isArray(response.data)
+        ? response.data
+            .filter(
+              (item: unknown): item is Record<string, unknown> =>
+                Boolean(item) && typeof item === 'object',
+            )
+            .map((item) => ({
+              booking_id: String(item.booking_id ?? ''),
+              booking_code: String(item.booking_code ?? item.booking_id ?? ''),
+              issued_at: String(item.issued_at ?? ''),
+            }))
+        : []
     },
 
     async cancelBooking(id: string): Promise<void> {

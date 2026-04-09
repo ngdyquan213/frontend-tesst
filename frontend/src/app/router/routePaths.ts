@@ -72,7 +72,7 @@ export function buildPaymentPath(params?: {
 }
 
 export function buildPaymentResultPath(
-  result: 'success' | 'failed',
+  result: 'pending' | 'success' | 'failed',
   params?: {
     tourId?: string
     scheduleId?: string
@@ -83,7 +83,12 @@ export function buildPaymentResultPath(
     infantCount?: number
   },
 ) {
-  const basePath = result === 'success' ? ROUTES.paymentSuccess : ROUTES.paymentFailed
+  const basePath =
+    result === 'success'
+      ? ROUTES.paymentSuccess
+      : result === 'failed'
+        ? ROUTES.paymentFailed
+        : ROUTES.paymentPending
   const queryString = buildCheckoutQueryString(params)
 
   return queryString ? `${basePath}?${queryString}` : basePath

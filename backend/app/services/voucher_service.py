@@ -46,6 +46,21 @@ class VoucherService(ApplicationService):
     def _build_item_title_and_description(self, item) -> tuple[str | None, str, str | None]:
         return self.voucher_render_service.build_item_title_and_description(item)
 
+    def list_my_voucher_summaries(
+        self,
+        *,
+        user_id: str,
+    ) -> list[dict]:
+        bookings = self.booking_repo.list_all_by_user_id(user_id)
+        return [
+            {
+                "booking_id": str(booking.id),
+                "booking_code": booking.booking_code,
+                "issued_at": booking.booked_at,
+            }
+            for booking in bookings
+        ]
+
     def get_my_booking_voucher(
         self,
         *,

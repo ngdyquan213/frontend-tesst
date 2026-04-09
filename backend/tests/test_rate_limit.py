@@ -83,6 +83,24 @@ def test_rate_limit_fails_closed_for_sensitive_path_when_redis_is_unavailable(mo
     assert operational_metrics.snapshot()["rate_limit_backend_failures_total"] == 1
 
 
+def test_rate_limit_fails_closed_for_forgot_password_when_redis_is_unavailable(monkeypatch):
+    app = create_test_app(max_requests=1, window_seconds=60)
+    operational_metrics.reset()
+
+    @app.post("/api/v1/auth/forgot-password")
+    def forgot_password():
+        return {"status": "ok"}
+
+    monkeypatch.setattr(rate_limit_middleware.redis_client, "incr", raise_redis_down)
+
+    with TestClient(app) as client:
+        resp = client.post("/api/v1/auth/forgot-password", json={"email": "traveler@example.com"})
+
+    assert resp.status_code == 503
+    assert resp.json()["error_code"] == "RATE_LIMIT_UNAVAILABLE"
+    assert operational_metrics.snapshot()["rate_limit_backend_failures_total"] == 1
+
+
 def test_rate_limit_fails_closed_for_stripe_callback_when_redis_is_unavailable(monkeypatch):
     app = create_test_app(max_requests=1, window_seconds=60)
     operational_metrics.reset()
@@ -139,6 +157,25 @@ def test_login_rate_limit_is_scoped_per_email_address():
     assert second_user_resp.status_code == 200
     assert repeated_user_resp.status_code == 429
     assert repeated_user_resp.json()["detail"] == "Rate limit exceeded"
+
+
+def test_forgot_password_has_dedicated_tighter_rate_limit():
+    app = FastAPI()
+    app.add_middleware(RateLimitMiddleware, window_seconds=60)
+
+    @app.post("/api/v1/auth/forgot-password")
+    def forgot_password():
+        return {"status": "ok"}
+
+    with TestClient(app) as client:
+        responses = [
+            client.post("/api/v1/auth/forgot-password", json={"email": "traveler@example.com"})
+            for _ in range(4)
+        ]
+
+    assert [response.status_code for response in responses[:3]] == [200, 200, 200]
+    assert responses[3].status_code == 429
+    assert responses[3].headers["x-ratelimit-limit"] == "3"
 
 
 def test_rate_limited_login_response_keeps_cors_and_outer_headers():

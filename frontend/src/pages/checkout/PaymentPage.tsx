@@ -4,6 +4,7 @@ import { useAuth } from '@/app/providers/AuthProvider'
 import { buildPaymentResultPath } from '@/app/router/routePaths'
 import { useAvailablePaymentMethodsQuery } from '@/features/payments/queries/useAvailablePaymentMethodsQuery'
 import { useCreatePaymentIntentMutation } from '@/features/payments/queries/useCreatePaymentIntentMutation'
+import { filterSupportedCheckoutPaymentMethods } from '@/features/payments/lib/paymentMethodAvailability'
 import { PaymentMethodSelector } from '@/features/payments/ui/PaymentMethodSelector'
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
@@ -11,12 +12,23 @@ import { PaymentSummarySection } from '@/widgets/checkout/PaymentSummarySection'
 import { useCheckoutContext } from '@/widgets/checkout/useCheckoutContext'
 
 function getPreferredPaymentMethodId(methodIds: string[]) {
-  return (
-    methodIds.find((id) => id === 'manual') ??
-    methodIds.find((id) => id !== 'stripe') ??
-    methodIds[0] ??
-    ''
-  )
+  return methodIds.find((id) => id === 'manual') ?? methodIds[0] ?? ''
+}
+
+function getPrimaryActionLabel(methodId: string) {
+  return methodId === 'manual' ? 'Create booking request' : 'Continue to payment'
+}
+
+function getPaymentResult(status: 'pending' | 'processing' | 'success' | 'failed') {
+  if (status === 'success') {
+    return 'success'
+  }
+
+  if (status === 'failed') {
+    return 'failed'
+  }
+
+  return 'pending'
 }
 
 const PaymentPage = () => {
@@ -25,15 +37,29 @@ const PaymentPage = () => {
   const checkout = useCheckoutContext()
   const createPaymentIntentMutation = useCreatePaymentIntentMutation()
   const paymentMethodsQuery = useAvailablePaymentMethodsQuery()
+  const availablePaymentMethods = filterSupportedCheckoutPaymentMethods(paymentMethodsQuery.data ?? [])
+  const hasHiddenUnsupportedPaymentMethods =
+    (paymentMethodsQuery.data?.length ?? 0) > availablePaymentMethods.length
   const [selectedMethodId, setSelectedMethodId] = useState<string>('')
+  const primaryActionLabel = getPrimaryActionLabel(selectedMethodId)
 
   useEffect(() => {
-    if (!selectedMethodId && paymentMethodsQuery.data?.length) {
+    if (!availablePaymentMethods.length) {
+      if (selectedMethodId) {
+        setSelectedMethodId('')
+      }
+      return
+    }
+
+    if (
+      !selectedMethodId ||
+      !availablePaymentMethods.some((method) => method.id === selectedMethodId)
+    ) {
       setSelectedMethodId(
-        getPreferredPaymentMethodId(paymentMethodsQuery.data.map((method) => method.id)),
+        getPreferredPaymentMethodId(availablePaymentMethods.map((method) => method.id)),
       )
     }
-  }, [paymentMethodsQuery.data, selectedMethodId])
+  }, [availablePaymentMethods, selectedMethodId])
 
   const isPayNowDisabled =
     !checkout.tourId ||
@@ -67,10 +93,10 @@ const PaymentPage = () => {
 
         {!paymentMethodsQuery.isLoading &&
         !paymentMethodsQuery.isError &&
-        (paymentMethodsQuery.data?.length ?? 0) === 0 ? (
+        availablePaymentMethods.length === 0 ? (
           <Alert tone="info">
-            Payment methods are temporarily unavailable for self-service checkout. Please contact support
-            or try again later.
+            Self-service gateway payments are temporarily unavailable for checkout. Please contact
+            support or try again later.
           </Alert>
         ) : null}
 
@@ -86,13 +112,26 @@ const PaymentPage = () => {
           </Alert>
         ) : null}
 
+        {selectedMethodId === 'manual' ? (
+          <Alert tone="info">
+            Manual settlement is the only production-supported checkout method right now. The booking
+            stays pending until the offline payment is reviewed.
+          </Alert>
+        ) : null}
+
+        {hasHiddenUnsupportedPaymentMethods ? (
+          <Alert tone="info">
+            Online gateway methods are hidden until the end-to-end payment flow is production-ready.
+          </Alert>
+        ) : null}
+
         <section className="space-y-4">
           <h2 className="text-lg font-bold text-primary">Available methods</h2>
           {paymentMethodsQuery.isLoading ? (
             <Alert tone="info">Loading payment methods...</Alert>
           ) : (
             <PaymentMethodSelector
-              methods={paymentMethodsQuery.data ?? []}
+              methods={availablePaymentMethods}
               selectedId={selectedMethodId}
               onChange={setSelectedMethodId}
             />
@@ -128,7 +167,7 @@ const PaymentPage = () => {
               })
 
               navigate(
-                buildPaymentResultPath(payment.status === 'failed' ? 'failed' : 'success', {
+                buildPaymentResultPath(getPaymentResult(payment.status), {
                   tourId: checkout.tourId,
                   scheduleId: checkout.scheduleId,
                   bookingId: payment.bookingId,
@@ -140,7 +179,7 @@ const PaymentPage = () => {
               )
             }}
           >
-            Pay now
+            {primaryActionLabel}
           </Button>
         </div>
       </div>

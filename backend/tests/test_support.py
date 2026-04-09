@@ -198,6 +198,33 @@ def test_create_support_ticket_rejects_unknown_booking_reference(client, db_sess
     assert "booking reference" in response.json()["message"].lower()
 
 
+def test_create_support_ticket_rejects_invalid_email_payload(client, db_session):
+    _user, token = create_user_and_login(
+        client,
+        db_session,
+        "support-schema@example.com",
+        "support_schema",
+    )
+
+    response = client.post(
+        "/api/v1/support/tickets",
+        json={
+            "full_name": "Traveler Schema",
+            "email": "invalid-email",
+            "topic_id": "bookings",
+            "subject": "Need help validating contact data",
+            "message": (
+                "Please validate this support request payload before it reaches the "
+                "service layer so malformed contact data is rejected early."
+            ),
+            "booking_reference": None,
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 422
+
+
 def test_traveler_and_admin_can_reply_to_support_ticket(client, db_session):
     traveler, traveler_token = create_user_and_login(
         client,

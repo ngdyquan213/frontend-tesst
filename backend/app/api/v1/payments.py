@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
@@ -10,6 +12,7 @@ from app.api.deps import (
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.exceptions import AppException, NotFoundAppException
+from app.core.logging import build_log_extra
 from app.models.enums import PaymentMethod
 from app.schemas.booking import BookingResponse
 from app.schemas.payment import (
@@ -28,6 +31,7 @@ from app.utils.request_context import get_client_ip, get_user_agent
 from app.utils.response_mappers import booking_to_dict, payment_to_dict
 
 router = APIRouter(prefix="/payments", tags=["payments"])
+logger = logging.getLogger(__name__)
 
 
 def _build_available_payment_methods() -> list[PaymentMethodOptionResponse]:
@@ -143,6 +147,15 @@ def payment_callback(
     except AppException:
         raise
     except Exception as exc:
+        logger.exception(
+            "payment_callback_unhandled_error",
+            extra=build_log_extra(
+                "payment_callback_unhandled_error",
+                gateway_name=payload.gateway_name,
+                gateway_order_ref=payload.gateway_order_ref,
+                gateway_transaction_ref=payload.gateway_transaction_ref,
+            ),
+        )
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
     return PaymentCallbackResponse(
@@ -171,6 +184,10 @@ async def stripe_payment_callback(
     except AppException:
         raise
     except Exception as exc:
+        logger.exception(
+            "stripe_payment_callback_unhandled_error",
+            extra=build_log_extra("stripe_payment_callback_unhandled_error"),
+        )
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
     return PaymentCallbackResponse(
@@ -202,6 +219,14 @@ def simulate_payment_success(
     except AppException:
         raise
     except Exception as exc:
+        logger.exception(
+            "payment_simulation_unhandled_error",
+            extra=build_log_extra(
+                "payment_simulation_unhandled_error",
+                payment_id=payment_id,
+                user_id=str(current_user.id),
+            ),
+        )
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
     return PaymentResponse(**payment_to_dict(payment))

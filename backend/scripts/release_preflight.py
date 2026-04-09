@@ -138,6 +138,9 @@ def evaluate_release_preflight(
     if _is_truthy(env.get("ALLOW_PAYMENT_SIMULATION")):
         errors.append("ALLOW_PAYMENT_SIMULATION must be false")
 
+    if not _is_truthy(env.get("UPLOAD_MALWARE_SCAN_ENABLED")):
+        errors.append("UPLOAD_MALWARE_SCAN_ENABLED must be true")
+
     database_url = env.get("DATABASE_URL", "")
     if "localhost" in database_url or "127.0.0.1" in database_url:
         errors.append("DATABASE_URL must not point to localhost/127.0.0.1")
@@ -171,10 +174,8 @@ def evaluate_release_preflight(
     if not _split_csv(env.get("PAYMENT_CALLBACK_SOURCE_ALLOWLIST")):
         errors.append("PAYMENT_CALLBACK_SOURCE_ALLOWLIST must contain at least one CIDR")
 
-    if _is_truthy(env.get("UPLOAD_MALWARE_SCAN_ENABLED")) and (
-        env.get("UPLOAD_MALWARE_SCAN_BACKEND", "").strip() != "clamav"
-    ):
-        errors.append("UPLOAD_MALWARE_SCAN_BACKEND must be clamav when malware scan is enabled")
+    if env.get("UPLOAD_MALWARE_SCAN_BACKEND", "").strip() != "clamav":
+        errors.append("UPLOAD_MALWARE_SCAN_BACKEND must be clamav")
 
     critical_keys = [
         "SECRET_KEY",

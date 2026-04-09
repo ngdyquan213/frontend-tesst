@@ -1,4 +1,4 @@
-.PHONY: install dev migrate makemigrations seed seed-coupons seed-demo create-admin test test-cov lint security up down logs restart up-test-db down-test-db test-postgres runtime-check smoke-local load-smoke up-staging down-staging logs-staging smoke-staging up-production down-production logs-production smoke-production release-preflight release-signoff-staging release-signoff-production release-verify-demo release-gate-staging release-gate-production frontend-e2e-staging
+.PHONY: install dev migrate makemigrations seed seed-coupons seed-demo create-admin test test-cov lint security up down logs restart up-test-db down-test-db test-postgres test-release runtime-check smoke-local load-smoke up-staging down-staging logs-staging smoke-staging up-production down-production logs-production smoke-production release-preflight release-signoff-staging release-signoff-production release-verify-demo release-gate-staging release-gate-production frontend-e2e-staging
 
 install:
 	pip install --upgrade pip==25.2
@@ -62,6 +62,9 @@ down-test-db:
 
 test-postgres:
 	TEST_DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5433/secure_travel_booking_test python -m pytest -q -m postgres tests/test_postgres_smoke.py tests/test_postgres_coupon_json.py
+
+test-release:
+	REQUIRE_POSTGRES_TESTS=1 TEST_DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5433/secure_travel_booking_test python -m pytest -q
 
 runtime-check:
 	python -c "from app.core.startup import run_startup_checks; run_startup_checks()"

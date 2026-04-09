@@ -2,7 +2,13 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from app.models.user import LoginAttempt, PasswordResetToken, RefreshToken, User
+from app.models.user import (
+    EmailVerificationToken,
+    LoginAttempt,
+    PasswordResetToken,
+    RefreshToken,
+    User,
+)
 
 
 class UserRepository:
@@ -151,3 +157,43 @@ class UserRepository:
         self.db.add(password_reset_token)
         self.db.flush()
         return password_reset_token
+
+    def add_email_verification_token(
+        self,
+        verification_token: EmailVerificationToken,
+    ) -> EmailVerificationToken:
+        self.db.add(verification_token)
+        self.db.flush()
+        return verification_token
+
+    def get_email_verification_token_by_hash_for_update(
+        self,
+        token_hash: str,
+    ) -> EmailVerificationToken | None:
+        return (
+            self.db.query(EmailVerificationToken)
+            .filter(EmailVerificationToken.token_hash == token_hash)
+            .with_for_update()
+            .first()
+        )
+
+    def list_active_email_verification_tokens_for_user(
+        self,
+        user_id: str,
+    ) -> list[EmailVerificationToken]:
+        return (
+            self.db.query(EmailVerificationToken)
+            .filter(
+                EmailVerificationToken.user_id == user_id,
+                EmailVerificationToken.used_at.is_(None),
+            )
+            .all()
+        )
+
+    def save_email_verification_token(
+        self,
+        verification_token: EmailVerificationToken,
+    ) -> EmailVerificationToken:
+        self.db.add(verification_token)
+        self.db.flush()
+        return verification_token

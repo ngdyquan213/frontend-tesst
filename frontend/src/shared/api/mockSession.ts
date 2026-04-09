@@ -26,7 +26,9 @@ export function persistMockAuthResponse(response: AuthResponse) {
     return
   }
 
-  authStorage.setAccessToken(response.access_token)
+  if (response.access_token) {
+    authStorage.setAccessToken(response.access_token)
+  }
   if (response.refresh_token) {
     authStorage.setRefreshToken(response.refresh_token)
   }
@@ -48,7 +50,7 @@ export function buildAuthStoreSessionState(response: AuthResponse) {
   }
 
   return {
-    token: response.access_token,
+    token: response.access_token ?? authStorage.getAccessToken(),
     refreshToken: response.refresh_token ?? authStorage.getRefreshToken(),
     isAuthenticated: true,
   }

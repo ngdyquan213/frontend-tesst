@@ -25,9 +25,16 @@ test.describe('support flow', () => {
     await loginThroughUi(page, travelerCredentials, '/account')
     await page.goto('/account/support')
 
-    await page.getByLabel('Full name').fill('Traveler Support')
-    await page.getByLabel('Email address').fill(travelerCredentials.email)
-    await page.getByLabel('Support topic').selectOption('trip-support')
+    const supportTopicSelect = page.getByLabel('Support topic')
+    await expect
+      .poll(async () => supportTopicSelect.locator('option:not([value=""])').count())
+      .toBeGreaterThan(0)
+    const firstTopicValue = await supportTopicSelect
+      .locator('option:not([value=""])')
+      .first()
+      .getAttribute('value')
+    expect(firstTopicValue).toBeTruthy()
+    await supportTopicSelect.selectOption(firstTopicValue!)
     await page.getByLabel('Booking reference').selectOption(bookingReference)
     await page.getByLabel('Subject').fill(subject)
     await page.getByLabel('Message').fill(message)

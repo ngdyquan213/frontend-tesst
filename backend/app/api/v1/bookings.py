@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
@@ -10,6 +12,7 @@ from app.api.deps import (
 )
 from app.core.database import get_db
 from app.core.exceptions import AppException, ValidationAppException
+from app.core.logging import build_log_extra
 from app.schemas.booking import (
     BookingCreateRequest,
     BookingResponse,
@@ -22,6 +25,7 @@ from app.utils.request_context import get_client_ip, get_user_agent
 from app.utils.response_mappers import booking_to_dict
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
+logger = logging.getLogger(__name__)
 
 
 @router.post("", response_model=BookingResponse, status_code=status.HTTP_201_CREATED)
@@ -48,6 +52,15 @@ def create_booking(
     except AppException:
         raise
     except Exception as exc:
+        logger.exception(
+            "booking_create_unhandled_error",
+            extra=build_log_extra(
+                "booking_create_unhandled_error",
+                user_id=str(current_user.id),
+                idempotency_key=idempotency_key,
+                endpoint="create_booking",
+            ),
+        )
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
     return BookingResponse(**booking_to_dict(booking))
@@ -74,6 +87,15 @@ def create_hotel_booking(
     except AppException:
         raise
     except Exception as exc:
+        logger.exception(
+            "hotel_booking_create_unhandled_error",
+            extra=build_log_extra(
+                "hotel_booking_create_unhandled_error",
+                user_id=str(current_user.id),
+                idempotency_key=idempotency_key,
+                endpoint="create_hotel_booking",
+            ),
+        )
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
     return BookingResponse(**booking_to_dict(booking))
@@ -102,6 +124,15 @@ def create_tour_booking(
     except AppException:
         raise
     except Exception as exc:
+        logger.exception(
+            "tour_booking_create_unhandled_error",
+            extra=build_log_extra(
+                "tour_booking_create_unhandled_error",
+                user_id=str(current_user.id),
+                idempotency_key=idempotency_key,
+                endpoint="create_tour_booking",
+            ),
+        )
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
     return BookingResponse(**booking_to_dict(booking))

@@ -1,20 +1,29 @@
 from __future__ import annotations
 
+import hashlib
+import re
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.exceptions import AuthenticationAppException, ConflictAppException
+from app.core.exceptions import (
+    AuthenticationAppException,
+    ConflictAppException,
+    ValidationAppException,
+)
+from app.core.password_policy import get_password_policy_error
 from app.core.security import (
+    create_email_verification_token_value,
     create_password_reset_token_value,
     get_password_hash,
+    hash_email_verification_token,
     hash_password_reset_token,
     verify_password,
 )
 from app.models.enums import LogActorType, SecurityEventType
-from app.models.user import LoginAttempt, PasswordResetToken, User
+from app.models.user import EmailVerificationToken, LoginAttempt, PasswordResetToken, User
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import LoginRequest, RegisterRequest
 from app.services.application_service import ApplicationService
@@ -27,6 +36,26 @@ from app.workers.email_worker import EmailWorker
 
 
 class AuthService(ApplicationService):
+    @staticmethod
+    def _normalize_username_seed(value: str) -> str:
+        normalized = re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
+        return normalized[:40] or "traveler"
+
+    @classmethod
+    def _resolve_registration_username(
+        cls,
+        *,
+        email: str,
+        requested_username: str | None,
+    ) -> str:
+        if requested_username:
+            return requested_username
+
+        local_part = email.partition("@")[0]
+        normalized_seed = cls._normalize_username_seed(local_part)
+        email_hash = hashlib.sha256(email.lower().encode("utf-8")).hexdigest()[:8]
+        return f"{normalized_seed}_{email_hash}"
+
     def __init__(
         self,
         db: Session,
@@ -67,18 +96,25 @@ class AuthService(ApplicationService):
         user_agent: str | None = None,
     ) -> User:
         normalized_ip = normalize_ip(ip_address)
+        resolved_username = self._resolve_registration_username(
+            email=payload.email,
+            requested_username=payload.username,
+        )
 
         existing_email = self.user_repo.get_by_email(payload.email)
-        existing_username = self.user_repo.get_by_username(payload.username)
+        existing_username = self.user_repo.get_by_username(resolved_username)
         self.domain_service.assert_registration_available(
             existing_email=existing_email,
             existing_username=existing_username,
         )
+        password_policy_error = get_password_policy_error(payload.password)
+        if password_policy_error:
+            raise ValidationAppException(password_policy_error)
 
         try:
             user = self.domain_service.build_registered_user(
                 email=payload.email,
-                username=payload.username,
+                username=resolved_username,
                 full_name=payload.full_name,
                 password_hash=get_password_hash(payload.password),
             )
@@ -136,6 +172,7 @@ class AuthService(ApplicationService):
             user_agent=user_agent,
             metadata={"email": user.email},
         )
+        self._issue_email_verification_token(user=user)
         self.outbox_service.enqueue_email(
             handler="send_welcome_email",
             kwargs={
@@ -264,6 +301,13 @@ class AuthService(ApplicationService):
             existing_token.used_at = now
             self.user_repo.save_password_reset_token(existing_token)
 
+    def _expire_active_email_verification_tokens(self, *, user_id: str, now: datetime) -> None:
+        for existing_token in self.user_repo.list_active_email_verification_tokens_for_user(
+            user_id
+        ):
+            existing_token.used_at = now
+            self.user_repo.save_email_verification_token(existing_token)
+
     def _enqueue_password_reset_email(self, *, user: User, raw_token: str) -> None:
         reset_base_url = settings.FRONTEND_BASE_URL.rstrip("/")
         reset_url = f"{reset_base_url}/auth/reset-password?token={raw_token}"
@@ -275,6 +319,33 @@ class AuthService(ApplicationService):
                 "reset_url": reset_url,
             },
         )
+
+    def _enqueue_email_verification_email(self, *, user: User, raw_token: str) -> None:
+        verification_base_url = settings.FRONTEND_BASE_URL.rstrip("/")
+        verification_url = f"{verification_base_url}/auth/verify-email?token={raw_token}"
+        self.outbox_service.enqueue_email(
+            handler="send_email_verification_email",
+            kwargs={
+                "to_email": user.email,
+                "full_name": user.full_name,
+                "verification_url": verification_url,
+            },
+        )
+
+    def _issue_email_verification_token(self, *, user: User) -> None:
+        if user.email_verified:
+            return
+
+        now = datetime.now(timezone.utc)
+        self._expire_active_email_verification_tokens(user_id=str(user.id), now=now)
+        raw_token = create_email_verification_token_value()
+        verification_token = EmailVerificationToken(
+            user_id=user.id,
+            token_hash=hash_email_verification_token(raw_token),
+            expires_at=now + timedelta(minutes=settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_MINUTES),
+        )
+        self.user_repo.add_email_verification_token(verification_token)
+        self._enqueue_email_verification_email(user=user, raw_token=raw_token)
 
     def login(
         self,
@@ -516,6 +587,9 @@ class AuthService(ApplicationService):
         user_agent: str | None = None,
     ) -> None:
         normalized_ip = normalize_ip(ip_address)
+        password_policy_error = get_password_policy_error(new_password)
+        if password_policy_error:
+            raise ValidationAppException(password_policy_error)
         self.run_in_transaction(
             lambda: self._complete_password_reset(
                 token=token,
@@ -565,4 +639,98 @@ class AuthService(ApplicationService):
             ip_address=normalized_ip,
             user_agent=user_agent,
             metadata={"revoked_count": revoked_count},
+        )
+
+    def resend_email_verification(
+        self,
+        *,
+        email: str,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+    ) -> None:
+        normalized_ip = normalize_ip(ip_address)
+        user = self.user_repo.get_by_email(email)
+
+        self.run_in_transaction(
+            lambda: self._request_email_verification(
+                user=user,
+                normalized_ip=normalized_ip,
+                user_agent=user_agent,
+            )
+        )
+
+    def _request_email_verification(
+        self,
+        *,
+        user: User | None,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        if not user or user.email_verified:
+            return
+
+        self._issue_email_verification_token(user=user)
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=user.id,
+            action="user_email_verification_requested",
+            resource_type="user",
+            resource_id=user.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"email": user.email},
+        )
+
+    def verify_email(
+        self,
+        *,
+        token: str,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+    ) -> None:
+        normalized_ip = normalize_ip(ip_address)
+        self.run_in_transaction(
+            lambda: self._complete_email_verification(
+                token=token,
+                normalized_ip=normalized_ip,
+                user_agent=user_agent,
+            )
+        )
+
+    def _complete_email_verification(
+        self,
+        *,
+        token: str,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        stored_token = self.user_repo.get_email_verification_token_by_hash_for_update(
+            hash_email_verification_token(token)
+        )
+        now = datetime.now(timezone.utc)
+
+        if (
+            stored_token is None
+            or stored_token.used_at is not None
+            or stored_token.expires_at <= now
+        ):
+            raise AuthenticationAppException("Email verification token is invalid or expired")
+
+        user = self.user_repo.get_by_id(str(stored_token.user_id))
+        self.domain_service.assert_user_is_active(user)
+
+        user.email_verified = True
+        self.user_repo.save_user(user)
+        stored_token.used_at = now
+        self.user_repo.save_email_verification_token(stored_token)
+        self._expire_active_email_verification_tokens(user_id=str(user.id), now=now)
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=user.id,
+            action="user_email_verified",
+            resource_type="user",
+            resource_id=user.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"email": user.email},
         )

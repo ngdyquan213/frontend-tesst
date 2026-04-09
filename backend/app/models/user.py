@@ -66,6 +66,11 @@ class User(Base, TimestampMixin):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    email_verification_tokens: Mapped[list["EmailVerificationToken"]] = relationship(
+        "EmailVerificationToken",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
     bookings: Mapped[list[Booking]] = relationship("Booking", back_populates="user")
     coupon_usages: Mapped[list[CouponUsage]] = relationship("CouponUsage", back_populates="user")
     uploaded_documents: Mapped[list[UploadedDocument]] = relationship(
@@ -139,6 +144,27 @@ class PasswordResetToken(Base):
     )
 
     user: Mapped[User] = relationship("User", back_populates="password_reset_tokens")
+
+
+class EmailVerificationToken(Base):
+    __tablename__ = "email_verification_tokens"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    token_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+    user: Mapped[User] = relationship("User", back_populates="email_verification_tokens")
 
 
 class LoginAttempt(Base):

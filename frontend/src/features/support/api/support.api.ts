@@ -160,6 +160,13 @@ export const supportApi = {
   getHelpTopics: async () =>
     resolveMockable({
       mock: async () => resolveAfter(supportHelpTopics),
-      live: () => apiClient.getSupportHelpTopics(),
+      live: async () => {
+        try {
+          const topics = await apiClient.getSupportHelpTopics()
+          return topics.length > 0 ? topics : supportHelpTopics
+        } catch {
+          return supportHelpTopics
+        }
+      },
     }),
 }

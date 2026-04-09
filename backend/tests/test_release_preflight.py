@@ -55,6 +55,8 @@ def test_release_preflight_accepts_valid_production_config(tmp_path: Path):
         "S3_ACCESS_KEY_ID": "AKIAREALSECRET",
         "S3_SECRET_ACCESS_KEY": "this-is-a-real-looking-secret-value",
         "ALLOW_PAYMENT_SIMULATION": "false",
+        "UPLOAD_MALWARE_SCAN_ENABLED": "true",
+        "UPLOAD_MALWARE_SCAN_BACKEND": "clamav",
         "OUTBOX_HEALTH_MODE": "required",
         "NGINX_TLS_ENABLED": "true",
         "NGINX_CERTS_DIR": "infra/nginx/certs",
@@ -97,6 +99,8 @@ def test_release_preflight_accepts_valid_staging_config(tmp_path: Path):
         "LOCAL_STORAGE_BUCKET": "staging-local",
         "LOCAL_UPLOAD_DIR": "uploads",
         "ALLOW_PAYMENT_SIMULATION": "false",
+        "UPLOAD_MALWARE_SCAN_ENABLED": "true",
+        "UPLOAD_MALWARE_SCAN_BACKEND": "clamav",
         "OUTBOX_HEALTH_MODE": "required",
         "NGINX_TLS_ENABLED": "true",
         "NGINX_CERTS_DIR": "infra/nginx/certs",
@@ -133,7 +137,7 @@ def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
         "NOTIFICATION_WORKER_BACKEND": "mock",
         "STORAGE_BACKEND": "local",
         "ALLOW_PAYMENT_SIMULATION": "true",
-        "UPLOAD_MALWARE_SCAN_ENABLED": "true",
+        "UPLOAD_MALWARE_SCAN_ENABLED": "false",
         "UPLOAD_MALWARE_SCAN_BACKEND": "mock",
         "OUTBOX_HEALTH_MODE": "best_effort",
     }
@@ -152,7 +156,8 @@ def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
     assert "NOTIFICATION_WORKER_BACKEND must be redis" in errors
     assert "STORAGE_BACKEND must be s3 for production" in errors
     assert "ALLOW_PAYMENT_SIMULATION must be false" in errors
-    assert "UPLOAD_MALWARE_SCAN_BACKEND must be clamav when malware scan is enabled" in errors
+    assert "UPLOAD_MALWARE_SCAN_ENABLED must be true" in errors
+    assert "UPLOAD_MALWARE_SCAN_BACKEND must be clamav" in errors
 
 
 def test_release_preflight_requires_complete_stripe_configuration(tmp_path: Path):
@@ -183,6 +188,8 @@ def test_release_preflight_requires_complete_stripe_configuration(tmp_path: Path
         "S3_ACCESS_KEY_ID": "AKIAREALSECRET",
         "S3_SECRET_ACCESS_KEY": "this-is-a-real-looking-secret-value",
         "ALLOW_PAYMENT_SIMULATION": "false",
+        "UPLOAD_MALWARE_SCAN_ENABLED": "true",
+        "UPLOAD_MALWARE_SCAN_BACKEND": "clamav",
         "OUTBOX_HEALTH_MODE": "required",
         "STRIPE_SECRET_KEY": "sk_live_actual_secret",
     }
@@ -220,6 +227,8 @@ def test_release_preflight_rejects_wrong_environment_target(tmp_path: Path):
         "LOCAL_STORAGE_BUCKET": "staging-local",
         "LOCAL_UPLOAD_DIR": "uploads",
         "ALLOW_PAYMENT_SIMULATION": "false",
+        "UPLOAD_MALWARE_SCAN_ENABLED": "true",
+        "UPLOAD_MALWARE_SCAN_BACKEND": "clamav",
         "OUTBOX_HEALTH_MODE": "required",
     }
 

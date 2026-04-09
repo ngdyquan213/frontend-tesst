@@ -10,6 +10,7 @@ const LoginPage = lazyDefaultPage(() => import('@/pages/auth/LoginPage'))
 const RegisterPage = lazyDefaultPage(() => import('@/pages/auth/RegisterPage'))
 const ForgotPasswordPage = lazyDefaultPage(() => import('@/pages/auth/ForgotPasswordPage'))
 const ResetPasswordPage = lazyDefaultPage(() => import('@/pages/auth/ResetPasswordPage'))
+const VerifyEmailPage = lazyDefaultPage(() => import('@/pages/auth/VerifyEmailPage'))
 
 export const authRoutes: RouteObject[] = [
   {
@@ -24,6 +25,7 @@ export const authRoutes: RouteObject[] = [
           { path: 'forgot-password', element: renderLazyPage(ForgotPasswordPage) },
           { path: 'reset-password', element: renderLazyPage(ResetPasswordPage) },
           { path: 'reset-password/:token', element: renderLazyPage(ResetPasswordPage) },
+          { path: 'verify-email', element: renderLazyPage(VerifyEmailPage) },
         ],
       },
     ],

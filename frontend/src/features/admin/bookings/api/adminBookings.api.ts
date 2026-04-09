@@ -1,6 +1,6 @@
 import { mapApiBookingToBooking } from '@/shared/lib/appMappers'
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockData, resolveMockable } from '@/shared/api/mockApi'
+import { resolveMockable } from '@/shared/api/mockApi'
 
 export const adminBookingsApi = {
   getBookings: async () =>
@@ -11,5 +11,4 @@ export const adminBookingsApi = {
         return response.bookings.map(mapApiBookingToBooking)
       },
     }),
-  updateBookingStatus: async () => resolveMockData(({ bookings }) => bookings[0]),
 }

@@ -20,6 +20,12 @@ TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
     f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{TEST_DB_NAME}",
 )
+REQUIRE_POSTGRES_TESTS = os.getenv("REQUIRE_POSTGRES_TESTS", "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
 os.environ.setdefault("SECRET_KEY", "test-secret-key-abcdefghijklmnopqrstuvwxyz-123456")
 os.environ.setdefault(
@@ -171,10 +177,13 @@ def db_engine():
     try:
         recreate_test_database()
     except Exception:
-        pytest.skip(
+        message = (
             "PostgreSQL is not available for integration tests. "
             "Start infra/docker/docker-compose.test.yml and rerun pytest."
         )
+        if REQUIRE_POSTGRES_TESTS:
+            pytest.fail(message)
+        pytest.skip(message)
 
     engine = create_engine(
         TEST_DATABASE_URL,
@@ -260,6 +269,33 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
 
     try:
         with TestClient(app, client=("127.0.0.1", 50000)) as c:
+            c.headers["X-Token-Response-Mode"] = "body"
+            yield c
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def browser_client(db_session: Session) -> Generator[TestClient, None, None]:
+    connection = db_session.connection()
+    RequestSessionLocal = sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=connection,
+        join_transaction_mode="create_savepoint",
+    )
+
+    def override_get_db():
+        request_db = RequestSessionLocal()
+        try:
+            yield request_db
+        finally:
+            request_db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    try:
+        with TestClient(app, client=("127.0.0.1", 50001)) as c:
             yield c
     finally:
         app.dependency_overrides.clear()

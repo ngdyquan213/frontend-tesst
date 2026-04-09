@@ -6,7 +6,9 @@ import { env } from '@/app/config/env'
 import { authApi } from '@/features/auth/api/auth.api'
 import { useAuthStore } from '@/features/auth/model/auth.store'
 import LoginPage from '@/pages/auth/LoginPage'
+import RegisterPage from '@/pages/auth/RegisterPage'
 import ResetPasswordPage from '@/pages/auth/ResetPasswordPage'
+import VerifyEmailPage from '@/pages/auth/VerifyEmailPage'
 import { apiClient } from '@/shared/api/apiClient'
 import { renderWithProviders } from '@/tests/utils/renderWithProviders'
 
@@ -56,6 +58,82 @@ describe('auth flow', () => {
     await waitFor(() => {
       expect(resetPasswordSpy).toHaveBeenCalledWith('test-reset-token', 'new-password-123')
     })
+  })
+
+  it('verifies the email token that arrives from the verification link', async () => {
+    const verifyEmailSpy = vi.spyOn(authApi, 'verifyEmail').mockResolvedValue(true)
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
+      </Routes>,
+      { initialEntries: ['/auth/verify-email?token=test-verify-token'] },
+    )
+
+    await waitFor(() => {
+      expect(verifyEmailSpy).toHaveBeenCalledWith('test-verify-token')
+    })
+    expect(await screen.findByText(/your email is now verified/i)).toBeInTheDocument()
+  })
+
+  it('blocks login submission when credentials do not meet live validation rules', async () => {
+    const user = userEvent.setup()
+    const loginSpy = vi.spyOn(apiClient, 'login').mockResolvedValue({
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
+      token_type: 'bearer',
+      expires_in: 3600,
+      user: {
+        id: 'traveler-1',
+        email: 'traveler@example.com',
+        full_name: 'Traveler One',
+        role: 'traveler',
+        is_active: true,
+        is_verified: true,
+      },
+    } as never)
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/auth/login" element={<LoginPage />} />
+      </Routes>,
+      { initialEntries: ['/auth/login'] },
+    )
+
+    await user.type(screen.getByLabelText(/email/i), 'traveler@example.com')
+    await user.type(screen.getByLabelText(/password/i), 'short')
+    await user.click(screen.getByRole('button', { name: /continue/i }))
+
+    expect(await screen.findByText(/password must be at least 8 characters/i)).toBeInTheDocument()
+    expect(loginSpy).not.toHaveBeenCalled()
+  })
+
+  it('blocks registration submission when the password is shorter than the backend policy', async () => {
+    const user = userEvent.setup()
+    const registerSpy = vi.spyOn(apiClient, 'register').mockResolvedValue({
+      id: 'traveler-1',
+      email: 'traveler@example.com',
+      name: 'Traveler One',
+      roles: ['traveler'],
+      permissions: [],
+      created_at: '2026-04-09T00:00:00.000Z',
+      updated_at: '2026-04-09T00:00:00.000Z',
+    })
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/auth/register" element={<RegisterPage />} />
+      </Routes>,
+      { initialEntries: ['/auth/register'] },
+    )
+
+    await user.type(screen.getByLabelText(/full name/i), 'Traveler One')
+    await user.type(screen.getByLabelText(/^email$/i), 'traveler@example.com')
+    await user.type(screen.getByLabelText(/^password$/i), 'short')
+    await user.click(screen.getByRole('button', { name: /create account/i }))
+
+    expect(await screen.findByText(/password must be at least 10 characters/i)).toBeInTheDocument()
+    expect(registerSpy).not.toHaveBeenCalled()
   })
 
   it('restores a live session from cookie-backed auth without persisted browser tokens', async () => {

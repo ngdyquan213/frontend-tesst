@@ -16,16 +16,14 @@ export const vouchersApi = {
   getVouchers: async () =>
     resolveMockable({
       mock: ({ vouchers }) => vouchers,
-      live: async () => {
-        const response = await apiClient.getUserBookings(50, 0)
-        return response.bookings.map((booking) => ({
-          id: booking.id,
-          bookingId: booking.id,
-          title: `Voucher for ${booking.booking_code ?? booking.id}`,
+      live: async () =>
+        (await apiClient.getMyVoucherSummaries()).map((voucher) => ({
+          id: voucher.booking_id,
+          bookingId: voucher.booking_id,
+          title: `Voucher for ${voucher.booking_code ?? voucher.booking_id}`,
           downloadLabel: 'Download PDF',
-          issuedAt: booking.booked_at ?? booking.created_at,
-        }))
-      },
+          issuedAt: voucher.issued_at,
+        })),
     }),
   downloadVoucher: async (id: string) =>
     resolveMockable({

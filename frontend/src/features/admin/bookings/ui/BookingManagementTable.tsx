@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useAdminBookingsQuery } from '@/features/admin/bookings/queries/useAdminBookingsQuery'
 import { CurrencyText } from '@/shared/components/CurrencyText'
 import { Table } from '@/shared/ui/Table'
@@ -13,7 +14,14 @@ export const BookingManagementTable = () => {
           <td className="px-6 py-4 text-on-surface-variant">
             <CurrencyText value={booking.total} currency={booking.currency} />
           </td>
-          <td className="px-6 py-4 text-right text-sm font-semibold text-secondary">Manage</td>
+          <td className="px-6 py-4 text-right text-sm font-semibold">
+            <Link
+              to={`/admin/bookings/${booking.id}`}
+              className="text-secondary transition hover:text-primary"
+            >
+              Review details
+            </Link>
+          </td>
         </tr>
       ))}
     </Table>

@@ -56,6 +56,13 @@ class TravelerService(ApplicationService):
             raise NotFoundAppException("Booking not found")
         return booking.travelers
 
+    def list_my_travelers(
+        self,
+        *,
+        user_id: str,
+    ) -> list[Traveler]:
+        return self.booking_repo.list_travelers_by_user_id(user_id)
+
     def add_traveler(
         self,
         *,

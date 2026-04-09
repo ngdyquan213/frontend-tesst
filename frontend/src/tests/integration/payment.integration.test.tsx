@@ -32,13 +32,13 @@ describe('payment flow', () => {
     })
   })
 
-  it('shows available payment methods on the payment step', async () => {
+  it('shows production-safe payment methods on the payment step', async () => {
     vi.spyOn(paymentsApi, 'getAvailablePaymentMethods').mockResolvedValue([
       {
-        id: 'bank_transfer',
+        id: 'manual',
         type: 'bank',
-        title: 'Bank Transfer',
-        description: 'For higher value bookings and company trips',
+        title: 'Manual Settlement',
+        description: 'Create the booking now and settle payment offline',
         icon: 'account_balance',
       },
     ])
@@ -51,19 +51,46 @@ describe('payment flow', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Payment' })).toBeInTheDocument()
-    expect(await screen.findByText('Bank Transfer')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Pay now' })).toBeInTheDocument()
+    expect(await screen.findByText('Manual Settlement')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Create booking request' })).toBeInTheDocument()
   })
 
-  it('prefers manual payment when stripe is listed first', async () => {
+  it('hides unsupported self-service methods and falls back to manual settlement', async () => {
     vi.spyOn(paymentsApi, 'getAvailablePaymentMethods').mockResolvedValue([
       {
-        id: 'stripe',
-        type: 'card',
-        title: 'Stripe',
-        description: 'Pay instantly by card',
-        icon: 'credit_card',
+        id: 'manual',
+        type: 'bank',
+        title: 'Manual confirmation',
+        description: 'Create the booking now and settle payment offline',
+        icon: 'handshake',
       },
+      {
+        id: 'vnpay',
+        type: 'wallet',
+        title: 'VNPay',
+        description: 'Pay online with VNPay',
+        icon: 'account_balance_wallet',
+      },
+    ])
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/checkout/payment" element={<PaymentPage />} />
+      </Routes>,
+      { initialEntries: ['/checkout/payment?tourId=amalfi-coast-sailing&scheduleId=schedule-1'] },
+    )
+
+    expect(await screen.findByText('Manual confirmation')).toBeInTheDocument()
+    expect(screen.queryByRole('radio', { name: /vnpay/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /manual confirmation/i })).toBeChecked()
+    expect(
+      screen.getByText(/online gateway methods are hidden until the end-to-end payment flow/i),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Create booking request' })).toBeInTheDocument()
+  })
+
+  it('uses explicit manual-settlement copy when no self-service method is available', async () => {
+    vi.spyOn(paymentsApi, 'getAvailablePaymentMethods').mockResolvedValue([
       {
         id: 'manual',
         type: 'bank',
@@ -80,9 +107,8 @@ describe('payment flow', () => {
       { initialEntries: ['/checkout/payment?tourId=amalfi-coast-sailing&scheduleId=schedule-1'] },
     )
 
-    expect(await screen.findByText('Manual confirmation')).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: /manual confirmation/i })).toBeChecked()
-    expect(screen.getByRole('radio', { name: /stripe/i })).not.toBeChecked()
+    expect(await screen.findByRole('radio', { name: /manual confirmation/i })).toBeChecked()
+    expect(screen.getByRole('button', { name: 'Create booking request' })).toBeInTheDocument()
   })
 
   it('uses the live checkout endpoint when mocks are disabled', async () => {
@@ -113,13 +139,13 @@ describe('payment flow', () => {
         payment_status: 'PENDING',
         created_at: '2026-04-08T00:00:00.000Z',
         updated_at: '2026-04-08T00:00:00.000Z',
-        payment_method: 'bank_transfer',
+        payment_method: 'manual',
       },
     })
 
     try {
       const payment = await paymentsApi.createPaymentIntent({
-        methodId: 'bank_transfer',
+        methodId: 'manual',
         tourId: 'amalfi-coast-sailing',
         scheduleId: 'schedule-1',
         travelerCounts: {
@@ -136,7 +162,7 @@ describe('payment flow', () => {
           adult_count: 1,
           child_count: 0,
           infant_count: 0,
-          payment_method: 'bank_transfer',
+          payment_method: 'manual',
         }),
       )
       expect(payment.bookingId).toBe('booking-123')
@@ -144,5 +170,21 @@ describe('payment flow', () => {
     } finally {
       env.enableMocks = previousEnableMocks
     }
+  })
+
+  it('rejects unsupported self-service methods before creating a checkout request', async () => {
+    await expect(
+      paymentsApi.createPaymentIntent({
+        methodId: 'vnpay',
+        tourId: 'amalfi-coast-sailing',
+        scheduleId: 'schedule-1',
+        travelerCounts: {
+          adultCount: 1,
+          childCount: 0,
+          infantCount: 0,
+        },
+        travelDate: '2026-06-14',
+      }),
+    ).rejects.toThrow('Online self-service payments are temporarily unavailable')
   })
 })

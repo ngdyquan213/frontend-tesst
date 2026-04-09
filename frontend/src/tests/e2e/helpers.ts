@@ -8,7 +8,7 @@ const processEnv =
     }
   ).process?.env ?? {}
 
-const LIVE_API_BASE_URL =
+export const LIVE_API_BASE_URL =
   processEnv.VITE_API_BASE_URL ??
   `${processEnv.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:8000'}/api/v1`
 
@@ -129,9 +129,15 @@ export async function clearBrowserSession(page: Page) {
   })
 }
 
-async function loginApi(request: APIRequestContext, credentials: { email: string; password: string }) {
+export async function loginApi(
+  request: APIRequestContext,
+  credentials: { email: string; password: string },
+) {
   const loginResponse = await request.post(`${LIVE_API_BASE_URL}/auth/login`, {
     data: credentials,
+    headers: {
+      'X-Token-Response-Mode': 'body',
+    },
   })
   expect(loginResponse.ok()).toBeTruthy()
   const { access_token: accessToken } = (await loginResponse.json()) as LoginResponse

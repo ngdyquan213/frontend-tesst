@@ -48,3 +48,9 @@ class BookingVoucherResponse(BaseModel):
     items: list[VoucherItemResponse]
     travelers: list[VoucherTravelerResponse]
     notes: str | None = None
+
+
+class VoucherSummaryResponse(BaseModel):
+    booking_id: str
+    booking_code: str
+    issued_at: datetime

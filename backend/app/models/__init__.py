@@ -27,7 +27,13 @@ from app.models.support import SupportTicket
 from app.models.support_reply import SupportTicketReply
 from app.models.system import AppSetting, NotificationReadState, OutboxEvent
 from app.models.tour import Tour, TourItinerary, TourPolicy, TourPriceRule, TourSchedule
-from app.models.user import LoginAttempt, PasswordResetToken, RefreshToken, User
+from app.models.user import (
+    EmailVerificationToken,
+    LoginAttempt,
+    PasswordResetToken,
+    RefreshToken,
+    User,
+)
 
 __all__ = [
     "Base",
@@ -48,6 +54,7 @@ __all__ = [
     "User",
     "RefreshToken",
     "PasswordResetToken",
+    "EmailVerificationToken",
     "LoginAttempt",
     "Role",
     "UserRole",

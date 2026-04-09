@@ -201,6 +201,8 @@ def test_settings_accept_valid_staging_config():
         TRUSTED_HOSTS="staging.example.com",
         OBSERVABILITY_PROTECTION_MODE="allowlist",
         OBSERVABILITY_ALLOWLIST="10.10.0.0/16,203.0.113.0/24",
+        UPLOAD_MALWARE_SCAN_ENABLED=True,
+        UPLOAD_MALWARE_SCAN_BACKEND="clamav",
     )
 
     assert settings.ENVIRONMENT == "staging"
@@ -240,6 +242,8 @@ def test_settings_accept_valid_production_config():
         SECRET_SOURCE="secret_manager",
         SECRET_MANAGER_PROVIDER="aws-secrets-manager",
         SECRET_MANAGER_SECRET_ID="secure-travel/prod",
+        UPLOAD_MALWARE_SCAN_ENABLED=True,
+        UPLOAD_MALWARE_SCAN_BACKEND="clamav",
     )
 
     assert settings.ENVIRONMENT == "production"
@@ -270,6 +274,8 @@ def test_settings_reject_staging_without_observability_allowlist_mode():
             CORS_ORIGINS="https://staging.example.com",
             TRUSTED_HOSTS="staging.example.com",
             OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
+            UPLOAD_MALWARE_SCAN_ENABLED=True,
+            UPLOAD_MALWARE_SCAN_BACKEND="clamav",
         )
 
 
@@ -418,13 +424,37 @@ def test_settings_reject_staging_mock_notification_worker():
         )
 
 
-def test_settings_reject_staging_mock_malware_scan_backend_when_enabled():
+def test_settings_reject_staging_when_malware_scan_is_disabled():
     with pytest.raises(
         ValueError,
-        match=(
-            "UPLOAD_MALWARE_SCAN_BACKEND must not use 'mock' when malware scan is enabled "
-            "in staging/production"
-        ),
+        match="UPLOAD_MALWARE_SCAN_ENABLED must be true in staging/production",
+    ):
+        Settings(
+            ENVIRONMENT="staging",
+            DEBUG=False,
+            SECRET_KEY="staging-secret-key-12345678901234567890",
+            PAYMENT_CALLBACK_SECRET="staging-payment-secret-123456",
+            DATABASE_URL="postgresql+psycopg2://db-user:db-pass@postgres:5432/secure_travel_booking",
+            REDIS_URL="redis://redis:6379/0",
+            OUTBOX_LEASE_SECONDS=30,
+            RUNTIME_MAINTENANCE_INTERVAL_SECONDS=60,
+            ALLOW_PAYMENT_SIMULATION=False,
+            EMAIL_WORKER_BACKEND="smtp",
+            SMTP_HOST="smtp.internal",
+            SMTP_FROM_EMAIL="no-reply@example.com",
+            NOTIFICATION_WORKER_BACKEND="redis",
+            PAYMENT_CALLBACK_SOURCE_ALLOWLIST="10.10.0.0/16",
+            OBSERVABILITY_PROTECTION_MODE="allowlist",
+            OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
+            UPLOAD_MALWARE_SCAN_ENABLED=False,
+            UPLOAD_MALWARE_SCAN_BACKEND="clamav",
+        )
+
+
+def test_settings_reject_staging_non_clamav_malware_scan_backend():
+    with pytest.raises(
+        ValueError,
+        match="UPLOAD_MALWARE_SCAN_BACKEND must be 'clamav' in staging/production",
     ):
         Settings(
             ENVIRONMENT="staging",
@@ -467,6 +497,10 @@ def test_settings_reject_staging_without_payment_callback_allowlist():
             SMTP_HOST="smtp.internal",
             SMTP_FROM_EMAIL="no-reply@example.com",
             NOTIFICATION_WORKER_BACKEND="redis",
+            OBSERVABILITY_PROTECTION_MODE="allowlist",
+            OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
+            UPLOAD_MALWARE_SCAN_ENABLED=True,
+            UPLOAD_MALWARE_SCAN_BACKEND="clamav",
         )
 
 

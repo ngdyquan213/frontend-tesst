@@ -75,6 +75,10 @@ export function clearIdempotencyKey(storageKey: string) {
   getSessionStorage()?.removeItem(storageKey)
 }
 
+export function clearStoredCheckoutIdempotencyKey(input: CreatePaymentIntentInput) {
+  clearIdempotencyKey(getCheckoutIdempotencyStorageKey(input))
+}
+
 export async function resolvePaymentMethodCatalog(preferredMethodId?: string) {
   try {
     return await apiClient.getAvailablePaymentMethods()

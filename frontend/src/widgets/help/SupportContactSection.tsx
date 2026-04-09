@@ -1,6 +1,7 @@
-import { BadgeCheck, Clock3, Mail, Phone, ShieldCheck } from 'lucide-react'
+import { ArrowRight, BadgeCheck, Clock3, LogIn, Mail, Phone, ShieldCheck } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/app/providers/AuthProvider'
 import { routePaths } from '@/app/router/routePaths'
 import { TicketForm } from '@/features/support/ui/TicketForm'
 import { Card } from '@/shared/ui/Card'
@@ -57,6 +58,17 @@ const trustSignals = [
 
 export function SupportContactSection() {
   const navigate = useNavigate()
+  const { isAuthenticated, isInitializing } = useAuth()
+
+  function navigateToLogin() {
+    navigate(routePaths.login, {
+      state: {
+        from: {
+          pathname: routePaths.help,
+        },
+      },
+    })
+  }
 
   return (
     <section className="mx-auto max-w-7xl px-6 pb-24 pt-12 lg:px-8">
@@ -130,7 +142,59 @@ export function SupportContactSection() {
         </Card>
 
         <Card padding="lg">
-          <TicketForm />
+          {isAuthenticated ? (
+            <TicketForm />
+          ) : (
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <p className="font-[family-name:var(--font-display)] text-3xl font-bold text-[color:var(--color-primary)]">
+                  Sign in to open a support request
+                </p>
+                <p className="text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
+                  Support tickets are tied to a verified traveler account so our team can securely
+                  attach the conversation to your bookings, payments, and trip timeline.
+                </p>
+              </div>
+
+              <div className="rounded-[1.75rem] border border-[color:var(--color-outline-variant)] bg-[color:var(--color-surface)] px-5 py-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--color-secondary-strong)]">
+                  Before you sign in
+                </p>
+                <ul className="mt-3 space-y-3 text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
+                  <li>Use email or the hotline on the left if you need help without account access.</li>
+                  <li>Sign in when you want a tracked ticket with booking context and follow-up history.</li>
+                  <li>New to TravelBook? Create an account first so support can verify your contact details.</li>
+                </ul>
+              </div>
+
+              {isInitializing ? (
+                <div className="rounded-[1.5rem] border border-[color:var(--color-outline-variant)] bg-[color:var(--color-surface)] px-4 py-3 text-sm text-[color:var(--color-on-surface-variant)]">
+                  Checking your account session...
+                </div>
+              ) : null}
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="sm:flex-1"
+                  leadingIcon={<LogIn className="h-4 w-4" />}
+                  onClick={navigateToLogin}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="sm:flex-1"
+                  trailingIcon={<ArrowRight className="h-4 w-4" />}
+                  onClick={() => navigate(routePaths.register)}
+                >
+                  Create account
+                </Button>
+              </div>
+            </div>
+          )}
         </Card>
       </div>
 

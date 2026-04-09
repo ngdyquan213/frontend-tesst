@@ -1,6 +1,10 @@
+import type { AxiosInstance } from 'axios'
+import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { Route, Routes } from 'react-router-dom'
 import { env } from '@/app/config/env'
 import { paymentsApi } from '@/features/payments/api/payments.api'
+import HelpPage from '@/pages/public/HelpPage'
 import { createTourDetailQueryOptions } from '@/features/tours/queries/useTourDetailQuery'
 import { apiClient } from '@/shared/api/apiClient'
 import {
@@ -8,6 +12,8 @@ import {
   mapApiPaymentToPaymentRecord,
   mapApiRefundToRefundRecord,
 } from '@/shared/lib/appMappers'
+import { createAuthUserApi } from '@/shared/api/authUserApi'
+import { renderWithProviders } from '@/tests/utils/renderWithProviders'
 
 describe('review fixes', () => {
   it('keeps Stripe hidden from the fallback payment catalog unless it is explicitly enabled', () => {
@@ -101,7 +107,7 @@ describe('review fixes', () => {
     ).toBe('cancelled')
   })
 
-  it('reuses the same idempotency key after a failed checkout retry and rotates it after success', async () => {
+  it('keeps the same idempotency key until checkout reaches a terminal payment state', async () => {
     const previousEnableMocks = env.enableMocks
     env.enableMocks = false
     localStorage.setItem('access_token', 'retry-token-123')
@@ -138,17 +144,44 @@ describe('review fixes', () => {
       })
       .mockResolvedValueOnce({
         booking: {
-          id: 'booking-456',
+          id: 'booking-123',
           user_id: 'user-1',
-          booking_code: 'TC-456',
+          booking_code: 'TC-123',
           booking_type: 'TOUR',
-          booking_status: 'PENDING',
+          booking_status: 'CONFIRMED',
           total_price: 2598,
           total_final_amount: 2598,
           booking_date: '2026-04-08T00:00:00.000Z',
           travel_date: '2026-06-14',
           number_of_travelers: 1,
-          payment_status: 'PENDING',
+          payment_status: 'PAID',
+          created_at: '2026-04-08T00:00:00.000Z',
+          updated_at: '2026-04-08T00:00:00.000Z',
+        },
+        payment: {
+          id: 'payment-123',
+          booking_id: 'booking-123',
+          amount: 2598,
+          currency: 'USD',
+          payment_status: 'PAID',
+          created_at: '2026-04-08T00:00:00.000Z',
+          updated_at: '2026-04-08T00:00:00.000Z',
+          payment_method: 'manual',
+        },
+      })
+      .mockResolvedValueOnce({
+        booking: {
+          id: 'booking-456',
+          user_id: 'user-1',
+          booking_code: 'TC-456',
+          booking_type: 'TOUR',
+          booking_status: 'CONFIRMED',
+          total_price: 2598,
+          total_final_amount: 2598,
+          booking_date: '2026-04-08T00:00:00.000Z',
+          travel_date: '2026-06-14',
+          number_of_travelers: 1,
+          payment_status: 'PAID',
           created_at: '2026-04-08T00:00:00.000Z',
           updated_at: '2026-04-08T00:00:00.000Z',
         },
@@ -157,7 +190,7 @@ describe('review fixes', () => {
           booking_id: 'booking-456',
           amount: 2598,
           currency: 'USD',
-          payment_status: 'PENDING',
+          payment_status: 'PAID',
           created_at: '2026-04-08T00:00:00.000Z',
           updated_at: '2026-04-08T00:00:00.000Z',
           payment_method: 'manual',
@@ -203,7 +236,19 @@ describe('review fixes', () => {
         travelDate: '2026-06-14',
       })
 
-      expect(createTourCheckoutSpy).toHaveBeenCalledTimes(3)
+      await paymentsApi.createPaymentIntent({
+        methodId: 'manual',
+        tourId: 'tour-1',
+        scheduleId: 'schedule-1',
+        travelerCounts: {
+          adultCount: 1,
+          childCount: 0,
+          infantCount: 0,
+        },
+        travelDate: '2026-06-14',
+      })
+
+      expect(createTourCheckoutSpy).toHaveBeenCalledTimes(4)
       expect(createTourCheckoutSpy.mock.calls[0]?.[0]).toMatchObject({
         adult_count: 1,
         child_count: 0,
@@ -212,9 +257,48 @@ describe('review fixes', () => {
       expect(createTourCheckoutSpy.mock.calls[0]?.[0].idempotency_key).toBe(
         createTourCheckoutSpy.mock.calls[1]?.[0].idempotency_key,
       )
-      expect(createTourCheckoutSpy.mock.calls[1]?.[0].idempotency_key).not.toBe(
+      expect(createTourCheckoutSpy.mock.calls[1]?.[0].idempotency_key).toBe(
         createTourCheckoutSpy.mock.calls[2]?.[0].idempotency_key,
       )
+      expect(createTourCheckoutSpy.mock.calls[2]?.[0].idempotency_key).not.toBe(
+        createTourCheckoutSpy.mock.calls[3]?.[0].idempotency_key,
+      )
+    } finally {
+      env.enableMocks = previousEnableMocks
+    }
+  })
+
+  it('submits live registration without deriving a frontend username from the email local-part', async () => {
+    const previousEnableMocks = env.enableMocks
+    env.enableMocks = false
+
+    const client = {
+      post: vi.fn().mockResolvedValue({
+        data: {
+          id: 'traveler-1',
+          email: 'alex@example.com',
+          full_name: 'Alex Example',
+          username: 'alex_1234abcd',
+          roles: ['traveler'],
+          permissions: [],
+          created_at: '2026-04-09T00:00:00.000Z',
+          updated_at: '2026-04-09T00:00:00.000Z',
+        },
+      }),
+    } as unknown as AxiosInstance
+
+    try {
+      const authUserApi = createAuthUserApi(client, {
+        skipAuthRedirectHeader: 'X-Skip-Auth-Redirect',
+      })
+
+      await authUserApi.register('alex@example.com', 'Password123', 'Alex Example')
+
+      expect(client.post).toHaveBeenCalledWith('/auth/register', {
+        email: 'alex@example.com',
+        password: 'Password123',
+        full_name: 'Alex Example',
+      })
     } finally {
       env.enableMocks = previousEnableMocks
     }
@@ -238,5 +322,17 @@ describe('review fixes', () => {
     } finally {
       env.enableMocks = previousEnableMocks
     }
+  })
+
+  it('shows a sign-in gate on the public help page instead of the authenticated support form', async () => {
+    renderWithProviders(
+      <Routes>
+        <Route path="/help" element={<HelpPage />} />
+      </Routes>,
+      { initialEntries: ['/help'] },
+    )
+
+    expect(await screen.findByText(/sign in to open a support request/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /send request/i })).not.toBeInTheDocument()
   })
 })

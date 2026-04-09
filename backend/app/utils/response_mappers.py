@@ -215,6 +215,13 @@ def traveler_to_dict(traveler) -> dict:
     }
 
 
+def traveler_directory_to_dict(traveler, *, is_primary: bool) -> dict:
+    payload = traveler_to_dict(traveler)
+    payload["booking_code"] = getattr(getattr(traveler, "booking", None), "booking_code", None)
+    payload["is_primary"] = is_primary
+    return payload
+
+
 def admin_booking_to_dict(booking) -> dict:
     return {
         "id": str(booking.id),
