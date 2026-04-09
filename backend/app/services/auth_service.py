@@ -17,6 +17,7 @@ from app.models.enums import LogActorType, SecurityEventType
 from app.models.user import LoginAttempt, PasswordResetToken, User
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import LoginRequest, RegisterRequest
+from app.services.application_service import ApplicationService
 from app.services.audit_service import AuditService
 from app.services.auth_domain_service import AuthDomainService
 from app.services.auth_token_service import AuthTokenService
@@ -25,7 +26,7 @@ from app.utils.ip_utils import normalize_ip
 from app.workers.email_worker import EmailWorker
 
 
-class AuthService:
+class AuthService(ApplicationService):
     def __init__(
         self,
         db: Session,
@@ -84,28 +85,12 @@ class AuthService:
             self.user_repo.create_user(user)
 
             self.db.flush()
-
-            self.audit_service.log_action(
-                actor_type=LogActorType.user,
-                actor_user_id=user.id,
-                action="user_registered",
-                resource_type="user",
-                resource_id=user.id,
-                ip_address=normalized_ip,
+            self._log_registration_side_effects(
+                user=user,
+                normalized_ip=normalized_ip,
                 user_agent=user_agent,
-                metadata={"email": user.email},
             )
-
-            self.outbox_service.enqueue_email(
-                handler="send_welcome_email",
-                kwargs={
-                    "to_email": user.email,
-                    "full_name": user.full_name,
-                },
-            )
-
-            self.db.commit()
-            self.db.refresh(user)
+            self.commit_and_refresh(user)
 
         except IntegrityError as exc:
             self.db.rollback()
@@ -115,7 +100,6 @@ class AuthService:
             self.db.rollback()
             raise
 
-        self.db.refresh(user)
         return user
 
     def _record_login_attempt(
@@ -135,6 +119,163 @@ class AuthService:
             )
         )
 
+    def _log_registration_side_effects(
+        self,
+        *,
+        user: User,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=user.id,
+            action="user_registered",
+            resource_type="user",
+            resource_id=user.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"email": user.email},
+        )
+        self.outbox_service.enqueue_email(
+            handler="send_welcome_email",
+            kwargs={
+                "to_email": user.email,
+                "full_name": user.full_name,
+            },
+        )
+
+    def _handle_locked_login_attempt(
+        self,
+        *,
+        user: User,
+        email: str,
+        locked_until,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        self._record_login_attempt(
+            email=email,
+            success=False,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+        )
+        self.audit_service.log_security_event(
+            event_type=SecurityEventType.auth,
+            severity="high",
+            title="Locked account login attempt",
+            description="Login attempted while account lockout is active",
+            related_user_id=user.id,
+            ip_address=normalized_ip,
+            event_data={
+                "email": email,
+                "locked_until": locked_until.isoformat(),
+            },
+        )
+
+    def _handle_failed_login_attempt(
+        self,
+        *,
+        user: User | None,
+        email: str,
+        now: datetime,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        lockout_applied = False
+        if user:
+            result = self.domain_service.apply_failed_login(user=user, now=now)
+            lockout_applied = result.lockout_applied
+            self.user_repo.save_user(user)
+
+        self._record_login_attempt(
+            email=email,
+            success=False,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+        )
+        self.audit_service.log_security_event(
+            event_type=SecurityEventType.auth,
+            severity="medium",
+            title="Login failed",
+            description="Invalid email or password",
+            ip_address=normalized_ip,
+            related_user_id=user.id if user else None,
+            event_data={
+                "email": email,
+                "failed_login_count": user.failed_login_count if user else None,
+                "lockout_applied": lockout_applied,
+            },
+        )
+        if user and lockout_applied and user.locked_until:
+            self.audit_service.log_security_event(
+                event_type=SecurityEventType.auth,
+                severity="high",
+                title="Account temporarily locked",
+                description="Account lockout threshold reached after repeated failures",
+                related_user_id=user.id,
+                ip_address=normalized_ip,
+                event_data={
+                    "email": email,
+                    "failed_login_count": user.failed_login_count,
+                    "locked_until": user.locked_until.isoformat(),
+                },
+            )
+
+    def _complete_successful_login(
+        self,
+        *,
+        user: User,
+        email: str,
+        now: datetime,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> tuple[str, str]:
+        self.domain_service.apply_successful_login(
+            user=user,
+            now=now,
+            ip_address=normalized_ip,
+        )
+        self.user_repo.save_user(user)
+        self._record_login_attempt(
+            email=email,
+            success=True,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+        )
+        access_token, refresh_token = self.auth_token_service.issue_session_tokens(
+            user_id=str(user.id),
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+        )
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=user.id,
+            action="user_logged_in",
+            resource_type="user",
+            resource_id=user.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"email": user.email},
+        )
+        return access_token, refresh_token
+
+    def _expire_active_password_reset_tokens(self, *, user_id: str, now: datetime) -> None:
+        for existing_token in self.user_repo.list_active_password_reset_tokens_for_user(user_id):
+            existing_token.used_at = now
+            self.user_repo.save_password_reset_token(existing_token)
+
+    def _enqueue_password_reset_email(self, *, user: User, raw_token: str) -> None:
+        reset_base_url = settings.FRONTEND_BASE_URL.rstrip("/")
+        reset_url = f"{reset_base_url}/auth/reset-password?token={raw_token}"
+        self.outbox_service.enqueue_email(
+            handler="send_password_reset_email",
+            kwargs={
+                "to_email": user.email,
+                "full_name": user.full_name,
+                "reset_url": reset_url,
+            },
+        )
+
     def login(
         self,
         *,
@@ -148,117 +289,41 @@ class AuthService:
         locked_until = self.domain_service.get_active_lockout_until(user=user, now=now)
 
         if user and locked_until:
-            try:
-                self._record_login_attempt(
+            self.run_in_transaction(
+                lambda: self._handle_locked_login_attempt(
+                    user=user,
                     email=payload.email,
-                    success=False,
-                    ip_address=normalized_ip,
+                    locked_until=locked_until,
+                    normalized_ip=normalized_ip,
                     user_agent=user_agent,
                 )
-                self.audit_service.log_security_event(
-                    event_type=SecurityEventType.auth,
-                    severity="high",
-                    title="Locked account login attempt",
-                    description="Login attempted while account lockout is active",
-                    related_user_id=user.id,
-                    ip_address=normalized_ip,
-                    event_data={
-                        "email": payload.email,
-                        "locked_until": locked_until.isoformat(),
-                    },
-                )
-                self.db.commit()
-            except Exception:
-                self.db.rollback()
-                raise
-
+            )
             raise AuthenticationAppException("Account is temporarily locked")
 
         if not user or not verify_password(payload.password, user.password_hash):
-            try:
-                lockout_applied = False
-                if user:
-                    result = self.domain_service.apply_failed_login(user=user, now=now)
-                    lockout_applied = result.lockout_applied
-                    self.user_repo.save_user(user)
-
-                self._record_login_attempt(
+            self.run_in_transaction(
+                lambda: self._handle_failed_login_attempt(
+                    user=user,
                     email=payload.email,
-                    success=False,
-                    ip_address=normalized_ip,
+                    now=now,
+                    normalized_ip=normalized_ip,
                     user_agent=user_agent,
                 )
-                self.audit_service.log_security_event(
-                    event_type=SecurityEventType.auth,
-                    severity="medium",
-                    title="Login failed",
-                    description="Invalid email or password",
-                    ip_address=normalized_ip,
-                    related_user_id=user.id if user else None,
-                    event_data={
-                        "email": payload.email,
-                        "failed_login_count": user.failed_login_count if user else None,
-                        "lockout_applied": lockout_applied,
-                    },
-                )
-                if user and lockout_applied and user.locked_until:
-                    self.audit_service.log_security_event(
-                        event_type=SecurityEventType.auth,
-                        severity="high",
-                        title="Account temporarily locked",
-                        description="Account lockout threshold reached after repeated failures",
-                        related_user_id=user.id,
-                        ip_address=normalized_ip,
-                        event_data={
-                            "email": payload.email,
-                            "failed_login_count": user.failed_login_count,
-                            "locked_until": user.locked_until.isoformat(),
-                        },
-                    )
-                self.db.commit()
-            except Exception:
-                self.db.rollback()
-                raise
-
+            )
             raise AuthenticationAppException("Invalid email or password")
 
-        try:
-            self.domain_service.apply_successful_login(
-                user=user,
-                now=now,
-                ip_address=normalized_ip,
+        return self.run_in_transaction(
+            lambda: (
+                user,
+                *self._complete_successful_login(
+                    user=user,
+                    email=payload.email,
+                    now=now,
+                    normalized_ip=normalized_ip,
+                    user_agent=user_agent,
+                ),
             )
-            self.user_repo.save_user(user)
-            self._record_login_attempt(
-                email=payload.email,
-                success=True,
-                ip_address=normalized_ip,
-                user_agent=user_agent,
-            )
-
-            access_token, refresh_token = self.auth_token_service.issue_session_tokens(
-                user_id=str(user.id),
-                ip_address=normalized_ip,
-                user_agent=user_agent,
-            )
-
-            self.audit_service.log_action(
-                actor_type=LogActorType.user,
-                actor_user_id=user.id,
-                action="user_logged_in",
-                resource_type="user",
-                resource_id=user.id,
-                ip_address=normalized_ip,
-                user_agent=user_agent,
-                metadata={"email": user.email},
-            )
-
-            self.db.commit()
-            return user, access_token, refresh_token
-
-        except Exception:
-            self.db.rollback()
-            raise
+        )
 
     def refresh_access_token(
         self,
@@ -274,10 +339,13 @@ class AuthService:
                 refresh_token=refresh_token,
                 lock_for_update=True,
             )
+        except ValueError as exc:
+            raise AuthenticationAppException(str(exc)) from exc
 
-            user = self.user_repo.get_by_id(str(stored.user_id))
-            self.domain_service.assert_user_is_active(user)
+        user = self.user_repo.get_by_id(str(stored.user_id))
+        self.domain_service.assert_user_is_active(user)
 
+        def rotate_tokens() -> tuple[User, str, str]:
             old_token, access_token, new_refresh_token = (
                 self.auth_token_service.rotate_refresh_token(
                     refresh_token=refresh_token,
@@ -298,16 +366,9 @@ class AuthService:
                 user_agent=user_agent,
                 metadata={"user_id": str(user.id), "rotation": True},
             )
-
-            self.db.commit()
             return user, access_token, new_refresh_token
 
-        except ValueError as exc:
-            self.db.rollback()
-            raise AuthenticationAppException(str(exc)) from exc
-        except Exception:
-            self.db.rollback()
-            raise
+        return self.run_in_transaction(rotate_tokens)
 
     def logout(
         self,
@@ -323,28 +384,36 @@ class AuthService:
         except ValueError as exc:
             raise AuthenticationAppException(str(exc)) from exc
 
-        try:
-            self.user_repo.revoke_refresh_token(
-                stored,
-                revoked_at=datetime.now(timezone.utc),
-            )
-
-            self.audit_service.log_action(
-                actor_type=LogActorType.user,
-                actor_user_id=stored.user_id,
-                action="user_logged_out",
-                resource_type="refresh_token",
-                resource_id=stored.id,
-                ip_address=normalized_ip,
+        self.run_in_transaction(
+            lambda: self._logout_refresh_token(
+                stored=stored,
+                normalized_ip=normalized_ip,
                 user_agent=user_agent,
-                metadata={"user_id": str(stored.user_id)},
             )
+        )
 
-            self.db.commit()
+    def _logout_refresh_token(
+        self,
+        *,
+        stored,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        self.user_repo.revoke_refresh_token(
+            stored,
+            revoked_at=datetime.now(timezone.utc),
+        )
 
-        except Exception:
-            self.db.rollback()
-            raise
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=stored.user_id,
+            action="user_logged_out",
+            resource_type="refresh_token",
+            resource_id=stored.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"user_id": str(stored.user_id)},
+        )
 
     def logout_all(
         self,
@@ -355,28 +424,36 @@ class AuthService:
     ) -> int:
         normalized_ip = normalize_ip(ip_address)
 
-        try:
-            count = self.user_repo.revoke_all_refresh_tokens_for_user(
+        return self.run_in_transaction(
+            lambda: self._revoke_all_user_sessions(
                 user_id=user_id,
-                revoked_at=datetime.now(timezone.utc),
-            )
-
-            self.audit_service.log_action(
-                actor_type=LogActorType.user,
-                actor_user_id=user_id,
-                action="user_logged_out_all_sessions",
-                resource_type="refresh_token",
-                ip_address=normalized_ip,
+                normalized_ip=normalized_ip,
                 user_agent=user_agent,
-                metadata={"revoked_count": count},
             )
+        )
 
-            self.db.commit()
-            return count
+    def _revoke_all_user_sessions(
+        self,
+        *,
+        user_id: str,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> int:
+        count = self.user_repo.revoke_all_refresh_tokens_for_user(
+            user_id=user_id,
+            revoked_at=datetime.now(timezone.utc),
+        )
 
-        except Exception:
-            self.db.rollback()
-            raise
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=user_id,
+            action="user_logged_out_all_sessions",
+            resource_type="refresh_token",
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"revoked_count": count},
+        )
+        return count
 
     def forgot_password(
         self,
@@ -388,49 +465,47 @@ class AuthService:
         normalized_ip = normalize_ip(ip_address)
         user = self.user_repo.get_by_email(email)
 
-        try:
-            if user:
-                for existing_token in self.user_repo.list_active_password_reset_tokens_for_user(
-                    str(user.id)
-                ):
-                    existing_token.used_at = datetime.now(timezone.utc)
-                    self.user_repo.save_password_reset_token(existing_token)
+        self.run_in_transaction(
+            lambda: self._request_password_reset(
+                user=user,
+                normalized_ip=normalized_ip,
+                user_agent=user_agent,
+            )
+        )
 
-                raw_token = create_password_reset_token_value()
-                reset_token = PasswordResetToken(
-                    user_id=user.id,
-                    token_hash=hash_password_reset_token(raw_token),
-                    expires_at=datetime.now(timezone.utc)
-                    + timedelta(minutes=settings.PASSWORD_RESET_TOKEN_EXPIRE_MINUTES),
-                )
-                self.user_repo.add_password_reset_token(reset_token)
+    def _request_password_reset(
+        self,
+        *,
+        user: User | None,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        if not user:
+            return
 
-                reset_base_url = settings.FRONTEND_BASE_URL.rstrip("/")
-                reset_url = f"{reset_base_url}/auth/reset-password?token={raw_token}"
-                self.outbox_service.enqueue_email(
-                    handler="send_password_reset_email",
-                    kwargs={
-                        "to_email": user.email,
-                        "full_name": user.full_name,
-                        "reset_url": reset_url,
-                    },
-                )
+        now = datetime.now(timezone.utc)
+        self._expire_active_password_reset_tokens(user_id=str(user.id), now=now)
 
-                self.audit_service.log_action(
-                    actor_type=LogActorType.user,
-                    actor_user_id=user.id,
-                    action="user_password_reset_requested",
-                    resource_type="user",
-                    resource_id=user.id,
-                    ip_address=normalized_ip,
-                    user_agent=user_agent,
-                    metadata={"email": user.email},
-                )
+        raw_token = create_password_reset_token_value()
+        reset_token = PasswordResetToken(
+            user_id=user.id,
+            token_hash=hash_password_reset_token(raw_token),
+            expires_at=now
+            + timedelta(minutes=settings.PASSWORD_RESET_TOKEN_EXPIRE_MINUTES),
+        )
+        self.user_repo.add_password_reset_token(reset_token)
+        self._enqueue_password_reset_email(user=user, raw_token=raw_token)
 
-            self.db.commit()
-        except Exception:
-            self.db.rollback()
-            raise
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=user.id,
+            action="user_password_reset_requested",
+            resource_type="user",
+            resource_id=user.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"email": user.email},
+        )
 
     def reset_password(
         self,
@@ -441,7 +516,24 @@ class AuthService:
         user_agent: str | None = None,
     ) -> None:
         normalized_ip = normalize_ip(ip_address)
-        stored_token = self.user_repo.get_password_reset_token_by_hash(
+        self.run_in_transaction(
+            lambda: self._complete_password_reset(
+                token=token,
+                new_password=new_password,
+                normalized_ip=normalized_ip,
+                user_agent=user_agent,
+            )
+        )
+
+    def _complete_password_reset(
+        self,
+        *,
+        token: str,
+        new_password: str,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        stored_token = self.user_repo.get_password_reset_token_by_hash_for_update(
             hash_password_reset_token(token)
         )
         now = datetime.now(timezone.utc)
@@ -456,26 +548,21 @@ class AuthService:
         user = self.user_repo.get_by_id(str(stored_token.user_id))
         self.domain_service.assert_user_is_active(user)
 
-        try:
-            user.password_hash = get_password_hash(new_password)
-            self.user_repo.save_user(user)
-            stored_token.used_at = now
-            self.user_repo.save_password_reset_token(stored_token)
-            revoked_count = self.user_repo.revoke_all_refresh_tokens_for_user(
-                user_id=str(user.id),
-                revoked_at=now,
-            )
-            self.audit_service.log_action(
-                actor_type=LogActorType.user,
-                actor_user_id=user.id,
-                action="user_password_reset_completed",
-                resource_type="user",
-                resource_id=user.id,
-                ip_address=normalized_ip,
-                user_agent=user_agent,
-                metadata={"revoked_count": revoked_count},
-            )
-            self.db.commit()
-        except Exception:
-            self.db.rollback()
-            raise
+        user.password_hash = get_password_hash(new_password)
+        self.user_repo.save_user(user)
+        stored_token.used_at = now
+        self.user_repo.save_password_reset_token(stored_token)
+        revoked_count = self.user_repo.revoke_all_refresh_tokens_for_user(
+            user_id=str(user.id),
+            revoked_at=now,
+        )
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=user.id,
+            action="user_password_reset_completed",
+            resource_type="user",
+            resource_id=user.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"revoked_count": revoked_count},
+        )

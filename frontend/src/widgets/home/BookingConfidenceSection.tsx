@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ArrowRight, CheckCircle2 } from 'lucide-react'
 import { routePaths } from '@/app/router/routePaths'
 
@@ -24,7 +25,7 @@ export function BookingConfidenceSection() {
             Booking with Confidence
           </h2>
           <p className="text-base leading-8 text-[color:var(--color-on-surface-variant)]">
-            We understand that plans can change. That&apos;s why we offer our industry-leading peace-of-mind guarantee on every single booking.
+            We understand that plans can change. That's why we offer our industry-leading peace-of-mind guarantee on every single booking.
           </p>
           <ul className="space-y-4">
             {confidencePoints.map((point) => (
@@ -34,13 +35,13 @@ export function BookingConfidenceSection() {
               </li>
             ))}
           </ul>
-          <button
-            type="button"
+          <Link
+            to={routePaths.public.help}
             className="inline-flex items-center gap-2 font-semibold text-[color:var(--color-primary)] transition-all hover:gap-3"
           >
             Learn about our security
             <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

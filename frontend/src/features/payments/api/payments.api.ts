@@ -1,66 +1,20 @@
-import { env } from '@/app/config/env'
+import {
+  clearIdempotencyKey,
+  getOrCreateIdempotencyKey,
+  resolvePaymentMethodCatalog,
+  type CreatePaymentIntentInput,
+} from '@/features/payments/lib/paymentCheckout'
 import { mapApiPaymentToPaymentRecord } from '@/shared/lib/appMappers'
-import { resolveAfter } from '@/shared/api/apiClient'
 import { apiClient } from '@/shared/api/apiClient'
-import { paymentMethods, payments } from '@/shared/api/mockData'
-import { authStorage } from '@/shared/storage/auth.storage'
+import { resolveMockable } from '@/shared/api/mockApi'
 import type { PaymentMethod } from '@/shared/types/common'
 
-interface CreatePaymentIntentInput {
-  methodId: string
-  tourId: string
-  scheduleId: string
-  travelerCount: number
-  travelDate: string
-}
-
-function buildCheckoutAttemptFingerprint({
-  methodId,
-  tourId,
-  scheduleId,
-  travelerCount,
-  travelDate,
-}: CreatePaymentIntentInput) {
-  const accessTokenFragment = (authStorage.getAccessToken() ?? 'guest')
-    .slice(0, 24)
-    .replace(/[^a-zA-Z0-9_-]/g, '')
-
-  return [accessTokenFragment, methodId, tourId, scheduleId, String(travelerCount), travelDate].join(':')
-}
-
-function getCheckoutIdempotencyStorageKey(input: CreatePaymentIntentInput) {
-  return `travelbook:checkout-idempotency:${buildCheckoutAttemptFingerprint(input)}`
-}
-
-function getOrCreateIdempotencyKey(input: CreatePaymentIntentInput) {
-  const storageKey = getCheckoutIdempotencyStorageKey(input)
-  const existingKey = sessionStorage.getItem(storageKey)
-
-  if (existingKey) {
-    return { storageKey, idempotencyKey: existingKey }
-  }
-
-  const idempotencyKey =
-    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-      ? `checkout-${crypto.randomUUID()}`
-      : `payment-${input.tourId}-${input.scheduleId}-${input.travelerCount}-${Date.now()}`
-
-  sessionStorage.setItem(storageKey, idempotencyKey)
-  return { storageKey, idempotencyKey }
-}
-
-function clearIdempotencyKey(storageKey: string) {
-  sessionStorage.removeItem(storageKey)
-}
-
 export const paymentsApi = {
-  getAvailablePaymentMethods: async (): Promise<PaymentMethod[]> => {
-    if (env.enableMocks) {
-      return resolveAfter(paymentMethods)
-    }
-
-    return apiClient.getAvailablePaymentMethods()
-  },
+  getAvailablePaymentMethods: async (): Promise<PaymentMethod[]> =>
+    resolveMockable({
+      mock: ({ paymentMethods }) => paymentMethods,
+      live: () => apiClient.getAvailablePaymentMethods(),
+    }),
   createPaymentIntent: async ({
     methodId,
     tourId,
@@ -68,12 +22,6 @@ export const paymentsApi = {
     travelerCount,
     travelDate,
   }: CreatePaymentIntentInput) => {
-    if (env.enableMocks) {
-      const payment = payments[0]
-      payment.methodId = methodId
-      return resolveAfter(payment)
-    }
-
     const input = {
       methodId,
       tourId,
@@ -81,49 +29,63 @@ export const paymentsApi = {
       travelerCount,
       travelDate,
     }
-    const { storageKey, idempotencyKey } = getOrCreateIdempotencyKey(input)
-    let checkoutResponse
-    try {
-      checkoutResponse = await apiClient.createTourCheckout({
-        schedule_id: scheduleId,
-        number_of_travelers: travelerCount,
-        payment_method: methodId,
-        idempotency_key: idempotencyKey,
-      })
-    } catch (error) {
-      if (
-        methodId === 'stripe' &&
-        typeof error === 'object' &&
-        error !== null &&
-        'response' in error &&
-        typeof (error as { response?: { status?: unknown } }).response?.status === 'number'
-      ) {
-        throw new Error('Card payments are not available in this environment right now.')
-      }
 
-      throw error
-    }
-    clearIdempotencyKey(storageKey)
-    const payment = checkoutResponse.payment
+    return resolveMockable({
+      mock: ({ payments }) => ({
+        ...payments[0],
+        methodId,
+      }),
+      live: async () => {
+        const { storageKey, idempotencyKey } = getOrCreateIdempotencyKey(input)
+        let checkoutResponse
+        try {
+          checkoutResponse = await apiClient.createTourCheckout({
+            schedule_id: scheduleId,
+            number_of_travelers: travelerCount,
+            payment_method: methodId,
+            idempotency_key: idempotencyKey,
+          })
+        } catch (error) {
+          if (
+            methodId === 'stripe' &&
+            typeof error === 'object' &&
+            error !== null &&
+            'response' in error &&
+            typeof (error as { response?: { status?: unknown } }).response?.status === 'number'
+          ) {
+            throw new Error('Card payments are not available in this environment right now.')
+          }
 
-    return mapApiPaymentToPaymentRecord(
-      {
-        ...payment,
-        booking_id: checkoutResponse.booking.id,
+          throw error
+        }
+        clearIdempotencyKey(storageKey)
+        const payment = checkoutResponse.payment
+        const paymentMethods = await resolvePaymentMethodCatalog(payment.payment_method ?? methodId)
+
+        return mapApiPaymentToPaymentRecord(
+          {
+            ...payment,
+            booking_id: checkoutResponse.booking.id,
+          },
+          paymentMethods,
+        )
       },
-      await apiClient.getAvailablePaymentMethods(),
-    )
+    })
   },
   getPaymentStatus: async (paymentId?: string) => {
-    if (env.enableMocks) {
-      return resolveAfter(payments[0])
-    }
-
     if (!paymentId) {
       throw new Error('A payment id is required to fetch payment status.')
     }
 
-    const payment = await apiClient.getPayment(paymentId)
-    return mapApiPaymentToPaymentRecord(payment, await apiClient.getAvailablePaymentMethods())
+    return resolveMockable({
+      mock: ({ payments }) => payments[0],
+      live: async () => {
+        const payment = await apiClient.getPayment(paymentId)
+        return mapApiPaymentToPaymentRecord(
+          payment,
+          await resolvePaymentMethodCatalog(payment.payment_method),
+        )
+      },
+    })
   },
 }

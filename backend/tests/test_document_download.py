@@ -206,6 +206,27 @@ def test_s3_download_sanitizes_content_disposition_filename():
     assert body.was_closed is True
 
 
+def test_s3_store_bytes_failure_is_translated(monkeypatch):
+    service = StorageService()
+    service.backend = "s3"
+
+    class FakeS3Client:
+        def put_object(self, **_kwargs):
+            raise RuntimeError("S3 put failed")
+
+    monkeypatch.setattr(StorageService, "_s3_client", lambda self: FakeS3Client())
+
+    with pytest.raises(
+        ExternalServiceAppException,
+        match="Document storage is temporarily unavailable",
+    ):
+        service.store_bytes(
+            content=b"voucher",
+            original_filename="voucher.pdf",
+            mime_type="application/pdf",
+        )
+
+
 async def _consume_streaming_response(response) -> bytes:
     chunks: list[bytes] = []
     async for chunk in response.body_iterator:

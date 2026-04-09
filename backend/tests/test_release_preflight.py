@@ -35,8 +35,10 @@ def test_release_preflight_accepts_valid_production_config(tmp_path: Path):
         "SECRET_MANAGER_AWS_REGION": "ap-southeast-1",
         "DATABASE_URL": "postgresql+psycopg2://user:very-secret@db.internal:5432/app",
         "REDIS_URL": "redis://redis.internal:6379/0",
+        "FRONTEND_BASE_URL": "https://app.example.com",
         "SECRET_KEY": "prod-real-secret-key-abcdefghijklmnopqrstuvwxyz",
         "PAYMENT_CALLBACK_SECRET": "prod-payment-secret-abcdefghijklmnopqrstuvwxyz",
+        "CORS_ORIGINS": "https://app.example.com",
         "TRUSTED_HOSTS": "api.internal.example,app,app:8000",
         "OBSERVABILITY_PROTECTION_MODE": "allowlist",
         "OBSERVABILITY_ALLOWLIST": "10.40.0.0/16",
@@ -75,9 +77,11 @@ def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
         "SECRET_SOURCE": "env",
         "DATABASE_URL": "postgresql+psycopg2://postgres:postgres@localhost:5432/app",
         "REDIS_URL": "redis://127.0.0.1:6379/0",
+        "FRONTEND_BASE_URL": "http://localhost:8080",
         "SECRET_KEY": "production-secret-key-12345678901234567890",
         "PAYMENT_CALLBACK_SECRET": "production-payment-secret-123456",
-        "TRUSTED_HOSTS": "",
+        "CORS_ORIGINS": "http://localhost:8080",
+        "TRUSTED_HOSTS": "localhost,testserver",
         "OBSERVABILITY_PROTECTION_MODE": "disabled",
         "OBSERVABILITY_ALLOWLIST": "",
         "PAYMENT_CALLBACK_SOURCE_ALLOWLIST": "",
@@ -86,6 +90,8 @@ def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
         "NOTIFICATION_WORKER_BACKEND": "mock",
         "STORAGE_BACKEND": "local",
         "ALLOW_PAYMENT_SIMULATION": "true",
+        "UPLOAD_MALWARE_SCAN_ENABLED": "true",
+        "UPLOAD_MALWARE_SCAN_BACKEND": "mock",
         "OUTBOX_HEALTH_MODE": "best_effort",
     }
 
@@ -95,11 +101,15 @@ def test_release_preflight_rejects_placeholder_and_local_values(tmp_path: Path):
     assert "SECRET_SOURCE must be secret_manager for production rollout" in errors
     assert "DATABASE_URL must not point to localhost/127.0.0.1" in errors
     assert "REDIS_URL must not point to localhost/127.0.0.1" in errors
+    assert "FRONTEND_BASE_URL must not point to localhost/127.0.0.1" in errors
+    assert "CORS_ORIGINS must not contain localhost/127.0.0.1 origins" in errors
+    assert "TRUSTED_HOSTS must not contain localhost/127.0.0.1/testserver" in errors
     assert "FORWARDED_ALLOW_IPS must not contain '*'" in errors
     assert "EMAIL_WORKER_BACKEND must be smtp" in errors
     assert "NOTIFICATION_WORKER_BACKEND must be redis" in errors
     assert "STORAGE_BACKEND must be s3 for production" in errors
     assert "ALLOW_PAYMENT_SIMULATION must be false" in errors
+    assert "UPLOAD_MALWARE_SCAN_BACKEND must be clamav when malware scan is enabled" in errors
 
 
 def test_release_preflight_requires_complete_stripe_configuration(tmp_path: Path):

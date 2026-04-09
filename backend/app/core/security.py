@@ -27,7 +27,12 @@ def verify_password(plain_password: str, password_hash: str) -> bool:
         return False
 
 
-def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
+def create_access_token(
+    subject: str,
+    *,
+    session_id: str | None = None,
+    expires_delta: timedelta | None = None,
+) -> str:
     now = datetime.now(timezone.utc)
     expire = now + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
 
@@ -37,6 +42,8 @@ def create_access_token(subject: str, expires_delta: timedelta | None = None) ->
         "iat": int(now.timestamp()),
         "exp": int(expire.timestamp()),
     }
+    if session_id:
+        payload["sid"] = session_id
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
@@ -74,6 +81,7 @@ def get_refresh_token_expiry() -> datetime:
 
 def build_payment_callback_signature(
     *,
+    timestamp: int | str,
     gateway_name: str,
     gateway_order_ref: str,
     gateway_transaction_ref: str,
@@ -83,6 +91,7 @@ def build_payment_callback_signature(
 ) -> str:
     message = "|".join(
         [
+            str(timestamp),
             gateway_name,
             gateway_order_ref,
             gateway_transaction_ref,
@@ -100,6 +109,7 @@ def build_payment_callback_signature(
 
 def verify_payment_callback_signature(
     *,
+    timestamp: int | str,
     gateway_name: str,
     gateway_order_ref: str,
     gateway_transaction_ref: str,
@@ -109,6 +119,7 @@ def verify_payment_callback_signature(
     signature: str,
 ) -> bool:
     expected = build_payment_callback_signature(
+        timestamp=timestamp,
         gateway_name=gateway_name,
         gateway_order_ref=gateway_order_ref,
         gateway_transaction_ref=gateway_transaction_ref,

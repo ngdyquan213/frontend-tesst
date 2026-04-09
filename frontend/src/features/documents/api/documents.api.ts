@@ -1,6 +1,5 @@
-import { env } from '@/app/config/env'
-import { apiClient, resolveAfter } from '@/shared/api/apiClient'
-import { documents } from '@/shared/api/mockData'
+import { apiClient } from '@/shared/api/apiClient'
+import { resolveMockable } from '@/shared/api/mockApi'
 import type { DocumentRecord } from '@/shared/types/common'
 
 function cloneDocumentRecord(document: DocumentRecord): DocumentRecord {
@@ -44,55 +43,59 @@ function mapApiDocumentToRecord(
 }
 
 export const documentsApi = {
-  getDocuments: async () => {
-    if (env.enableMocks) {
-      return resolveAfter(documents.map(cloneDocumentRecord))
-    }
+  getDocuments: async () =>
+    resolveMockable({
+      mock: ({ documents }) => documents.map(cloneDocumentRecord),
+      live: async () => {
+        const response = await apiClient.getUserDocuments()
+        return response.map(mapApiDocumentToRecord)
+      },
+    }),
+  getDocumentDetail: async (id: string) =>
+    resolveMockable({
+      mock: ({ documents }) => {
+        const document = documents.find((item) => item.id === id)
 
-    const response = await apiClient.getUserDocuments()
-    return response.map(mapApiDocumentToRecord)
-  },
-  getDocumentDetail: async (id: string) => {
-    if (env.enableMocks) {
-      const document = documents.find((item) => item.id === id)
+        if (!document) {
+          throw new Error('Document not found.')
+        }
 
-      if (!document) {
-        throw new Error('Document not found.')
-      }
+        return document
+      },
+      live: async () => {
+        const records = await documentsApi.getDocuments()
+        const document = records.find((item) => item.id === id)
+        if (!document) {
+          throw new Error('Document not found.')
+        }
 
-      return resolveAfter(document)
-    }
-
-    const records = await documentsApi.getDocuments()
-    const document = records.find((item) => item.id === id)
-    if (!document) {
-      throw new Error('Document not found.')
-    }
-
-    return document
-  },
+        return document
+      },
+    }),
   uploadDocument: async ({
     documentType,
     file,
-  }: {
-    documentType: string
-    file: File
-  }) => {
-    if (env.enableMocks) {
-      const nextDocument: DocumentRecord = {
-        id: `document-${documents.length + 1}`,
-        bookingId: 'booking-1',
-        title: file.name,
-        type: formatDocumentType(documentType),
-        uploadedAt: new Date().toISOString(),
-        status: 'pending',
-        notes: 'Queued for review.',
-      }
-      documents.unshift(nextDocument)
-      return resolveAfter(cloneDocumentRecord(nextDocument))
-    }
-
-    const document = await apiClient.uploadDocument(documentType, file)
-    return mapApiDocumentToRecord(document)
-  },
+    }: {
+      documentType: string
+      file: File
+  }) =>
+    resolveMockable({
+      mock: ({ documents }) => {
+        const nextDocument: DocumentRecord = {
+          id: `document-${documents.length + 1}`,
+          bookingId: 'booking-1',
+          title: file.name,
+          type: formatDocumentType(documentType),
+          uploadedAt: new Date().toISOString(),
+          status: 'pending',
+          notes: 'Queued for review.',
+        }
+        documents.unshift(nextDocument)
+        return cloneDocumentRecord(nextDocument)
+      },
+      live: async () => {
+        const document = await apiClient.uploadDocument(documentType, file)
+        return mapApiDocumentToRecord(document)
+      },
+    }),
 }

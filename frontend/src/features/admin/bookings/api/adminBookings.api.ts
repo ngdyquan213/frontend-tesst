@@ -1,17 +1,15 @@
-import { env } from '@/app/config/env'
 import { mapApiBookingToBooking } from '@/shared/lib/appMappers'
-import { resolveAfter } from '@/shared/api/apiClient'
 import { apiClient } from '@/shared/api/apiClient'
-import { bookings } from '@/shared/api/mockData'
+import { resolveMockData, resolveMockable } from '@/shared/api/mockApi'
 
 export const adminBookingsApi = {
-  getBookings: async () => {
-    if (env.enableMocks) {
-      return resolveAfter(bookings)
-    }
-
-    const response = await apiClient.getAllBookings()
-    return response.bookings.map(mapApiBookingToBooking)
-  },
-  updateBookingStatus: async () => resolveAfter(bookings[0]),
+  getBookings: async () =>
+    resolveMockable({
+      mock: ({ bookings }) => bookings,
+      live: async () => {
+        const response = await apiClient.getAllBookings()
+        return response.bookings.map(mapApiBookingToBooking)
+      },
+    }),
+  updateBookingStatus: async () => resolveMockData(({ bookings }) => bookings[0]),
 }

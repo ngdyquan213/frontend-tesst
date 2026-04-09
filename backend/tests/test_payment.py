@@ -196,6 +196,50 @@ def test_list_payment_methods_includes_stripe_when_gateway_is_configured(client,
     assert [item["id"] for item in body] == ["manual", "vnpay", "momo", "stripe"]
 
 
+def test_list_payment_methods_hides_simulated_gateways_in_production_mode(client, monkeypatch):
+    monkeypatch.setattr(settings, "ENVIRONMENT", "production")
+    monkeypatch.setattr(settings, "ALLOW_PAYMENT_SIMULATION", False)
+    monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "")
+
+    resp = client.get("/api/v1/payments/methods")
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert [item["id"] for item in body] == ["manual"]
+
+
+def test_initiate_payment_rejects_simulated_gateway_in_production_mode(
+    client,
+    db_session,
+    monkeypatch,
+):
+    monkeypatch.setattr(settings, "ENVIRONMENT", "production")
+    monkeypatch.setattr(settings, "ALLOW_PAYMENT_SIMULATION", False)
+
+    user, token = create_user_and_login(
+        client,
+        db_session,
+        "payment-production@example.com",
+        "payment_production_user",
+    )
+    booking = seed_booking_for_user(db_session, str(user.id))
+
+    resp = client.post(
+        "/api/v1/payments/initiate",
+        json={
+            "booking_id": str(booking.id),
+            "payment_method": "vnpay",
+        },
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Idempotency-Key": "prod-payment-001",
+        },
+    )
+
+    assert resp.status_code == 400
+    assert resp.json()["message"] == "Payment method is not available in this environment"
+
+
 def test_payment_idempotency_returns_same_payment(client, db_session):
     user, token = create_user_and_login(
         client,
@@ -512,6 +556,7 @@ def test_simulate_success_rejects_non_pending_payment(client, db_session, monkey
 
     payment = initiate_resp.json()
     callback_payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "momo",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-SIM-GUARD-001",

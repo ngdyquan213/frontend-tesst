@@ -11,7 +11,7 @@ function shellEscape(value: string) {
 }
 
 const webServerCommand = isMockMode
-  ? 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173 --strictPort'
+  ? `VITE_ENABLE_MOCKS=${shellEscape('true')} npm run build && VITE_ENABLE_MOCKS=${shellEscape('true')} npm run preview -- --host 127.0.0.1 --port 4173 --strictPort`
   : `VITE_ENABLE_MOCKS=${shellEscape('false')} VITE_API_BASE_URL=${shellEscape(liveApiBaseUrl)} VITE_API_URL=${shellEscape(liveApiBaseUrl)} npm run build && npm run preview -- --host 127.0.0.1 --port 4173 --strictPort`
 
 export default defineConfig({
@@ -25,6 +25,7 @@ export default defineConfig({
   webServer: {
     command: webServerCommand,
     port: 4173,
-    reuseExistingServer: isMockMode ? !process.env.CI : false,
+    // Reusing an existing preview server can leak the wrong mock/live build into E2E runs.
+    reuseExistingServer: false,
   },
 })

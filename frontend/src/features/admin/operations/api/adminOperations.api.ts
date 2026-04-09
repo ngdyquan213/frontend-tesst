@@ -1,6 +1,5 @@
-import { env } from '@/app/config/env'
-import { apiClient, resolveAfter } from '@/shared/api/apiClient'
-import { adminTasks } from '@/shared/api/mockData'
+import { apiClient } from '@/shared/api/apiClient'
+import { resolveMockable } from '@/shared/api/mockApi'
 
 function humanizeAction(value: string) {
   return value
@@ -24,29 +23,27 @@ function inferPriority(action: string) {
 }
 
 export const adminOperationsApi = {
-  getOperations: async () => {
-    if (env.enableMocks) {
-      return resolveAfter(adminTasks)
-    }
+  getOperations: async () =>
+    resolveMockable({
+      mock: ({ adminTasks }) => adminTasks,
+      live: async () => {
+        const summary = await apiClient.getAdminDashboardSummary(12)
+        const recentActivities = summary.recent_activities
 
-    const summary = await apiClient.getAdminDashboardSummary(12)
-    const recentActivities = Array.isArray(summary.recent_activities)
-      ? summary.recent_activities.filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
-      : []
+        return recentActivities.map((activity) => {
+          const action = String(activity.action ?? 'activity')
+          const resourceType = String(activity.resource_type ?? 'system')
+          const resourceId = typeof activity.resource_id === 'string' ? activity.resource_id : 'n/a'
+          const createdAt = String(activity.created_at ?? '')
 
-    return recentActivities.map((activity) => {
-      const action = String(activity.action ?? 'activity')
-      const resourceType = String(activity.resource_type ?? 'system')
-      const resourceId = typeof activity.resource_id === 'string' ? activity.resource_id : 'n/a'
-      const createdAt = String(activity.created_at ?? '')
-
-      return {
-        id: String(activity.audit_log_id ?? `${action}-${resourceId}`),
-        title: humanizeAction(action),
-        summary: `${resourceType} • ${resourceId} • ${new Date(createdAt).toLocaleString()}`,
-        priority: inferPriority(action),
-        cta: 'Review activity',
-      }
-    })
-  },
+          return {
+            id: String(activity.audit_log_id ?? `${action}-${resourceId}`),
+            title: humanizeAction(action),
+            summary: `${resourceType} • ${resourceId} • ${new Date(createdAt).toLocaleString()}`,
+            priority: inferPriority(action),
+            cta: 'Review activity',
+          }
+        })
+      },
+    }),
 }

@@ -1,8 +1,8 @@
-import { env } from '@/app/config/env'
 import type { PromotionCta } from '@/features/promotions/model/promotion.types'
+import { isMockApiEnabled } from '@/shared/api/mockMode'
 
 export function resolvePromotionCta(cta: PromotionCta): PromotionCta {
-  if (env.enableMocks || cta.kind !== 'booking') {
+  if (isMockApiEnabled() || cta.kind !== 'booking') {
     return cta
   }
 

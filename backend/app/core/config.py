@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 60
+    BOOKING_HOLD_EXPIRE_MINUTES: int = 30
 
     DATABASE_URL: str = (
         "postgresql+psycopg2://postgres:postgres@localhost:5432/secure_travel_booking"
@@ -70,6 +71,7 @@ class Settings(BaseSettings):
     NOTIFICATION_REDIS_CHANNEL: str = "secure_travel.notifications"
     FORWARDED_ALLOW_IPS: str = "127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
     PAYMENT_CALLBACK_SOURCE_ALLOWLIST: str = ""
+    PAYMENT_CALLBACK_TOLERANCE_SECONDS: int = 300
     ALLOW_PAYMENT_SIMULATION: bool = False
     UPLOAD_MALWARE_SCAN_ENABLED: bool = False
     UPLOAD_MALWARE_SCAN_BACKEND: Literal["mock", "clamav"] = "mock"
@@ -169,6 +171,13 @@ class Settings(BaseSettings):
             raise ValueError("ACCESS_TOKEN_EXPIRE_MINUTES must be > 0")
         return value
 
+    @field_validator("BOOKING_HOLD_EXPIRE_MINUTES")
+    @classmethod
+    def validate_booking_hold_expire_minutes(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("BOOKING_HOLD_EXPIRE_MINUTES must be > 0")
+        return value
+
     @field_validator("REFRESH_TOKEN_EXPIRE_DAYS")
     @classmethod
     def validate_refresh_token_expire_days(cls, value: int) -> int:
@@ -244,6 +253,13 @@ class Settings(BaseSettings):
     def validate_auth_lockout_minutes(cls, value: int) -> int:
         if value <= 0:
             raise ValueError("AUTH_LOCKOUT_MINUTES must be > 0")
+        return value
+
+    @field_validator("PAYMENT_CALLBACK_TOLERANCE_SECONDS")
+    @classmethod
+    def validate_payment_callback_tolerance_seconds(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError("PAYMENT_CALLBACK_TOLERANCE_SECONDS must be > 0")
         return value
 
     @model_validator(mode="after")
@@ -363,6 +379,12 @@ class Settings(BaseSettings):
             if self.NOTIFICATION_WORKER_BACKEND == "mock":
                 raise ValueError(
                     "NOTIFICATION_WORKER_BACKEND must not use 'mock' in staging/production"
+                )
+
+            if self.UPLOAD_MALWARE_SCAN_ENABLED and self.UPLOAD_MALWARE_SCAN_BACKEND == "mock":
+                raise ValueError(
+                    "UPLOAD_MALWARE_SCAN_BACKEND must not use 'mock' when malware scan "
+                    "is enabled in staging/production"
                 )
 
             if not self.payment_callback_source_allowlist_list:

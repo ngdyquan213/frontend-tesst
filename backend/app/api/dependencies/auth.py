@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import Depends, Request
@@ -8,7 +9,7 @@ from app.core.database import get_db
 from app.core.exceptions import AuthenticationAppException, AuthorizationAppException
 from app.core.security import decode_access_token
 from app.models.enums import UserStatus
-from app.models.user import User
+from app.models.user import RefreshToken, User
 from app.utils.auth_cookies import get_access_token_from_request
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
@@ -32,11 +33,23 @@ def get_current_user(
     if not user_id:
         raise AuthenticationAppException("Invalid authentication credentials")
 
+    session_id = payload.get("sid")
+    if not isinstance(session_id, str) or not session_id.strip():
+        raise AuthenticationAppException("Invalid authentication credentials")
+
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise AuthenticationAppException("User not found")
     if user.status != UserStatus.active:
         raise AuthenticationAppException("User is not active")
+
+    refresh_session = db.query(RefreshToken).filter(RefreshToken.id == session_id).first()
+    if not refresh_session or str(refresh_session.user_id) != str(user.id):
+        raise AuthenticationAppException("Session is no longer valid")
+
+    now = datetime.now(timezone.utc)
+    if refresh_session.revoked_at is not None or refresh_session.expires_at <= now:
+        raise AuthenticationAppException("Session is no longer valid")
 
     return user
 

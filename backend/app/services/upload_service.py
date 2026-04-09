@@ -184,8 +184,16 @@ class UploadService(ApplicationService):
 
         return document
 
-    def list_my_documents(self, user_id: str):
-        return self.document_repo.list_by_user_id(user_id)
+    def list_my_documents(
+        self,
+        user_id: str,
+        *,
+        skip: int = 0,
+        limit: int = 20,
+    ):
+        documents = self.document_repo.list_by_user_id(user_id, skip=skip, limit=limit)
+        total = self.document_repo.count_by_user_id(user_id)
+        return documents, total
 
     def get_my_document(
         self,

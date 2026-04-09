@@ -34,6 +34,7 @@ class AdminDocumentService:
         user_agent: str | None = None,
     ):
         documents = self.document_repo.list_for_admin(skip=skip, limit=limit)
+        total = self.document_repo.count_for_admin()
 
         try:
             self.audit_service.log_action(
@@ -43,14 +44,19 @@ class AdminDocumentService:
                 resource_type="uploaded_document",
                 ip_address=ip_address,
                 user_agent=user_agent,
-                metadata={"result_count": len(documents)},
+                metadata={
+                    "result_count": len(documents),
+                    "total_count": total,
+                    "skip": skip,
+                    "limit": limit,
+                },
             )
             self.db.commit()
         except Exception:
             self.db.rollback()
             raise
 
-        return documents
+        return documents, total
 
     def review_document(
         self,

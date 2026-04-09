@@ -1,6 +1,5 @@
-import { env } from '@/app/config/env'
-import { apiClient, resolveAfter } from '@/shared/api/apiClient'
-import { travelers } from '@/shared/api/mockData'
+import { apiClient } from '@/shared/api/apiClient'
+import { resolveMockable } from '@/shared/api/mockApi'
 
 function formatTravelerType(value?: string) {
   if (!value) return 'Traveler'
@@ -12,61 +11,29 @@ function formatTravelerType(value?: string) {
 }
 
 export const travelersApi = {
-  getTravelers: async () => {
-    if (env.enableMocks) {
-      return resolveAfter(travelers)
-    }
+  getTravelers: async () =>
+    resolveMockable({
+      mock: ({ travelers }) => travelers,
+      live: async () => {
+        const bookingsResponse = await apiClient.getUserBookings(50, 0)
+        const travelerGroups = await Promise.all(
+          bookingsResponse.bookings.map(async (booking) => ({
+            booking,
+            travelers: await apiClient.getBookingTravelers(booking.id),
+          })),
+        )
 
-    const bookingsResponse = await apiClient.getUserBookings(50, 0)
-    const travelerGroups = await Promise.all(
-      bookingsResponse.bookings.map(async (booking) => ({
-        booking,
-        travelers: await apiClient.getBookingTravelers(booking.id),
-      })),
-    )
-
-    return travelerGroups.flatMap(({ booking, travelers: bookingTravelers }) =>
-      bookingTravelers.map((traveler, index) => ({
-        id: traveler.id,
-        fullName: traveler.full_name,
-        relation: `${formatTravelerType(traveler.traveler_type)} on ${booking.booking_code ?? booking.id}`,
-        passportNumber: traveler.passport_number ?? 'Not provided',
-        nationality: traveler.nationality ?? 'Not provided',
-        birthday: traveler.date_of_birth ?? 'Not provided',
-        isPrimary: index === 0,
-      })),
-    )
-  },
-  createTraveler: async (payload: { fullName: string }) => {
-    if (!env.enableMocks) {
-      throw new Error('Travelers are currently managed inside each booking flow, not from the account directory.')
-    }
-
-    travelers.push({
-      id: `traveler-${travelers.length + 1}`,
-      fullName: payload.fullName,
-      relation: 'Additional traveler',
-      passportNumber: 'NEW0000',
-      nationality: 'TBD',
-      birthday: '1995-01-01',
-      isPrimary: false,
-    })
-    return resolveAfter(travelers)
-  },
-  updateTraveler: async (payload: { id: string; fullName: string }) => {
-    if (!env.enableMocks) {
-      throw new Error('Traveler updates are not connected on the account-level page yet.')
-    }
-
-    const traveler = travelers.find((item) => item.id === payload.id)
-    if (traveler) traveler.fullName = payload.fullName
-    return resolveAfter(traveler)
-  },
-  deleteTraveler: async (id: string) => {
-    if (!env.enableMocks) {
-      throw new Error(`Traveler deletion is not connected on the account-level page yet: ${id}`)
-    }
-
-    return resolveAfter(travelers.filter((traveler) => traveler.id !== id))
-  },
+        return travelerGroups.flatMap(({ booking, travelers: bookingTravelers }) =>
+          bookingTravelers.map((traveler, index) => ({
+            id: traveler.id,
+            fullName: traveler.full_name,
+            relation: `${formatTravelerType(traveler.traveler_type)} on ${booking.booking_code ?? booking.id}`,
+            passportNumber: traveler.passport_number ?? 'Not provided',
+            nationality: traveler.nationality ?? 'Not provided',
+            birthday: traveler.date_of_birth ?? 'Not provided',
+            isPrimary: index === 0,
+          })),
+        )
+      },
+    }),
 }

@@ -130,6 +130,7 @@ def test_invalid_payment_callback_signature_creates_security_event(client, db_se
     resp = client.post(
         "/api/v1/payments/callback",
         json={
+            "timestamp": int(datetime.now(timezone.utc).timestamp()),
             "gateway_name": "vnpay",
             "gateway_order_ref": payment["gateway_order_ref"],
             "gateway_transaction_ref": "TXN-SEC-INVALID-001",
@@ -172,6 +173,7 @@ def test_replay_callback_creates_security_event(client, db_session):
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-SEC-REPLAY-001",
@@ -218,6 +220,7 @@ def test_payment_amount_mismatch_creates_security_event(client, db_session):
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-SEC-MISMATCH-001",

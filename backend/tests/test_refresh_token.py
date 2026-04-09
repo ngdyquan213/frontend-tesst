@@ -75,6 +75,7 @@ def test_logout_revokes_refresh_token(client, db_session):
             "password": "Password123",
         },
     )
+    access_token = login_resp.json()["access_token"]
     refresh_token = login_resp.json()["refresh_token"]
 
     logout_resp = client.post(
@@ -88,6 +89,12 @@ def test_logout_revokes_refresh_token(client, db_session):
         json={"refresh_token": refresh_token},
     )
     assert refresh_resp.status_code == 401
+
+    me_resp = client.get(
+        "/api/v1/users/me",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert me_resp.status_code == 401
 
 
 def test_logout_all_revokes_all_tokens(client, db_session):
@@ -137,3 +144,9 @@ def test_logout_all_revokes_all_tokens(client, db_session):
 
     assert refresh_resp1.status_code == 401
     assert refresh_resp2.status_code == 401
+
+    me_resp = client.get(
+        "/api/v1/users/me",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert me_resp.status_code == 401

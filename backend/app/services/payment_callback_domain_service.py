@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from app.core.constants import ALLOWED_PAYMENT_CALLBACK_STATUSES
 from app.core.exceptions import ConflictAppException, ValidationAppException
-from app.models.enums import PaymentStatus
+from app.models.enums import BookingStatus, PaymentStatus
 from app.utils.enums import enum_to_str
 
 
@@ -54,17 +54,30 @@ class PaymentCallbackDomainService:
         if normalized_status == PaymentStatus.paid.value:
             payment.status = PaymentStatus.paid
             payment.paid_at = processed_at
+            payment.failed_at = None
+            payment.failure_reason = None
+            booking.status = BookingStatus.confirmed
             booking.payment_status = PaymentStatus.paid
+            booking.expires_at = None
             return
 
         if normalized_status == PaymentStatus.failed.value:
             payment.status = PaymentStatus.failed
+            payment.failed_at = processed_at
+            payment.failure_reason = "Gateway reported payment failure"
+            booking.status = BookingStatus.failed
             booking.payment_status = PaymentStatus.failed
+            booking.expires_at = None
             return
 
         if normalized_status == PaymentStatus.cancelled.value:
             payment.status = PaymentStatus.cancelled
+            payment.failed_at = processed_at
+            payment.failure_reason = "Gateway reported payment cancellation"
+            booking.status = BookingStatus.cancelled
             booking.payment_status = PaymentStatus.cancelled
+            booking.cancelled_at = booking.cancelled_at or processed_at
+            booking.expires_at = None
 
     def _assert_transition_allowed(self, current_status: str, incoming_status: str) -> None:
         terminal_statuses = {

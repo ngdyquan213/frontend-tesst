@@ -70,7 +70,7 @@ def test_create_hotel_booking_success(client, db_session):
             "check_out_date": date.fromordinal(date.today().toordinal() + 2).isoformat(),
             "quantity": 1,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-001"},
     )
 
     assert resp.status_code == 201
@@ -108,7 +108,7 @@ def test_hotel_booking_invalid_date_range(client, db_session):
             "check_out_date": "2026-01-10",
             "quantity": 1,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-002"},
     )
 
     assert resp.status_code == 422
@@ -131,7 +131,7 @@ def test_hotel_booking_not_enough_rooms(client, db_session):
             "check_out_date": "2026-01-12",
             "quantity": 10,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-003"},
     )
 
     assert resp.status_code == 400
@@ -155,7 +155,7 @@ def test_hotel_booking_allows_non_overlapping_stays(client, db_session):
             "check_out_date": "2026-01-12",
             "quantity": 5,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-004"},
     )
     assert first.status_code == 201
 
@@ -167,7 +167,7 @@ def test_hotel_booking_allows_non_overlapping_stays(client, db_session):
             "check_out_date": "2026-01-14",
             "quantity": 5,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-005"},
     )
     assert second.status_code == 201
 
@@ -189,7 +189,7 @@ def test_hotel_booking_blocks_overlapping_stays_when_inventory_is_exhausted(clie
             "check_out_date": "2026-01-12",
             "quantity": 5,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-006"},
     )
     assert first.status_code == 201
 
@@ -201,7 +201,7 @@ def test_hotel_booking_blocks_overlapping_stays_when_inventory_is_exhausted(clie
             "check_out_date": "2026-01-13",
             "quantity": 1,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-007"},
     )
     assert second.status_code == 400
     assert second.json()["detail"] == "Not enough available rooms for the selected dates"
@@ -224,7 +224,7 @@ def test_hotel_inventory_is_restored_after_cancellation(client, db_session):
             "check_out_date": "2026-01-12",
             "quantity": 2,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "hotel-booking-008"},
     )
     assert booking_resp.status_code == 201
     booking_id = booking_resp.json()["id"]

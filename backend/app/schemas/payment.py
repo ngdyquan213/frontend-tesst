@@ -46,6 +46,7 @@ class PaymentStatusResponse(BaseModel):
 
 
 class PaymentCallbackRequest(BaseModel):
+    timestamp: int
     gateway_name: str
     gateway_order_ref: str
     gateway_transaction_ref: str

@@ -40,6 +40,7 @@ class PaymentCallbackService(ApplicationService):
         audit_service: AuditService,
         email_worker: EmailWorker,
         domain_service: PaymentCallbackDomainService,
+        inventory_service,
         outbox_service: OutboxService | None = None,
         gateway_service: PaymentGatewayService | None = None,
     ) -> None:
@@ -49,11 +50,16 @@ class PaymentCallbackService(ApplicationService):
         self.audit_service = audit_service
         self.email_worker = email_worker
         self.domain_service = domain_service
+        self.inventory_service = inventory_service
         self.outbox_service = outbox_service or OutboxService(
             db=db,
             email_worker=email_worker,
         )
         self.gateway_service = gateway_service or PaymentGatewayService()
+
+    @staticmethod
+    def _current_unix_timestamp() -> int:
+        return int(datetime.now(timezone.utc).timestamp())
 
     def _reject_callback(
         self,
@@ -91,6 +97,8 @@ class PaymentCallbackService(ApplicationService):
     def process_callback(
         self,
         *,
+        callback_timestamp: int | None = None,
+        timestamp: int | None = None,
         gateway_name: str,
         gateway_order_ref: str,
         gateway_transaction_ref: str,
@@ -102,11 +110,13 @@ class PaymentCallbackService(ApplicationService):
         user_agent: str | None = None,
         signature_verified: bool = False,
     ):
+        callback_timestamp = callback_timestamp if callback_timestamp is not None else timestamp
         normalized_ip = normalize_ip(ip_address)
         logger.info(
             "payment_callback_received",
             extra=build_log_extra(
                 "payment_callback_received",
+                callback_timestamp=callback_timestamp,
                 gateway_name=gateway_name,
                 gateway_order_ref=gateway_order_ref,
                 gateway_transaction_ref=gateway_transaction_ref,
@@ -134,29 +144,67 @@ class PaymentCallbackService(ApplicationService):
                 },
             )
 
-        signature_ok = signature_verified or verify_payment_callback_signature(
-            gateway_name=gateway_name,
-            gateway_order_ref=gateway_order_ref,
-            gateway_transaction_ref=gateway_transaction_ref,
-            amount=amount,
-            currency=currency,
-            status=status,
-            signature=signature,
-        )
-        if not signature_ok:
-            self._reject_callback(
-                message="Invalid callback signature",
-                reason="invalid_signature",
-                severity="critical",
-                title="Invalid payment callback signature",
-                description="Payment callback signature verification failed",
-                ip_address=normalized_ip,
-                event_data={
-                    "gateway_name": gateway_name,
-                    "gateway_order_ref": gateway_order_ref,
-                    "gateway_transaction_ref": gateway_transaction_ref,
-                },
+        if not signature_verified:
+            if callback_timestamp is None:
+                self._reject_callback(
+                    message="Missing callback timestamp",
+                    reason="missing_timestamp",
+                    severity="high",
+                    title="Payment callback timestamp is missing",
+                    description="Payment callback request did not include a signed timestamp",
+                    ip_address=normalized_ip,
+                    event_data={
+                        "gateway_name": gateway_name,
+                        "gateway_order_ref": gateway_order_ref,
+                        "gateway_transaction_ref": gateway_transaction_ref,
+                    },
+                )
+
+            if (
+                abs(self._current_unix_timestamp() - callback_timestamp)
+                > settings.PAYMENT_CALLBACK_TOLERANCE_SECONDS
+            ):
+                self._reject_callback(
+                    message="Expired callback timestamp",
+                    reason="expired_timestamp",
+                    severity="high",
+                    title="Expired payment callback timestamp",
+                    description="Payment callback timestamp fell outside the accepted window",
+                    ip_address=normalized_ip,
+                    event_data={
+                        "gateway_name": gateway_name,
+                        "gateway_order_ref": gateway_order_ref,
+                        "gateway_transaction_ref": gateway_transaction_ref,
+                        "callback_timestamp": callback_timestamp,
+                        "accepted_tolerance_seconds": settings.PAYMENT_CALLBACK_TOLERANCE_SECONDS,
+                    },
+                )
+
+            signature_ok = verify_payment_callback_signature(
+                timestamp=callback_timestamp,
+                gateway_name=gateway_name,
+                gateway_order_ref=gateway_order_ref,
+                gateway_transaction_ref=gateway_transaction_ref,
+                amount=amount,
+                currency=currency,
+                status=status,
+                signature=signature,
             )
+            if not signature_ok:
+                self._reject_callback(
+                    message="Invalid callback signature",
+                    reason="invalid_signature",
+                    severity="critical",
+                    title="Invalid payment callback signature",
+                    description="Payment callback signature verification failed",
+                    ip_address=normalized_ip,
+                    event_data={
+                        "gateway_name": gateway_name,
+                        "gateway_order_ref": gateway_order_ref,
+                        "gateway_transaction_ref": gateway_transaction_ref,
+                        "callback_timestamp": callback_timestamp,
+                    },
+                )
 
         existing_callback = self.payment_repo.get_callback_by_gateway_txn_ref(
             gateway_name=gateway_name,
@@ -232,11 +280,17 @@ class PaymentCallbackService(ApplicationService):
         try:
             with self.db.begin_nested():
                 received_at = datetime.now(timezone.utc)
+                should_release_inventory = (
+                    normalized_status in {PaymentStatus.failed.value, PaymentStatus.cancelled.value}
+                    and payment.status == PaymentStatus.pending
+                    and booking.status.value == "pending"
+                )
                 callback = PaymentCallback(
                     payment_id=payment.id,
                     gateway_name=gateway_name,
                     gateway_transaction_ref=gateway_transaction_ref,
                     callback_payload={
+                        "timestamp": callback_timestamp,
                         "gateway_name": gateway_name,
                         "gateway_order_ref": gateway_order_ref,
                         "gateway_transaction_ref": gateway_transaction_ref,
@@ -259,6 +313,9 @@ class PaymentCallbackService(ApplicationService):
                     processed_at=received_at,
                 )
 
+                if should_release_inventory:
+                    self.inventory_service.restore_inventory(booking)
+
                 self.payment_repo.save(payment)
                 self.booking_repo.save(booking)
 
@@ -273,6 +330,7 @@ class PaymentCallbackService(ApplicationService):
                         "gateway_name": gateway_name,
                         "gateway_order_ref": gateway_order_ref,
                         "gateway_transaction_ref": gateway_transaction_ref,
+                        "callback_timestamp": callback_timestamp,
                         "status": normalized_status,
                     },
                 )
@@ -297,6 +355,7 @@ class PaymentCallbackService(ApplicationService):
                     gateway_name=gateway_name,
                     gateway_order_ref=gateway_order_ref,
                     gateway_transaction_ref=gateway_transaction_ref,
+                    callback_timestamp=callback_timestamp,
                     normalized_status=normalized_status,
                     source_ip=normalized_ip,
                 ),

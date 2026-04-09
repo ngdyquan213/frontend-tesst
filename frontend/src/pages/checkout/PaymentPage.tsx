@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/app/providers/AuthProvider'
 import { buildPaymentResultPath } from '@/app/router/routePaths'
-import { paymentsApi } from '@/features/payments/api/payments.api'
+import { useAvailablePaymentMethodsQuery } from '@/features/payments/queries/useAvailablePaymentMethodsQuery'
 import { useCreatePaymentIntentMutation } from '@/features/payments/queries/useCreatePaymentIntentMutation'
+import { PaymentMethodSelector } from '@/features/payments/ui/PaymentMethodSelector'
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
 import { PaymentSummarySection } from '@/widgets/checkout/PaymentSummarySection'
@@ -24,10 +24,7 @@ const PaymentPage = () => {
   const { isAuthenticated } = useAuth()
   const checkout = useCheckoutContext()
   const createPaymentIntentMutation = useCreatePaymentIntentMutation()
-  const paymentMethodsQuery = useQuery({
-    queryKey: ['payment-methods'],
-    queryFn: paymentsApi.getAvailablePaymentMethods,
-  })
+  const paymentMethodsQuery = useAvailablePaymentMethodsQuery()
   const [selectedMethodId, setSelectedMethodId] = useState<string>('')
 
   useEffect(() => {
@@ -67,6 +64,15 @@ const PaymentPage = () => {
           </Alert>
         ) : null}
 
+        {!paymentMethodsQuery.isLoading &&
+        !paymentMethodsQuery.isError &&
+        (paymentMethodsQuery.data?.length ?? 0) === 0 ? (
+          <Alert tone="info">
+            Payment methods are temporarily unavailable for self-service checkout. Please contact support
+            or try again later.
+          </Alert>
+        ) : null}
+
         {createPaymentIntentMutation.isError ? (
           <Alert tone="danger">
             {createPaymentIntentMutation.error.message || 'We could not create the payment request right now.'}
@@ -78,27 +84,11 @@ const PaymentPage = () => {
           {paymentMethodsQuery.isLoading ? (
             <Alert tone="info">Loading payment methods...</Alert>
           ) : (
-            <div className="space-y-3">
-              {(paymentMethodsQuery.data ?? []).map((method) => (
-                <label
-                  key={method.id}
-                  className="flex cursor-pointer items-start gap-3 rounded-2xl border border-outline-variant bg-white p-4"
-                >
-                  <input
-                    type="radio"
-                    name="payment-method"
-                    value={method.id}
-                    checked={selectedMethodId === method.id}
-                    onChange={() => setSelectedMethodId(method.id)}
-                    className="mt-1"
-                  />
-                  <div>
-                    <div className="font-semibold text-primary">{method.title}</div>
-                    <div className="mt-1 text-sm text-on-surface-variant">{method.description}</div>
-                  </div>
-                </label>
-              ))}
-            </div>
+            <PaymentMethodSelector
+              methods={paymentMethodsQuery.data ?? []}
+              selectedId={selectedMethodId}
+              onChange={setSelectedMethodId}
+            />
           )}
         </section>
 

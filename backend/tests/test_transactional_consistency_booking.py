@@ -74,7 +74,7 @@ def test_booking_create_rolls_back_if_booking_insert_fails(client, db_session, m
     resp = client.post(
         "/api/v1/bookings",
         json={"flight_id": str(flight.id), "quantity": 1},
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "tx-booking-001"},
     )
 
     assert resp.status_code == 500

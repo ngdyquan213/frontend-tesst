@@ -55,6 +55,9 @@ class UserRepository:
     def get_refresh_token_by_hash(self, token_hash: str) -> RefreshToken | None:
         return self.db.query(RefreshToken).filter(RefreshToken.token_hash == token_hash).first()
 
+    def get_refresh_token_by_id(self, refresh_token_id: str) -> RefreshToken | None:
+        return self.db.query(RefreshToken).filter(RefreshToken.id == refresh_token_id).first()
+
     def get_refresh_token_by_hash_for_update(self, token_hash: str) -> RefreshToken | None:
         return (
             self.db.query(RefreshToken)
@@ -117,6 +120,17 @@ class UserRepository:
         return (
             self.db.query(PasswordResetToken)
             .filter(PasswordResetToken.token_hash == token_hash)
+            .first()
+        )
+
+    def get_password_reset_token_by_hash_for_update(
+        self,
+        token_hash: str,
+    ) -> PasswordResetToken | None:
+        return (
+            self.db.query(PasswordResetToken)
+            .filter(PasswordResetToken.token_hash == token_hash)
+            .with_for_update()
             .first()
         )
 

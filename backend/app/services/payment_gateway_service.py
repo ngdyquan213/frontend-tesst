@@ -48,6 +48,27 @@ class PaymentGatewayInitiationResult:
 
 
 class PaymentGatewayService:
+    @staticmethod
+    def get_available_payment_methods() -> list[PaymentMethod]:
+        methods = [PaymentMethod.manual]
+
+        if (
+            settings.ENVIRONMENT not in {"staging", "production"}
+            or settings.ALLOW_PAYMENT_SIMULATION
+        ):
+            methods.extend([PaymentMethod.vnpay, PaymentMethod.momo])
+
+        if settings.STRIPE_SECRET_KEY.strip():
+            methods.append(PaymentMethod.stripe)
+
+        return methods
+
+    def assert_payment_method_is_available(self, *, payment_method: PaymentMethod) -> None:
+        if payment_method in self.get_available_payment_methods():
+            return
+
+        raise ValidationAppException("Payment method is not available in this environment")
+
     def assert_gateway_is_configured(self, *, payment_method: PaymentMethod) -> None:
         if payment_method != PaymentMethod.stripe:
             return

@@ -109,7 +109,7 @@ def create_tour_booking(client, token: str, schedule_id: str):
             "child_count": 1,
             "infant_count": 0,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "traveler-booking-001"},
     )
     assert resp.status_code == 201
     return resp.json()

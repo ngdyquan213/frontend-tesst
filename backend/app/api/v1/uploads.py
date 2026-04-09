@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import build_upload_service, get_current_user
+from app.api.deps import build_upload_service, get_current_user, get_pagination_params
 from app.core.database import get_db
 from app.models.enums import DocumentType
+from app.schemas.common import PaginatedResponse
 from app.schemas.document import DocumentResponse
+from app.utils.pagination import PaginationParams, build_paginated_response
 from app.utils.request_context import get_client_ip, get_user_agent
 from app.utils.response_mappers import document_to_dict
 
@@ -36,14 +38,24 @@ def upload_document(
     return DocumentResponse(**document_to_dict(document))
 
 
-@router.get("/documents", response_model=list[DocumentResponse])
+@router.get("/documents", response_model=PaginatedResponse[DocumentResponse])
 def list_my_documents(
+    pagination: PaginationParams = Depends(get_pagination_params),
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     service = build_upload_service(db)
-    documents = service.list_my_documents(str(current_user.id))
-    return [DocumentResponse(**document_to_dict(doc)) for doc in documents]
+    documents, total = service.list_my_documents(
+        str(current_user.id),
+        skip=pagination.offset,
+        limit=pagination.limit,
+    )
+    return build_paginated_response(
+        items=[document_to_dict(doc) for doc in documents],
+        page=pagination.page,
+        page_size=pagination.page_size,
+        total=total,
+    )
 
 
 @router.get("/documents/{document_id}/download")

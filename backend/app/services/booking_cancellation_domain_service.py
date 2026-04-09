@@ -34,6 +34,7 @@ class BookingCancellationDomainService:
         booking.status = BookingStatus.cancelled
         booking.cancelled_at = cancelled_at
         booking.cancellation_reason = reason
+        booking.expires_at = None
 
         if not payment:
             return BookingCancellationResult(

@@ -98,7 +98,7 @@ def test_create_tour_booking_success(client, db_session):
             "child_count": 1,
             "infant_count": 1,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "tour-booking-001"},
     )
 
     assert resp.status_code == 201
@@ -128,7 +128,7 @@ def test_tour_booking_not_enough_slots(client, db_session):
             "child_count": 2,
             "infant_count": 2,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "tour-booking-002"},
     )
 
     assert resp.status_code == 400
@@ -152,7 +152,7 @@ def test_tour_booking_requires_at_least_one_traveler(client, db_session):
             "child_count": 0,
             "infant_count": 0,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "tour-booking-003"},
     )
 
     assert resp.status_code == 422

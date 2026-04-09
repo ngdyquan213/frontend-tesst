@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.booking import Booking, BookingItem, Traveler
@@ -72,6 +74,39 @@ class BookingRepository:
             self._with_relations(self.db.query(Booking))
             .filter(Booking.booking_code == booking_code, Booking.user_id == user_id)
             .first()
+        )
+
+    def list_expired_pending_bookings(
+        self,
+        *,
+        now: datetime,
+        limit: int = 100,
+    ) -> list[Booking]:
+        booking_ids = [
+            booking.id
+            for booking in (
+                self.db.query(Booking)
+                .filter(
+                    Booking.status == "pending",
+                    Booking.payment_status == "pending",
+                    Booking.expires_at.is_not(None),
+                    Booking.expires_at <= now,
+                )
+                .order_by(Booking.expires_at.asc())
+                .limit(limit)
+                .with_for_update()
+                .all()
+            )
+        ]
+        if not booking_ids:
+            return []
+
+        return (
+            self.db.query(Booking)
+            .options(joinedload(Booking.items), joinedload(Booking.user))
+            .filter(Booking.id.in_(booking_ids))
+            .order_by(Booking.expires_at.asc())
+            .all()
         )
 
     def get_by_id_and_user_id_for_update(self, booking_id: str, user_id: str) -> Booking | None:

@@ -37,11 +37,17 @@ class BookingInventoryService:
                         check_out_date=item.check_out_date,
                     )
                     for inventory in inventory_rows:
-                        inventory.available_rooms += item.quantity
+                        inventory.available_rooms = min(
+                            inventory.available_rooms + item.quantity,
+                            room.total_rooms,
+                        )
                         self.hotel_repo.save_room_inventory(inventory)
 
             elif item_type == BookingItemType.tour.value and item.tour_schedule_id:
                 schedule = self.tour_repo.get_schedule_by_id_for_update(str(item.tour_schedule_id))
                 if schedule:
-                    schedule.available_slots += item.quantity
+                    schedule.available_slots = min(
+                        schedule.available_slots + item.quantity,
+                        schedule.capacity,
+                    )
                     self.tour_repo.save_schedule(schedule)

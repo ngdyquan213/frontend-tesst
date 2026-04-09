@@ -22,6 +22,7 @@ from app.schemas.payment import (
     PaymentStatusResponse,
     TourCheckoutRequest,
 )
+from app.services.payment_gateway_service import PaymentGatewayService
 from app.utils.enums import enum_to_str
 from app.utils.request_context import get_client_ip, get_user_agent
 from app.utils.response_mappers import booking_to_dict, payment_to_dict
@@ -30,38 +31,34 @@ router = APIRouter(prefix="/payments", tags=["payments"])
 
 
 def _build_available_payment_methods() -> list[PaymentMethodOptionResponse]:
-    methods = [
-        PaymentMethodOptionResponse(
+    method_options = {
+        PaymentMethod.manual: PaymentMethodOptionResponse(
             id=PaymentMethod.manual.value,
             type="bank",
             title="Manual Settlement",
             description="Create the booking now and settle payment with the operations team.",
         ),
-        PaymentMethodOptionResponse(
+        PaymentMethod.vnpay: PaymentMethodOptionResponse(
             id=PaymentMethod.vnpay.value,
             type="wallet",
             title="VNPay",
             description="Redirect checkout through the VNPay gateway.",
         ),
-        PaymentMethodOptionResponse(
+        PaymentMethod.momo: PaymentMethodOptionResponse(
             id=PaymentMethod.momo.value,
             type="wallet",
             title="MoMo",
             description="Use your MoMo wallet for supported payments.",
         ),
-    ]
-
-    if settings.STRIPE_SECRET_KEY.strip():
-        methods.append(
-            PaymentMethodOptionResponse(
-                id=PaymentMethod.stripe.value,
-                type="card",
-                title="Card via Stripe",
-                description="Visa, Mastercard, and other supported cards through Stripe.",
-            )
-        )
-
-    return methods
+        PaymentMethod.stripe: PaymentMethodOptionResponse(
+            id=PaymentMethod.stripe.value,
+            type="card",
+            title="Card via Stripe",
+            description="Visa, Mastercard, and other supported cards through Stripe.",
+        ),
+    }
+    available_methods = PaymentGatewayService().get_available_payment_methods()
+    return [method_options[method] for method in available_methods]
 
 
 @router.get("/methods", response_model=list[PaymentMethodOptionResponse])
@@ -132,6 +129,7 @@ def payment_callback(
 
     try:
         payment, _booking = service.process_callback(
+            callback_timestamp=payload.timestamp,
             gateway_name=payload.gateway_name,
             gateway_order_ref=payload.gateway_order_ref,
             gateway_transaction_ref=payload.gateway_transaction_ref,

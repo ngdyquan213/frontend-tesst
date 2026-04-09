@@ -195,6 +195,7 @@ def test_payment_callback_rolls_back_if_payment_save_fails(db_engine, monkeypatc
     )
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": "PAY-TX-ROLLBACK-001",
         "gateway_transaction_ref": "TXN-TX-ROLLBACK-001",
@@ -324,6 +325,7 @@ def test_payment_callback_persists_across_sessions(db_engine):
     )
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": "PAY-PERSIST-001",
         "gateway_transaction_ref": "TXN-PERSIST-001",
@@ -436,6 +438,7 @@ def test_payment_callback_uses_locked_booking_and_payment_lookup(db_engine, monk
     )
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": "PAY-LOCK-LOOKUP-001",
         "gateway_transaction_ref": "TXN-LOCK-LOOKUP-001",

@@ -174,7 +174,7 @@ export function TourDetailPage() {
 
             {tour.itinerary.length === 0 ? (
               <Card className="mt-8 p-8 text-sm leading-7 text-[color:var(--color-on-surface-variant)]">
-                Detailed itinerary blocks will appear here once operations publishes the day-by-day flow.
+                Detailed day-by-day itinerary notes are confirmed for each departure before final travel documents are issued.
               </Card>
             ) : (
               <div className="mt-8 space-y-6">

@@ -84,7 +84,7 @@ def create_booking_and_traveler(client, token: str, schedule_id: str):
             "child_count": 1,
             "infant_count": 0,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "traveler-doc-booking-001"},
     )
     assert booking_resp.status_code == 201
     booking = booking_resp.json()

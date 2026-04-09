@@ -13,8 +13,8 @@ const PaymentFailedPage = () => {
       <div className="mb-4 text-5xl text-danger">!</div>
       <h1 className="text-3xl font-extrabold text-primary">Payment failed</h1>
       <p className="mt-3 text-on-surface-variant">
-        No worries, your selected {checkout.scheduleLabel.toLowerCase()} departure is still reserved for a
-        short time.
+        Your {checkout.scheduleLabel.toLowerCase()} checkout was not confirmed. Review the departure
+        details and start a fresh payment attempt when you are ready.
       </p>
       <div className="mt-6">
         <PaymentStatusPanel status="failed" />

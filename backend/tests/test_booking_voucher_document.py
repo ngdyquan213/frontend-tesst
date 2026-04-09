@@ -86,7 +86,7 @@ def test_generate_booking_voucher_document(client, db_session):
             "child_count": 1,
             "infant_count": 0,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "voucher-doc-booking-001"},
     )
     assert booking_resp.status_code == 201
     booking = booking_resp.json()
@@ -109,5 +109,5 @@ def test_generate_booking_voucher_document(client, db_session):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert docs_resp.status_code == 200
-    docs = docs_resp.json()
+    docs = docs_resp.json()["items"]
     assert any(doc["document_type"] == "voucher" for doc in docs)

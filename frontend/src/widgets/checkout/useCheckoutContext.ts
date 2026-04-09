@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { env } from '@/app/config/env'
 import {
   buildCheckoutPath,
   buildPaymentPath,
@@ -8,7 +7,8 @@ import {
 } from '@/app/router/routePaths'
 import { useAuthStore } from '@/features/auth/model/auth.store'
 import { formatDateLabel, useTourDetailQuery } from '@/features/tours/queries/useTourDetailQuery'
-import { users as mockUsers } from '@/shared/api/mockData'
+import { MOCK_DEFAULT_TRAVELER_NAME } from '@/shared/api/mockAuth'
+import { isMockApiEnabled } from '@/shared/api/mockMode'
 
 function formatScheduleRange(departureDate?: string, returnDate?: string) {
   if (!departureDate || !returnDate) {
@@ -60,7 +60,7 @@ export function useCheckoutContext() {
   const leadTravelerName =
     authUser?.name?.trim() ||
     authUser?.full_name?.trim() ||
-    ((env.enableMocks || isLegacyMockTour) ? mockUsers.traveler.name : undefined)
+    ((isMockApiEnabled() || isLegacyMockTour) ? MOCK_DEFAULT_TRAVELER_NAME : undefined)
 
   return {
     detailQuery,

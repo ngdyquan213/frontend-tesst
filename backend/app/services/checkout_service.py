@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from app.core.exceptions import ConflictAppException, NotFoundAppException, ValidationAppException
+from app.core.config import settings
 from app.models.booking import Booking, BookingItem
 from app.models.enums import (
     BookingItemType,
@@ -57,6 +58,10 @@ class CheckoutService(ApplicationService):
         return f"TC-{digest[:12].upper()}"
 
     @staticmethod
+    def _build_hold_expiry(booked_at: datetime) -> datetime:
+        return booked_at + timedelta(minutes=settings.BOOKING_HOLD_EXPIRE_MINUTES)
+
+    @staticmethod
     def _assert_idempotent_request_matches_existing_payment(
         *,
         existing: Payment,
@@ -102,6 +107,9 @@ class CheckoutService(ApplicationService):
                 "Idempotency key was already used with different traveler counts"
             )
 
+        if booking.status != BookingStatus.pending or booking.payment_status != PaymentStatus.pending:
+            raise ConflictAppException("Idempotency key was already used for a closed booking")
+
     def _create_payment(
         self,
         *,
@@ -115,6 +123,7 @@ class CheckoutService(ApplicationService):
         if amount <= Decimal("0.00"):
             raise ValidationAppException("Invalid payment amount")
 
+        self.gateway_service.assert_payment_method_is_available(payment_method=payment_method)
         self.gateway_service.assert_gateway_is_configured(payment_method=payment_method)
 
         gateway_order_ref = f"PAY-{booking.booking_code}-{idempotency_key}"
@@ -135,11 +144,6 @@ class CheckoutService(ApplicationService):
         )
         self.payment_repo.add_payment(payment)
 
-        gateway_result = self.gateway_service.create_payment_session(payment=payment)
-        if gateway_result is not None:
-            payment.gateway_transaction_ref = gateway_result.external_reference
-            payment.gateway_payload = gateway_result.gateway_payload
-
         self.audit_service.log_action(
             actor_type=LogActorType.user,
             actor_user_id=booking.user_id,
@@ -158,6 +162,24 @@ class CheckoutService(ApplicationService):
             },
         )
 
+        return payment
+
+    def _ensure_gateway_session(self, *, payment: Payment) -> Payment:
+        if payment.gateway_transaction_ref:
+            gateway_payload = self.gateway_service.build_existing_gateway_payload(payment=payment)
+            if gateway_payload is not None:
+                payment.gateway_payload = gateway_payload
+            return payment
+
+        gateway_result = self.gateway_service.create_payment_session(payment=payment)
+        if gateway_result is None:
+            return payment
+
+        payment.gateway_transaction_ref = gateway_result.external_reference
+        self.payment_repo.save(payment)
+        self.commit()
+        self.db.refresh(payment)
+        payment.gateway_payload = gateway_result.gateway_payload
         return payment
 
     def create_tour_checkout(
@@ -197,12 +219,7 @@ class CheckoutService(ApplicationService):
                     amount=amount,
                     currency=existing_booking.currency,
                 )
-                gateway_payload = self.gateway_service.build_existing_gateway_payload(
-                    payment=existing_payment
-                )
-                if gateway_payload is not None:
-                    existing_payment.gateway_payload = gateway_payload
-                return existing_booking, existing_payment
+                return existing_booking, self._ensure_gateway_session(payment=existing_payment)
 
             payment = self._create_payment(
                 booking=existing_booking,
@@ -212,7 +229,9 @@ class CheckoutService(ApplicationService):
                 user_agent=user_agent,
             )
             self.commit_and_refresh(existing_booking, payment)
-            return existing_booking, payment
+            return existing_booking, self._ensure_gateway_session(payment=payment)
+
+        booked_at = datetime.now(timezone.utc)
 
         with self.db.begin_nested():
             schedule = self.tour_repo.get_schedule_by_id_for_update(payload.tour_schedule_id)
@@ -249,7 +268,8 @@ class CheckoutService(ApplicationService):
                 total_final_amount=total_price,
                 currency="VND",
                 payment_status=PaymentStatus.pending,
-                booked_at=datetime.now(timezone.utc),
+                booked_at=booked_at,
+                expires_at=self._build_hold_expiry(booked_at),
             )
             self.booking_repo.add_booking(booking)
 
@@ -325,4 +345,4 @@ class CheckoutService(ApplicationService):
             )
 
         self.commit_and_refresh(booking, payment)
-        return booking, payment
+        return booking, self._ensure_gateway_session(payment=payment)

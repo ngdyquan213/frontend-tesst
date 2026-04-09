@@ -4,8 +4,15 @@ from decimal import Decimal
 
 from app.core.security import get_password_hash
 from app.models.booking import Booking, BookingItem
-from app.models.enums import BookingItemType, BookingStatus, PaymentStatus, UserStatus
+from app.models.enums import (
+    BookingItemType,
+    BookingStatus,
+    PaymentMethod,
+    PaymentStatus,
+    UserStatus,
+)
 from app.models.flight import Airline, Airport, Flight
+from app.models.payment import Payment
 from app.models.user import User
 from app.services.payment_gateway_service import PaymentGatewayService
 
@@ -116,6 +123,66 @@ def test_initiate_payment_with_stripe_returns_gateway_payload(client, db_session
     assert body["gateway_payload"]["payment_intent_id"] == "pi_test_123"
     assert body["gateway_payload"]["client_secret"] == "pi_test_123_secret_456"
     assert body["gateway_transaction_ref"] == "pi_test_123"
+
+
+def test_reuses_incomplete_stripe_payment_and_finishes_gateway_session(
+    client, db_session, monkeypatch
+):
+    from app.core import config as config_module
+
+    monkeypatch.setattr(config_module.settings, "STRIPE_SECRET_KEY", "sk_test_demo")
+    monkeypatch.setattr(config_module.settings, "STRIPE_WEBHOOK_SECRET", "whsec_demo")
+    monkeypatch.setattr(config_module.settings, "STRIPE_PUBLISHABLE_KEY", "pk_test_demo")
+
+    def fake_stripe_request(self, *, method, path, data=None, idempotency_key=None):
+        assert method == "POST"
+        assert path == "/payment_intents"
+        assert idempotency_key == "stripe-idem-recover-001"
+        return {
+            "id": "pi_test_recovered",
+            "client_secret": "pi_test_recovered_secret",
+            "status": "requires_payment_method",
+        }
+
+    monkeypatch.setattr(PaymentGatewayService, "_stripe_request", fake_stripe_request)
+
+    user, token = create_user_and_login(
+        client,
+        db_session,
+        "stripe-recover@example.com",
+        "stripe_recover",
+    )
+    booking = seed_booking(db_session, str(user.id), "BK-STRIPE-RECOVER")
+
+    payment = Payment(
+        booking_id=booking.id,
+        initiated_by=user.id,
+        payment_method=PaymentMethod.stripe,
+        status=PaymentStatus.pending,
+        amount=Decimal("1500000.00"),
+        currency="VND",
+        gateway_order_ref="PAY-BK-STRIPE-RECOVER-stripe-idem-recover-001",
+        gateway_transaction_ref=None,
+        idempotency_key="stripe-idem-recover-001",
+        paid_at=None,
+    )
+    db_session.add(payment)
+    db_session.commit()
+
+    resp = client.post(
+        "/api/v1/payments/initiate",
+        json={"booking_id": str(booking.id), "payment_method": "stripe"},
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Idempotency-Key": "stripe-idem-recover-001",
+        },
+    )
+
+    assert resp.status_code == 201
+    body = resp.json()
+    assert body["id"] == str(payment.id)
+    assert body["gateway_transaction_ref"] == "pi_test_recovered"
+    assert body["gateway_payload"]["payment_intent_id"] == "pi_test_recovered"
 
 
 def test_parse_stripe_webhook_valid_signature(monkeypatch):

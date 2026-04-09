@@ -1,6 +1,5 @@
-import { env } from '@/app/config/env'
-import { apiClient, resolveAfter } from '@/shared/api/apiClient'
-import { notifications } from '@/shared/api/mockData'
+import { apiClient } from '@/shared/api/apiClient'
+import { resolveMockable } from '@/shared/api/mockApi'
 import type { NotificationItemResponse } from '@/shared/types/api'
 
 function sortNewestFirst<T extends { createdAt: string }>(items: T[]) {
@@ -19,32 +18,36 @@ function mapApiNotification(notification: NotificationItemResponse) {
 }
 
 export const notificationsApi = {
-  getNotifications: async () => {
-    if (env.enableMocks) {
-      return resolveAfter(notifications)
-    }
-
-    const response = await apiClient.getNotifications()
-    return sortNewestFirst(response.items.map(mapApiNotification))
-  },
-  markNotificationRead: async (id: string) => {
-    if (env.enableMocks) {
-      const notification = notifications.find((item) => item.id === id)
-      if (notification) notification.read = true
-      return resolveAfter(notification)
-    }
-
-    return mapApiNotification(await apiClient.markNotificationRead(id))
-  },
-  markAllNotificationsRead: async () => {
-    if (env.enableMocks) {
-      notifications.forEach((notification) => {
-        notification.read = true
-      })
-      return resolveAfter(notifications)
-    }
-
-    const response = await apiClient.markAllNotificationsRead()
-    return sortNewestFirst(response.items.map(mapApiNotification))
-  },
+  getNotifications: async () =>
+    resolveMockable({
+      mock: ({ notifications }) => notifications,
+      live: async () => {
+        const response = await apiClient.getNotifications()
+        return sortNewestFirst(response.items.map(mapApiNotification))
+      },
+    }),
+  markNotificationRead: async (id: string) =>
+    resolveMockable({
+      mock: ({ notifications }) => {
+        const notification = notifications.find((item) => item.id === id)
+        if (notification) {
+          notification.read = true
+        }
+        return notification
+      },
+      live: async () => mapApiNotification(await apiClient.markNotificationRead(id)),
+    }),
+  markAllNotificationsRead: async () =>
+    resolveMockable({
+      mock: ({ notifications }) => {
+        notifications.forEach((notification) => {
+          notification.read = true
+        })
+        return notifications
+      },
+      live: async () => {
+        const response = await apiClient.markAllNotificationsRead()
+        return sortNewestFirst(response.items.map(mapApiNotification))
+      },
+    }),
 }

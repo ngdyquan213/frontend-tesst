@@ -319,6 +319,7 @@ class ServiceRegistry:
             audit_service=self.audit_service,
             email_worker=self.email_worker,
             domain_service=self.payment_callback_domain_service,
+            inventory_service=self.booking_inventory_service,
         )
 
     def build_voucher_service(self) -> VoucherService:

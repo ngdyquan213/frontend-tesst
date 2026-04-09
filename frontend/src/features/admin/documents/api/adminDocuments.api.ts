@@ -1,6 +1,5 @@
-import { env } from '@/app/config/env'
-import { apiClient, resolveAfter } from '@/shared/api/apiClient'
-import { documents } from '@/shared/api/mockData'
+import { apiClient } from '@/shared/api/apiClient'
+import { resolveMockable } from '@/shared/api/mockApi'
 
 function mapAdminDocument(document: Awaited<ReturnType<typeof apiClient.getAdminDocuments>>[number]) {
   const normalizedStatus = document.status?.toLowerCase()
@@ -22,34 +21,36 @@ function mapAdminDocument(document: Awaited<ReturnType<typeof apiClient.getAdmin
 }
 
 export const adminDocumentsApi = {
-  getDocuments: async () => {
-    if (env.enableMocks) {
-      return resolveAfter(documents.map((document) => ({ ...document })))
-    }
-
-    const response = await apiClient.getAdminDocuments()
-    return response.map(mapAdminDocument)
-  },
+  getDocuments: async () =>
+    resolveMockable({
+      mock: ({ documents }) => documents.map((document) => ({ ...document })),
+      live: async () => {
+        const response = await apiClient.getAdminDocuments()
+        return response.map(mapAdminDocument)
+      },
+    }),
   reviewDocument: async ({
     documentId,
     status,
   }: {
     documentId: string
     status: 'approved' | 'rejected'
-  }) => {
-    if (env.enableMocks) {
-      const nextStatus = status === 'approved' ? 'verified' : 'rejected'
-      const document = documents.find((item) => item.id === documentId)
+  }) =>
+    resolveMockable({
+      mock: ({ documents }) => {
+        const nextStatus = status === 'approved' ? 'verified' : 'rejected'
+        const document = documents.find((item) => item.id === documentId)
 
-      if (!document) {
-        throw new Error(`Document ${documentId} was not found in the moderation queue.`)
-      }
+        if (!document) {
+          throw new Error(`Document ${documentId} was not found in the moderation queue.`)
+        }
 
-      document.status = nextStatus
-      return resolveAfter({ ...document })
-    }
-
-    const document = await apiClient.reviewAdminDocument(documentId, status)
-    return mapAdminDocument(document)
-  },
+        document.status = nextStatus
+        return { ...document }
+      },
+      live: async () => {
+        const document = await apiClient.reviewAdminDocument(documentId, status)
+        return mapAdminDocument(document)
+      },
+    }),
 }

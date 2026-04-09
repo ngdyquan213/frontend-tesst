@@ -33,8 +33,8 @@ Frontend gates:
 
 - [x] `npm run build`
 - [x] `npm run lint`
-- [x] `npm test`
-- [x] `npm run test:e2e`
+- [x] `npm test` runs the live-contract Vitest gate by default
+- [x] `npm run test:e2e` runs the live-contract Playwright gate by default
 - [x] Add live Playwright coverage for auth, documents, and admin tours
 
 Backend gates:
@@ -83,6 +83,10 @@ npm run build
 npm run lint
 npm test
 npm run test:e2e
+
+# optional local-only mock verification
+npm run test:mock
+npm run test:e2e:mock
 
 # backend
 cd ../backend

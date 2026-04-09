@@ -9,7 +9,7 @@ export const TravelerList = () => {
     return (
       <EmptyState
         title="No travelers added yet"
-        description="Traveler records will show up here when they are attached to live bookings."
+        description="Traveler records will appear here once you have an active booking with passenger details attached."
       />
     )
   }

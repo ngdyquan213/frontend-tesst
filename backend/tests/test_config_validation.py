@@ -418,6 +418,36 @@ def test_settings_reject_staging_mock_notification_worker():
         )
 
 
+def test_settings_reject_staging_mock_malware_scan_backend_when_enabled():
+    with pytest.raises(
+        ValueError,
+        match=(
+            "UPLOAD_MALWARE_SCAN_BACKEND must not use 'mock' when malware scan is enabled "
+            "in staging/production"
+        ),
+    ):
+        Settings(
+            ENVIRONMENT="staging",
+            DEBUG=False,
+            SECRET_KEY="staging-secret-key-12345678901234567890",
+            PAYMENT_CALLBACK_SECRET="staging-payment-secret-123456",
+            DATABASE_URL="postgresql+psycopg2://db-user:db-pass@postgres:5432/secure_travel_booking",
+            REDIS_URL="redis://redis:6379/0",
+            OUTBOX_LEASE_SECONDS=30,
+            RUNTIME_MAINTENANCE_INTERVAL_SECONDS=60,
+            ALLOW_PAYMENT_SIMULATION=False,
+            EMAIL_WORKER_BACKEND="smtp",
+            SMTP_HOST="smtp.internal",
+            SMTP_FROM_EMAIL="no-reply@example.com",
+            NOTIFICATION_WORKER_BACKEND="redis",
+            PAYMENT_CALLBACK_SOURCE_ALLOWLIST="10.10.0.0/16",
+            OBSERVABILITY_PROTECTION_MODE="allowlist",
+            OBSERVABILITY_ALLOWLIST="10.10.0.0/16",
+            UPLOAD_MALWARE_SCAN_ENABLED=True,
+            UPLOAD_MALWARE_SCAN_BACKEND="mock",
+        )
+
+
 def test_settings_reject_staging_without_payment_callback_allowlist():
     with pytest.raises(
         ValueError,

@@ -4,7 +4,8 @@ from decimal import Decimal
 from app.core.security import get_password_hash
 from app.models.booking import Booking
 from app.models.enums import BookingStatus, PaymentStatus, UserStatus
-from app.models.role import Role, UserRole
+from app.core.constants import PERM_ADMIN_BOOKINGS_READ, PERM_ADMIN_SUPPORT_READ
+from app.models.role import Permission, Role, RolePermission, UserRole
 from app.models.user import User
 
 
@@ -92,6 +93,36 @@ def test_create_support_ticket_and_list_history(client, db_session):
     body = list_response.json()
     assert body["total"] == 1
     assert body["items"][0]["id"] == created_ticket["id"]
+
+
+def test_create_support_ticket_uses_authenticated_account_identity(client, db_session):
+    user, token = create_user_and_login(
+        client,
+        db_session,
+        "support-identity@example.com",
+        "support_identity",
+    )
+    user.full_name = "Verified Traveler"
+    db_session.add(user)
+    db_session.commit()
+
+    response = client.post(
+        "/api/v1/support/tickets",
+        json={
+            "full_name": "Imposter Name",
+            "email": "spoofed@example.com",
+            "topic_id": "payments",
+            "subject": "Need help with payment status",
+            "message": "Please confirm the payment state because the gateway callback looked delayed.",
+            "booking_reference": None,
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 201
+    body = response.json()
+    assert body["requester_name"] == "Verified Traveler"
+    assert body["requester_email"] == "support-identity@example.com"
 
 
 def test_support_ticket_detail_is_scoped_to_owner(client, db_session):
@@ -293,3 +324,62 @@ def test_admin_support_endpoints_work_with_admin_role(client, db_session):
     )
     assert update_response.status_code == 200
     assert update_response.json()["status"] == "resolved"
+
+
+def test_support_admin_endpoints_require_support_permission_when_permissions_exist(client, db_session):
+    traveler, traveler_token = create_user_and_login(
+        client,
+        db_session,
+        "support-perm-traveler@example.com",
+        "support_perm_traveler",
+    )
+    booking = seed_booking_for_user(db_session, str(traveler.id), "BK-SUPPORT-PERM")
+
+    created = client.post(
+        "/api/v1/support/tickets",
+        json={
+            "full_name": "Traveler Permission",
+            "email": "support-perm-traveler@example.com",
+            "topic_id": "bookings",
+            "subject": "Need support permission review",
+            "message": "Please confirm who can view this support request in the admin workspace today.",
+            "booking_reference": booking.booking_code,
+        },
+        headers={"Authorization": f"Bearer {traveler_token}"},
+    )
+    assert created.status_code == 201
+
+    permission = (
+        db_session.query(Permission)
+        .filter(Permission.name == PERM_ADMIN_BOOKINGS_READ)
+        .one_or_none()
+    )
+    if permission is None:
+        permission = Permission(
+            name=PERM_ADMIN_BOOKINGS_READ,
+            description="Can read admin bookings",
+        )
+
+    role = Role(name="support_booking_reader", description="Limited support booking reader")
+    db_session.add(role)
+    if permission.id is None:
+        db_session.add(permission)
+    db_session.flush()
+    db_session.add(RolePermission(role_id=role.id, permission_id=permission.id))
+
+    admin_like_user, admin_like_token = create_user_and_login(
+        client,
+        db_session,
+        "support-perm-admin@example.com",
+        "support_perm_admin",
+    )
+    db_session.add(UserRole(user_id=admin_like_user.id, role_id=role.id))
+    db_session.commit()
+
+    response = client.get(
+        "/api/v1/support/admin/tickets",
+        headers={"Authorization": f"Bearer {admin_like_token}"},
+    )
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == f"Missing permission: {PERM_ADMIN_SUPPORT_READ}"

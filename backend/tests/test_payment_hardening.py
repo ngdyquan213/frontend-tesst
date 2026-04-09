@@ -170,6 +170,7 @@ def test_payment_callback_rejects_invalid_status(client, db_session):
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-INVALID-STATUS-001",
@@ -189,6 +190,7 @@ def test_payment_callback_rejects_invalid_status(client, db_session):
 
 def test_payment_callback_not_found_order_ref(client):
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": "ORDER-NOT-FOUND-001",
         "gateway_transaction_ref": "TXN-NOT-FOUND-001",
@@ -230,6 +232,7 @@ def test_payment_callback_paid_transition_updates_payment_and_booking(client, db
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-PAID-001",
@@ -271,6 +274,7 @@ def test_payment_callback_failed_transition_updates_payment(client, db_session):
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-FAILED-001",
@@ -312,6 +316,7 @@ def test_payment_callback_cancelled_transition_updates_payment(client, db_sessio
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-CANCELLED-001",

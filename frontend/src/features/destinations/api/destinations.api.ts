@@ -1,4 +1,4 @@
-import { getTourCatalogSnapshot } from '@/features/tours/api/tours.api'
+import { getTourCatalogSnapshotAsync } from '@/features/tours/api/tours.api'
 import { normalizeDestinationQueryParams } from '@/features/destinations/model/destination.schema'
 import type {
   Destination,
@@ -176,8 +176,8 @@ function normalizeKey(value: string) {
   return value.trim().toLowerCase()
 }
 
-function buildDestinationCatalog(): Destination[] {
-  const tours = getTourCatalogSnapshot()
+async function buildDestinationCatalog(): Promise<Destination[]> {
+  const tours = await getTourCatalogSnapshotAsync()
 
   return DESTINATION_SEEDS.map((seed) => {
     const relatedTours = tours.filter(
@@ -241,7 +241,7 @@ export async function getDestinations(
   await wait(460, signal)
   const normalizedParams = normalizeDestinationQueryParams(params)
 
-  const filteredDestinations = buildDestinationCatalog().filter((destination) => {
+  const filteredDestinations = (await buildDestinationCatalog()).filter((destination) => {
     if (normalizedParams.region && destination.region !== normalizedParams.region) {
       return false
     }

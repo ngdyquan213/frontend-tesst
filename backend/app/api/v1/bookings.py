@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import (
@@ -30,6 +30,7 @@ def create_booking(
     request: Request,
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ) -> BookingResponse:
     service = build_booking_service(db)
 
@@ -37,6 +38,7 @@ def create_booking(
         booking = service.create_booking(
             user_id=str(current_user.id),
             payload=payload,
+            idempotency_key=idempotency_key,
             ip_address=get_client_ip(request),
             user_agent=get_user_agent(request),
         )
@@ -54,6 +56,7 @@ def create_hotel_booking(
     request: Request,
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ) -> BookingResponse:
     service = build_hotel_booking_service(db)
 
@@ -61,6 +64,7 @@ def create_hotel_booking(
         booking = service.create_hotel_booking(
             user_id=str(current_user.id),
             payload=payload,
+            idempotency_key=idempotency_key,
             ip_address=get_client_ip(request),
             user_agent=get_user_agent(request),
         )
@@ -78,6 +82,7 @@ def create_tour_booking(
     request: Request,
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ) -> BookingResponse:
     service = build_tour_booking_service(db)
 
@@ -87,6 +92,7 @@ def create_tour_booking(
             user_email=current_user.email,
             user_full_name=current_user.full_name,
             payload=payload,
+            idempotency_key=idempotency_key,
             ip_address=get_client_ip(request),
             user_agent=get_user_agent(request),
         )

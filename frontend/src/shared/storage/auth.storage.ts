@@ -1,4 +1,4 @@
-import { env } from '@/app/config/env'
+import { isMockApiEnabled } from '@/shared/api/mockMode'
 
 const AUTH_STORAGE_KEYS = {
   accessToken: 'access_token',
@@ -8,7 +8,7 @@ const AUTH_STORAGE_KEYS = {
 } as const
 
 function isPersistentBrowserStorageEnabled() {
-  return env.enableMocks
+  return isMockApiEnabled()
 }
 
 function getSessionStorage() {

@@ -53,7 +53,7 @@ def seed_flight(db_session):
     return flight
 
 
-def seed_booking(db_session, user_id: str):
+def seed_booking(db_session, user_id: str, *, reserve_inventory: bool = False):
     flight = seed_flight(db_session)
 
     booking = Booking(
@@ -79,14 +79,16 @@ def seed_booking(db_session, user_id: str):
         total_price=Decimal("2000000.00"),
     )
     db_session.add(item)
+    if reserve_inventory:
+        flight.available_seats -= item.quantity
     db_session.commit()
 
-    return booking
+    return booking, flight
 
 
 def test_payment_callback_paid_success(client, db_session):
     user, token = create_user_and_login(client, db_session, "cb1@example.com", "cb1")
-    booking = seed_booking(db_session, str(user.id))
+    booking, _flight = seed_booking(db_session, str(user.id))
 
     init_resp = client.post(
         "/api/v1/payments/initiate",
@@ -96,7 +98,9 @@ def test_payment_callback_paid_success(client, db_session):
     assert init_resp.status_code == 201
     payment = init_resp.json()
 
+    callback_timestamp = int(datetime.now(timezone.utc).timestamp())
     signature = build_payment_callback_signature(
+        timestamp=callback_timestamp,
         gateway_name="vnpay",
         gateway_order_ref=payment["gateway_order_ref"],
         gateway_transaction_ref="TXN-CB-001",
@@ -108,6 +112,7 @@ def test_payment_callback_paid_success(client, db_session):
     callback_resp = client.post(
         "/api/v1/payments/callback",
         json={
+            "timestamp": callback_timestamp,
             "gateway_name": "vnpay",
             "gateway_order_ref": payment["gateway_order_ref"],
             "gateway_transaction_ref": "TXN-CB-001",
@@ -132,7 +137,7 @@ def test_payment_callback_paid_success(client, db_session):
 
 def test_payment_callback_invalid_signature(client, db_session):
     user, token = create_user_and_login(client, db_session, "cb2@example.com", "cb2")
-    booking = seed_booking(db_session, str(user.id))
+    booking, _flight = seed_booking(db_session, str(user.id))
 
     init_resp = client.post(
         "/api/v1/payments/initiate",
@@ -142,9 +147,11 @@ def test_payment_callback_invalid_signature(client, db_session):
     assert init_resp.status_code == 201
     payment = init_resp.json()
 
+    callback_timestamp = int(datetime.now(timezone.utc).timestamp())
     callback_resp = client.post(
         "/api/v1/payments/callback",
         json={
+            "timestamp": callback_timestamp,
             "gateway_name": "vnpay",
             "gateway_order_ref": payment["gateway_order_ref"],
             "gateway_transaction_ref": "TXN-CB-002",
@@ -158,6 +165,55 @@ def test_payment_callback_invalid_signature(client, db_session):
     assert callback_resp.json()["detail"] == "Invalid callback signature"
 
 
+def test_payment_callback_rejects_expired_timestamp(client, db_session, monkeypatch):
+    from app.services.payment_callback_service import PaymentCallbackService
+
+    user, token = create_user_and_login(client, db_session, "cb-expired@example.com", "cb_expired")
+    booking, _flight = seed_booking(db_session, str(user.id))
+
+    init_resp = client.post(
+        "/api/v1/payments/initiate",
+        json={"booking_id": str(booking.id), "payment_method": "vnpay"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "cb-idem-expired"},
+    )
+    assert init_resp.status_code == 201
+    payment = init_resp.json()
+
+    monkeypatch.setattr(
+        PaymentCallbackService,
+        "_current_unix_timestamp",
+        staticmethod(lambda: 1_700_001_500),
+    )
+
+    callback_timestamp = int(datetime.now(timezone.utc).timestamp()) - 1_000
+    signature = build_payment_callback_signature(
+        timestamp=callback_timestamp,
+        gateway_name="vnpay",
+        gateway_order_ref=payment["gateway_order_ref"],
+        gateway_transaction_ref="TXN-CB-EXPIRED-001",
+        amount="2000000.00",
+        currency="VND",
+        status="paid",
+    )
+
+    callback_resp = client.post(
+        "/api/v1/payments/callback",
+        json={
+            "timestamp": callback_timestamp,
+            "gateway_name": "vnpay",
+            "gateway_order_ref": payment["gateway_order_ref"],
+            "gateway_transaction_ref": "TXN-CB-EXPIRED-001",
+            "amount": "2000000.00",
+            "currency": "VND",
+            "status": "paid",
+            "signature": signature,
+        },
+    )
+
+    assert callback_resp.status_code == 400
+    assert callback_resp.json()["detail"] == "Expired callback timestamp"
+
+
 def test_payment_callback_rejects_source_outside_allowlist(client, db_session, monkeypatch):
     from app.core import config as config_module
 
@@ -168,7 +224,7 @@ def test_payment_callback_rejects_source_outside_allowlist(client, db_session, m
     )
 
     user, token = create_user_and_login(client, db_session, "cb3@example.com", "cb3")
-    booking = seed_booking(db_session, str(user.id))
+    booking, _flight = seed_booking(db_session, str(user.id))
 
     init_resp = client.post(
         "/api/v1/payments/initiate",
@@ -178,7 +234,9 @@ def test_payment_callback_rejects_source_outside_allowlist(client, db_session, m
     assert init_resp.status_code == 201
     payment = init_resp.json()
 
+    callback_timestamp = int(datetime.now(timezone.utc).timestamp())
     signature = build_payment_callback_signature(
+        timestamp=callback_timestamp,
         gateway_name="vnpay",
         gateway_order_ref=payment["gateway_order_ref"],
         gateway_transaction_ref="TXN-CB-003",
@@ -190,6 +248,7 @@ def test_payment_callback_rejects_source_outside_allowlist(client, db_session, m
     callback_resp = client.post(
         "/api/v1/payments/callback",
         json={
+            "timestamp": callback_timestamp,
             "gateway_name": "vnpay",
             "gateway_order_ref": payment["gateway_order_ref"],
             "gateway_transaction_ref": "TXN-CB-003",
@@ -202,3 +261,48 @@ def test_payment_callback_rejects_source_outside_allowlist(client, db_session, m
 
     assert callback_resp.status_code == 400
     assert callback_resp.json()["detail"] == "Callback source is not allowed"
+
+
+def test_payment_callback_failed_releases_reserved_inventory(client, db_session):
+    user, token = create_user_and_login(client, db_session, "cb-failed@example.com", "cb_failed")
+    booking, flight = seed_booking(db_session, str(user.id), reserve_inventory=True)
+
+    init_resp = client.post(
+        "/api/v1/payments/initiate",
+        json={"booking_id": str(booking.id), "payment_method": "vnpay"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "cb-idem-failed"},
+    )
+    assert init_resp.status_code == 201
+    payment = init_resp.json()
+
+    callback_timestamp = int(datetime.now(timezone.utc).timestamp())
+    signature = build_payment_callback_signature(
+        timestamp=callback_timestamp,
+        gateway_name="vnpay",
+        gateway_order_ref=payment["gateway_order_ref"],
+        gateway_transaction_ref="TXN-CB-FAILED-001",
+        amount="2000000.00",
+        currency="VND",
+        status="failed",
+    )
+
+    callback_resp = client.post(
+        "/api/v1/payments/callback",
+        json={
+            "timestamp": callback_timestamp,
+            "gateway_name": "vnpay",
+            "gateway_order_ref": payment["gateway_order_ref"],
+            "gateway_transaction_ref": "TXN-CB-FAILED-001",
+            "amount": "2000000.00",
+            "currency": "VND",
+            "status": "failed",
+            "signature": signature,
+        },
+    )
+    assert callback_resp.status_code == 200
+
+    db_session.refresh(flight)
+    db_session.refresh(booking)
+    assert flight.available_seats == 10
+    assert booking.status == BookingStatus.failed
+    assert booking.payment_status == PaymentStatus.failed

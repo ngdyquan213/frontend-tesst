@@ -1,4 +1,6 @@
 import asyncio
+from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 
 import pytest
 
@@ -208,3 +210,101 @@ def test_run_noncritical_maintenance_loop_can_skip_immediate_run():
     asyncio.run(exercise_loop())
 
     assert calls["count"] == 0
+
+
+def test_cleanup_expired_booking_holds_restores_inventory(monkeypatch, db_session):
+    from app.core import runtime_tasks as runtime_module
+    from app.models.booking import Booking, BookingItem
+    from app.models.enums import BookingItemType, BookingStatus, PaymentStatus, UserStatus
+    from app.models.flight import Airline, Airport, Flight
+    from app.models.payment import Payment
+    from app.models.user import User
+    from app.core.security import get_password_hash
+
+    user = User(
+        email="expired-booking@example.com",
+        username="expired_booking",
+        full_name="Expired Booking",
+        password_hash=get_password_hash("Password123"),
+        status=UserStatus.active,
+        email_verified=True,
+        phone_verified=False,
+        failed_login_count=0,
+    )
+    db_session.add(user)
+
+    airline = Airline(code="EX", name="Expired Airline")
+    dep = Airport(code="EXA", name="Expired A", city="A", country="VN")
+    arr = Airport(code="EXB", name="Expired B", city="B", country="VN")
+    db_session.add_all([airline, dep, arr])
+    db_session.flush()
+
+    flight = Flight(
+        airline_id=airline.id,
+        flight_number="EX100",
+        departure_airport_id=dep.id,
+        arrival_airport_id=arr.id,
+        departure_time=datetime.now(timezone.utc) + timedelta(days=1),
+        arrival_time=datetime.now(timezone.utc) + timedelta(days=1, hours=2),
+        base_price=Decimal("1000000.00"),
+        available_seats=4,
+        status="scheduled",
+    )
+    db_session.add(flight)
+    db_session.flush()
+
+    booking = Booking(
+        booking_code="BK-EXPIRED-001",
+        user_id=user.id,
+        status=BookingStatus.pending,
+        total_base_amount=Decimal("1000000.00"),
+        total_discount_amount=Decimal("0.00"),
+        total_final_amount=Decimal("1000000.00"),
+        currency="VND",
+        payment_status=PaymentStatus.pending,
+        booked_at=datetime.now(timezone.utc) - timedelta(minutes=45),
+        expires_at=datetime.now(timezone.utc) - timedelta(minutes=5),
+    )
+    db_session.add(booking)
+    db_session.flush()
+
+    db_session.add(
+        BookingItem(
+            booking_id=booking.id,
+            item_type=BookingItemType.flight,
+            flight_id=flight.id,
+            quantity=1,
+            unit_price=Decimal("1000000.00"),
+            total_price=Decimal("1000000.00"),
+        )
+    )
+    db_session.add(
+        Payment(
+            booking_id=booking.id,
+            initiated_by=user.id,
+            payment_method="manual",
+            status=PaymentStatus.pending,
+            amount=Decimal("1000000.00"),
+            currency="VND",
+            gateway_order_ref="PAY-BK-EXPIRED-001",
+            idempotency_key="expired-booking-idem",
+        )
+    )
+    db_session.commit()
+    flight_id = flight.id
+    booking_id = booking.id
+
+    monkeypatch.setattr(runtime_module, "SessionLocal", lambda: db_session)
+
+    runtime_module.cleanup_expired_booking_holds()
+
+    db_session.expire_all()
+    refreshed_flight = db_session.query(Flight).filter(Flight.id == flight_id).one()
+    refreshed_booking = db_session.query(Booking).filter(Booking.id == booking_id).one()
+    refreshed_payment = db_session.query(Payment).filter(Payment.booking_id == booking_id).one()
+
+    assert refreshed_flight.available_seats == 5
+    assert refreshed_booking.status == BookingStatus.expired
+    assert refreshed_booking.payment_status == PaymentStatus.cancelled
+    assert refreshed_booking.expires_at is None
+    assert refreshed_payment.status == PaymentStatus.cancelled

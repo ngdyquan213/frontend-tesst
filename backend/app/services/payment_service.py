@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import ConflictAppException, NotFoundAppException, ValidationAppException
 from app.core.logging import build_log_extra
-from app.models.enums import LogActorType, PaymentMethod, PaymentStatus, RefundStatus
+from app.models.enums import BookingStatus, LogActorType, PaymentMethod, PaymentStatus, RefundStatus
 from app.models.payment import Payment
 from app.models.refund import Refund
 from app.repositories.booking_repository import BookingRepository
@@ -63,6 +63,202 @@ class PaymentService(ApplicationService):
                 "Idempotency key was already used with different payment parameters"
             )
 
+    def _ensure_gateway_session(self, *, payment: Payment) -> Payment:
+        if payment.gateway_transaction_ref:
+            gateway_payload = self.gateway_service.build_existing_gateway_payload(payment=payment)
+            if gateway_payload is not None:
+                payment.gateway_payload = gateway_payload
+            return payment
+
+        gateway_result = self.gateway_service.create_payment_session(payment=payment)
+        if gateway_result is None:
+            return payment
+
+        payment.gateway_transaction_ref = gateway_result.external_reference
+        self.payment_repo.save(payment)
+        self.commit()
+        self.db.refresh(payment)
+        payment.gateway_payload = gateway_result.gateway_payload
+        return payment
+
+    def _get_payment_initiation_context(
+        self,
+        *,
+        booking_id: str,
+        user_id: str,
+        payment_method: PaymentMethod,
+        idempotency_key: str | None,
+    ):
+        booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)
+        if not booking:
+            raise ValidationAppException("Booking not found")
+
+        if not idempotency_key:
+            raise ValidationAppException("Idempotency key is required")
+
+        now = datetime.now(timezone.utc)
+        if booking.expires_at is not None and booking.expires_at <= now:
+            raise ConflictAppException("Booking payment window has expired")
+
+        if booking.status != BookingStatus.pending:
+            raise ConflictAppException("Booking is no longer open for payment")
+
+        self.gateway_service.assert_payment_method_is_available(payment_method=payment_method)
+        self.gateway_service.assert_gateway_is_configured(payment_method=payment_method)
+
+        amount = Decimal(booking.total_final_amount)
+        if amount <= Decimal("0.00"):
+            raise ValidationAppException("Invalid payment amount")
+
+        return booking, amount
+
+    @staticmethod
+    def _build_gateway_order_ref(*, booking_code: str, idempotency_key: str) -> str:
+        gateway_order_ref = f"PAY-{booking_code}-{idempotency_key}"
+        if len(gateway_order_ref) > PAYMENT_REFERENCE_MAX_LENGTH:
+            raise ValidationAppException("Idempotency key is too long")
+        return gateway_order_ref
+
+    def _build_pending_payment(
+        self,
+        *,
+        booking,
+        payment_method: PaymentMethod,
+        amount: Decimal,
+        gateway_order_ref: str,
+        idempotency_key: str,
+    ) -> Payment:
+        return Payment(
+            booking_id=booking.id,
+            initiated_by=booking.user_id,
+            payment_method=payment_method,
+            status=PaymentStatus.pending,
+            amount=amount,
+            currency=booking.currency,
+            gateway_order_ref=gateway_order_ref,
+            gateway_transaction_ref=None,
+            idempotency_key=idempotency_key,
+            paid_at=None,
+        )
+
+    def _log_payment_initiated(
+        self,
+        *,
+        booking,
+        payment: Payment,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=booking.user_id,
+            action="payment_initiated",
+            resource_type="payment",
+            resource_id=payment.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={
+                "booking_id": str(booking.id),
+                "booking_code": booking.booking_code,
+                "amount": str(payment.amount),
+                "currency": payment.currency,
+                "payment_method": payment.payment_method.value,
+                "gateway_order_ref": payment.gateway_order_ref,
+            },
+        )
+        logger.info(
+            "payment_initiated",
+            extra=build_log_extra(
+                "payment_initiated",
+                booking_id=str(booking.id),
+                booking_code=booking.booking_code,
+                payment_id=str(payment.id),
+                payment_method=payment.payment_method.value,
+                amount=str(payment.amount),
+                currency=payment.currency,
+                gateway_order_ref=payment.gateway_order_ref,
+                idempotency_key=payment.idempotency_key,
+            ),
+        )
+
+    def _persist_pending_payment(
+        self,
+        *,
+        booking,
+        payment_method: PaymentMethod,
+        amount: Decimal,
+        gateway_order_ref: str,
+        idempotency_key: str,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> Payment:
+        payment = self._build_pending_payment(
+            booking=booking,
+            payment_method=payment_method,
+            amount=amount,
+            gateway_order_ref=gateway_order_ref,
+            idempotency_key=idempotency_key,
+        )
+        self.payment_repo.add_payment(payment)
+        self._log_payment_initiated(
+            booking=booking,
+            payment=payment,
+            normalized_ip=normalized_ip,
+            user_agent=user_agent,
+        )
+        return payment
+
+    def _load_existing_payment_for_idempotency(
+        self,
+        *,
+        booking_id: str,
+        idempotency_key: str,
+        payment_method: PaymentMethod,
+        amount: Decimal,
+        currency: str,
+    ) -> Payment | None:
+        existing = self.payment_repo.get_by_booking_and_idempotency_key(
+            booking_id=booking_id,
+            idempotency_key=idempotency_key,
+        )
+        if existing is None:
+            return None
+
+        self._assert_idempotent_request_matches_existing(
+            existing=existing,
+            payment_method=payment_method,
+            amount=amount,
+            currency=currency,
+        )
+        return existing
+
+    def _assert_refund_request_is_allowed(
+        self,
+        *,
+        booking_id: str,
+    ) -> tuple[Payment, Decimal]:
+        payment = self.payment_repo.get_latest_by_booking_id_for_update(booking_id)
+        if not payment:
+            raise ConflictAppException("This booking does not have a paid charge to refund")
+
+        payment_status = enum_to_str(payment.status)
+        if payment_status != PaymentStatus.paid.value:
+            raise ConflictAppException("Only paid bookings can be submitted for refund review")
+
+        existing_refund = self.payment_repo.get_latest_refund_for_payment_for_update(
+            str(payment.id)
+        )
+        if existing_refund:
+            existing_status = enum_to_str(existing_refund.status)
+            if existing_status in {RefundStatus.pending.value, RefundStatus.processed.value}:
+                raise ConflictAppException("A refund request already exists for this booking")
+
+        refund_amount = Decimal(payment.amount)
+        if refund_amount <= Decimal("0.00"):
+            raise ValidationAppException("Invalid refund amount")
+
+        return payment, refund_amount
+
     def initiate_payment(
         self,
         *,
@@ -73,30 +269,22 @@ class PaymentService(ApplicationService):
         ip_address: str | None = None,
         user_agent: str | None = None,
     ) -> Payment:
-        booking = self.booking_repo.get_by_id_and_user_id(booking_id, user_id)
-        if not booking:
-            raise ValidationAppException("Booking not found")
-
-        if not idempotency_key:
-            raise ValidationAppException("Idempotency key is required")
-
-        self.gateway_service.assert_gateway_is_configured(payment_method=payment_method)
-
-        existing = self.payment_repo.get_by_booking_and_idempotency_key(
+        booking, amount = self._get_payment_initiation_context(
             booking_id=booking_id,
+            user_id=user_id,
+            payment_method=payment_method,
             idempotency_key=idempotency_key,
         )
-        amount = Decimal(booking.total_final_amount)
-        if amount <= Decimal("0.00"):
-            raise ValidationAppException("Invalid payment amount")
+        assert idempotency_key is not None
 
+        existing = self._load_existing_payment_for_idempotency(
+            booking_id=booking_id,
+            idempotency_key=idempotency_key,
+            payment_method=payment_method,
+            amount=amount,
+            currency=booking.currency,
+        )
         if existing:
-            self._assert_idempotent_request_matches_existing(
-                existing=existing,
-                payment_method=payment_method,
-                amount=amount,
-                currency=booking.currency,
-            )
             logger.info(
                 "payment_initiation_reused",
                 extra=build_log_extra(
@@ -107,97 +295,47 @@ class PaymentService(ApplicationService):
                     gateway_order_ref=existing.gateway_order_ref,
                 ),
             )
-            gateway_payload = self.gateway_service.build_existing_gateway_payload(payment=existing)
-            if gateway_payload is not None:
-                existing.gateway_payload = gateway_payload
-            return existing
+            return self._ensure_gateway_session(payment=existing)
 
         booking_payment_status = enum_to_str(booking.payment_status)
         if booking_payment_status == PaymentStatus.paid.value:
             raise ConflictAppException("Booking is already paid")
 
-        gateway_order_ref = f"PAY-{booking.booking_code}-{idempotency_key}"
-        if len(gateway_order_ref) > PAYMENT_REFERENCE_MAX_LENGTH:
-            raise ValidationAppException("Idempotency key is too long")
-
+        gateway_order_ref = self._build_gateway_order_ref(
+            booking_code=booking.booking_code,
+            idempotency_key=idempotency_key,
+        )
         normalized_ip = normalize_ip(ip_address)
-        gateway_result = None
 
         try:
-            payment = Payment(
-                booking_id=booking.id,
-                initiated_by=booking.user_id,
-                payment_method=payment_method,
-                status=PaymentStatus.pending,
-                amount=amount,
-                currency=booking.currency,
-                gateway_order_ref=gateway_order_ref,
-                gateway_transaction_ref=None,
-                idempotency_key=idempotency_key,
-                paid_at=None,
-            )
-            self.payment_repo.add_payment(payment)
-            gateway_result = self.gateway_service.create_payment_session(payment=payment)
-            if gateway_result is not None:
-                payment.gateway_transaction_ref = gateway_result.external_reference
-
-            self.audit_service.log_action(
-                actor_type=LogActorType.user,
-                actor_user_id=booking.user_id,
-                action="payment_initiated",
-                resource_type="payment",
-                resource_id=payment.id,
-                ip_address=normalized_ip,
-                user_agent=user_agent,
-                metadata={
-                    "booking_id": str(booking.id),
-                    "booking_code": booking.booking_code,
-                    "amount": str(payment.amount),
-                    "currency": payment.currency,
-                    "payment_method": payment_method.value,
-                    "gateway_order_ref": gateway_order_ref,
-                },
-            )
-            self.commit()
-            logger.info(
-                "payment_initiated",
-                extra=build_log_extra(
-                    "payment_initiated",
-                    booking_id=str(booking.id),
-                    booking_code=booking.booking_code,
-                    payment_id=str(payment.id),
-                    payment_method=payment_method.value,
-                    amount=str(payment.amount),
-                    currency=payment.currency,
+            payment = self.run_in_transaction(
+                lambda: self._persist_pending_payment(
+                    booking=booking,
+                    payment_method=payment_method,
+                    amount=amount,
                     gateway_order_ref=gateway_order_ref,
                     idempotency_key=idempotency_key,
-                ),
+                    normalized_ip=normalized_ip,
+                    user_agent=user_agent,
+                )
             )
         except IntegrityError as exc:
-            self.db.rollback()
-
             if PAYMENT_IDEMPOTENCY_CONSTRAINT not in str(
                 exc.orig
             ) and PAYMENT_GATEWAY_ORDER_REF_CONSTRAINT not in str(exc.orig):
                 raise
 
-            existing = self.payment_repo.get_by_booking_and_idempotency_key(
+            existing = self._load_existing_payment_for_idempotency(
                 booking_id=booking_id,
                 idempotency_key=idempotency_key,
+                payment_method=payment_method,
+                amount=amount,
+                currency=booking.currency,
             )
             if existing is None:
                 raise
 
             payment = existing
-            self._assert_idempotent_request_matches_existing(
-                existing=payment,
-                payment_method=payment_method,
-                amount=amount,
-                currency=booking.currency,
-            )
-            gateway_payload = self.gateway_service.build_existing_gateway_payload(payment=payment)
-            if gateway_payload is not None:
-                payment.gateway_payload = gateway_payload
             logger.warning(
                 "payment_initiation_race_reused_existing",
                 extra=build_log_extra(
@@ -207,14 +345,40 @@ class PaymentService(ApplicationService):
                     idempotency_key=idempotency_key,
                 ),
             )
-        except Exception:
-            self.db.rollback()
-            raise
+        self.refresh_all(payment)
+        return self._ensure_gateway_session(payment=payment)
 
-        self.db.refresh(payment)
-        if gateway_result is not None:
-            payment.gateway_payload = gateway_result.gateway_payload
-        return payment
+    def _mark_payment_simulated_success(
+        self,
+        *,
+        payment: Payment,
+        booking,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> None:
+        payment.status = PaymentStatus.paid
+        payment.gateway_transaction_ref = (
+            payment.gateway_transaction_ref or f"SIM-{uuid4().hex[:12].upper()}"
+        )
+        payment.paid_at = datetime.now(timezone.utc)
+        payment.failed_at = None
+        payment.failure_reason = None
+        booking.status = BookingStatus.confirmed
+        booking.payment_status = PaymentStatus.paid
+        booking.expires_at = None
+
+        self.payment_repo.save(payment)
+        self.booking_repo.save(booking)
+        self.audit_service.log_action(
+            actor_type=LogActorType.user,
+            actor_user_id=booking.user_id,
+            action="payment_simulated_success",
+            resource_type="payment",
+            resource_id=payment.id,
+            ip_address=normalized_ip,
+            user_agent=user_agent,
+            metadata={"booking_id": str(booking.id)},
+        )
 
     def simulate_success(
         self,
@@ -236,28 +400,17 @@ class PaymentService(ApplicationService):
         if current_status != PaymentStatus.pending.value:
             raise ConflictAppException("Only pending payments can be simulated as successful")
 
-        payment.status = PaymentStatus.paid
-        payment.gateway_transaction_ref = (
-            payment.gateway_transaction_ref or f"SIM-{uuid4().hex[:12].upper()}"
-        )
-        payment.paid_at = datetime.now(timezone.utc)
-        booking.payment_status = PaymentStatus.paid
-
         normalized_ip = normalize_ip(ip_address)
 
-        self.payment_repo.save(payment)
-        self.booking_repo.save(booking)
-        self.audit_service.log_action(
-            actor_type=LogActorType.user,
-            actor_user_id=booking.user_id,
-            action="payment_simulated_success",
-            resource_type="payment",
-            resource_id=payment.id,
-            ip_address=normalized_ip,
-            user_agent=user_agent,
-            metadata={"booking_id": str(booking.id)},
+        self.run_in_transaction(
+            lambda: self._mark_payment_simulated_success(
+                payment=payment,
+                booking=booking,
+                normalized_ip=normalized_ip,
+                user_agent=user_agent,
+            )
         )
-        self.commit_and_refresh(payment)
+        self.refresh_all(payment)
         return payment
 
     def get_payment(self, *, payment_id: str, user_id: str) -> Payment:
@@ -288,26 +441,32 @@ class PaymentService(ApplicationService):
         if not normalized_reason:
             raise ValidationAppException("Refund reason is required")
 
-        payment = self.payment_repo.get_latest_by_booking_id_for_update(booking_id)
-        if not payment:
-            raise ConflictAppException("This booking does not have a paid charge to refund")
+        payment, refund_amount = self._assert_refund_request_is_allowed(booking_id=booking_id)
+        normalized_ip = normalize_ip(ip_address)
 
-        payment_status = enum_to_str(payment.status)
-        if payment_status != PaymentStatus.paid.value:
-            raise ConflictAppException("Only paid bookings can be submitted for refund review")
-
-        existing_refund = self.payment_repo.get_latest_refund_for_payment_for_update(
-            str(payment.id)
+        refund = self.run_in_transaction(
+            lambda: self._create_pending_refund(
+                payment=payment,
+                booking=booking,
+                refund_amount=refund_amount,
+                normalized_reason=normalized_reason,
+                normalized_ip=normalized_ip,
+                user_agent=user_agent,
+            )
         )
-        if existing_refund:
-            existing_status = enum_to_str(existing_refund.status)
-            if existing_status in {RefundStatus.pending.value, RefundStatus.processed.value}:
-                raise ConflictAppException("A refund request already exists for this booking")
+        self.refresh_all(refund)
+        return refund
 
-        refund_amount = Decimal(payment.amount)
-        if refund_amount <= Decimal("0.00"):
-            raise ValidationAppException("Invalid refund amount")
-
+    def _create_pending_refund(
+        self,
+        *,
+        payment: Payment,
+        booking,
+        refund_amount: Decimal,
+        normalized_reason: str,
+        normalized_ip: str | None,
+        user_agent: str | None,
+    ) -> Refund:
         refund = Refund(
             payment_id=payment.id,
             amount=refund_amount,
@@ -316,7 +475,6 @@ class PaymentService(ApplicationService):
             reason=normalized_reason,
             processed_at=None,
         )
-        normalized_ip = normalize_ip(ip_address)
 
         self.payment_repo.add_refund(refund)
         self.audit_service.log_action(
@@ -335,7 +493,6 @@ class PaymentService(ApplicationService):
                 "currency": refund.currency,
             },
         )
-        self.commit_and_refresh(refund)
         return refund
 
     def get_booking_payment_status(self, *, booking_id: str, user_id: str):

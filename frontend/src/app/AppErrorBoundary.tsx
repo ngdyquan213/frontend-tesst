@@ -20,8 +20,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    void error
-    void errorInfo
+    console.error('app_runtime_error', error, errorInfo)
   }
 
   render() {

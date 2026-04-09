@@ -1,5 +1,5 @@
-import { env } from '@/app/config/env'
 import { useTourCatalogQuery } from '@/features/tours/queries/useToursQuery'
+import { isMockApiEnabled } from '@/shared/api/mockMode'
 import { useTourSchedulesQuery } from '@/features/tours/queries/useTourSchedulesQuery'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { TourScheduleSection } from '@/widgets/tours/TourScheduleSection'
@@ -7,11 +7,12 @@ import { TourScheduleSection } from '@/widgets/tours/TourScheduleSection'
 const DEFAULT_ADMIN_TOUR_ID = 'amalfi-coast-sailing'
 
 const ScheduleManagementPage = () => {
+  const usesMocks = isMockApiEnabled()
   const catalogQuery = useTourCatalogQuery({ limit: 1 })
-  const selectedTourId = env.enableMocks ? DEFAULT_ADMIN_TOUR_ID : catalogQuery.data?.[0]?.id
+  const selectedTourId = usesMocks ? DEFAULT_ADMIN_TOUR_ID : catalogQuery.data?.[0]?.id
   const schedulesQuery = useTourSchedulesQuery(selectedTourId)
-  const isLoading = (!env.enableMocks && catalogQuery.isPending) || schedulesQuery.isPending
-  const isError = (!env.enableMocks && catalogQuery.isError) || schedulesQuery.isError
+  const isLoading = (!usesMocks && catalogQuery.isPending) || schedulesQuery.isPending
+  const isError = (!usesMocks && catalogQuery.isError) || schedulesQuery.isError
   const errorMessage = catalogQuery.error?.message || schedulesQuery.error?.message
 
   return (

@@ -59,9 +59,47 @@ def test_create_booking_reduces_available_seats(client, db_session):
     resp = client.post(
         "/api/v1/bookings",
         json={"flight_id": str(flight.id), "quantity": 2},
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "booking-test-001"},
     )
     assert resp.status_code == 201
+
+    db_session.refresh(flight)
+    assert flight.available_seats == 1
+
+
+def test_create_booking_requires_idempotency_key(client, db_session):
+    _, token = create_user_and_token(client, db_session)
+    flight = seed_flight(db_session)
+
+    resp = client.post(
+        "/api/v1/bookings",
+        json={"flight_id": str(flight.id), "quantity": 1},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert resp.status_code == 400
+    assert resp.json()["detail"] == "Idempotency key is required"
+
+
+def test_create_booking_reuses_existing_booking_for_same_idempotency_key(client, db_session):
+    _, token = create_user_and_token(client, db_session)
+    flight = seed_flight(db_session)
+    headers = {"Authorization": f"Bearer {token}", "Idempotency-Key": "booking-idem-001"}
+
+    first = client.post(
+        "/api/v1/bookings",
+        json={"flight_id": str(flight.id), "quantity": 2},
+        headers=headers,
+    )
+    second = client.post(
+        "/api/v1/bookings",
+        json={"flight_id": str(flight.id), "quantity": 2},
+        headers=headers,
+    )
+
+    assert first.status_code == 201
+    assert second.status_code == 201
+    assert second.json()["id"] == first.json()["id"]
 
     db_session.refresh(flight)
     assert flight.available_seats == 1

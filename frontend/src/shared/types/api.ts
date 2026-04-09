@@ -379,6 +379,36 @@ export interface AdminStats {
   document_queue?: number
 }
 
+export interface AdminDashboardStatusCount {
+  status: string
+  count: number
+}
+
+export interface AdminDashboardRevenue {
+  total_paid_amount: number
+  total_refunded_amount: number
+  net_revenue_amount: number
+  currency: string
+}
+
+export interface AdminDashboardRecentActivity {
+  audit_log_id: string
+  actor_type: string
+  actor_user_id: string | null
+  action: string
+  resource_type: string | null
+  resource_id: string | null
+  created_at: string
+}
+
+export interface AdminDashboardSummary {
+  booking_status_counts: AdminDashboardStatusCount[]
+  payment_status_counts: AdminDashboardStatusCount[]
+  refund_status_counts: AdminDashboardStatusCount[]
+  revenue: AdminDashboardRevenue
+  recent_activities: AdminDashboardRecentActivity[]
+}
+
 export interface AdminUser {
   id: string
   email: string

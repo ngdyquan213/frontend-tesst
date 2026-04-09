@@ -179,12 +179,18 @@ class StorageService:
                 raise ValidationAppException("Uploaded file is empty")
 
             temp_file.seek(0)
-            self._s3_client().upload_fileobj(
-                temp_file,
-                settings.S3_BUCKET_NAME,
-                stored_filename,
-                ExtraArgs={"ContentType": file.content_type or "application/octet-stream"},
-            )
+            try:
+                self._s3_client().upload_fileobj(
+                    temp_file,
+                    settings.S3_BUCKET_NAME,
+                    stored_filename,
+                    ExtraArgs={"ContentType": file.content_type or "application/octet-stream"},
+                )
+            except Exception as exc:
+                raise self._translate_s3_exception(
+                    exc,
+                    default_message="Document storage is temporarily unavailable",
+                ) from exc
         finally:
             temp_file.close()
             file.file.seek(0)
@@ -208,12 +214,18 @@ class StorageService:
             raise ValidationAppException("Uploaded file exceeds maximum allowed size")
 
         stored_filename = generate_stored_filename(original_filename)
-        self._s3_client().put_object(
-            Bucket=settings.S3_BUCKET_NAME,
-            Key=stored_filename,
-            Body=content,
-            ContentType=mime_type,
-        )
+        try:
+            self._s3_client().put_object(
+                Bucket=settings.S3_BUCKET_NAME,
+                Key=stored_filename,
+                Body=content,
+                ContentType=mime_type,
+            )
+        except Exception as exc:
+            raise self._translate_s3_exception(
+                exc,
+                default_message="Document storage is temporarily unavailable",
+            ) from exc
         return StoredObject(
             storage_bucket=settings.S3_BUCKET_NAME,
             storage_key=stored_filename,

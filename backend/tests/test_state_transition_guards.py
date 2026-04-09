@@ -173,6 +173,7 @@ def test_payment_callback_rejects_duplicate_paid_transition(client, db_session):
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-STATE-PAID-001",
@@ -186,6 +187,7 @@ def test_payment_callback_rejects_duplicate_paid_transition(client, db_session):
     assert first.status_code == 200
 
     second_payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-STATE-PAID-002",
@@ -218,6 +220,7 @@ def test_payment_callback_rejects_transition_from_paid_to_failed(client, db_sess
     payment = init_resp.json()
 
     paid_payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-STATE-PF-PAID",
@@ -230,6 +233,7 @@ def test_payment_callback_rejects_transition_from_paid_to_failed(client, db_sess
     assert paid_resp.status_code == 200
 
     failed_payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-STATE-PF-FAILED",

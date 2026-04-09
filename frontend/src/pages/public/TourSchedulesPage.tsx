@@ -66,7 +66,7 @@ const TourSchedulesPage = () => {
         description={
           data
             ? `Available departures for ${data.name}.`
-            : 'Available departures, pricing, and capacity will appear here as soon as the itinerary loads.'
+            : 'Available departures, pricing, and current capacity are listed here once the itinerary is loaded.'
         }
         title="Tour schedules"
       />

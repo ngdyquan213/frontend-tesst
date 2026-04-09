@@ -76,8 +76,10 @@ def evaluate_release_preflight(
         "SECRET_MANAGER_AWS_REGION",
         "DATABASE_URL",
         "REDIS_URL",
+        "FRONTEND_BASE_URL",
         "SECRET_KEY",
         "PAYMENT_CALLBACK_SECRET",
+        "CORS_ORIGINS",
         "TRUSTED_HOSTS",
         "OBSERVABILITY_ALLOWLIST",
         "PAYMENT_CALLBACK_SOURCE_ALLOWLIST",
@@ -118,17 +120,35 @@ def evaluate_release_preflight(
     if "localhost" in redis_url or "127.0.0.1" in redis_url:
         errors.append("REDIS_URL must not point to localhost/127.0.0.1")
 
+    frontend_base_url = env.get("FRONTEND_BASE_URL", "")
+    if "localhost" in frontend_base_url or "127.0.0.1" in frontend_base_url:
+        errors.append("FRONTEND_BASE_URL must not point to localhost/127.0.0.1")
+
     if "*" in _split_csv(env.get("FORWARDED_ALLOW_IPS")):
         errors.append("FORWARDED_ALLOW_IPS must not contain '*'")
 
-    if not _split_csv(env.get("TRUSTED_HOSTS")):
+    cors_origins = _split_csv(env.get("CORS_ORIGINS"))
+    if not cors_origins:
+        errors.append("CORS_ORIGINS must contain at least one origin")
+    elif any("localhost" in origin or "127.0.0.1" in origin for origin in cors_origins):
+        errors.append("CORS_ORIGINS must not contain localhost/127.0.0.1 origins")
+
+    trusted_hosts = _split_csv(env.get("TRUSTED_HOSTS"))
+    if not trusted_hosts:
         errors.append("TRUSTED_HOSTS must contain at least one host")
+    elif any(host in {"localhost", "127.0.0.1", "testserver"} for host in trusted_hosts):
+        errors.append("TRUSTED_HOSTS must not contain localhost/127.0.0.1/testserver")
 
     if not _split_csv(env.get("OBSERVABILITY_ALLOWLIST")):
         errors.append("OBSERVABILITY_ALLOWLIST must contain at least one CIDR")
 
     if not _split_csv(env.get("PAYMENT_CALLBACK_SOURCE_ALLOWLIST")):
         errors.append("PAYMENT_CALLBACK_SOURCE_ALLOWLIST must contain at least one CIDR")
+
+    if _is_truthy(env.get("UPLOAD_MALWARE_SCAN_ENABLED")) and (
+        env.get("UPLOAD_MALWARE_SCAN_BACKEND", "").strip() != "clamav"
+    ):
+        errors.append("UPLOAD_MALWARE_SCAN_BACKEND must be clamav when malware scan is enabled")
 
     critical_keys = (
         "SECRET_KEY",

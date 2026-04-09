@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
+from typing import TypeVar
+
+T = TypeVar("T")
 
 
 class ApplicationService:
@@ -22,3 +25,12 @@ class ApplicationService:
 
     def refresh_many(self, instances: Iterable[object | None]) -> None:
         self.refresh_all(*instances)
+
+    def run_in_transaction(self, operation: Callable[[], T]) -> T:
+        try:
+            result = operation()
+            self.db.commit()
+            return result
+        except Exception:
+            self.db.rollback()
+            raise

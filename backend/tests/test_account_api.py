@@ -82,6 +82,12 @@ def test_user_can_change_password_and_revokes_refresh_tokens(client, db_session)
     assert refresh_tokens
     assert any(token.revoked_at is not None for token in refresh_tokens)
 
+    me_response = client.get(
+        "/api/v1/users/me",
+        headers={"Authorization": f"Bearer {session['access_token']}"},
+    )
+    assert me_response.status_code == 401
+
 
 def test_forgot_password_creates_reset_token_and_keeps_generic_response(
     client,
@@ -166,3 +172,9 @@ def test_reset_password_marks_token_used_and_allows_new_login(client, db_session
         json={"email": user.email, "password": "ResetPass12345"},
     )
     assert new_login.status_code == 200
+
+    me_response = client.get(
+        "/api/v1/users/me",
+        headers={"Authorization": f"Bearer {pre_reset_session['access_token']}"},
+    )
+    assert me_response.status_code == 401

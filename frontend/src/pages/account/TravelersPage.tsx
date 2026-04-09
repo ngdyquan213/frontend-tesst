@@ -4,9 +4,12 @@ import { Alert } from '@/shared/ui/Alert'
 
 const TravelersPage = () => (
   <div className="space-y-10">
-    <PageHeader title="Travelers" description="Traveler records will be managed from each booking once that API is enabled in the account flow." />
+    <PageHeader
+      title="Travelers"
+      description="Review the traveler records already attached to your confirmed bookings from one account view."
+    />
     <Alert tone="info">
-      The backend currently stores travelers per booking, not as a shared account address book. This screen is kept read-only for now to avoid creating data in the wrong shape.
+      This directory is synced from your booking details, so the names and passport data shown here always reflect the active traveler list on each reservation.
     </Alert>
     <TravelerList />
   </div>

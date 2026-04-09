@@ -304,4 +304,4 @@ def test_list_documents_excludes_soft_deleted_records(
     )
 
     assert list_resp.status_code == 200
-    assert list_resp.json() == []
+    assert list_resp.json()["items"] == []

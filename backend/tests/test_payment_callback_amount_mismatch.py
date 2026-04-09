@@ -82,6 +82,7 @@ def test_payment_callback_amount_mismatch(client, db_session):
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-MISMATCH-001",
@@ -170,6 +171,7 @@ def test_payment_callback_currency_mismatch(client, db_session):
     payment = init_resp.json()
 
     payload = {
+        "timestamp": int(datetime.now(timezone.utc).timestamp()),
         "gateway_name": "vnpay",
         "gateway_order_ref": payment["gateway_order_ref"],
         "gateway_transaction_ref": "TXN-CURRENCY-MISMATCH-001",

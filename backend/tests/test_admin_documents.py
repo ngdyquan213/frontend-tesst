@@ -80,8 +80,11 @@ def test_admin_can_list_documents_queue(client, db_session):
 
     assert response.status_code == 200
     body = response.json()
-    assert len(body) == 1
-    assert body[0]["status"] == "pending"
+    assert body["total"] == 1
+    assert body["page"] == 1
+    assert body["page_size"] == 20
+    assert len(body["items"]) == 1
+    assert body["items"][0]["status"] == "pending"
 
 
 def test_admin_can_review_document(client, db_session):

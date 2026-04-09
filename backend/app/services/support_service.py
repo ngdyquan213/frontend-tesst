@@ -52,12 +52,16 @@ class SupportService(ApplicationService):
         self,
         *,
         user_id: str,
+        authenticated_email: str | None,
+        authenticated_full_name: str | None,
         payload: CreateSupportTicketRequest,
         ip_address: str | None = None,
         user_agent: str | None = None,
     ) -> SupportTicket:
-        full_name = payload.full_name.strip()
-        email = payload.email.strip()
+        fallback_full_name = payload.full_name.strip()
+        fallback_email = payload.email.strip()
+        full_name = (authenticated_full_name or fallback_full_name).strip()
+        email = (authenticated_email or fallback_email).strip()
         topic_id = payload.topic_id.strip()
         subject = payload.subject.strip()
         message = payload.message.strip()
@@ -104,6 +108,7 @@ class SupportService(ApplicationService):
                 "reference": ticket.reference,
                 "topic_id": ticket.topic_id,
                 "booking_reference": booking_reference,
+                "requester_email": email,
             },
         )
         self.commit_and_refresh(ticket)

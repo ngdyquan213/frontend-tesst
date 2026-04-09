@@ -5,8 +5,9 @@ from app.api.deps import (
     build_support_service,
     get_current_user,
     get_pagination_params,
-    require_admin,
+    require_permission,
 )
+from app.core.constants import PERM_ADMIN_SUPPORT_READ, PERM_ADMIN_SUPPORT_WRITE
 from app.core.database import get_db
 from app.schemas.common import PaginatedResponse
 from app.schemas.support import (
@@ -36,6 +37,8 @@ def create_support_ticket(
     service = build_support_service(db)
     ticket = service.create_ticket(
         user_id=str(current_user.id),
+        authenticated_email=current_user.email,
+        authenticated_full_name=current_user.full_name,
         payload=payload,
         ip_address=get_client_ip(request),
         user_agent=get_user_agent(request),
@@ -101,7 +104,7 @@ def list_admin_support_tickets(
     request: Request,
     pagination: PaginationParams = Depends(get_pagination_params),
     status: str | None = Query(default=None),
-    current_user=Depends(require_admin),
+    current_user=Depends(require_permission(PERM_ADMIN_SUPPORT_READ)),
     db: Session = Depends(get_db),
 ):
     service = build_support_service(db)
@@ -123,7 +126,7 @@ def list_admin_support_tickets(
 @router.get("/admin/tickets/{ticket_id}", response_model=SupportTicketDetailResponse)
 def get_admin_support_ticket(
     ticket_id: str,
-    current_user=Depends(require_admin),
+    current_user=Depends(require_permission(PERM_ADMIN_SUPPORT_READ)),
     db: Session = Depends(get_db),
 ) -> SupportTicketDetailResponse:
     service = build_support_service(db)
@@ -136,7 +139,7 @@ def reply_to_support_ticket_as_admin(
     ticket_id: str,
     payload: SupportTicketReplyCreateRequest,
     request: Request,
-    current_user=Depends(require_admin),
+    current_user=Depends(require_permission(PERM_ADMIN_SUPPORT_WRITE)),
     db: Session = Depends(get_db),
 ) -> SupportTicketDetailResponse:
     service = build_support_service(db)
@@ -157,7 +160,7 @@ def update_support_ticket_as_admin(
     ticket_id: str,
     payload: AdminSupportTicketUpdateRequest,
     request: Request,
-    current_user=Depends(require_admin),
+    current_user=Depends(require_permission(PERM_ADMIN_SUPPORT_WRITE)),
     db: Session = Depends(get_db),
 ) -> SupportTicketDetailResponse:
     service = build_support_service(db)

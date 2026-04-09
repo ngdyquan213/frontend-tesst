@@ -29,7 +29,14 @@ class DocumentRepository:
         )
 
     def count_by_user_id(self, user_id: str) -> int:
-        return self.db.query(UploadedDocument).filter(UploadedDocument.user_id == user_id).count()
+        return (
+            self.db.query(UploadedDocument)
+            .filter(
+                UploadedDocument.user_id == user_id,
+                UploadedDocument.deleted_at.is_(None),
+            )
+            .count()
+        )
 
     def list_for_admin(self, skip: int = 0, limit: int = 50) -> list[UploadedDocument]:
         return (
@@ -42,6 +49,13 @@ class DocumentRepository:
             .offset(skip)
             .limit(limit)
             .all()
+        )
+
+    def count_for_admin(self) -> int:
+        return (
+            self.db.query(UploadedDocument)
+            .filter(UploadedDocument.deleted_at.is_(None))
+            .count()
         )
 
     def get_by_id(self, document_id: str) -> UploadedDocument | None:

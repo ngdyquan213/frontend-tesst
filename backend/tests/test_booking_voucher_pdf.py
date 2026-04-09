@@ -86,7 +86,7 @@ def test_export_booking_voucher_pdf(client, db_session):
             "child_count": 1,
             "infant_count": 0,
         },
-        headers={"Authorization": f"Bearer {token}"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "voucher-pdf-booking-001"},
     )
     assert booking_resp.status_code == 201
     booking = booking_resp.json()
@@ -114,7 +114,7 @@ def test_cannot_export_foreign_booking_voucher_pdf(client, db_session):
             "child_count": 0,
             "infant_count": 0,
         },
-        headers={"Authorization": f"Bearer {token1}"},
+        headers={"Authorization": f"Bearer {token1}", "Idempotency-Key": "voucher-pdf-booking-002"},
     )
     booking = booking_resp.json()
 

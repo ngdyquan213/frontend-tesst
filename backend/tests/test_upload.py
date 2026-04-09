@@ -42,3 +42,29 @@ def test_upload_document_success(client, db_session, sample_pdf_bytes):
     assert body["file_size"] == len(sample_pdf_bytes)
     assert "storage_key" not in body
     assert "stored_filename" not in body
+
+
+def test_list_documents_returns_paginated_response(client, db_session, sample_pdf_bytes):
+    _, token = create_user_and_token(client, db_session)
+
+    for index in range(2):
+        response = client.post(
+            "/api/v1/uploads/documents",
+            headers={"Authorization": f"Bearer {token}"},
+            files={"file": (f"passport-{index}.pdf", BytesIO(sample_pdf_bytes), "application/pdf")},
+            data={"document_type": "passport"},
+        )
+        assert response.status_code == 201
+
+    response = client.get(
+        "/api/v1/uploads/documents?page=1&page_size=1",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["page"] == 1
+    assert body["page_size"] == 1
+    assert body["total"] == 2
+    assert body["total_pages"] == 2
+    assert len(body["items"]) == 1

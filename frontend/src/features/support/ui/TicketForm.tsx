@@ -50,12 +50,13 @@ function buildInitialState(initialTopicId?: string): CreateSupportTicketPayload 
 
 export function TicketForm({ className, initialTopicId }: TicketFormProps) {
   const { user } = useAuth()
-  const bookingsQuery = useBookingsQuery()
+  const bookingsQuery = useBookingsQuery(Boolean(user))
   const topicsQuery = useHelpTopicsQuery()
   const createTicketMutation = useCreateSupportTicketMutation()
   const [formState, setFormState] = useState<CreateSupportTicketPayload>(() => buildInitialState(initialTopicId))
   const [errors, setErrors] = useState<SupportTicketFormErrors>({})
   const [submittedReference, setSubmittedReference] = useState<string | null>(null)
+  const isAuthenticatedContactLocked = Boolean(user)
 
   const topicOptions = useMemo(
     () =>
@@ -155,6 +156,8 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
             onChange={(event) => updateField('fullName', event.target.value)}
             placeholder="Your name"
             className={getFieldClassName(Boolean(errors.fullName))}
+            readOnly={isAuthenticatedContactLocked}
+            aria-readonly={isAuthenticatedContactLocked}
           />
           {errors.fullName ? <span className="text-sm text-red-600">{errors.fullName}</span> : null}
         </label>
@@ -167,10 +170,18 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
             onChange={(event) => updateField('email', event.target.value)}
             placeholder="name@example.com"
             className={getFieldClassName(Boolean(errors.email))}
+            readOnly={isAuthenticatedContactLocked}
+            aria-readonly={isAuthenticatedContactLocked}
           />
           {errors.email ? <span className="text-sm text-red-600">{errors.email}</span> : null}
         </label>
       </div>
+
+      {isAuthenticatedContactLocked ? (
+        <p className="text-sm text-[color:var(--color-on-surface-variant)]">
+          Signed-in requests are automatically attached to your verified account contact details.
+        </p>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-2">
@@ -212,6 +223,10 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
           </select>
           {errors.bookingReference ? (
             <span className="text-sm text-red-600">{errors.bookingReference}</span>
+          ) : !user ? (
+            <span className="text-sm text-[color:var(--color-on-surface-variant)]">
+              Sign in if you want to attach this request to one of your existing bookings.
+            </span>
           ) : (
             <span className="text-sm text-[color:var(--color-on-surface-variant)]">
               Add it if your question is tied to an existing reservation.
@@ -220,7 +235,7 @@ export function TicketForm({ className, initialTopicId }: TicketFormProps) {
         </label>
       </div>
 
-      {bookingsQuery.isPending ? (
+      {user && bookingsQuery.isPending ? (
         <span className="block text-sm text-[color:var(--color-on-surface-variant)]">
           Loading your recent bookings...
         </span>

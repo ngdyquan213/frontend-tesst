@@ -288,7 +288,10 @@ export async function ensureSupportBookingReference(request: APIRequestContext) 
       child_count: 0,
       infant_count: 0,
     },
-    headers,
+    headers: {
+      ...headers,
+      'Idempotency-Key': `e2e-booking-${Date.now()}`,
+    },
   })
   expect(bookingResponse.ok()).toBeTruthy()
   const bookingPayload = (await bookingResponse.json()) as { booking_code?: string }

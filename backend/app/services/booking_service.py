@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+import hashlib
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from uuid import uuid4
 
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.constants import BOOKABLE_FLIGHT_STATUSES
-from app.core.exceptions import NotFoundAppException, ValidationAppException
+from app.core.config import settings
+from app.core.exceptions import ConflictAppException, NotFoundAppException, ValidationAppException
 from app.models.booking import Booking, BookingItem
 from app.models.enums import BookingItemType, BookingStatus, LogActorType, PaymentStatus
 from app.repositories.booking_repository import BookingRepository
@@ -47,70 +49,113 @@ class BookingService(ApplicationService):
             notification_worker=notification_worker,
         )
 
+    @staticmethod
+    def _build_booking_code(*, user_id: str, idempotency_key: str) -> str:
+        digest = hashlib.sha256(f"{user_id}:{idempotency_key}".encode("utf-8")).hexdigest()
+        return f"BK-{digest[:12].upper()}"
+
+    @staticmethod
+    def _build_hold_expiry(booked_at: datetime) -> datetime:
+        return booked_at + timedelta(minutes=settings.BOOKING_HOLD_EXPIRE_MINUTES)
+
+    @staticmethod
+    def _assert_existing_booking_matches_request(*, booking: Booking, payload: BookingCreateRequest) -> None:
+        item = booking.items[0] if booking.items else None
+        if item is None or item.item_type != BookingItemType.flight or str(item.flight_id) != payload.flight_id:
+            raise ConflictAppException("Idempotency key was already used for a different booking")
+
+        if item.quantity != payload.quantity:
+            raise ConflictAppException("Idempotency key was already used with a different quantity")
+
+        if booking.status != BookingStatus.pending or booking.payment_status != PaymentStatus.pending:
+            raise ConflictAppException("Idempotency key was already used for a closed booking")
+
     def create_booking(
         self,
         *,
         user_id: str,
         payload: BookingCreateRequest,
+        idempotency_key: str | None,
         ip_address: str | None = None,
         user_agent: str | None = None,
     ) -> Booking:
-        with self.db.begin_nested():
-            flight = self.flight_repo.get_by_id_for_update(payload.flight_id)
-            if not flight:
-                raise NotFoundAppException("Flight not found")
+        if not idempotency_key:
+            raise ValidationAppException("Idempotency key is required")
 
-            if flight.status not in BOOKABLE_FLIGHT_STATUSES:
-                raise ValidationAppException("Flight is not bookable")
+        booking_code = self._build_booking_code(user_id=user_id, idempotency_key=idempotency_key)
+        existing_booking = self.booking_repo.get_by_booking_code_and_user_id(booking_code, user_id)
+        if existing_booking is not None:
+            self._assert_existing_booking_matches_request(booking=existing_booking, payload=payload)
+            return existing_booking
 
-            if flight.available_seats < payload.quantity:
-                raise ValidationAppException("Not enough available seats")
+        booked_at = datetime.now(timezone.utc)
 
-            total_price = Decimal(flight.base_price) * payload.quantity
+        try:
+            with self.db.begin_nested():
+                flight = self.flight_repo.get_by_id_for_update(payload.flight_id)
+                if not flight:
+                    raise NotFoundAppException("Flight not found")
 
-            booking = Booking(
-                booking_code=f"BK-{uuid4().hex[:10].upper()}",
-                user_id=user_id,
-                status=BookingStatus.pending,
-                total_base_amount=total_price,
-                total_discount_amount=Decimal("0.00"),
-                total_final_amount=total_price,
-                currency="VND",
-                payment_status=PaymentStatus.pending,
-                booked_at=datetime.now(timezone.utc),
-            )
-            self.booking_repo.add_booking(booking)
-            self.db.flush()
+                if flight.status not in BOOKABLE_FLIGHT_STATUSES:
+                    raise ValidationAppException("Flight is not bookable")
 
-            item = BookingItem(
-                booking_id=booking.id,
-                item_type=BookingItemType.flight,
-                flight_id=flight.id,
-                quantity=payload.quantity,
-                unit_price=flight.base_price,
-                total_price=total_price,
-            )
-            self.booking_repo.add_booking_item(item)
+                if flight.available_seats < payload.quantity:
+                    raise ValidationAppException("Not enough available seats")
 
-            flight.available_seats -= payload.quantity
-            self.flight_repo.save(flight)
+                total_price = Decimal(flight.base_price) * payload.quantity
 
-            self.audit_service.log_action(
-                actor_type=LogActorType.user,
-                actor_user_id=booking.user_id,
-                action="booking_created",
-                resource_type="booking",
-                resource_id=booking.id,
-                ip_address=normalize_ip(ip_address),
-                user_agent=user_agent,
-                metadata={
-                    "flight_id": str(flight.id),
-                    "quantity": payload.quantity,
-                    "total_price": str(total_price),
-                },
-            )
+                booking = Booking(
+                    booking_code=booking_code,
+                    user_id=user_id,
+                    status=BookingStatus.pending,
+                    total_base_amount=total_price,
+                    total_discount_amount=Decimal("0.00"),
+                    total_final_amount=total_price,
+                    currency="VND",
+                    payment_status=PaymentStatus.pending,
+                    booked_at=booked_at,
+                    expires_at=self._build_hold_expiry(booked_at),
+                )
+                self.booking_repo.add_booking(booking)
+                self.db.flush()
 
-            self.db.flush()
+                item = BookingItem(
+                    booking_id=booking.id,
+                    item_type=BookingItemType.flight,
+                    flight_id=flight.id,
+                    quantity=payload.quantity,
+                    unit_price=flight.base_price,
+                    total_price=total_price,
+                )
+                self.booking_repo.add_booking_item(item)
+
+                flight.available_seats -= payload.quantity
+                self.flight_repo.save(flight)
+
+                self.audit_service.log_action(
+                    actor_type=LogActorType.user,
+                    actor_user_id=booking.user_id,
+                    action="booking_created",
+                    resource_type="booking",
+                    resource_id=booking.id,
+                    ip_address=normalize_ip(ip_address),
+                    user_agent=user_agent,
+                    metadata={
+                        "flight_id": str(flight.id),
+                        "quantity": payload.quantity,
+                        "total_price": str(total_price),
+                        "idempotency_key": idempotency_key,
+                    },
+                )
+
+                self.db.flush()
+        except IntegrityError:
+            self.db.rollback()
+            existing_booking = self.booking_repo.get_by_booking_code_and_user_id(booking_code, user_id)
+            if existing_booking is None:
+                raise
+            self._assert_existing_booking_matches_request(booking=existing_booking, payload=payload)
+            return existing_booking
 
         user = self.user_repo.get_by_id(str(booking.user_id))
         if user:

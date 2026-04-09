@@ -9,7 +9,14 @@ from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.logging import build_log_extra
 from app.core.runtime_state import runtime_task_state
+from app.models.enums import BookingStatus, PaymentStatus
+from app.repositories.booking_repository import BookingRepository
+from app.repositories.flight_repository import FlightRepository
+from app.repositories.hotel_repository import HotelRepository
+from app.repositories.payment_repository import PaymentRepository
+from app.repositories.tour_repository import TourRepository
 from app.repositories.user_repository import UserRepository
+from app.services.booking_inventory_service import BookingInventoryService
 from app.services.outbox_service import OutboxService, process_outbox_events
 
 logger = logging.getLogger("app.runtime")
@@ -45,9 +52,69 @@ def cleanup_refresh_tokens() -> None:
             db.close()
 
 
+def cleanup_expired_booking_holds() -> None:
+    db = None
+    try:
+        db = SessionLocal()
+        booking_repo = BookingRepository(db)
+        payment_repo = PaymentRepository(db)
+        inventory_service = BookingInventoryService(
+            flight_repo=FlightRepository(db),
+            hotel_repo=HotelRepository(db),
+            tour_repo=TourRepository(db),
+        )
+
+        now = datetime.now(timezone.utc)
+        expired_bookings = booking_repo.list_expired_pending_bookings(now=now)
+        expired_count = 0
+        cancelled_payments = 0
+
+        for booking in expired_bookings:
+            inventory_service.restore_inventory(booking)
+            booking.status = BookingStatus.expired
+            booking.payment_status = PaymentStatus.cancelled
+            booking.cancelled_at = booking.cancelled_at or now
+            booking.cancellation_reason = (
+                booking.cancellation_reason
+                or "Booking hold expired before payment was completed"
+            )
+            booking.expires_at = None
+            booking_repo.save(booking)
+
+            payment = payment_repo.get_latest_by_booking_id_for_update(str(booking.id))
+            if payment and payment.status == PaymentStatus.pending:
+                payment.status = PaymentStatus.cancelled
+                payment.failed_at = now
+                payment.failure_reason = "Booking hold expired before payment completed"
+                payment_repo.save(payment)
+                cancelled_payments += 1
+
+            expired_count += 1
+
+        db.commit()
+
+        logger.info(
+            "runtime_cleanup_expired_booking_holds",
+            extra=build_log_extra(
+                "runtime_cleanup_expired_booking_holds",
+                expired_count=expired_count,
+                cancelled_payments=cancelled_payments,
+            ),
+        )
+    except Exception:
+        if db is not None:
+            db.rollback()
+        logger.exception("runtime_cleanup_expired_booking_holds_failed")
+        raise
+    finally:
+        if db is not None:
+            db.close()
+
+
 def run_noncritical_maintenance() -> None:
     tasks = (
         ("cleanup_refresh_tokens", cleanup_refresh_tokens),
+        ("cleanup_expired_booking_holds", cleanup_expired_booking_holds),
         ("process_outbox_events", _process_outbox_events),
     )
 
