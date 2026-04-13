@@ -1,4 +1,5 @@
 import type { AdminTourRecord } from '@/features/admin/tours/api/adminTours.api'
+import { Alert } from '@/shared/ui/Alert'
 import { Badge } from '@/shared/ui/Badge'
 import { Button } from '@/shared/ui/Button'
 import { EmptyState } from '@/shared/ui/EmptyState'
@@ -8,6 +9,7 @@ import { Table } from '@/shared/ui/Table'
 interface TourManagementTableProps {
   tours?: AdminTourRecord[]
   isPending?: boolean
+  errorMessage?: string
   canEdit?: boolean
   onEditTour: (tour: AdminTourRecord) => void
 }
@@ -15,6 +17,7 @@ interface TourManagementTableProps {
 export const TourManagementTable = ({
   tours,
   isPending = false,
+  errorMessage,
   canEdit = true,
   onEditTour,
 }: TourManagementTableProps) => {
@@ -28,11 +31,15 @@ export const TourManagementTable = ({
     )
   }
 
+  if (errorMessage) {
+    return <Alert tone="danger">{errorMessage}</Alert>
+  }
+
   if (!tours || tours.length === 0) {
     return (
       <EmptyState
         title="No tours available"
-        description="Create the first tour here so operations can attach schedules and pricing."
+        description="Tours on the current page will appear here once inventory is available."
       />
     )
   }

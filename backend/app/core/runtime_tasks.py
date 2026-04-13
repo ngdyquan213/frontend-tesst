@@ -8,6 +8,10 @@ from typing import Callable
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.logging import build_log_extra
+from app.core.runtime_heartbeat import (
+    publish_runtime_task_state,
+    publish_runtime_worker_heartbeat,
+)
 from app.core.runtime_state import runtime_task_state
 from app.models.enums import BookingStatus, PaymentStatus
 from app.repositories.booking_repository import BookingRepository
@@ -20,6 +24,27 @@ from app.services.booking_inventory_service import BookingInventoryService
 from app.services.outbox_service import OutboxService, process_outbox_events
 
 logger = logging.getLogger("app.runtime")
+NONCRITICAL_TASK_NAMES = (
+    "cleanup_refresh_tokens",
+    "cleanup_expired_booking_holds",
+    "process_outbox_events",
+)
+
+
+def _sync_runtime_task_state(task_name: str) -> None:
+    snapshot = runtime_task_state.snapshot()
+    task_state = snapshot.get(task_name)
+    if not task_state:
+        return
+
+    try:
+        publish_runtime_task_state(
+            task_name,
+            task_state,
+            interval_seconds=settings.RUNTIME_MAINTENANCE_INTERVAL_SECONDS,
+        )
+    except Exception:
+        logger.exception("runtime_task_state_publish_failed | task=%s", task_name)
 
 
 def cleanup_refresh_tokens() -> None:
@@ -118,15 +143,32 @@ def run_noncritical_maintenance() -> None:
         ("process_outbox_events", _process_outbox_events),
     )
 
+    try:
+        publish_runtime_worker_heartbeat(
+            interval_seconds=settings.RUNTIME_MAINTENANCE_INTERVAL_SECONDS
+        )
+    except Exception:
+        logger.exception("runtime_worker_heartbeat_publish_failed")
+
     for task_name, task in tasks:
         runtime_task_state.mark_started(task_name)
+        _sync_runtime_task_state(task_name)
         try:
             task()
         except Exception as exc:
             runtime_task_state.mark_failure(task_name, str(exc))
+            _sync_runtime_task_state(task_name)
             logger.exception("runtime_noncritical_task_failed | task=%s", task_name)
         else:
             runtime_task_state.mark_success(task_name)
+            _sync_runtime_task_state(task_name)
+
+    try:
+        publish_runtime_worker_heartbeat(
+            interval_seconds=settings.RUNTIME_MAINTENANCE_INTERVAL_SECONDS
+        )
+    except Exception:
+        logger.exception("runtime_worker_heartbeat_publish_failed")
 
 
 def _process_outbox_events() -> None:

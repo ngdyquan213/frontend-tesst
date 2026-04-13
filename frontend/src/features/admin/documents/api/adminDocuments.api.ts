@@ -1,7 +1,9 @@
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockable } from '@/shared/api/mockApi'
+import type { PaginatedResult } from '@/shared/types/pagination'
 
-function mapAdminDocument(document: Awaited<ReturnType<typeof apiClient.getAdminDocuments>>[number]) {
+function mapAdminDocument(
+  document: Awaited<ReturnType<typeof apiClient.getAdminDocuments>>['documents'][number],
+) {
   const normalizedStatus = document.status?.toLowerCase()
 
   return {
@@ -21,36 +23,30 @@ function mapAdminDocument(document: Awaited<ReturnType<typeof apiClient.getAdmin
 }
 
 export const adminDocumentsApi = {
-  getDocuments: async () =>
-    resolveMockable({
-      mock: ({ documents }) => documents.map((document) => ({ ...document })),
-      live: async () => {
-        const response = await apiClient.getAdminDocuments()
-        return response.map(mapAdminDocument)
+  getDocuments: async (
+    page = 1,
+    pageSize = 10,
+  ): Promise<PaginatedResult<ReturnType<typeof mapAdminDocument>>> => {
+    const offset = (page - 1) * pageSize
+    const response = await apiClient.getAdminDocuments(pageSize, offset)
+
+    return {
+      items: response.documents.map(mapAdminDocument),
+      meta: {
+        page,
+        pageSize,
+        total: response.total,
       },
-    }),
+    }
+  },
   reviewDocument: async ({
     documentId,
     status,
   }: {
     documentId: string
     status: 'approved' | 'rejected'
-  }) =>
-    resolveMockable({
-      mock: ({ documents }) => {
-        const nextStatus = status === 'approved' ? 'verified' : 'rejected'
-        const document = documents.find((item) => item.id === documentId)
-
-        if (!document) {
-          throw new Error(`Document ${documentId} was not found in the moderation queue.`)
-        }
-
-        document.status = nextStatus
-        return { ...document }
-      },
-      live: async () => {
-        const document = await apiClient.reviewAdminDocument(documentId, status)
-        return mapAdminDocument(document)
-      },
-    }),
+  }) => {
+    const document = await apiClient.reviewAdminDocument(documentId, status)
+    return mapAdminDocument(document)
+  },
 }

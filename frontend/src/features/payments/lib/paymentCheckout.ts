@@ -1,5 +1,5 @@
+import { useAuthStore } from '@/features/auth/model/auth.store'
 import { apiClient } from '@/shared/api/apiClient'
-import { authStorage } from '@/shared/storage/auth.storage'
 import type { PaymentMethod } from '@/shared/types/common'
 
 interface CreatePaymentIntentInput {
@@ -33,12 +33,12 @@ function buildCheckoutAttemptFingerprint({
   travelerCounts,
   travelDate,
 }: CreatePaymentIntentInput) {
-  const accessTokenFragment = (authStorage.getAccessToken() ?? 'guest')
+  const authUserFragment = (useAuthStore.getState().user?.id ?? 'guest')
     .slice(0, 24)
     .replace(/[^a-zA-Z0-9_-]/g, '')
 
   return [
-    accessTokenFragment,
+    authUserFragment,
     methodId,
     tourId,
     scheduleId,

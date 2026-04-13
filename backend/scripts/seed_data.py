@@ -218,6 +218,72 @@ def seed_tours(db: Session) -> dict[str, Tour]:
             "tour_type": "domestic",
             "status": TourStatus.active,
         },
+        {
+            "code": "AMALFI-6N5D",
+            "name": "Amalfi Coast Escape 6N5D",
+            "destination": "Amalfi Coast",
+            "description": "Curated coastline itinerary with premium departures across Amalfi villages and seaside towns.",
+            "duration_days": 6,
+            "duration_nights": 5,
+            "meeting_point": "Naples International Airport",
+            "tour_type": "international",
+            "status": TourStatus.active,
+        },
+        {
+            "code": "CT-5N4D",
+            "name": "Cinque Terre Trail 5N4D",
+            "destination": "Cinque Terre",
+            "description": "Harbor villages, scenic coastal walks, and relaxed Ligurian pacing.",
+            "duration_days": 5,
+            "duration_nights": 4,
+            "meeting_point": "Pisa Centrale",
+            "tour_type": "international",
+            "status": TourStatus.active,
+        },
+        {
+            "code": "ICE-7N6D",
+            "name": "Iceland Ring Highlights 7N6D",
+            "destination": "Iceland",
+            "description": "Waterfalls, lava fields, geothermal stops, and weather-smart escorted logistics.",
+            "duration_days": 7,
+            "duration_nights": 6,
+            "meeting_point": "Keflavik International Airport",
+            "tour_type": "international",
+            "status": TourStatus.active,
+        },
+        {
+            "code": "BALTIC-6N5D",
+            "name": "Baltic Capitals Discovery 6N5D",
+            "destination": "Baltic Capitals",
+            "description": "A polished city circuit across Tallinn, Riga, and Vilnius.",
+            "duration_days": 6,
+            "duration_nights": 5,
+            "meeting_point": "Tallinn Airport",
+            "tour_type": "international",
+            "status": TourStatus.active,
+        },
+        {
+            "code": "KYOTO-4N3D",
+            "name": "Kyoto Heritage Stay 4N3D",
+            "destination": "Kyoto",
+            "description": "Temple districts, heritage lanes, and gently paced cultural mornings.",
+            "duration_days": 4,
+            "duration_nights": 3,
+            "meeting_point": "Kyoto Station",
+            "tour_type": "international",
+            "status": TourStatus.active,
+        },
+        {
+            "code": "BALI-5N4D",
+            "name": "Bali Wellness Retreat 5N4D",
+            "destination": "Bali",
+            "description": "Rice terraces, wellness rituals, and resort-paced cultural discovery.",
+            "duration_days": 5,
+            "duration_nights": 4,
+            "meeting_point": "Ngurah Rai International Airport",
+            "tour_type": "international",
+            "status": TourStatus.active,
+        },
     ]
 
     result: dict[str, Tour] = {}
@@ -236,6 +302,12 @@ def seed_tours(db: Session) -> dict[str, Tour]:
 def seed_tour_details(db: Session, tours: dict[str, Tour]) -> None:
     pq = tours["PQ-3N2D"]
     dl = tours["DL-4N3D"]
+    amalfi = tours["AMALFI-6N5D"]
+    cinque_terre = tours["CT-5N4D"]
+    iceland = tours["ICE-7N6D"]
+    baltic = tours["BALTIC-6N5D"]
+    kyoto = tours["KYOTO-4N3D"]
+    bali = tours["BALI-5N4D"]
 
     if not db.query(TourItinerary).filter(TourItinerary.tour_id == pq.id).first():
         db.add_all(
@@ -311,6 +383,174 @@ def seed_tour_details(db: Session, tours: dict[str, Tour]) -> None:
             )
         )
 
+    if not db.query(TourItinerary).filter(TourItinerary.tour_id == amalfi.id).first():
+        db.add_all(
+            [
+                TourItinerary(
+                    tour_id=amalfi.id,
+                    day_number=1,
+                    title="Arrival in Naples",
+                    description="Airport pickup, transfer to the coast, and welcome dinner.",
+                ),
+                TourItinerary(
+                    tour_id=amalfi.id,
+                    day_number=2,
+                    title="Cliffside towns",
+                    description="Guided time through Positano and Amalfi with terrace viewpoints.",
+                ),
+            ]
+        )
+
+    if not db.query(TourPolicy).filter(TourPolicy.tour_id == amalfi.id).first():
+        db.add(
+            TourPolicy(
+                tour_id=amalfi.id,
+                cancellation_policy="Free cancellation up to 21 days before departure.",
+                refund_policy="60% refund within 8-20 days before departure.",
+                notes="No refund within 7 days of departure.",
+            )
+        )
+
+    if not db.query(TourItinerary).filter(TourItinerary.tour_id == cinque_terre.id).first():
+        db.add_all(
+            [
+                TourItinerary(
+                    tour_id=cinque_terre.id,
+                    day_number=1,
+                    title="Arrival in Liguria",
+                    description="Hotel check-in and harbor orientation walk.",
+                ),
+                TourItinerary(
+                    tour_id=cinque_terre.id,
+                    day_number=2,
+                    title="Village trail day",
+                    description="Coastal trail segments and local tasting stops.",
+                ),
+            ]
+        )
+
+    if not db.query(TourPolicy).filter(TourPolicy.tour_id == cinque_terre.id).first():
+        db.add(
+            TourPolicy(
+                tour_id=cinque_terre.id,
+                cancellation_policy="Free cancellation up to 18 days before departure.",
+                refund_policy="50% refund within 7-17 days before departure.",
+                notes="Weather-dependent route adjustments may apply.",
+            )
+        )
+
+    if not db.query(TourItinerary).filter(TourItinerary.tour_id == iceland.id).first():
+        db.add_all(
+            [
+                TourItinerary(
+                    tour_id=iceland.id,
+                    day_number=1,
+                    title="Arrival and Reykjavik briefing",
+                    description="Transfer, city orientation, and evening operations briefing.",
+                ),
+                TourItinerary(
+                    tour_id=iceland.id,
+                    day_number=2,
+                    title="South coast circuit",
+                    description="Waterfalls, black-sand beaches, and glacier viewpoints.",
+                ),
+            ]
+        )
+
+    if not db.query(TourPolicy).filter(TourPolicy.tour_id == iceland.id).first():
+        db.add(
+            TourPolicy(
+                tour_id=iceland.id,
+                cancellation_policy="Free cancellation up to 25 days before departure.",
+                refund_policy="65% refund within 10-24 days before departure.",
+                notes="Road and weather changes are handled by on-trip operations.",
+            )
+        )
+
+    if not db.query(TourItinerary).filter(TourItinerary.tour_id == baltic.id).first():
+        db.add_all(
+            [
+                TourItinerary(
+                    tour_id=baltic.id,
+                    day_number=1,
+                    title="Tallinn arrival",
+                    description="Transfer, old-town walk, and welcome briefing.",
+                ),
+                TourItinerary(
+                    tour_id=baltic.id,
+                    day_number=2,
+                    title="Capital-to-capital transfer",
+                    description="Scenic coach transfer with curated city stops.",
+                ),
+            ]
+        )
+
+    if not db.query(TourPolicy).filter(TourPolicy.tour_id == baltic.id).first():
+        db.add(
+            TourPolicy(
+                tour_id=baltic.id,
+                cancellation_policy="Free cancellation up to 20 days before departure.",
+                refund_policy="55% refund within 8-19 days before departure.",
+                notes="Cross-border timing may shift with local event controls.",
+            )
+        )
+
+    if not db.query(TourItinerary).filter(TourItinerary.tour_id == kyoto.id).first():
+        db.add_all(
+            [
+                TourItinerary(
+                    tour_id=kyoto.id,
+                    day_number=1,
+                    title="Heritage arrival",
+                    description="Station meet-up, ryokan check-in, and evening neighborhood stroll.",
+                ),
+                TourItinerary(
+                    tour_id=kyoto.id,
+                    day_number=2,
+                    title="Temple morning",
+                    description="Guided temple district route and tea experience.",
+                ),
+            ]
+        )
+
+    if not db.query(TourPolicy).filter(TourPolicy.tour_id == kyoto.id).first():
+        db.add(
+            TourPolicy(
+                tour_id=kyoto.id,
+                cancellation_policy="Free cancellation up to 16 days before departure.",
+                refund_policy="45% refund within 6-15 days before departure.",
+                notes="Peak blossom and foliage periods may have stricter hotel allocations.",
+            )
+        )
+
+    if not db.query(TourItinerary).filter(TourItinerary.tour_id == bali.id).first():
+        db.add_all(
+            [
+                TourItinerary(
+                    tour_id=bali.id,
+                    day_number=1,
+                    title="Arrival and recovery",
+                    description="Airport transfer, villa check-in, and sunset recovery session.",
+                ),
+                TourItinerary(
+                    tour_id=bali.id,
+                    day_number=2,
+                    title="Wellness and terraces",
+                    description="Morning wellness activity followed by rice-terrace exploration.",
+                ),
+            ]
+        )
+
+    if not db.query(TourPolicy).filter(TourPolicy.tour_id == bali.id).first():
+        db.add(
+            TourPolicy(
+                tour_id=bali.id,
+                cancellation_policy="Free cancellation up to 18 days before departure.",
+                refund_policy="50% refund within 7-17 days before departure.",
+                notes="Wellness sessions can be adapted for weather or guest health needs.",
+            )
+        )
+
     db.flush()
 
 
@@ -338,6 +578,60 @@ def seed_tour_schedules(
             "return_date": today + timedelta(days=13),
             "capacity": 15,
             "available_slots": 15,
+            "status": TourScheduleStatus.scheduled,
+        },
+        {
+            "key": "AMALFI-S1",
+            "tour_code": "AMALFI-6N5D",
+            "departure_date": today + timedelta(days=21),
+            "return_date": today + timedelta(days=26),
+            "capacity": 16,
+            "available_slots": 16,
+            "status": TourScheduleStatus.scheduled,
+        },
+        {
+            "key": "CT-S1",
+            "tour_code": "CT-5N4D",
+            "departure_date": today + timedelta(days=24),
+            "return_date": today + timedelta(days=28),
+            "capacity": 14,
+            "available_slots": 14,
+            "status": TourScheduleStatus.scheduled,
+        },
+        {
+            "key": "ICE-S1",
+            "tour_code": "ICE-7N6D",
+            "departure_date": today + timedelta(days=30),
+            "return_date": today + timedelta(days=36),
+            "capacity": 18,
+            "available_slots": 18,
+            "status": TourScheduleStatus.scheduled,
+        },
+        {
+            "key": "BALTIC-S1",
+            "tour_code": "BALTIC-6N5D",
+            "departure_date": today + timedelta(days=33),
+            "return_date": today + timedelta(days=38),
+            "capacity": 20,
+            "available_slots": 20,
+            "status": TourScheduleStatus.scheduled,
+        },
+        {
+            "key": "KYOTO-S1",
+            "tour_code": "KYOTO-4N3D",
+            "departure_date": today + timedelta(days=17),
+            "return_date": today + timedelta(days=20),
+            "capacity": 12,
+            "available_slots": 12,
+            "status": TourScheduleStatus.scheduled,
+        },
+        {
+            "key": "BALI-S1",
+            "tour_code": "BALI-5N4D",
+            "departure_date": today + timedelta(days=19),
+            "return_date": today + timedelta(days=23),
+            "capacity": 18,
+            "available_slots": 18,
             "status": TourScheduleStatus.scheduled,
         },
     ]
@@ -402,6 +696,96 @@ def seed_tour_price_rules(db: Session, schedules: dict[str, TourSchedule]) -> No
             "schedule_key": "DL-S1",
             "traveler_type": TravelerType.infant,
             "price": Decimal("400000.00"),
+        },
+        {
+            "schedule_key": "AMALFI-S1",
+            "traveler_type": TravelerType.adult,
+            "price": Decimal("42990000.00"),
+        },
+        {
+            "schedule_key": "AMALFI-S1",
+            "traveler_type": TravelerType.child,
+            "price": Decimal("36990000.00"),
+        },
+        {
+            "schedule_key": "AMALFI-S1",
+            "traveler_type": TravelerType.infant,
+            "price": Decimal("9900000.00"),
+        },
+        {
+            "schedule_key": "CT-S1",
+            "traveler_type": TravelerType.adult,
+            "price": Decimal("33500000.00"),
+        },
+        {
+            "schedule_key": "CT-S1",
+            "traveler_type": TravelerType.child,
+            "price": Decimal("28900000.00"),
+        },
+        {
+            "schedule_key": "CT-S1",
+            "traveler_type": TravelerType.infant,
+            "price": Decimal("8500000.00"),
+        },
+        {
+            "schedule_key": "ICE-S1",
+            "traveler_type": TravelerType.adult,
+            "price": Decimal("58900000.00"),
+        },
+        {
+            "schedule_key": "ICE-S1",
+            "traveler_type": TravelerType.child,
+            "price": Decimal("51900000.00"),
+        },
+        {
+            "schedule_key": "ICE-S1",
+            "traveler_type": TravelerType.infant,
+            "price": Decimal("12900000.00"),
+        },
+        {
+            "schedule_key": "BALTIC-S1",
+            "traveler_type": TravelerType.adult,
+            "price": Decimal("44900000.00"),
+        },
+        {
+            "schedule_key": "BALTIC-S1",
+            "traveler_type": TravelerType.child,
+            "price": Decimal("38900000.00"),
+        },
+        {
+            "schedule_key": "BALTIC-S1",
+            "traveler_type": TravelerType.infant,
+            "price": Decimal("9900000.00"),
+        },
+        {
+            "schedule_key": "KYOTO-S1",
+            "traveler_type": TravelerType.adult,
+            "price": Decimal("31900000.00"),
+        },
+        {
+            "schedule_key": "KYOTO-S1",
+            "traveler_type": TravelerType.child,
+            "price": Decimal("26900000.00"),
+        },
+        {
+            "schedule_key": "KYOTO-S1",
+            "traveler_type": TravelerType.infant,
+            "price": Decimal("7900000.00"),
+        },
+        {
+            "schedule_key": "BALI-S1",
+            "traveler_type": TravelerType.adult,
+            "price": Decimal("28900000.00"),
+        },
+        {
+            "schedule_key": "BALI-S1",
+            "traveler_type": TravelerType.child,
+            "price": Decimal("23900000.00"),
+        },
+        {
+            "schedule_key": "BALI-S1",
+            "traveler_type": TravelerType.infant,
+            "price": Decimal("6900000.00"),
         },
     ]
 

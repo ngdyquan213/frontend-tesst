@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { adminBookingsApi } from '@/features/admin/bookings/api/adminBookings.api'
 import { adminBookingKeys } from '@/features/admin/bookings/queries/adminBookingKeys'
 
-export const useAdminBookingsQuery = () =>
+export const useAdminBookingsQuery = (page = 1, pageSize = 10) =>
   useQuery({
-    queryKey: adminBookingKeys.list(),
-    queryFn: adminBookingsApi.getBookings,
+    queryKey: adminBookingKeys.list({ page, pageSize }),
+    queryFn: () => adminBookingsApi.getBookings(page, pageSize),
+    placeholderData: keepPreviousData,
   })
-

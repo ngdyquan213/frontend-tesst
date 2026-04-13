@@ -6,8 +6,8 @@ from typing import Literal
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from app.models.enums import PaymentMethod
 from app.core.secret_manager import load_secret_manager_environment
+from app.models.enums import PaymentMethod
 
 load_secret_manager_environment()
 
@@ -120,7 +120,10 @@ class Settings(BaseSettings):
                 f"@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
             )
 
-        if self.ENVIRONMENT in {"staging", "production"} and "API_DOCS_ENABLED" not in self.model_fields_set:
+        if (
+            self.ENVIRONMENT in {"staging", "production"}
+            and "API_DOCS_ENABLED" not in self.model_fields_set
+        ):
             self.API_DOCS_ENABLED = False
 
         if (
@@ -417,7 +420,10 @@ class Settings(BaseSettings):
                 "STRIPE_SECRET_KEY is required when ENABLED_PAYMENT_METHODS includes stripe"
             )
 
-        if PaymentMethod.stripe in enabled_payment_methods and not self.STRIPE_PUBLISHABLE_KEY.strip():
+        if (
+            PaymentMethod.stripe in enabled_payment_methods
+            and not self.STRIPE_PUBLISHABLE_KEY.strip()
+        ):
             raise ValueError(
                 "STRIPE_PUBLISHABLE_KEY is required when ENABLED_PAYMENT_METHODS includes stripe"
             )

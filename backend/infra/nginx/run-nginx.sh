@@ -68,9 +68,9 @@ cat >>/etc/nginx/nginx.conf <<EOF
             proxy_set_header Host \$host;
             proxy_set_header X-Real-IP \$remote_addr;
             proxy_set_header X-Forwarded-For \$remote_addr;
-            proxy_set_header Forwarded "";
             proxy_set_header X-Forwarded-Proto https;
             proxy_set_header X-Request-ID \$request_id;
+            proxy_set_header Forwarded "";
 
             proxy_connect_timeout 30s;
             proxy_send_timeout 60s;
@@ -99,9 +99,9 @@ cat >>/etc/nginx/nginx.conf <<EOF
             proxy_set_header Host \$host;
             proxy_set_header X-Real-IP \$remote_addr;
             proxy_set_header X-Forwarded-For \$remote_addr;
-            proxy_set_header Forwarded "";
             proxy_set_header X-Forwarded-Proto \$scheme;
             proxy_set_header X-Request-ID \$request_id;
+            proxy_set_header Forwarded "";
 
             proxy_connect_timeout 30s;
             proxy_send_timeout 60s;

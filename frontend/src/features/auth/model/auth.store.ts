@@ -1,8 +1,6 @@
 import { create } from 'zustand'
 import { apiClient } from '@/shared/api/apiClient'
-import { buildAuthStoreSessionState, clearMockAuthSession, getStoredMockAuthState, persistMockAuthResponse } from '@/shared/api/mockSession'
-import { isMockApiEnabled } from '@/shared/api/mockMode'
-import type { AuthResponse, User } from '@/shared/types/api'
+import type { User } from '@/shared/types/api'
 
 interface AuthState {
   user: User | null
@@ -36,38 +34,31 @@ function getErrorMessage(error: unknown, fallback: string) {
   return fallback
 }
 
-function persistAuth(response: AuthResponse) {
-  persistMockAuthResponse(response)
+export function createUnauthenticatedAuthState() {
+  return {
+    user: null,
+    token: null,
+    refreshToken: null,
+    isAuthenticated: false,
+    isInitializing: true,
+    isLoading: false,
+    error: null,
+  } satisfies Pick<
+    AuthState,
+    'user' | 'token' | 'refreshToken' | 'isAuthenticated' | 'isInitializing' | 'isLoading' | 'error'
+  >
 }
-
-function clearPersistedAuth() {
-  clearMockAuthSession()
-}
-
-const initialMockAuthState = getStoredMockAuthState()
 
 export const useAuthStore = create<AuthState>((set, get) => ({
-  user: null,
-  token: initialMockAuthState.token,
-  refreshToken: initialMockAuthState.refreshToken,
-  isAuthenticated: initialMockAuthState.isAuthenticated,
-  isInitializing: true,
-  isLoading: false,
-  error: null,
+  ...createUnauthenticatedAuthState(),
 
   initializeAuth: async () => {
-    const storedState = getStoredMockAuthState()
-    const token = storedState.token ?? get().token
-    const refreshToken = storedState.refreshToken ?? get().refreshToken
+    const currentState = get()
 
-    if (isMockApiEnabled() && !token && !refreshToken) {
-      set({
-        user: null,
-        token: null,
-        refreshToken: null,
-        isAuthenticated: false,
-        isInitializing: false,
-      })
+    // Preserve a fully hydrated in-memory session instead of clobbering it
+    // with a second restore call during provider bootstrap.
+    if (currentState.isAuthenticated && currentState.user) {
+      set({ isInitializing: false })
       return
     }
 
@@ -75,7 +66,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const user = await apiClient.restoreSession()
 
       if (!user) {
-        clearPersistedAuth()
         set({
           user: null,
           token: null,
@@ -88,13 +78,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       set({
         user,
-        token,
-        refreshToken,
+        token: null,
+        refreshToken: null,
         isAuthenticated: true,
         isInitializing: false,
       })
     } catch {
-      clearPersistedAuth()
       set({
         user: null,
         token: null,
@@ -110,13 +99,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       const response = await apiClient.login(email, password)
-      persistAuth(response)
-      set(buildAuthStoreSessionState(response))
       const user = response.user ?? await apiClient.getMe()
 
       set({
         user,
-        ...buildAuthStoreSessionState(response),
+        token: null,
+        refreshToken: null,
+        isAuthenticated: true,
         isLoading: false,
       })
     } catch (error: unknown) {
@@ -132,13 +121,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await apiClient.register(email, password, name)
       const response = await apiClient.login(email, password)
-      persistAuth(response)
-      set(buildAuthStoreSessionState(response))
       const user = response.user ?? await apiClient.getMe()
 
       set({
         user,
-        ...buildAuthStoreSessionState(response),
+        token: null,
+        refreshToken: null,
+        isAuthenticated: true,
         isLoading: false,
       })
     } catch (error: unknown) {
@@ -156,7 +145,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch {
       // Logout should always clear local auth state even if the API call fails.
     } finally {
-      clearPersistedAuth()
       set({
         user: null,
         token: null,

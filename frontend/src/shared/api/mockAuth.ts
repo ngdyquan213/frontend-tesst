@@ -25,6 +25,7 @@ function createMockApiUser(name: string, email: string, role: string, id: string
   return {
     id,
     email,
+    email_verified: true,
     name,
     role,
     roles: [role],

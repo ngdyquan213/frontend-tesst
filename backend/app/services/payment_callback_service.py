@@ -102,6 +102,107 @@ class PaymentCallbackService(ApplicationService):
         self.commit()
         raise ValidationAppException(message)
 
+    @staticmethod
+    def _build_callback_payload(
+        *,
+        callback_timestamp: int | None,
+        gateway_name: str,
+        gateway_order_ref: str,
+        gateway_transaction_ref: str,
+        amount: str,
+        currency: str,
+        status: str,
+    ) -> dict[str, str | int | None]:
+        return {
+            "timestamp": callback_timestamp,
+            "gateway_name": gateway_name,
+            "gateway_order_ref": gateway_order_ref,
+            "gateway_transaction_ref": gateway_transaction_ref,
+            "amount": amount,
+            "currency": currency,
+            "status": status,
+        }
+
+    def _acknowledge_duplicate_callback(
+        self,
+        *,
+        existing_callback: PaymentCallback,
+        payment_hint,
+        callback_payload: dict[str, str | int | None],
+        normalized_ip: str | None,
+    ):
+        if (
+            existing_callback.payment_id is None
+            or str(existing_callback.payment_id) != str(payment_hint.id)
+        ):
+            self._reject_callback(
+                message="Replay callback detected",
+                reason="replay_detected",
+                severity="medium",
+                title="Replay payment callback detected",
+                description="Duplicate payment callback transaction reference detected",
+                ip_address=normalized_ip,
+                event_data={
+                    "gateway_name": callback_payload["gateway_name"],
+                    "gateway_order_ref": callback_payload["gateway_order_ref"],
+                    "gateway_transaction_ref": callback_payload["gateway_transaction_ref"],
+                },
+            )
+
+        existing_payload = existing_callback.callback_payload or {}
+        comparable_fields = (
+            "gateway_name",
+            "gateway_order_ref",
+            "gateway_transaction_ref",
+            "amount",
+            "currency",
+            "status",
+        )
+        payload_matches = all(
+            str(existing_payload.get(field, "")).lower()
+            == str(callback_payload.get(field, "")).lower()
+            for field in comparable_fields
+        )
+        if not payload_matches:
+            self._reject_callback(
+                message="Replay callback detected",
+                reason="replay_detected",
+                severity="high",
+                title="Conflicting payment callback replay detected",
+                description=(
+                    "Duplicate payment callback transaction reference "
+                    "carried conflicting data"
+                ),
+                ip_address=normalized_ip,
+                event_data={
+                    "gateway_name": callback_payload["gateway_name"],
+                    "gateway_order_ref": callback_payload["gateway_order_ref"],
+                    "gateway_transaction_ref": callback_payload["gateway_transaction_ref"],
+                },
+            )
+
+        payment = self.payment_repo.get_by_id(str(payment_hint.id))
+        if not payment:
+            raise NotFoundAppException("Payment not found")
+
+        booking = self.booking_repo.get_by_id(str(payment.booking_id))
+        if not booking:
+            raise NotFoundAppException("Booking not found")
+
+        logger.info(
+            "payment_callback_duplicate_acknowledged",
+            extra=build_log_extra(
+                "payment_callback_duplicate_acknowledged",
+                payment_id=str(payment.id),
+                booking_id=str(booking.id),
+                gateway_name=str(callback_payload["gateway_name"]),
+                gateway_order_ref=str(callback_payload["gateway_order_ref"]),
+                gateway_transaction_ref=str(callback_payload["gateway_transaction_ref"]),
+                source_ip=normalized_ip,
+            ),
+        )
+        return payment, booking
+
     def process_callback(
         self,
         *,
@@ -214,28 +315,31 @@ class PaymentCallbackService(ApplicationService):
                     },
                 )
 
+        callback_payload = self._build_callback_payload(
+            callback_timestamp=callback_timestamp,
+            gateway_name=gateway_name,
+            gateway_order_ref=gateway_order_ref,
+            gateway_transaction_ref=gateway_transaction_ref,
+            amount=amount,
+            currency=currency,
+            status=status,
+        )
+
+        payment_hint = self.payment_repo.get_by_gateway_order_ref(gateway_order_ref)
+        if not payment_hint:
+            raise NotFoundAppException("Payment not found")
+
         existing_callback = self.payment_repo.get_callback_by_gateway_txn_ref(
             gateway_name=gateway_name,
             gateway_transaction_ref=gateway_transaction_ref,
         )
         if existing_callback:
-            self._reject_callback(
-                message="Replay callback detected",
-                reason="replay_detected",
-                severity="medium",
-                title="Replay payment callback detected",
-                description="Duplicate payment callback transaction reference detected",
-                ip_address=normalized_ip,
-                event_data={
-                    "gateway_name": gateway_name,
-                    "gateway_order_ref": gateway_order_ref,
-                    "gateway_transaction_ref": gateway_transaction_ref,
-                },
+            return self._acknowledge_duplicate_callback(
+                existing_callback=existing_callback,
+                payment_hint=payment_hint,
+                callback_payload=callback_payload,
+                normalized_ip=normalized_ip,
             )
-
-        payment_hint = self.payment_repo.get_by_gateway_order_ref(gateway_order_ref)
-        if not payment_hint:
-            raise NotFoundAppException("Payment not found")
 
         booking = self.booking_repo.get_by_id_for_update(str(payment_hint.booking_id))
         if not booking:
@@ -297,15 +401,7 @@ class PaymentCallbackService(ApplicationService):
                     payment_id=payment.id,
                     gateway_name=gateway_name,
                     gateway_transaction_ref=gateway_transaction_ref,
-                    callback_payload={
-                        "timestamp": callback_timestamp,
-                        "gateway_name": gateway_name,
-                        "gateway_order_ref": gateway_order_ref,
-                        "gateway_transaction_ref": gateway_transaction_ref,
-                        "amount": amount,
-                        "currency": currency,
-                        "status": status,
-                    },
+                    callback_payload=callback_payload,
                     signature_valid=True,
                     processed=True,
                     source_ip=normalized_ip,
@@ -374,18 +470,18 @@ class PaymentCallbackService(ApplicationService):
             if PAYMENT_CALLBACK_REPLAY_CONSTRAINT not in str(exc.orig):
                 raise
 
-            self._reject_callback(
-                message="Replay callback detected",
-                reason="replay_detected",
-                severity="medium",
-                title="Replay payment callback detected",
-                description="Duplicate payment callback transaction reference detected",
-                ip_address=normalized_ip,
-                event_data={
-                    "gateway_name": gateway_name,
-                    "gateway_order_ref": gateway_order_ref,
-                    "gateway_transaction_ref": gateway_transaction_ref,
-                },
+            existing_callback = self.payment_repo.get_callback_by_gateway_txn_ref(
+                gateway_name=gateway_name,
+                gateway_transaction_ref=gateway_transaction_ref,
+            )
+            if existing_callback is None:
+                raise
+
+            return self._acknowledge_duplicate_callback(
+                existing_callback=existing_callback,
+                payment_hint=payment_hint,
+                callback_payload=callback_payload,
+                normalized_ip=normalized_ip,
             )
         except Exception:
             self.db.rollback()

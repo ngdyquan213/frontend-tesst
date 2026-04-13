@@ -1,5 +1,4 @@
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockable } from '@/shared/api/mockApi'
 
 function triggerDownload(blob: Blob, filename: string) {
   const objectUrl = URL.createObjectURL(blob)
@@ -14,24 +13,16 @@ function triggerDownload(blob: Blob, filename: string) {
 
 export const vouchersApi = {
   getVouchers: async () =>
-    resolveMockable({
-      mock: ({ vouchers }) => vouchers,
-      live: async () =>
-        (await apiClient.getMyVoucherSummaries()).map((voucher) => ({
-          id: voucher.booking_id,
-          bookingId: voucher.booking_id,
-          title: `Voucher for ${voucher.booking_code ?? voucher.booking_id}`,
-          downloadLabel: 'Download PDF',
-          issuedAt: voucher.issued_at,
-        })),
-    }),
-  downloadVoucher: async (id: string) =>
-    resolveMockable({
-      mock: ({ vouchers }) => vouchers.find((voucher) => voucher.id === id),
-      live: async () => {
-        const blob = await apiClient.downloadVoucherPdf(id)
-        triggerDownload(blob, `voucher-${id}.pdf`)
-        return { id }
-      },
-    }),
+    (await apiClient.getMyVoucherSummaries()).map((voucher) => ({
+      id: voucher.booking_id,
+      bookingId: voucher.booking_id,
+      title: `Voucher for ${voucher.booking_code ?? voucher.booking_id}`,
+      downloadLabel: 'Download PDF',
+      issuedAt: voucher.issued_at,
+    })),
+  downloadVoucher: async (id: string) => {
+    const blob = await apiClient.downloadVoucherPdf(id)
+    triggerDownload(blob, `voucher-${id}.pdf`)
+    return { id }
+  },
 }

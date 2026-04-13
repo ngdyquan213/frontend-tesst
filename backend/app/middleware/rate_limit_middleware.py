@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import time
 from typing import Callable
@@ -111,6 +112,15 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             or self._is_payment_callback_path(path)
         )
 
+    @staticmethod
+    async def _read_rate_limit_state(key: str, window_seconds: int) -> tuple[int, int]:
+        current = await asyncio.to_thread(redis_client.incr, key)
+        if current == 1:
+            await asyncio.to_thread(redis_client.expire, key, window_seconds)
+
+        ttl = await asyncio.to_thread(redis_client.ttl, key)
+        return current, ttl
+
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         if not settings.RATE_LIMIT_ENABLED:
             return await call_next(request)
@@ -120,11 +130,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         window_seconds = self.window_seconds
 
         try:
-            current = redis_client.incr(key)
-            if current == 1:
-                redis_client.expire(key, window_seconds)
-
-            ttl = redis_client.ttl(key)
+            current, ttl = await self._read_rate_limit_state(key, window_seconds)
         except Exception:
             operational_metrics.record_rate_limit_backend_failure()
             if self._should_fail_closed(request.url.path):

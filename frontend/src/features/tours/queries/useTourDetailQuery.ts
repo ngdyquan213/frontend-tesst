@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { getTourDetailById as getMockTourDetailById } from '@/features/tours/api/tours.api'
+import { apiClient } from '@/shared/api/apiClient'
+import { getTourDetailById } from '@/features/tours/api/tours.api'
+import { findMatchingDestinationContent } from '@/features/tours/lib/matchDestinationContent'
 import {
   buildTourDetail,
   formatDateLabel,
@@ -9,20 +11,16 @@ import {
   type TourPriceRule,
   type TourSchedule,
 } from '@/features/tours/lib/tourDetailMapper'
-import { apiClient } from '@/shared/api/apiClient'
-import { isMockApiEnabled } from '@/shared/api/mockMode'
 
 async function fetchTourDetail(id: string, signal?: AbortSignal) {
-  if (isMockApiEnabled()) {
-    const mockTour = await getMockTourDetailById(id, signal)
-
-    if (mockTour) {
-      return buildTourDetail(mockTour)
-    }
+  const rawTour = await getTourDetailById(id, signal)
+  if (!rawTour) {
+    throw new Error('Tour not found.')
   }
 
-  const rawTour = await apiClient.getTourById(id)
-  return buildTourDetail(rawTour)
+  const destinations = await apiClient.getDestinations().catch(() => [])
+
+  return buildTourDetail(rawTour, findMatchingDestinationContent(rawTour, destinations))
 }
 
 export function createTourDetailQueryOptions(id?: string) {

@@ -5,10 +5,9 @@ import {
   buildPaymentPath,
   buildTourSchedulesPath,
 } from '@/app/router/routePaths'
+import { env } from '@/app/config/env'
 import { useAuthStore } from '@/features/auth/model/auth.store'
 import { formatDateLabel, useTourDetailQuery } from '@/features/tours/queries/useTourDetailQuery'
-import { MOCK_DEFAULT_TRAVELER_NAME } from '@/shared/api/mockAuth'
-import { isMockApiEnabled } from '@/shared/api/mockMode'
 import type { TourPriceRule } from '@/features/tours/queries/useTourDetailQuery'
 
 function formatScheduleRange(departureDate?: string, returnDate?: string) {
@@ -17,16 +16,6 @@ function formatScheduleRange(departureDate?: string, returnDate?: string) {
   }
 
   return `${formatDateLabel(departureDate)} - ${formatDateLabel(returnDate)}`
-}
-
-function isUuidLike(value?: string) {
-  if (!value) {
-    return false
-  }
-
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-    value,
-  )
 }
 
 function parseTravelerCount(value: string | null, fallback: number) {
@@ -138,11 +127,10 @@ export function useCheckoutContext() {
     fallbackPerTravelerAmount * travelerCount
   const effectiveTourId = detailQuery.data?.id ?? requestedTourId
   const effectiveScheduleId = selectedSchedule?.id
-  const isLegacyMockTour = !isUuidLike(requestedTourId) || !isUuidLike(detailQuery.data?.id)
   const leadTravelerName =
     authUser?.name?.trim() ||
     authUser?.full_name?.trim() ||
-    ((isMockApiEnabled() || isLegacyMockTour) ? MOCK_DEFAULT_TRAVELER_NAME : undefined)
+    (env.enableMocks ? 'Alexander Sterling' : undefined)
   const travelerLabel = buildTravelerLabel(travelerCounts)
   const availableSlots = selectedSchedule?.available_slots
 

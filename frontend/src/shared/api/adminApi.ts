@@ -234,9 +234,18 @@ export function createAdminApi(client: AxiosInstance) {
       return response.data as Record<string, unknown>
     },
 
-    async getAdminDocuments(): Promise<types.Document[]> {
-      const response = await client.get('/admin/documents')
-      return normalizeRecordArray(response.data, 'documents', normalizeDocument)
+    async getAdminDocuments(
+      limit = 20,
+      offset = 0,
+    ): Promise<{ documents: types.Document[]; total: number }> {
+      const paginatedResponse = await client.get('/admin/documents', {
+        params: { page: Math.floor(offset / limit) + 1, page_size: limit },
+      })
+
+      return {
+        documents: normalizeRecordArray(paginatedResponse.data, 'documents', normalizeDocument),
+        total: toNumber(paginatedResponse.data.total),
+      }
     },
 
     async reviewAdminDocument(

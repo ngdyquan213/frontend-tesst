@@ -1,3 +1,4 @@
+import type { Destination } from '@/features/destinations/model/destination.types'
 import type { DestinationHighlight } from '@/features/tours/model/tour.types'
 import type { Tour as ApiTour } from '@/shared/types/api'
 
@@ -55,67 +56,9 @@ export interface TourDetail {
   bookingPreviewNote: string
 }
 
-interface TourVisualPreset {
-  heroImageUrl: string
-  heroImageAlt: string
-  highlights: DestinationHighlight[]
-}
-
-const TOUR_VISUAL_PRESETS: Record<string, TourVisualPreset> = {
-  'amalfi-coast-sailing': {
-    heroImageUrl:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCYr6UoUXza-Rxyx5gz2FLRC6AGpbtwDLzsvIoUfoMgJydSQjyYo5CKHlUeq0AsXMK59_6pWj_RSVJXG3ecpSThDTy3R705lliyFIr9AQsx-peQ4TYWoEJLP185pw67VX3TdHN_X5eD1fj8XWWQMogzGH_CloEjV1cGmWmej-gY_zfWeIPQlf6CblQmwuY_sqdJFUCiwaQ4A7qpcgaitFHNSLS4Z8sF8NnwZJHKKL7MvRwiqtRgPVucxtjnz0Sf5yxBXdhQ5LAW4nG7',
-    heroImageAlt:
-      'Sun-drenched Amalfi Coast village with colorful homes set against dramatic cliffs and a sparkling blue sea.',
-    highlights: [
-      {
-        title: 'Hidden Grottos',
-        description:
-          'Discover sea caves and sheltered coves where the water turns glassy turquoise by midday.',
-        imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuAIGEBAMkwSFNVJM8exTWciRHLCHux9DxCRXCsXOs2rMM0qQ-DiMLopXzrhPpwzoO16ZhZKP9g3_OtT0xfmlGCLbZx9XwGk4JIymC5Yp4ilEuj2KsSz7tCAZYp1XoU84WNukOCTKENwkBu-FokbRdHE9VyUKJj7LIqN_bwjkNCnGjpTSq2-FfBDj2ufokj-CWVBTy8jq08y6EbI6yBhFgjFE8DDExSDwJ3pP0k9u64UzoWar8o7wsiMZtck-EnAzOOIS40HL4S-5XH_',
-        imageAlt:
-          'Tall coastal cliffs over the Mediterranean with a sailboat near rock formations off Capri.',
-      },
-      {
-        title: 'Hillside Gardens',
-        description:
-          'Wander elevated terraces and villa gardens where the coastline opens into quiet panoramic viewpoints.',
-        imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuAJ8LeHi_jO-2D_hC0lpQepSFF0lyYMiSjvjiuAGFpEXYx3vYNNKtPmJec-adYonRLn15nR1Ug3wFJl9lvc1cTb42cHHp2u0sX21Zrd8rd9ijQR0LjBK7rUNQ7E8CNvXteq3jpbGCJyvxQy0rh5Et88qsLnFYBL0MXmbepGnpDuMNXrHTFrD8e_6rWTr-TFklYmQFTqUY_Z2d-0bxAe_yEVx7g_VmY_mHsHrgqonKGcAtUYEfZ_Znk4EUtiFeIWD5VFKJlhn0P8y887',
-        imageAlt:
-          'Flower-framed stone terrace in Ravello overlooking the Amalfi Coast and sea below.',
-      },
-    ],
-  },
-  'kyoto-temple-trail': {
-    heroImageUrl:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBdJD4h6Im2zKxOobn5rx1zyrcjL1PY9yyK49sW_JWgJOGhCvx9Y2BRVuwp1u_sLHsPBuVu9XNkUuguU4ycom40O7GZImEJo_e-ggY3R-akbO5MUCtGSKK_BTGt1QEZDhaLtWLH04wiaT2IhfpKJBmC2-lYY8QjLePUExeCqDiy_KGHQsJPmqZxbgDwgqXdfpaCjYgXlZnBtF5ShW0-9-McKkv1_kpSWqZVUGGWjlrDapBTtOC-5gCAzMKCzaSsCHMxBqgvHY4NgJL1',
-    heroImageAlt: 'Temple rooftops in Kyoto framed by misty mountains and pine forests.',
-    highlights: [
-      {
-        title: 'Temple Districts',
-        description:
-          'Move through quiet lanes and protected heritage zones with room for slow, reflective discovery.',
-        imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuBdJD4h6Im2zKxOobn5rx1zyrcjL1PY9yyK49sW_JWgJOGhCvx9Y2BRVuwp1u_sLHsPBuVu9XNkUuguU4ycom40O7GZImEJo_e-ggY3R-akbO5MUCtGSKK_BTGt1QEZDhaLtWLH04wiaT2IhfpKJBmC2-lYY8QjLePUExeCqDiy_KGHQsJPmqZxbgDwgqXdfpaCjYgXlZnBtF5ShW0-9-McKkv1_kpSWqZVUGGWjlrDapBTtOC-5gCAzMKCzaSsCHMxBqgvHY4NgJL1',
-        imageAlt: 'Traditional Kyoto temple complex set against layered green hills.',
-      },
-      {
-        title: 'Architectural Calm',
-        description:
-          'Designed for travelers who want history, quiet ritual, and beautifully structured pacing.',
-        imageUrl:
-          'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1200&q=80',
-        imageAlt: 'Japanese temple corridor with warm wood tones and soft natural light.',
-      },
-    ],
-  },
-}
-
-const DEFAULT_VISUAL_PRESET: TourVisualPreset = {
+const DEFAULT_VISUAL_PRESET = {
   heroImageUrl:
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80',
+    '/images/hero-banner.jpg',
   heroImageAlt: 'Premium coastal travel destination with bright water and clear skies.',
   highlights: [
     {
@@ -298,31 +241,22 @@ function buildGroupSizeLabel(schedules: TourSchedule[]) {
   return maxCapacity > 0 ? `Max ${maxCapacity} guests` : 'Small group'
 }
 
-function buildVisualPreset(tour: ApiTour) {
-  const directMatch = TOUR_VISUAL_PRESETS[tour.id]
-
-  if (directMatch) {
-    return directMatch
-  }
-
-  const keyword = `${tour.destination} ${tour.name}`.toLowerCase()
-
-  if (keyword.includes('coast') || keyword.includes('sailing')) {
-    return TOUR_VISUAL_PRESETS['amalfi-coast-sailing'] ?? DEFAULT_VISUAL_PRESET
-  }
-
-  if (keyword.includes('kyoto') || keyword.includes('temple')) {
-    return TOUR_VISUAL_PRESETS['kyoto-temple-trail'] ?? DEFAULT_VISUAL_PRESET
-  }
-
-  return DEFAULT_VISUAL_PRESET
-}
-
-function buildHighlights(tour: ApiTour) {
-  const preset = buildVisualPreset(tour)
-
-  if (preset.highlights.length > 0) {
-    return preset.highlights
+function buildHighlights(tour: ApiTour, destinationContent?: Destination | null) {
+  if (destinationContent) {
+    return [
+      {
+        title: destinationContent.signatureLabel,
+        description: destinationContent.summary,
+        imageUrl: destinationContent.imageUrl,
+        imageAlt: destinationContent.imageAlt,
+      },
+      {
+        title: destinationContent.eyebrow,
+        description: destinationContent.description,
+        imageUrl: destinationContent.imageUrl,
+        imageAlt: destinationContent.imageAlt,
+      },
+    ]
   }
 
   const itineraryHighlights = sortItinerary(tour.itineraries ?? []).slice(0, 2)
@@ -448,9 +382,8 @@ function buildFacts(tour: ApiTour, schedules: TourSchedule[]) {
   ]
 }
 
-export function buildTourDetail(rawTour: ApiTour): TourDetail {
+export function buildTourDetail(rawTour: ApiTour, destinationContent?: Destination | null): TourDetail {
   const schedules = sortSchedules(rawTour.schedules ?? [])
-  const visualPreset = buildVisualPreset(rawTour)
 
   return {
     id: rawTour.id,
@@ -467,14 +400,16 @@ export function buildTourDetail(rawTour: ApiTour): TourDetail {
     itinerary: sortItinerary(rawTour.itineraries ?? []),
     policies: rawTour.policies ?? [],
     schedules,
-    heroImageUrl: visualPreset.heroImageUrl,
-    heroImageAlt: visualPreset.heroImageAlt,
+    heroImageUrl: destinationContent?.imageUrl ?? DEFAULT_VISUAL_PRESET.heroImageUrl,
+    heroImageAlt:
+      destinationContent?.imageAlt ??
+      `Scenic travel destination in ${rawTour.destination}.`,
     heroBadges: [
       { label: 'Verified Tour', tone: 'verified' },
       { label: 'Instant Confirmation', tone: 'instant' },
     ],
     facts: buildFacts(rawTour, schedules),
-    highlights: buildHighlights(rawTour),
+    highlights: buildHighlights(rawTour, destinationContent),
     faqItems: buildFaqItems(rawTour),
     priceSummary: buildPriceSummary(schedules),
     bookingPreviewNote:

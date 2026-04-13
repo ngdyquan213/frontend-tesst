@@ -1,6 +1,5 @@
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockable } from '@/shared/api/mockApi'
-import type { Tour } from '@/shared/types/common'
+import type { PaginatedResult } from '@/shared/types/pagination'
 
 export type AdminTourStatus = 'active' | 'inactive'
 
@@ -35,44 +34,24 @@ export interface AdminTourUpdatePayload extends Omit<AdminTourCreatePayload, 'co
   id: string
 }
 
-function slugify(value: string) {
-  return (
-    value
+function buildMockTourCode(title: string, id: string) {
+  const source = (
+    title
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '') || 'tour'
-  )
-}
-
-function buildMockTourCode(title: string, id: string) {
-  const source = slugify(title || id).toUpperCase().replace(/-/g, '_')
+      .replace(/^-+|-+$/g, '') || id || 'tour'
+  ).toUpperCase().replace(/-/g, '_')
   return `TB_${source.slice(0, 18) || 'TOUR'}`
-}
-
-type MockAdminTourMetadata = Tour & {
-  adminCode?: string
-  adminStatus?: AdminTourStatus
-}
-
-function getMockTourCode(tour: Tour) {
-  return (tour as MockAdminTourMetadata).adminCode ?? buildMockTourCode(tour.title, tour.id)
-}
-
-function getMockTourStatus(tour: Tour): AdminTourStatus {
-  const metadataStatus = (tour as MockAdminTourMetadata).adminStatus
-  if (metadataStatus) {
-    return metadataStatus
-  }
-
-  return tour.availability === 'Paused' ? 'inactive' : 'active'
 }
 
 function normalizeStatus(value?: string | null): AdminTourStatus {
   return value?.trim().toLowerCase() === 'inactive' ? 'inactive' : 'active'
 }
 
-function mapAdminTourRecord(tour: Awaited<ReturnType<typeof apiClient.getAdminTours>>['tours'][number]): AdminTourRecord {
+function mapAdminTourRecord(
+  tour: Awaited<ReturnType<typeof apiClient.getAdminTours>>['tours'][number],
+): AdminTourRecord {
   const lowestPrice =
     tour.schedules?.flatMap((schedule) => schedule.price_rules ?? []).reduce<number | null>(
       (currentLowest, rule) => {
@@ -102,141 +81,51 @@ function mapAdminTourRecord(tour: Awaited<ReturnType<typeof apiClient.getAdminTo
 }
 
 export const adminToursApi = {
-  getTours: async () =>
-    resolveMockable({
-      mock: ({ tours }) =>
-        tours.map((tour) =>
-          mapAdminTourRecord({
-            id: tour.id,
-            name: tour.title,
-            destination: tour.location,
-            description: tour.summary,
-            duration_days: tour.durationDays,
-            duration_nights: Math.max(tour.durationDays - 1, 0),
-            meeting_point: '',
-            tour_type: tour.activityLevel,
-            status: getMockTourStatus(tour),
-            code: getMockTourCode(tour),
-            schedules: [],
-            price: tour.priceFrom,
-          }),
-        ),
-      live: async () => {
-        const response = await apiClient.getAdminTours()
-        return response.tours.map(mapAdminTourRecord)
+  getTours: async (
+    page = 1,
+    pageSize = 10,
+  ): Promise<PaginatedResult<AdminTourRecord>> => {
+    const offset = (page - 1) * pageSize
+    const response = await apiClient.getAdminTours(pageSize, offset)
+
+    return {
+      items: response.tours.map(mapAdminTourRecord),
+      meta: {
+        page,
+        pageSize,
+        total: response.total,
       },
-    }),
+    }
+  },
 
-  createTour: async (payload: AdminTourCreatePayload) =>
-    resolveMockable({
-      mock: ({ tours }) => {
-        const nextId = `tour-${Date.now()}`
-        const fallbackImage = tours[0]?.heroImage ?? ''
-        const nextTour = {
-          id: nextId,
-          slug: slugify(payload.name),
-          title: payload.name,
-          location: payload.destination,
-          destinationId: tours[0]?.destinationId ?? 'dest-amalfi',
-          summary: payload.description || 'Created from the admin tour workspace.',
-          overview: payload.description ? [payload.description] : ['Created from the admin tour workspace.'],
-          highlights: [],
-          itinerary: [],
-          durationDays: payload.durationDays,
-          groupSize: 12,
-          activityLevel: payload.tourType || 'General tour',
-          availability: payload.status === 'active' ? 'Open for sale' : 'Paused',
-          priceFrom: 0,
-          heroImage: fallbackImage,
-          cardImage: tours[0]?.cardImage ?? fallbackImage,
-          gallery: [],
-          badge: payload.status === 'active' ? 'New' : 'Inactive',
-          operator: 'TravelBook Operations',
-          instantConfirmation: false,
-          adminCode: payload.code,
-          adminStatus: payload.status,
-        } satisfies MockAdminTourMetadata
-        tours.unshift(nextTour)
+  createTour: async (payload: AdminTourCreatePayload) => {
+    const createdTour = await apiClient.createAdminTour({
+      code: payload.code,
+      name: payload.name,
+      destination: payload.destination,
+      description: payload.description || undefined,
+      duration_days: payload.durationDays,
+      duration_nights: payload.durationNights,
+      meeting_point: payload.meetingPoint || undefined,
+      tour_type: payload.tourType || undefined,
+      status: payload.status,
+    })
 
-        return mapAdminTourRecord({
-          id: nextId,
-          name: payload.name,
-          destination: payload.destination,
-          description: payload.description,
-          duration_days: payload.durationDays,
-          duration_nights: payload.durationNights,
-          meeting_point: payload.meetingPoint,
-          tour_type: payload.tourType,
-          status: payload.status,
-          code: payload.code,
-          price: 0,
-          schedules: [],
-        })
-      },
-      live: async () => {
-        const createdTour = await apiClient.createAdminTour({
-          code: payload.code,
-          name: payload.name,
-          destination: payload.destination,
-          description: payload.description || undefined,
-          duration_days: payload.durationDays,
-          duration_nights: payload.durationNights,
-          meeting_point: payload.meetingPoint || undefined,
-          tour_type: payload.tourType || undefined,
-          status: payload.status,
-        })
+    return mapAdminTourRecord(createdTour)
+  },
 
-        return mapAdminTourRecord(createdTour)
-      },
-    }),
+  updateTour: async (payload: AdminTourUpdatePayload) => {
+    const updatedTour = await apiClient.updateAdminTour(payload.id, {
+      name: payload.name,
+      destination: payload.destination,
+      description: payload.description || undefined,
+      duration_days: payload.durationDays,
+      duration_nights: payload.durationNights,
+      meeting_point: payload.meetingPoint || undefined,
+      tour_type: payload.tourType || undefined,
+      status: payload.status,
+    })
 
-  updateTour: async (payload: AdminTourUpdatePayload) =>
-    resolveMockable({
-      mock: ({ tours }) => {
-        const tour = tours.find((item) => item.id === payload.id)
-
-        if (!tour) {
-          throw new Error('Tour not found.')
-        }
-
-        tour.title = payload.name
-        tour.location = payload.destination
-        tour.summary = payload.description || tour.summary
-        tour.overview = payload.description ? [payload.description] : tour.overview
-        tour.durationDays = payload.durationDays
-        tour.activityLevel = payload.tourType || tour.activityLevel
-        tour.availability = payload.status === 'active' ? 'Open for sale' : 'Paused'
-        tour.badge = payload.status === 'active' ? 'Updated' : 'Inactive'
-        ;(tour as MockAdminTourMetadata).adminStatus = payload.status
-
-        return mapAdminTourRecord({
-          id: tour.id,
-          name: payload.name,
-          destination: payload.destination,
-          description: payload.description,
-          duration_days: payload.durationDays,
-          duration_nights: payload.durationNights,
-          meeting_point: payload.meetingPoint,
-          tour_type: payload.tourType,
-          status: payload.status,
-          code: getMockTourCode(tour),
-          price: tour.priceFrom,
-          schedules: [],
-        })
-      },
-      live: async () => {
-        const updatedTour = await apiClient.updateAdminTour(payload.id, {
-          name: payload.name,
-          destination: payload.destination,
-          description: payload.description || undefined,
-          duration_days: payload.durationDays,
-          duration_nights: payload.durationNights,
-          meeting_point: payload.meetingPoint || undefined,
-          tour_type: payload.tourType || undefined,
-          status: payload.status,
-        })
-
-        return mapAdminTourRecord(updatedTour)
-      },
-    }),
+    return mapAdminTourRecord(updatedTour)
+  },
 }

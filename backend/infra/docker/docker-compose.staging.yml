@@ -88,7 +88,7 @@ services:
     volumes:
       - uploads_staging_data:/app/uploads
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health/live || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health/ready || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -113,6 +113,11 @@ services:
       clamav:
         condition: service_started
     command: ["python", "-m", "app.runtime_worker"]
+    healthcheck:
+      test: ["CMD-SHELL", "python -m app.runtime_worker --healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
 
   nginx:
     image: nginx:1.27-alpine

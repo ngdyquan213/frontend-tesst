@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import asynccontextmanager
+from ipaddress import ip_address
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -22,8 +23,13 @@ from app.core.exceptions import AppException
 from app.core.logging import configure_logging
 from app.core.metrics import operational_metrics, render_prometheus_metrics
 from app.core.redis import redis_client
+from app.core.runtime_heartbeat import (
+    is_runtime_worker_heartbeat_fresh,
+    load_runtime_task_snapshot,
+)
 from app.core.runtime_state import runtime_task_state
 from app.core.runtime_tasks import (
+    NONCRITICAL_TASK_NAMES,
     run_noncritical_maintenance,
     run_noncritical_maintenance_loop,
 )
@@ -126,7 +132,20 @@ def _build_dependency_checks() -> dict[str, bool]:
         except Exception:
             checks[key] = False
 
+    if not settings.RUN_RUNTIME_MAINTENANCE_IN_APP:
+        checks["runtime_worker"] = is_runtime_worker_heartbeat_fresh()
+
     return checks
+
+
+def _is_loopback_client_ip(client_ip: str | None) -> bool:
+    if not client_ip:
+        return False
+
+    try:
+        return ip_address(client_ip).is_loopback
+    except ValueError:
+        return False
 
 
 def _enforce_observability_access(request: Request) -> None:
@@ -134,10 +153,63 @@ def _enforce_observability_access(request: Request) -> None:
         return
 
     client_ip = get_client_ip(request)
+    if _is_loopback_client_ip(client_ip):
+        return
+
     if client_ip and ip_in_allowlist(client_ip, settings.observability_allowlist_list):
         return
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+
+
+def _build_runtime_task_snapshot() -> dict[str, dict[str, str | None]]:
+    local_snapshot = runtime_task_state.snapshot()
+    if local_snapshot:
+        return local_snapshot
+
+    if settings.RUN_RUNTIME_MAINTENANCE_IN_APP:
+        return local_snapshot
+
+    shared_snapshot = load_runtime_task_snapshot(expected_task_names=NONCRITICAL_TASK_NAMES)
+    if shared_snapshot:
+        for task_name in NONCRITICAL_TASK_NAMES:
+            shared_snapshot.setdefault(
+                task_name,
+                {
+                    "status": "unknown",
+                    "last_started_at": None,
+                    "last_finished_at": None,
+                    "last_success_at": None,
+                    "last_failure_at": None,
+                    "last_error": None,
+                },
+            )
+        return shared_snapshot
+
+    if is_runtime_worker_heartbeat_fresh():
+        return {
+            task_name: {
+                "status": "unknown",
+                "last_started_at": None,
+                "last_finished_at": None,
+                "last_success_at": None,
+                "last_failure_at": None,
+                "last_error": None,
+            }
+            for task_name in NONCRITICAL_TASK_NAMES
+        }
+
+    return {
+        task_name: {
+            "status": "failed",
+            "last_started_at": None,
+            "last_finished_at": None,
+            "last_success_at": None,
+            "last_failure_at": None,
+            "last_error": "runtime worker heartbeat missing",
+        }
+        for task_name in NONCRITICAL_TASK_NAMES
+    }
 
 
 @asynccontextmanager
@@ -219,9 +291,11 @@ def health_ready(request: Request):
         and dependency_checks["email_worker"]
         and dependency_checks["notification_backend"]
         and dependency_checks["malware_scan"]
+        and dependency_checks.get("runtime_worker", True)
         and (outbox_ok or not outbox_required)
     )
     metrics_snapshot = operational_metrics.snapshot()
+    runtime_tasks_snapshot = _build_runtime_task_snapshot()
 
     degraded_checks: list[str] = []
     if not outbox_ok and not outbox_required:
@@ -237,7 +311,7 @@ def health_ready(request: Request):
         "checks": dependency_checks,
         "degraded_checks": degraded_checks,
         "outbox": outbox_health,
-        "runtime_tasks": runtime_task_state.snapshot(),
+        "runtime_tasks": runtime_tasks_snapshot,
         "observability": {
             "rate_limit_backend_failures_total": metrics_snapshot.get(
                 "rate_limit_backend_failures_total",
@@ -286,13 +360,14 @@ def metrics_prometheus(request: Request):
 
     metrics_snapshot = operational_metrics.snapshot()
     metrics_snapshot["outbox_backlog"] = outbox_health["backlog"]
+    runtime_tasks_snapshot = _build_runtime_task_snapshot()
 
     payload = render_prometheus_metrics(
         service=settings.APP_NAME,
         environment=settings.ENVIRONMENT,
         metrics_snapshot=metrics_snapshot,
         dependency_checks=dependency_checks,
-        runtime_tasks=runtime_task_state.snapshot(),
+        runtime_tasks=runtime_tasks_snapshot,
         outbox_required_for_readiness=outbox_health["required_for_readiness"],
     )
     return PlainTextResponse(

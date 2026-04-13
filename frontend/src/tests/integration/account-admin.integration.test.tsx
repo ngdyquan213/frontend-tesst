@@ -10,7 +10,19 @@ import { useAuthStore } from '@/features/auth/model/auth.store'
 import TourManagementPage from '@/pages/admin/TourManagementPage'
 import { DocumentReviewTable } from '@/features/admin/documents/ui/DocumentReviewTable'
 import { adminDocumentsApi } from '@/features/admin/documents/api/adminDocuments.api'
+import type { PaginatedResult } from '@/shared/types/pagination'
 import { renderWithProviders } from '@/tests/utils/renderWithProviders'
+
+function buildPaginatedResult<T>(items: T[], page = 1, pageSize = 10): PaginatedResult<T> {
+  return {
+    items,
+    meta: {
+      page,
+      pageSize,
+      total: items.length,
+    },
+  }
+}
 
 function seedAdminSession() {
   useAuthStore.setState({
@@ -141,17 +153,6 @@ describe('account and admin live forms', () => {
 
   it('submits admin document review through the live moderation mutation', async () => {
     const user = userEvent.setup()
-    vi.spyOn(adminDocumentsApi, 'getDocuments').mockResolvedValue([
-      {
-        id: 'document-1',
-        bookingId: 'booking-1',
-        title: 'passport.pdf',
-        type: 'Passport',
-        uploadedAt: '2026-04-08T00:00:00.000Z',
-        status: 'pending',
-        notes: 'Passport document for booking booking-1',
-      },
-    ])
     const reviewDocumentSpy = vi.spyOn(adminDocumentsApi, 'reviewDocument').mockResolvedValue({
       id: 'document-1',
       bookingId: 'booking-1',
@@ -162,7 +163,21 @@ describe('account and admin live forms', () => {
       notes: 'Passport reviewed successfully.',
     })
 
-    renderWithProviders(<DocumentReviewTable />)
+    renderWithProviders(
+      <DocumentReviewTable
+        documents={[
+          {
+            id: 'document-1',
+            bookingId: 'booking-1',
+            title: 'passport.pdf',
+            type: 'Passport',
+            uploadedAt: '2026-04-08T00:00:00.000Z',
+            status: 'pending',
+            notes: 'Passport document for booking booking-1',
+          },
+        ]}
+      />,
+    )
 
     await user.click(await screen.findByRole('button', { name: /approve/i }))
 
@@ -178,7 +193,7 @@ describe('account and admin live forms', () => {
   it('creates a new admin tour from the management drawer', async () => {
     const user = userEvent.setup()
     seedAdminSession()
-    vi.spyOn(adminToursApi, 'getTours').mockResolvedValue([])
+    vi.spyOn(adminToursApi, 'getTours').mockResolvedValue(buildPaginatedResult([]))
     const createTourSpy = vi.spyOn(adminToursApi, 'createTour').mockResolvedValue({
       id: 'tour-1',
       code: 'TB_AMALFI_2026',
@@ -228,22 +243,24 @@ describe('account and admin live forms', () => {
   it('updates an existing admin tour from the management drawer', async () => {
     const user = userEvent.setup()
     seedAdminSession()
-    vi.spyOn(adminToursApi, 'getTours').mockResolvedValue([
-      {
-        id: 'tour-1',
-        code: 'TB_AMALFI_2026',
-        title: 'Amalfi Coast Sailing',
-        location: 'Amalfi, Italy',
-        description: 'Premium coastal route.',
-        durationDays: 7,
-        durationNights: 6,
-        meetingPoint: 'Naples Marina',
-        tourType: 'Coastal sailing',
-        status: 'active',
-        priceFrom: 1299,
-        scheduleCount: 2,
-      },
-    ])
+    vi.spyOn(adminToursApi, 'getTours').mockResolvedValue(
+      buildPaginatedResult([
+        {
+          id: 'tour-1',
+          code: 'TB_AMALFI_2026',
+          title: 'Amalfi Coast Sailing',
+          location: 'Amalfi, Italy',
+          description: 'Premium coastal route.',
+          durationDays: 7,
+          durationNights: 6,
+          meetingPoint: 'Naples Marina',
+          tourType: 'Coastal sailing',
+          status: 'active',
+          priceFrom: 1299,
+          scheduleCount: 2,
+        },
+      ]),
+    )
     const updateTourSpy = vi.spyOn(adminToursApi, 'updateTour').mockResolvedValue({
       id: 'tour-1',
       code: 'TB_AMALFI_2026',

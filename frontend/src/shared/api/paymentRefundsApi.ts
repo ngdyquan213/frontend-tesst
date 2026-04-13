@@ -1,5 +1,4 @@
 import type { AxiosInstance } from 'axios'
-import { isMockApiEnabled } from '@/shared/api/mockMode'
 import {
   normalizeBooking,
   normalizePayment,
@@ -7,18 +6,13 @@ import {
   normalizeRefund,
   toNumber,
 } from '@/shared/api/apiNormalizers'
-import { resolveAfter } from '@/shared/api/resolveAfter'
-import { getLivePaymentMethods, mapApiPaymentMethod } from '@/shared/lib/appMappers'
+import { mapApiPaymentMethod } from '@/shared/lib/appMappers'
 import type { PaymentMethod } from '@/shared/types/common'
 import type * as types from '@/shared/types/api'
 
 export function createPaymentRefundsApi(client: AxiosInstance) {
   return {
     async getAvailablePaymentMethods(): Promise<PaymentMethod[]> {
-      if (isMockApiEnabled()) {
-        return resolveAfter(getLivePaymentMethods())
-      }
-
       const response = await client.get('/payments/methods')
       const payload = Array.isArray(response.data)
         ? response.data

@@ -212,6 +212,28 @@ def test_run_noncritical_maintenance_loop_can_skip_immediate_run():
     assert calls["count"] == 0
 
 
+def test_runtime_worker_healthcheck_exits_zero_when_heartbeat_is_fresh(monkeypatch):
+    from app import runtime_worker as worker_module
+
+    monkeypatch.setattr(worker_module, "is_runtime_worker_heartbeat_fresh", lambda: True)
+
+    with pytest.raises(SystemExit) as exc_info:
+        worker_module.main(["--healthcheck"])
+
+    assert exc_info.value.code == 0
+
+
+def test_runtime_worker_healthcheck_exits_nonzero_when_heartbeat_is_missing(monkeypatch):
+    from app import runtime_worker as worker_module
+
+    monkeypatch.setattr(worker_module, "is_runtime_worker_heartbeat_fresh", lambda: False)
+
+    with pytest.raises(SystemExit) as exc_info:
+        worker_module.main(["--healthcheck"])
+
+    assert exc_info.value.code == 1
+
+
 def test_cleanup_expired_booking_holds_restores_inventory(monkeypatch, db_session):
     from app.core import runtime_tasks as runtime_module
     from app.core.security import get_password_hash

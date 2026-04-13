@@ -1,5 +1,4 @@
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockable } from '@/shared/api/mockApi'
 
 const inactiveBookingStatuses = new Set(['cancelled', 'expired', 'failed'])
 
@@ -19,23 +18,14 @@ function countPendingRefunds(refundStatusCounts: Array<{ status: string; count: 
 }
 
 export const adminDashboardApi = {
-  getDashboard: async () =>
-    resolveMockable({
-      mock: ({ adminTasks, bookings, refunds }) => ({
-        activeBookings: bookings.length,
-        pendingRefunds: refunds.length,
-        recentActivityCount: adminTasks.length,
-        tasks: adminTasks,
-      }),
-      live: async () => {
-        const summary = await apiClient.getAdminDashboardSummary()
+  getDashboard: async () => {
+    const summary = await apiClient.getAdminDashboardSummary()
 
-        return {
-          activeBookings: countActiveBookings(summary.booking_status_counts),
-          pendingRefunds: countPendingRefunds(summary.refund_status_counts),
-          recentActivityCount: summary.recent_activities.length,
-          tasks: [],
-        }
-      },
-    }),
+    return {
+      activeBookings: countActiveBookings(summary.booking_status_counts),
+      pendingRefunds: countPendingRefunds(summary.refund_status_counts),
+      recentActivityCount: summary.recent_activities.length,
+      tasks: [],
+    }
+  },
 }

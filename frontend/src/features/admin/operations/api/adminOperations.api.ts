@@ -1,5 +1,4 @@
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockable } from '@/shared/api/mockApi'
 
 function humanizeAction(value: string) {
   return value
@@ -23,27 +22,23 @@ function inferPriority(action: string) {
 }
 
 export const adminOperationsApi = {
-  getOperations: async () =>
-    resolveMockable({
-      mock: ({ adminTasks }) => adminTasks,
-      live: async () => {
-        const summary = await apiClient.getAdminDashboardSummary(12)
-        const recentActivities = summary.recent_activities
+  getOperations: async () => {
+    const summary = await apiClient.getAdminDashboardSummary(12)
+    const recentActivities = summary.recent_activities
 
-        return recentActivities.map((activity) => {
-          const action = String(activity.action ?? 'activity')
-          const resourceType = String(activity.resource_type ?? 'system')
-          const resourceId = typeof activity.resource_id === 'string' ? activity.resource_id : 'n/a'
-          const createdAt = String(activity.created_at ?? '')
+    return recentActivities.map((activity) => {
+      const action = String(activity.action ?? 'activity')
+      const resourceType = String(activity.resource_type ?? 'system')
+      const resourceId = typeof activity.resource_id === 'string' ? activity.resource_id : 'n/a'
+      const createdAt = String(activity.created_at ?? '')
 
-          return {
-            id: String(activity.audit_log_id ?? `${action}-${resourceId}`),
-            title: humanizeAction(action),
-            summary: `${resourceType} • ${resourceId} • ${new Date(createdAt).toLocaleString()}`,
-            priority: inferPriority(action),
-            cta: 'Review activity',
-          }
-        })
-      },
-    }),
+      return {
+        id: String(activity.audit_log_id ?? `${action}-${resourceId}`),
+        title: humanizeAction(action),
+        summary: `${resourceType} • ${resourceId} • ${new Date(createdAt).toLocaleString()}`,
+        priority: inferPriority(action),
+        cta: 'Review activity',
+      }
+    })
+  },
 }

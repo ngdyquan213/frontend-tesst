@@ -98,7 +98,7 @@ def seed_booking(db_session, user_id: str):
     return booking
 
 
-def test_payment_callback_replay_detected(client, db_session):
+def test_payment_callback_replay_is_acknowledged_idempotently(client, db_session):
     user, token = create_user_and_login(client, db_session, "replay@example.com", "replay")
     booking = seed_booking(db_session, str(user.id))
 
@@ -124,11 +124,11 @@ def test_payment_callback_replay_detected(client, db_session):
     second = client.post("/api/v1/payments/callback", json=payload)
 
     assert first.status_code == 200
-    assert second.status_code == 400
-    assert second.json()["detail"] == "Replay callback detected"
+    assert second.status_code == 200
+    assert second.json()["success"] is True
 
 
-def test_payment_callback_replay_detected_under_concurrency(db_engine, monkeypatch):
+def test_payment_callback_replay_is_acknowledged_under_concurrency(db_engine, monkeypatch):
     SessionLocal = sessionmaker(bind=db_engine, autocommit=False, autoflush=False)
 
     seed_session = SessionLocal()

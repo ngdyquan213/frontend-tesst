@@ -1,5 +1,4 @@
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockable } from '@/shared/api/mockApi'
 
 function formatTravelerType(value?: string) {
   if (!value) return 'Traveler'
@@ -12,17 +11,13 @@ function formatTravelerType(value?: string) {
 
 export const travelersApi = {
   getTravelers: async () =>
-    resolveMockable({
-      mock: ({ travelers }) => travelers,
-      live: async () =>
-        (await apiClient.getMyTravelers()).map((traveler) => ({
-          id: traveler.id,
-          fullName: traveler.full_name,
-          relation: `${formatTravelerType(traveler.traveler_type)} on ${traveler.booking_code ?? traveler.booking_id}`,
-          passportNumber: traveler.passport_number ?? 'Not provided',
-          nationality: traveler.nationality ?? 'Not provided',
-          birthday: traveler.date_of_birth ?? 'Not provided',
-          isPrimary: traveler.is_primary === true,
-        })),
-    }),
+    (await apiClient.getMyTravelers()).map((traveler) => ({
+      id: traveler.id,
+      fullName: traveler.full_name,
+      relation: `${formatTravelerType(traveler.traveler_type)} on ${traveler.booking_code ?? traveler.booking_id}`,
+      passportNumber: traveler.passport_number ?? 'Not provided',
+      nationality: traveler.nationality ?? 'Not provided',
+      birthday: traveler.date_of_birth ?? 'Not provided',
+      isPrimary: traveler.is_primary === true,
+    })),
 }

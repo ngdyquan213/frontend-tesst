@@ -91,6 +91,7 @@ def seed_booking(db_session, user_id: str, booking_code: str):
 def test_initiate_payment_with_stripe_returns_gateway_payload(client, db_session, monkeypatch):
     from app.core import config as config_module
 
+    monkeypatch.setattr(config_module.settings, "ENABLED_PAYMENT_METHODS", "manual,stripe")
     monkeypatch.setattr(config_module.settings, "STRIPE_SECRET_KEY", "sk_test_demo")
     monkeypatch.setattr(config_module.settings, "STRIPE_WEBHOOK_SECRET", "whsec_demo")
     monkeypatch.setattr(config_module.settings, "STRIPE_PUBLISHABLE_KEY", "pk_test_demo")
@@ -130,6 +131,7 @@ def test_reuses_incomplete_stripe_payment_and_finishes_gateway_session(
 ):
     from app.core import config as config_module
 
+    monkeypatch.setattr(config_module.settings, "ENABLED_PAYMENT_METHODS", "manual,stripe")
     monkeypatch.setattr(config_module.settings, "STRIPE_SECRET_KEY", "sk_test_demo")
     monkeypatch.setattr(config_module.settings, "STRIPE_WEBHOOK_SECRET", "whsec_demo")
     monkeypatch.setattr(config_module.settings, "STRIPE_PUBLISHABLE_KEY", "pk_test_demo")

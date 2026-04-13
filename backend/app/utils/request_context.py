@@ -6,30 +6,6 @@ from app.core.config import settings
 from app.utils.ip_utils import ip_in_allowlist, normalize_ip
 
 
-def _parse_forwarded_header(forwarded_value: str) -> list[str]:
-    candidates: list[str] = []
-
-    for part in forwarded_value.split(","):
-        for token in part.split(";"):
-            key, separator, value = token.strip().partition("=")
-            if separator != "=" or key.lower() != "for":
-                continue
-
-            cleaned = value.strip().strip('"')
-            if cleaned.startswith("[") and "]" in cleaned:
-                cleaned = cleaned[1 : cleaned.index("]")]
-            elif ":" in cleaned and cleaned.count(":") == 1:
-                host, _, port = cleaned.partition(":")
-                if port.isdigit():
-                    cleaned = host
-
-            normalized = normalize_ip(cleaned)
-            if normalized:
-                candidates.append(normalized)
-
-    return candidates
-
-
 def _parse_x_forwarded_for(header_value: str) -> list[str]:
     candidates: list[str] = []
     for part in header_value.split(","):
@@ -55,14 +31,6 @@ def _trusted_proxy_forwarded_ip(request: Request) -> str | None:
 
     if not ip_in_allowlist(peer_ip, settings.forwarded_allow_ips_list):
         return None
-
-    forwarded = request.headers.get("forwarded")
-    if forwarded:
-        candidates = _parse_forwarded_header(forwarded)
-        if candidates:
-            resolved = _resolve_forwarded_client_ip(candidates)
-            if resolved:
-                return resolved
 
     x_forwarded_for = request.headers.get("x-forwarded-for")
     if x_forwarded_for:

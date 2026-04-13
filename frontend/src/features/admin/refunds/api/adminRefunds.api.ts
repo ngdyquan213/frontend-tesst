@@ -1,27 +1,30 @@
 import { mapApiRefundToRefundRecord } from '@/shared/lib/appMappers'
 import { apiClient } from '@/shared/api/apiClient'
-import { resolveMockData, resolveMockable } from '@/shared/api/mockApi'
+import type { PaginatedResult } from '@/shared/types/pagination'
 
 export const adminRefundsApi = {
-  getRefunds: async () =>
-    resolveMockable({
-      mock: ({ refunds }) => refunds,
-      live: async () => {
-        const response = await apiClient.getAdminRefunds()
-        return response.refunds.map(mapApiRefundToRefundRecord)
+  getRefunds: async (
+    page = 1,
+    pageSize = 10,
+  ): Promise<PaginatedResult<ReturnType<typeof mapApiRefundToRefundRecord>>> => {
+    const offset = (page - 1) * pageSize
+    const response = await apiClient.getAdminRefunds(pageSize, offset)
+
+    return {
+      items: response.refunds.map(mapApiRefundToRefundRecord),
+      meta: {
+        page,
+        pageSize,
+        total: response.total,
       },
-    }),
+    }
+  },
   approveRefund: async (id?: string) => {
     if (!id) {
-      return resolveMockData(({ refunds }) => refunds[0])
+      throw new Error('Refund id is required.')
     }
 
-    return resolveMockable({
-      mock: ({ refunds }) => refunds[0],
-      live: async () => {
-        const response = await apiClient.approveRefund(id)
-        return mapApiRefundToRefundRecord(response)
-      },
-    })
+    const response = await apiClient.approveRefund(id)
+    return mapApiRefundToRefundRecord(response)
   },
 }

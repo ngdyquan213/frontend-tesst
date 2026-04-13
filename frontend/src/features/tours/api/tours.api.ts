@@ -1,93 +1,12 @@
-import {
-  findMatchingVisualTour,
-  getMockFeaturedToursSnapshot,
-  getMockTourCatalogSnapshot,
-} from '@/features/tours/lib/tourVisualData'
+import type { Destination } from '@/features/destinations/model/destination.types'
+import { findMatchingDestinationContent } from '@/features/tours/lib/matchDestinationContent'
 import { normalizeTourSearchParams } from '@/features/tours/model/tour.schema'
 import type { Tour, TourSearchParams } from '@/features/tours/model/tour.types'
 import { apiClient } from '@/shared/api/apiClient'
-import { isMockApiEnabled } from '@/shared/api/mockMode'
 import type { Tour as ApiTour } from '@/shared/types/api'
-
-function wait(duration = 450, signal?: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const timeoutId = globalThis.setTimeout(() => {
-      if (signal) {
-        signal.removeEventListener('abort', abortHandler)
-      }
-      resolve()
-    }, duration)
-
-    function abortHandler() {
-      globalThis.clearTimeout(timeoutId)
-      reject(new DOMException('Request aborted.', 'AbortError'))
-    }
-
-    if (!signal) {
-      return
-    }
-
-    if (signal.aborted) {
-      abortHandler()
-      return
-    }
-
-    signal.addEventListener('abort', abortHandler, { once: true })
-  })
-}
 
 function cloneTours(tours: Tour[]) {
   return tours.map((tour) => ({ ...tour }))
-}
-
-function matchesDestination(tour: Tour, destination?: string) {
-  if (!destination) {
-    return true
-  }
-
-  const keyword = destination.trim().toLowerCase()
-  const searchableText = `${tour.name} ${tour.destination} ${tour.summary}`.toLowerCase()
-
-  return searchableText.includes(keyword)
-}
-
-function matchesDuration(tour: Tour, duration?: TourSearchParams['duration']) {
-  switch (duration) {
-    case 'short':
-      return tour.durationDays <= 5
-    case 'medium':
-      return tour.durationDays >= 6 && tour.durationDays <= 9
-    case 'long':
-      return tour.durationDays >= 10
-    default:
-      return true
-  }
-}
-
-function matchesGroupSize(tour: Tour, groupSize?: TourSearchParams['groupSize']) {
-  switch (groupSize) {
-    case 'intimate':
-      return tour.maxGroupSize <= 8
-    case 'shared':
-      return tour.maxGroupSize >= 9 && tour.maxGroupSize <= 12
-    case 'large':
-      return tour.maxGroupSize >= 13
-    default:
-      return true
-  }
-}
-
-function matchesPriceRange(tour: Tour, priceRange?: TourSearchParams['priceRange']) {
-  switch (priceRange) {
-    case 'under-1500':
-      return tour.price < 1500
-    case '1500-2500':
-      return tour.price >= 1500 && tour.price <= 2500
-    case '2500-plus':
-      return tour.price > 2500
-    default:
-      return true
-  }
 }
 
 function buildTourSummary(apiTour: ApiTour) {
@@ -141,8 +60,26 @@ function getAvailability(apiTour: ApiTour): Tour['availability'] {
   return 'available'
 }
 
-function mapApiTourToCardModel(apiTour: ApiTour): Tour {
-  const visualTour = findMatchingVisualTour(apiTour)
+function getTourImageContent(apiTour: ApiTour, destinations: Destination[]) {
+  const destinationContent = findMatchingDestinationContent(apiTour, destinations)
+
+  if (destinationContent) {
+    return {
+      imageUrl: destinationContent.imageUrl,
+      imageAlt: destinationContent.imageAlt,
+      featuredLabel: destinationContent.eyebrow,
+    }
+  }
+
+  return {
+    imageUrl: '/images/hero-banner.jpg',
+    imageAlt: `Scenic travel view for ${apiTour.destination}.`,
+    featuredLabel: 'Curated Departure',
+  }
+}
+
+function mapApiTourToCardModel(apiTour: ApiTour, destinations: Destination[]): Tour {
+  const imageContent = getTourImageContent(apiTour, destinations)
   const lowestPrice = getLowestLivePrice(apiTour)
 
   return {
@@ -152,71 +89,45 @@ function mapApiTourToCardModel(apiTour: ApiTour): Tour {
     name: apiTour.name,
     summary: buildTourSummary(apiTour),
     durationDays: apiTour.duration_days,
-    maxGroupSize: getMaxGroupSize(apiTour) || visualTour.maxGroupSize,
+    maxGroupSize: getMaxGroupSize(apiTour) || 12,
     price: lowestPrice.amount,
     currency: lowestPrice.currency,
-    imageUrl: visualTour.imageUrl,
-    imageAlt: visualTour.imageAlt,
+    imageUrl: imageContent.imageUrl,
+    imageAlt: imageContent.imageAlt,
     availability: getAvailability(apiTour),
-    featuredLabel: 'Instant Confirmation',
+    featuredLabel: imageContent.featuredLabel,
   }
-}
-
-function applyClientFilters(tours: Tour[], params: TourSearchParams) {
-  const filteredTours = tours.filter((tour) => {
-    return (
-      matchesDestination(tour, params.destination) &&
-      matchesDuration(tour, params.duration) &&
-      matchesGroupSize(tour, params.groupSize) &&
-      matchesPriceRange(tour, params.priceRange)
-    )
-  })
-
-  return typeof params.limit === 'number' ? filteredTours.slice(0, params.limit) : filteredTours
 }
 
 export async function getFeaturedTours(signal?: AbortSignal): Promise<Tour[]> {
-  if (!isMockApiEnabled()) {
-    const response = await apiClient.searchTours({ limit: 12, offset: 0 })
-    return cloneTours(response.tours.map(mapApiTourToCardModel).slice(0, 3))
-  }
-
-  await wait(380, signal)
-  return getMockFeaturedToursSnapshot()
+  void signal
+  const [response, destinations] = await Promise.all([
+    apiClient.searchTours({ limit: 12, offset: 0 }),
+    apiClient.getDestinations().catch(() => []),
+  ])
+  return cloneTours(response.tours.map((tour) => mapApiTourToCardModel(tour, destinations)).slice(0, 3))
 }
 
-export function getTourCatalogSnapshot(): Tour[] {
-  return getMockTourCatalogSnapshot()
-}
-
-export async function getTourCatalogSnapshotAsync(): Promise<Tour[]> {
-  return getMockTourCatalogSnapshot()
-}
-
-export async function searchTours(params: TourSearchParams = {}, signal?: AbortSignal): Promise<Tour[]> {
+export async function searchTours(
+  params: TourSearchParams = {},
+  signal?: AbortSignal,
+): Promise<Tour[]> {
+  void signal
   const normalizedParams = normalizeTourSearchParams(params)
-
-  if (!isMockApiEnabled()) {
-    const response = await apiClient.searchTours(normalizedParams)
-    return cloneTours(response.tours.map(mapApiTourToCardModel))
-  }
-
-  await wait(520, signal)
-  return cloneTours(applyClientFilters(getMockTourCatalogSnapshot(), normalizedParams))
+  const [response, destinations] = await Promise.all([
+    apiClient.searchTours(normalizedParams),
+    apiClient.getDestinations().catch(() => []),
+  ])
+  return cloneTours(response.tours.map((tour) => mapApiTourToCardModel(tour, destinations)))
 }
 
 export async function getTourDetailById(id: string, signal?: AbortSignal): Promise<ApiTour | null> {
-  await wait(420, signal)
-  const { getMockTourDetailById: getMockTourDetailSnapshotById } = await import(
-    '@/features/tours/lib/tourMockData'
-  )
-  return getMockTourDetailSnapshotById(id)
+  void signal
+  return apiClient.getTourById(id)
 }
 
 export const toursApi = {
   getFeaturedTours,
-  getTourCatalogSnapshot,
-  getTourCatalogSnapshotAsync,
   searchTours,
   getTourDetailById,
 }

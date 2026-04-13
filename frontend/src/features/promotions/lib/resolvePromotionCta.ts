@@ -1,8 +1,7 @@
 import type { PromotionCta } from '@/features/promotions/model/promotion.types'
-import { isMockApiEnabled } from '@/shared/api/mockMode'
 
 export function resolvePromotionCta(cta: PromotionCta): PromotionCta {
-  if (isMockApiEnabled() || cta.kind !== 'booking') {
+  if (cta.kind !== 'booking') {
     return cta
   }
 

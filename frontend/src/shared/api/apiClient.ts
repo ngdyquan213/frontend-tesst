@@ -1,11 +1,9 @@
 import axios from 'axios'
-import type { InternalAxiosRequestConfig } from 'axios'
+import type { AxiosAdapter, AxiosInstance, InternalAxiosRequestConfig } from 'axios'
 import { env } from '@/app/config/env'
-import { useAuthStore } from '@/features/auth/model/auth.store'
 import { createAdminApi } from '@/shared/api/adminApi'
 import { createAuthUserApi } from '@/shared/api/authUserApi'
-import { isMockApiEnabled } from '@/shared/api/mockMode'
-import { getStoredMockAuthState } from '@/shared/api/mockSession'
+import { createMockApiClient } from '@/shared/api/mockAppApi'
 import { createPaymentRefundsApi } from '@/shared/api/paymentRefundsApi'
 import { createPublicContentApi } from '@/shared/api/publicContentApi'
 import { createSupportDocumentsApi } from '@/shared/api/supportDocumentsApi'
@@ -14,9 +12,24 @@ import { createTravelBookingsApi } from '@/shared/api/travelBookingsApi'
 const API_BASE_URL = env.apiBaseUrl
 const SKIP_AUTH_REDIRECT_HEADER = 'X-Skip-Auth-Redirect'
 
-function createHttpClient() {
+interface HttpClientOptions {
+  adapter?: AxiosAdapter
+  baseURL?: string
+}
+
+interface SessionRefreshInterceptorOptions {
+  onAuthFailure?: (error: unknown) => void
+  skipAuthRedirectHeader: string
+}
+
+interface SessionRefreshApi {
+  refreshToken: () => Promise<unknown>
+}
+
+export function createHttpClient(options?: HttpClientOptions) {
   const client = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: options?.baseURL ?? API_BASE_URL,
+    adapter: options?.adapter,
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
@@ -26,58 +39,72 @@ function createHttpClient() {
   return client
 }
 
+export function attachSessionRefreshInterceptor(
+  client: AxiosInstance,
+  authApi: SessionRefreshApi,
+  options: SessionRefreshInterceptorOptions,
+) {
+  const { onAuthFailure, skipAuthRedirectHeader } = options
+  let refreshPromise: Promise<void> | null = null
+
+  const ensureSessionRefreshed = async () => {
+    if (!refreshPromise) {
+      refreshPromise = authApi
+        .refreshToken()
+        .then(() => undefined)
+        .finally(() => {
+          refreshPromise = null
+        })
+    }
+
+    return refreshPromise
+  }
+
+  return client.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config as
+        | (InternalAxiosRequestConfig & { _retry?: boolean })
+        | undefined
+      const isAuthRoute = originalRequest?.url?.startsWith('/auth/')
+      const skipAuthRedirect = originalRequest?.headers?.[skipAuthRedirectHeader] === 'true'
+
+      if (
+        error.response?.status === 401 &&
+        originalRequest &&
+        !originalRequest._retry &&
+        !originalRequest.url?.includes('/auth/refresh') &&
+        !isAuthRoute &&
+        !skipAuthRedirect
+      ) {
+        originalRequest._retry = true
+        try {
+          await ensureSessionRefreshed()
+          return client(originalRequest)
+        } catch (refreshError) {
+          onAuthFailure?.(refreshError)
+          return Promise.reject(refreshError)
+        }
+      }
+
+      return Promise.reject(error)
+    },
+  )
+}
+
 const httpClient = createHttpClient()
 const authUserApi = createAuthUserApi(httpClient, {
   skipAuthRedirectHeader: SKIP_AUTH_REDIRECT_HEADER,
 })
 
-httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  if (!isMockApiEnabled()) {
-    return config
-  }
-
-  const token = useAuthStore.getState().token ?? getStoredMockAuthState().token
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
+attachSessionRefreshInterceptor(httpClient, authUserApi, {
+  skipAuthRedirectHeader: SKIP_AUTH_REDIRECT_HEADER,
+  onAuthFailure: () => {
+    window.location.href = '/auth/login'
+  },
 })
 
-httpClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config as (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined
-    const isAuthRoute = originalRequest?.url?.startsWith('/auth/')
-    const skipAuthRedirect = originalRequest?.headers?.[SKIP_AUTH_REDIRECT_HEADER] === 'true'
-
-    if (
-      error.response?.status === 401 &&
-      originalRequest &&
-      !originalRequest._retry &&
-      !originalRequest.url?.includes('/auth/refresh') &&
-      !isAuthRoute &&
-      !skipAuthRedirect
-    ) {
-      originalRequest._retry = true
-      try {
-        await authUserApi.refreshToken()
-        const token = useAuthStore.getState().token
-        if (isMockApiEnabled() && token) {
-          originalRequest.headers.Authorization = `Bearer ${token}`
-        }
-        return httpClient(originalRequest)
-      } catch (refreshError) {
-        useAuthStore.getState().logout()
-        window.location.href = '/auth/login'
-        return Promise.reject(refreshError)
-      }
-    }
-
-    return Promise.reject(error)
-  },
-)
-
-export const apiClient = {
+const liveApiClient = {
   ...authUserApi,
   ...createTravelBookingsApi(httpClient),
   ...createPaymentRefundsApi(httpClient),
@@ -85,3 +112,10 @@ export const apiClient = {
   ...createSupportDocumentsApi(httpClient),
   ...createAdminApi(httpClient),
 }
+
+export const apiClient = env.enableMocks
+  ? {
+      ...liveApiClient,
+      ...createMockApiClient(),
+    }
+  : liveApiClient

@@ -35,10 +35,16 @@ def get_latest_security_event(db_session):
     return db_session.query(SecurityEvent).order_by(SecurityEvent.detected_at.desc()).first()
 
 
-def seed_flight_booking_for_payment(db_session, user_id: str):
-    airline = Airline(code="SE", name="Security Event Airline")
-    dep = Airport(code="SEA", name="A", city="A", country="VN")
-    arr = Airport(code="SEB", name="B", city="B", country="VN")
+def seed_flight_booking_for_payment(
+    db_session,
+    user_id: str,
+    *,
+    booking_code: str = "BK-SE-001",
+    code_suffix: str = "01",
+):
+    airline = Airline(code=f"SE{code_suffix}", name="Security Event Airline")
+    dep = Airport(code=f"SA{code_suffix}", name="A", city="A", country="VN")
+    arr = Airport(code=f"SB{code_suffix}", name="B", city="B", country="VN")
     db_session.add_all([airline, dep, arr])
     db_session.flush()
 
@@ -57,7 +63,7 @@ def seed_flight_booking_for_payment(db_session, user_id: str):
     db_session.flush()
 
     booking = Booking(
-        booking_code="BK-SE-001",
+        booking_code=booking_code,
         user_id=user_id,
         status=BookingStatus.pending,
         total_base_amount=Decimal("1000000.00"),
@@ -156,7 +162,18 @@ def test_replay_callback_creates_security_event(client, db_session):
         email="sec-pay2@example.com",
         username="sec_pay2",
     )
-    booking = seed_flight_booking_for_payment(db_session, str(user.id))
+    primary_booking = seed_flight_booking_for_payment(
+        db_session,
+        str(user.id),
+        booking_code="BK-SE-REPLAY-001",
+        code_suffix="11",
+    )
+    duplicate_booking = seed_flight_booking_for_payment(
+        db_session,
+        str(user.id),
+        booking_code="BK-SE-REPLAY-002",
+        code_suffix="12",
+    )
 
     login = client.post(
         "/api/v1/auth/login",
@@ -166,11 +183,18 @@ def test_replay_callback_creates_security_event(client, db_session):
 
     init_resp = client.post(
         "/api/v1/payments/initiate",
-        json={"booking_id": str(booking.id), "payment_method": "vnpay"},
+        json={"booking_id": str(primary_booking.id), "payment_method": "vnpay"},
         headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "sec-replay"},
     )
     assert init_resp.status_code == 201
     payment = init_resp.json()
+    duplicate_init_resp = client.post(
+        "/api/v1/payments/initiate",
+        json={"booking_id": str(duplicate_booking.id), "payment_method": "vnpay"},
+        headers={"Authorization": f"Bearer {token}", "Idempotency-Key": "sec-replay-duplicate"},
+    )
+    assert duplicate_init_resp.status_code == 201
+    duplicate_payment = duplicate_init_resp.json()
 
     payload = {
         "timestamp": int(datetime.now(timezone.utc).timestamp()),
@@ -182,9 +206,19 @@ def test_replay_callback_creates_security_event(client, db_session):
         "status": "paid",
     }
     payload["signature"] = build_payment_callback_signature(**payload)
+    conflicting_payload = {
+        "timestamp": payload["timestamp"],
+        "gateway_name": payload["gateway_name"],
+        "gateway_order_ref": duplicate_payment["gateway_order_ref"],
+        "gateway_transaction_ref": payload["gateway_transaction_ref"],
+        "amount": payload["amount"],
+        "currency": payload["currency"],
+        "status": payload["status"],
+    }
+    conflicting_payload["signature"] = build_payment_callback_signature(**conflicting_payload)
 
     first = client.post("/api/v1/payments/callback", json=payload)
-    second = client.post("/api/v1/payments/callback", json=payload)
+    second = client.post("/api/v1/payments/callback", json=conflicting_payload)
 
     assert first.status_code == 200
     assert second.status_code == 400

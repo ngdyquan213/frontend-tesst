@@ -5,6 +5,18 @@ function toUpperStatus(value?: string | null) {
   return value ? value.toUpperCase() : undefined
 }
 
+function readOptionalString(value: unknown) {
+  return typeof value === 'string' && value.trim().length > 0 ? value : undefined
+}
+
+function readRequiredString(value: unknown, fieldName: string) {
+  const normalizedValue = readOptionalString(value)
+  if (!normalizedValue) {
+    throw new Error(`Invalid API response: missing ${fieldName}.`)
+  }
+  return normalizedValue
+}
+
 export function toNumber(value: unknown, fallback = 0) {
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : fallback
@@ -71,7 +83,7 @@ export function normalizeHotel(raw: Record<string, unknown>): types.Hotel {
 }
 
 export function normalizeUser(raw: Record<string, unknown>): types.User {
-  const role = typeof raw.role === 'string' ? raw.role : undefined
+  const role = readOptionalString(raw.role)
   const roles = Array.isArray(raw.roles)
     ? raw.roles.filter((item): item is string => typeof item === 'string')
     : role
@@ -79,12 +91,12 @@ export function normalizeUser(raw: Record<string, unknown>): types.User {
       : []
 
   return {
-    id: String(raw.id ?? ''),
-    email: String(raw.email ?? ''),
+    id: readRequiredString(raw.id, 'user.id'),
+    email: readRequiredString(raw.email, 'user.email'),
     name: String(raw.name ?? raw.full_name ?? raw.username ?? raw.email ?? 'Traveler'),
-    full_name: typeof raw.full_name === 'string' ? raw.full_name : undefined,
-    username: typeof raw.username === 'string' ? raw.username : undefined,
-    status: toUpperStatus(typeof raw.status === 'string' ? raw.status : undefined),
+    full_name: readOptionalString(raw.full_name),
+    username: readOptionalString(raw.username),
+    status: toUpperStatus(readOptionalString(raw.status)),
     email_verified: Boolean(raw.email_verified),
     role,
     roles,
@@ -101,15 +113,21 @@ export function normalizeUser(raw: Record<string, unknown>): types.User {
 
 export function normalizeBooking(raw: Record<string, unknown>): types.Booking {
   const bookingStatus = toUpperStatus(
-    typeof raw.booking_status === 'string' ? raw.booking_status : typeof raw.status === 'string' ? raw.status : 'pending',
-  ) ?? 'PENDING'
+    readOptionalString(raw.booking_status) ?? readOptionalString(raw.status),
+  )
+  if (!bookingStatus) {
+    throw new Error('Invalid API response: missing booking.status.')
+  }
 
   const bookingDate = String(raw.booking_date ?? raw.booked_at ?? raw.created_at ?? new Date().toISOString())
   const totalPrice = toNumber(raw.total_price ?? raw.total_final_amount)
-  const paymentStatus = toUpperStatus(typeof raw.payment_status === 'string' ? raw.payment_status : 'pending') ?? 'PENDING'
+  const paymentStatus = toUpperStatus(readOptionalString(raw.payment_status))
+  if (!paymentStatus) {
+    throw new Error('Invalid API response: missing booking.payment_status.')
+  }
 
   return {
-    id: String(raw.id ?? ''),
+    id: readRequiredString(raw.id, 'booking.id'),
     user_id: String(raw.user_id ?? useAuthStore.getState().user?.id ?? ''),
     booking_code: typeof raw.booking_code === 'string' ? raw.booking_code : undefined,
     booking_type: String(raw.booking_type ?? 'TRAVEL').toUpperCase(),
@@ -158,20 +176,18 @@ export function normalizeDocument(raw: Record<string, unknown>): types.Document 
 }
 
 export function normalizePayment(raw: Record<string, unknown>): types.Payment {
-  const status = (
-    toUpperStatus(
-      typeof raw.payment_status === 'string'
-        ? raw.payment_status
-        : typeof raw.status === 'string'
-          ? raw.status
-          : 'pending',
-    ) ?? 'PENDING'
-  ) as types.PaymentStatus
+  const resolvedStatus = toUpperStatus(
+    readOptionalString(raw.payment_status) ?? readOptionalString(raw.status),
+  )
+  if (!resolvedStatus) {
+    throw new Error('Invalid API response: missing payment.status.')
+  }
+  const status = resolvedStatus as types.PaymentStatus
   const timestamp = String(raw.created_at ?? raw.paid_at ?? new Date().toISOString())
 
   return {
-    id: String(raw.id ?? ''),
-    booking_id: String(raw.booking_id ?? ''),
+    id: readRequiredString(raw.id, 'payment.id'),
+    booking_id: readRequiredString(raw.booking_id, 'payment.booking_id'),
     amount: toNumber(raw.amount),
     currency: String(raw.currency ?? 'USD'),
     status,
